@@ -5,7 +5,7 @@ This is the Flux RFC project.
 
 We collect specifications for APIs, file formats, wire protocols, and processes.
 
-The change process is https://github.com/garlick/rfc/spec_1.adoc[C4.1] with a few modifications:
+The change process is https://github.com/flux-framework/rfc/blob/master/spec_1.adoc[C4.1] with a few modifications:
 
 A specification is created and modified by pull requests according to C4.1.
 Each specification has an editor who publishes the RFC to (website TBD) as needed.
