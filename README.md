@@ -1,4 +1,0 @@
-rfc
-===
-
-Flux RFC project
