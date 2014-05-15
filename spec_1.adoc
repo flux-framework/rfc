@@ -1,15 +1,15 @@
-1/C4 - Collective Code Construction Contract
-============================================
+1/C4.1 - Collective Code Construction Contract
+==============================================
 
-The Collective Code Construction Contract (C4) is an evolution of the
+The Collective Code Construction Contract (C4.1) is an evolution of the
 github.com http://help.github.com/send-pull-requests/[Fork + Pull Model],
 aimed at providing an optimal collaboration model for free software
 projects.
 
 * Name: github.com/flux-framework/rfc/spec_1.adoc
-* Origin rfc.zeromq.org/spec:22/C4.1
+* Forked from: rfc.zeromq.org/spec:22/C4.1
 * Editor: Jim Garlick <garlick@llnl.gov>
-* State: raw
+* State: draft
 
 == Language
 
@@ -19,7 +19,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == Goals
 
-C4 is meant to provide a reusable optimal collaboration model for open source software projects. It has these specific goals:
+C4.1 is meant to provide a reusable optimal collaboration model for open source software projects. It has these specific goals:
 
 * To maximize the scale of the community around a project, by reducing the friction for new Contributors and creating a scaled participation model with strong positive feedbacks;
 
