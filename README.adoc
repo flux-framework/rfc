@@ -7,7 +7,7 @@ We collect specifications for APIs, file formats, wire protocols, and processes.
 
 The change process is https://github.com/flux-framework/rfc/blob/master/spec_1.adoc[C4.1] with a few modifications:
 
-A specification is created and modified by pull requests according to C4.1.
-Each specification has an editor who publishes the RFC to (website TBD) as needed.
-Each specification has a status on that website: Raw, Draft, Stable, Legacy, Retired, Deleted.
-Non-cosmetic changes are allowed only on Raw and Draft specifications.
+* A specification is created and modified by pull requests according to C4.1.
+* Each specification has an editor who publishes the RFC to (website TBD) as needed.
+* Each specification has a status on that website: Raw, Draft, Stable, Legacy, Retired, Deleted.
+* Non-cosmetic changes are allowed only on Raw and Draft specifications.

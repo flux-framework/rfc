@@ -1,0 +1,88 @@
+2/Flux Framework Licensing and Collaboration Guidelines
+=======================================================
+
+The Flux framework is a family of projects used to build site-customized
+resource management systems for High Performance Computing (HPC) data
+centers.  This document specifies licensing and collaboration guidelines
+for Flux projects.
+
+* Name: github.com/flux-framework/rfc/spec_2.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Goals
+
+A Flux project is defined as software which implements a resource
+manager component, or is otherwise tightly coupled to the resource
+manager or its communications framework.  Flux projects are expected
+to be developed by interests spanning academic institutions, government
+laboratories, companies, and individuals.
+Our licensing and collaboration guidelines have the following goals:
+
+* Encourage participation in the Flux community by all interested parties.
+
+* Ensure that the Flux community remains healthy and active by
+  welcoming contributions, vetting changes in the open,
+  promoting collective ownership, and distributed maintainership
+  responsibility.
+
+* Allow Flux projects to leverage a large body of open source,
+  including from the HPC ecosystem.
+
+* Ensure that end users have full source code to their particular
+  Flux configuration in order to be self-supporting, and leverage
+  Flux community support to the maximum extent.
+
+* Ensure that successful Flux configurations are fully replicatable
+  and redistributable across platforms and sites.
+
+* Promote design and documentation that allows any Flux component to
+  be replaced with minimal impact on other components.
+
+* Provide separation between Flux projects and Flux user interfaces.
+  Software that uses Flux such as applications, application runtimes,
+  and tools may have proprietary or other open source licenses that
+  are incompatible with the Flux project license.
+
+== Design
+  
+=== Collaboration Model for Flux Projects
+
+* Flux projects SHALL adopt the Flux fork of the Collective Code
+  Construction Contract (C4.1) defined as Flux RFC 1.
+
+* It is RECOMMENDED that Flux projects be hosted under the
+  Github https://github.com/flux-framework[flux-framework] orgnaization,
+  including use of the Github tracker and Github pages as outlined in C4.1.
+
+* It is RECOMMENDED that Flux projects be discussed on the Flux
+  development list <flux-devel@lists.llnl.gov>.
+
+* Interfaces exported by Flux projects to the Flux framework SHOULD
+  be documented as a https://github.com/flux-framework/rfc[Flux RFC].
+
+=== License for Flux Projects
+
+* Flux projects SHALL be licensed under the
+  "GNU General Public License version 3 or later".
+
+* Flux projects SHALL NOT require a legal document such as a
+  contributor license agreement or copyright assignment document
+  to be signed by contributors.
+
+* Copyright for a particular Flux project SHALL be held jointly by
+  the contributors to that project.
+
+=== License for Flux User Interfaces
+
+* Protocols required to implement the Flux user interface SHALL
+  be documented as a https://github.com/flux-framework/rfc[Flux RFC].
+
+* Code implementing Flux user interface SHALL be licensed under the
+  "Lesser GNU General Public License, version 3 or later".
