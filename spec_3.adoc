@@ -1,0 +1,220 @@
+3/Flux Communications Message Broker Protocol
+=============================================
+
+A set of Flux communications message broker (CMB) daemons provide a shared,
+persistent communications framework within each Flux job.  This document
+describes the protocol the CMB daemons use to communicate with each other.
+The CMB protocol runs over the
+http://rfc.zeromq.org/spec:23/ZMTP[ZeroMQ Message Transfer Protocol (ZMTP)].
+
+* Name: github.com/flux-framework/rfc/spec_3.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Goals
+
+The Flux comms framework provides a runtime environment for distributed
+Flux components.  Its goals are to:
+
+* Simplify Flux components by factoring out common communications code.
+* Provide "best effort" resiliency against common software and hardware
+failures.
+* Provide message privacy and integrity.
+* Provide ordered message delivery.
+* Provide optional reliabile message delivery.
+* Support in-flight data reduction.
+* Support message multicast/broadcast.
+* Scale at least to 100,000 nodes on local area networks
+* Synchronize housekeeping activity to minimize "OS noise" impact on
+parallel applications.
+
+== Related Specifications
+
+* Event Protocol (TBD)
+* Rank-addressed Request Protocol (TBD)
+* Heartbeat Protocol (TBD)
+* Liveness Protocol (TBD)
+* Key-value Store Protocol (TBD)
+
+== Implementation
+
+=== Comms Session Creation
+
+A _comms session_ is an instance of the Flux comms framework, consisting
+of a set of communicating CMB daemons, created for the duration of a Flux
+job, bootstrapped in one of the following ways:
+
+* Started as a SLURM job
+* Started as the child of a Flux job.
+* Started by init with other Flux services, using static files for
+configuration.
+
+=== Node Identification
+
+A _node_ is defined as a CMB daemon instance.  Each node in a comms
+session of size _N_ SHALL be assigned an integer _rank_ from _0_ to _N - 1_
+when the comms session is created.
+
+A node's rank SHALL NOT change for the node's lifetime.
+If nodes are added to the comms session, they SHALL be assigned new
+ranks.  If nodes are removed from the comms session, their ranks SHALL
+be retired permanently.
+
+=== Interconnection Model
+
+The nodes of a comms session SHALL be interconnected in an overlay
+network with a tree topology, with rank 0 at the tree root.
+Each node MUST be pre-configured with the following information:
+
+* the node's rank
+* downstream URI to bind for children
+* primary parent URI (except rank 0)
+* one or more alternate parent URIs (except rank 0)
+* an initial connect timeout value
+* client and server CURVE keypairs
+
+Each node (except rank 0) SHALL create a ZeroMQ DEALER socket, set its high
+water mark to unlimited (0), set its identity to its rank represented as
+a 4-octet unsigned integer in network byte order, and connect to its
+primary parent URI, initiating a CURVE security handshake.  A hello message
+SHALL then be sent to the parent.
+
+If a hello-ok message is not received within the timeout period,
+and alternate parents are configured, the DEALER socket SHALL be
+destroyed, and the process of creating it above is repeated, substituting
+the first alternate parent URI.  This process SHALL be repeated, cycling
+through configured parent URI's, until a hello-ok message is received.
+
+Concurrent with above, each node SHALL create a ZeroMQ ROUTER socket,
+set its high water mark to unlimited (0), and bind to its downstream URI.
+The downstream socket SHALL accept connections from any node, subject
+to a successful CURVE security handshake.  Upon receipt of a well formed
+hello message on this socket, the identity (rank) of the downstream peer
+SHALL be extracted from the ROUTER address frame, and a hello-ok message
+SHALL be returned to the sender.
+
+Requests from downstream peers other than hello SHALL NOT be processed
+until a hello-ok message has been received from the parent (except rank 0).
+After the hello-ok has been received, any statically configured comms modules
+SHALL be loaded, then requests that were received during this period SHALL
+be processed in the order received.
+
+=== Modules and Services
+
+Services are implemented by plugins called _comms modules_.
+A comms module is a dynamic shared object (DSO) that is
+loaded into the address space of a CMB daemon and given its own
+thread of control.  A comms modules MAY be loaded on all nodes of
+a comms session or a subset, and MAY be loaded via static configuration
+or loaded/unloaded dynamically.  The CMB daemon and modules communicate
+over ZeroMQ sockets bound to _inproc_ (shared memory) endpoints that
+are passed to the module's initialization function.
+
+The node SHALL bind an inproc endpoint to the downstream ROUTER socket
+created above.  For each comms module, the node SHALL create
+one DEALER socket, set its high water mark to unlimited (0),
+set its identity to a 16-octet UUID, and connect it to the ROUTER
+socket above.  This socket is for the comms module to send requests
+via the CMB daemon and receive replies.
+
+In addition the node SHALL create two PAIR sockets, set their high water
+marks to unlimited (0), and connect one to the other over an inproc endpoint.
+This socket is for the CMB daemon to send requests to the comms module
+and receive replies.
+
+A comms module MAY register a unique service name when it is loaded.
+Requests received by a node for a matched service name SHALL be forwarded
+to the comms module that registered it.  Requests received by a node
+(except rank 0) for an unmatched service name SHALL be forwarded to
+the upstream parent node.  Requests received by rank 0 for an unmatched
+service SHALL receive an error response with ENOSYS (Function not
+implemented) error code.
+
+Requests thus travel up the overlay network towards rank 0, and are
+either handled by services along the way or, if unmatched, are answered
+by an error response from rank 0.
+
+=== Protocol Signature
+
+Every CMB message SHALL start with the CMB protocol signature, %xFC %xBB.
+A node SHALL silently discard any message received that does not start
+with these two octets.  This is a general fail-fast mechanism to detect
+ill-formed messages.
+
+=== Protocol Grammar
+
+The following ABNF grammar defines the CMB protocol, where all messages
+are sent between a downstream client C: and an upstream server S:
+
+----
+CMB		= greeting *traffic
+greeting	= C:hello S:hello-ok
+traffic		= C:insmod S:insmod-ok / C:rmmod S:rmmod-ok
+		/ C:request S:response 
+		/ S:error
+
+; Say hello to parent
+hello		= signature %d1 sequence
+hello-ok	= signature %d2 sequence
+
+; Load a comms module
+insmod		= signature %d3 sequence name
+insmod-ok	= signature %d4 sequence
+
+; Unload a comms module (to cmbd, also to comms module itself)
+rmmod		= signature %d5 sequence name
+rmmod-ok	= signature %d6 sequence
+
+; Multi-part request to a service
+request		= signature %d7 sequence service content
+service		= string
+content		= msg
+
+; Multi-part response from a service
+response	= signature %d8 sequence content
+content		= msg
+
+; Generic error response
+error		= signature %d255 sequence errnum errstr
+errnum		= number-4
+errstr		= string
+
+; Signature precedes every message
+signature	= %xFC %xBB
+
+; Incremental sequence number matches request/response
+sequence	= number-2
+
+; A msg is zero or more distinct frames
+msg		= *frame
+
+; Strings are always length + text contents
+string		= number-1 *VCHAR
+longstr		= number-4 *VCHAR
+
+; Numbers are unsigned integers in network byte order
+number-1	= 2OCTET
+number-2	= 2OCTET
+number-4	= 4OCTET
+----
+
+== Caveats
+
+This is a first cut at this specification.  Some major problems remain:
+
+* _Flow control:_  we set the HWM for DEALER - ROUTER sockets to unlimited
+in order to avoid blocking the CMB daemon's main thread.  This means
+the size of ZeroMQ buffers can grow without bound under congestion.
+
+* _Reliability during self-healing:_  when an interior node fails, the comms
+session rewires itself.  Any messages that were enqueued on the failing node
+are lost and recovery is up to the services that sent them.
+
+* _Resilency of node 0:_  there is currently no way to recover a comms session
+whose node 0 fails.
