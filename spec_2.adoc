@@ -21,7 +21,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 A Flux project is defined as software which implements a resource
 manager function, or is otherwise tightly coupled to the resource
 manager or its communications framework.  Flux projects are expected
-to be developed by interests spanning academic institutions, government
+to have contributors spanning academic institutions, government
 laboratories, companies, and individuals.
 Our licensing and collaboration guidelines have the following goals:
 
@@ -44,10 +44,9 @@ Our licensing and collaboration guidelines have the following goals:
 * Promote design and documentation that allows any Flux component to
   be replaced with minimal impact on other components.
 
-* Provide separation between Flux projects and Flux user interfaces.
-  Software that uses Flux such as applications, application runtimes,
-  and tools may have proprietary or other open source licenses that
-  are incompatible with the Flux project license.
+* Provide Flux user interfaces that can be directly linked by
+  applications, application runtimes, and tools distributed under
+  proprietary or incompatible licenses.
 
 == Design
   
@@ -68,8 +67,13 @@ Our licensing and collaboration guidelines have the following goals:
 
 === License for Flux Projects
 
-* Flux projects SHALL be licensed exclusively under the
-  "GNU General Public License version 3 or later".
+* Flux projects SHALL be licensed under the GNU General Public License (GPL).
+
+* Flux projects are RECOMMENDED to be licensed under GPL version 3 or later.
+
+* Flux projects SHALL permit redistribution and/or modification
+  under the project's base GPL version, or any later version per
+  http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommentations].
 
 * Flux projects SHALL NOT require a legal document such as a
   contributor license agreement or copyright assignment document
@@ -80,8 +84,18 @@ Our licensing and collaboration guidelines have the following goals:
 
 === License for Flux User Interfaces
 
-* Protocols required to implement the Flux user interface SHALL
-  be documented as a https://github.com/flux-framework/rfc[Flux RFC].
+* Selected Flux programming interfaces, such as those used by applications,
+  application runtimes, and tools, MAY be designated as Flux user interfaces.
 
-* Code implementing Flux user interface SHALL be licensed exclusively
-  under the "Lesser GNU General Public License, version 3 or later".
+* Flux user interfaces SHALL be documented as such in a
+  https://github.com/flux-framework/rfc[Flux RFC].
+
+* Flux user interfaces SHALL be licensed under the Lesser GNU General
+  Public License (LGPL).
+
+* Flux user interfaces are RECOMMENDED to be licensed under LGPL
+  version 3 or later.
+
+* Flux user interfaces SHALL permit redistribution and/or modification
+  under the interface's base LGPL version, or any later version per
+  http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommentations].
