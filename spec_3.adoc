@@ -1,10 +1,10 @@
-3/Flux Communications Message Broker Protocol
-=============================================
+3/CMB1 - Flux Comms Message Broker Protocol
+===========================================
 
-A set of Flux communications message broker (CMB) daemons provide a shared,
-persistent communications framework within each Flux job.  This document
-describes the protocol the CMB daemons use to communicate with each other.
-The CMB protocol runs over the
+This specification describes the format of communications message broker
+messages, Version 1, also referred to as CMB1.
+
+CMB1 is encapsulated in the
 http://rfc.zeromq.org/spec:23/ZMTP[ZeroMQ Message Transfer Protocol (ZMTP)].
 
 * Name: github.com/flux-framework/rfc/spec_3.adoc
@@ -19,202 +19,195 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == Goals
 
-The Flux comms framework provides a runtime environment for distributed
-Flux components.  Its goals are to:
+The CMB1 protocol provides a way for Flux utilities and services to
+communicate with one another within the context of a job.  CMB1 has
+the following specific goals:
 
-* Simplify Flux components by factoring out common communications code.
-* Provide "best effort" resiliency against common software and hardware
-failures.
-* Provide message privacy and integrity.
-* Provide ordered message delivery.
-* Provide optional reliabile message delivery.
-* Support in-flight data reduction.
-* Support message multicast/broadcast.
-* Scale at least to 100,000 nodes on local area networks
-* Synchronize housekeeping activity to minimize "OS noise" impact on
-parallel applications.
+* Endpoint-count scalability (e.g. to 100K nodes) through multi-hop
+  overlay networks.
+* Overlays sharable by multiple Flux services and utilities.
+* Provide request-response (RPC) communication idiom.
+* Provide publish-subscribe communications idiom.
+* Handle common failure cases such as hard-hung brokers or crashed nodes,
+  but OK to propagate errors to services when necessary to keep running.
+* Moderately good latency and bandwith for anticipated services.
+  RDMA complexity should be avoided here.
+* Protect messages with strong crypto:  privacy, integrity.
+* Fast, malloc-free message codec
 
-== Related Specifications
+== Background
 
-* Event Protocol (TBD)
-* Rank-addressed Request Protocol (TBD)
-* Heartbeat Protocol (TBD)
-* Liveness Protocol (TBD)
-* Key-value Store Protocol (TBD)
+`cmbd` is a message broker daemon for the Flux resource manager
+framework.  A _comms session_ is a set of interconnected `cmbd` instances
+that together provide a shared communications substrate for distributed
+resource manager services within a job .  Services and utilities communicate
+by passing messages through the session broker instances.  There are four
+types of messages: events, requests, responses, and keepalives, which
+share a common structure described herein.
+
+Event messages are published such that they are available to subscribers
+throughout the comms session.  Events are published with a _topic string_
+attached.  Subscribers register a list of topic string prefixes
+to filter the set of messages they receive.
+
+Requests are messages addressed to a resource manager or broker service.
+A topic string identifies the service and _method_.  A _nodeid_ optionally
+identifies a particular `cmbd` rank.  Requests follow the ZeroMQ
+DEALER-ROUTER message flow, which builds a source-address route at each hop.
+
+Responses are optional replies to requests.  They follow the ZeroMQ
+ROUTER-DEALER message flow, which unwinds the source address route
+accumulated by the request, and uses them to select among peers at each hop.
+
+Keepalives are control messages used by one peer to indicate to another
+peer that it is still alive when it is not otherwise communicating.
 
 == Implementation
 
-=== Comms Session Creation
-
-A _comms session_ is an instance of the Flux comms framework, consisting
-of a set of communicating CMB daemons, created for the duration of a Flux
-job, bootstrapped in one of the following ways:
-
-* Started as a SLURM job
-* Started as the child of a Flux job.
-* Started by init with other Flux services, using static files for
-configuration.
-
-=== Node Identification
+=== Rank Assignment
 
 A _node_ is defined as a CMB daemon instance.  Each node in a comms
-session of size _N_ SHALL be assigned an integer _rank_ from _0_ to _N - 1_
-when the comms session is created.
+session of size N SHALL be assigned a rank in the range of 0 to N - 1.
+Ranks SHALL be represented by a 32 bit unsigned integer, with the highest
+value of (2^32^ - 2).
 
-A node's rank SHALL NOT change for the node's lifetime.
-If nodes are added to the comms session, they SHALL be assigned new
-ranks.  If nodes are removed from the comms session, their ranks SHALL
-be retired permanently.
+The rank FLUX_NODEID_ANY (2^32^ - 1) SHALL be reserved to indicate
+_any rank_ in addressing.
 
-=== Interconnection Model
+A node's rank SHALL be assigned at broker startup and SHALL NOT change
+for the node's lifetime.  If nodes are added to the comms session, they
+SHALL be assigned new ranks.  If nodes are removed from the comms
+session, their ranks SHALL be retired permanently.
 
-The nodes of a comms session SHALL be interconnected in an overlay
-network with a tree topology, with rank 0 at the tree root.
-Each node MUST be pre-configured with the following information:
+=== Overlay Networks
 
-* the node's rank
-* downstream URI to bind for children
-* primary parent URI (except rank 0)
-* one or more alternate parent URIs (except rank 0)
-* an initial connect timeout value
-* client and server CURVE keypairs
+The nodes of a comms session SHALL at minimum be interconnected in
+tree based overlay network with rank 0 at the root of the tree.
+This overlay network SHALL use ZeroMQ DEALER-ROUTER sockets.
 
-Each node (except rank 0) SHALL create a ZeroMQ DEALER socket, set its high
-water mark to unlimited (0), set its identity to its rank represented as
-a 4-octet unsigned integer in network byte order, and connect to its
-primary parent URI, initiating a CURVE security handshake.  A hello message
-SHALL then be sent to the parent.
+The nodes of a comms session MAY be interconnected in another overlay
+topology to facilitate message delivery to specific ranks.  This overlay
+network SHALL use ZeroMQ DEALER-ROUTER sockets.
 
-If a hello-ok message is not received within the timeout period,
-and alternate parents are configured, the DEALER socket SHALL be
-destroyed, and the process of creating it above is repeated, substituting
-the first alternate parent URI.  This process SHALL be repeated, cycling
-through configured parent URI's, until a hello-ok message is received.
+The nodes of a comms session MAY be interconnected in another overlay
+topology for event propagation.  This overlay network SHALL use ZeroMQ
+PUB-SUB sockets.
 
-Concurrent with above, each node SHALL create a ZeroMQ ROUTER socket,
-set its high water mark to unlimited (0), and bind to its downstream URI.
-The downstream socket SHALL accept connections from any node, subject
-to a successful CURVE security handshake.  Upon receipt of a well formed
-hello message on this socket, the identity (rank) of the downstream peer
-SHALL be extracted from the ROUTER address frame, and a hello-ok message
-SHALL be returned to the sender.
+=== Service Addressing
 
-Requests from downstream peers other than hello SHALL NOT be processed
-until a hello-ok message has been received from the parent (except rank 0).
-After the hello-ok has been received, any statically configured comms modules
-SHALL be loaded, then requests that were received during this period SHALL
-be processed in the order received.
+A Flux service SHALL be identified in a request by a _topic string_,
+a set of words delimited by periods, in which the first word identifies
+the service, and remaining words represent _methods_ within that service.
+For example, "kvs.get" refers to the _get_ method of the _kvs_ service.
 
-=== Modules and Services
+Built-in broker services SHALL begin with "cmb.".  Services implemented by
+_comms modules_ (broker plugins)  SHALL begin with the name of the comms
+module.
 
-Services are implemented by plugins called _comms modules_.
-A comms module is a dynamic shared object (DSO) that is
-loaded into the address space of a CMB daemon and given its own
-thread of control.  A comms modules MAY be loaded on all nodes of
-a comms session or a subset, and MAY be loaded via static configuration
-or loaded/unloaded dynamically.  The CMB daemon and modules communicate
-over ZeroMQ sockets bound to _inproc_ (shared memory) endpoints that
-are passed to the module's initialization function.
+=== Default Request Routing
 
-The node SHALL bind an inproc endpoint to the downstream ROUTER socket
-created above.  For each comms module, the node SHALL create
-one DEALER socket, set its high water mark to unlimited (0),
-set its identity to a 16-octet UUID, and connect it to the ROUTER
-socket above.  This socket is for the comms module to send requests
-via the CMB daemon and receive replies.
+Request messages MAY be addressed to _any rank_ (FLUX_NODEID_ANY).
+Such messages SHALL be routed to the local broker instance, then to the
+first match in the following sequence:
 
-In addition the node SHALL create two PAIR sockets, set their high water
-marks to unlimited (0), and connect one to the other over an inproc endpoint.
-This socket is for the CMB daemon to send requests to the comms module
-and receive replies.
+. If topic string begins with "cmb.",
+  the message SHALL be handled internally by the broker
+. If topic string begins with a word matching a local comms module,
+  the message SHALL be routed to the comms module.
+. If the broker is not the root node of the tree based overlay network,
+  the message SHALL be routed to a parent node in the tree based overlay
+  network, which SHALL re-apply this routing algorithm.
 
-A comms module MAY register a unique service name when it is loaded.
-Requests received by a node for a matched service name SHALL be forwarded
-to the comms module that registered it.  Requests received by a node
-(except rank 0) for an unmatched service name SHALL be forwarded to
-the upstream parent node.  Requests received by rank 0 for an unmatched
-service SHALL receive an error response with ENOSYS (Function not
-implemented) error code.
+If the message is received by a module, but the remaining words of the
+topic string do not match a method implemented by the comms module, the
+comms module SHALL respond with error number 38, "Function not implemented".
 
-Requests thus travel up the overlay network towards rank 0, and are
-either handled by services along the way or, if unmatched, are answered
-by an error response from rank 0.
+If the message reaches the root node, but none of the above conditions
+are met, the root broker SHALL respond with error number 38,
+"Function not implemented".
+  
+=== Rank Request Routing
 
-=== Protocol Signature
+Request messages MAY be addressed to a specific rank.
+Such messages SHALL be routed to the target broker instance, then to the
+first match in the following sequence:
 
-Every CMB message SHALL start with the CMB protocol signature, %xFC %xBB.
-A node SHALL silently discard any message received that does not start
-with these two octets.  This is a general fail-fast mechanism to detect
-ill-formed messages.
+. If topic string begins with "cmb.",
+  the message SHALL be handled internally by the broker
+. If topic string begins with a word matching a local comms module,
+  the message SHALL be routed to the comms module.
 
-=== Protocol Grammar
+If the message is received by a module, but the remaining words of the
+topic string do not match a method implemented by the comms module, the
+comms module SHALL respond with error number 38, "Function not implemented".
 
-The following ABNF grammar defines the CMB protocol, where all messages
-are sent between a downstream client C: and an upstream server S:
+If the message reaches the target node, but none of the above conditions
+are met, the broker SHALL respond with error number 38,
+"Function not implemented".
+
+If the message cannot be routed to the target node, the broker making
+this determination SHALL respond with error number 113, "No route to host".
+
+=== Event Routing
+
+Event messages SHALL only be sent by the rank 0 broker.  Other ranks MAY
+cause an event to be sent by forwarding it to rank 0 encapsulated in
+a "cmb.pub" request message.
+
+=== General Message Format
+
+CMB1 messages are multi-part ZeroMQ messages, defined in the following
+ABNF grammar.
 
 ----
-CMB		= greeting *traffic
-greeting	= C:hello S:hello-ok
-traffic		= C:insmod S:insmod-ok / C:rmmod S:rmmod-ok
-		/ C:request S:response 
-		/ S:error
+CMB1		= C:request *S:response
+		/ S:event
+		/ C:keepalive
 
-; Say hello to parent
-hello		= signature %d1 sequence
-hello-ok	= signature %d2 sequence
+; Multi-part 0MQ messages
+C:request	= [routing] topic [payload / json] PROTO
+S:response	= [routing] topic [payload / json] PROTO
+S:event		= [routing] topic [payload / json] PROTO
+C:keepalive	= PROTO
 
-; Load a comms module
-insmod		= signature %d3 sequence name
-insmod-ok	= signature %d4 sequence
+; Route frame stack, 0MQ DEALER-ROUTER format
+routing		= *identity delimiter
+identity	= 1*OCTET		; socket identity 0MQ frame
+delimiter	= 0OCTET		; empty delimiter 0MQ frame
 
-; Unload a comms module (to cmbd, also to comms module itself)
-rmmod		= signature %d5 sequence name
-rmmod-ok	= signature %d6 sequence
+; Topic string frame, 0MQ PUB-SUB format
+topic		= 1*(ALPHA / DIGIT / ".")
 
-; Multi-part request to a service
-request		= signature %d7 sequence service content
-service		= string
-content		= msg
+; Payload frame
+payload		= *OCTET		; payload 0MQ frame
+json		= JSON			; payload 0MQ frame, encoded JSON
+					;   c.f. Internet RFC 4624
+; Protocol frame
+PROTO		= request / response / event / keepalive
 
-; Multi-part response from a service
-response	= signature %d8 sequence content
-content		= msg
+request		= signature version %x01 flags (nodeid / nodeid-any)
+response	= signature version %x02 flags errnum
+event		= signature version %x04 flags sequence
+keepalive	= signature version %x08 flags %x00
 
-; Generic error response
-error		= signature %d255 sequence errnum errstr
-errnum		= number-4
-errstr		= string
+; Constants
+signature	= %x8E			; magic cookie
+version		= %x01			; version for CMB1
 
-; Signature precedes every message
-signature	= %xFC %xBB
+; Flags: a bitmask of flag- values below
+flags		= OCTET
+flag-topic	= %x01			; message has topic string frame
+flag-payload	= %x02			; message has payload frame
+flag-json	= %x04			;         and payload is JSON
+flag-route	= %x08			; message has route delimiter frame
 
-; Incremental sequence number matches request/response
-sequence	= number-2
+; Target node ID in network byte order
+nodeid		= 4OCTET
+nodeid-any	= %xFF.FF.FF.FF
 
-; A msg is zero or more distinct frames
-msg		= *frame
+; UNIX errno in network byte order
+errnum		= 4OCTET
 
-; Strings are always length + text contents
-string		= number-1 *VCHAR
-longstr		= number-4 *VCHAR
-
-; Numbers are unsigned integers in network byte order
-number-1	= 2OCTET
-number-2	= 2OCTET
-number-4	= 4OCTET
+; Monotonic sequence number in network byte order
+sequence	= 4OCTET
 ----
-
-== Caveats
-
-This is a first cut at this specification.  Some major problems remain:
-
-* _Flow control:_  we set the HWM for DEALER - ROUTER sockets to unlimited
-in order to avoid blocking the CMB daemon's main thread.  This means
-the size of ZeroMQ buffers can grow without bound under congestion.
-
-* _Reliability during self-healing:_  when an interior node fails, the comms
-session rewires itself.  Any messages that were enqueued on the failing node
-are lost and recovery is up to the services that sent them.
-
-* _Resilency of node 0:_  there is currently no way to recover a comms session
-whose node 0 fails.
