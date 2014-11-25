@@ -74,9 +74,11 @@ The rank FLUX_NODEID_ANY (2^32^ - 1) SHALL be reserved to indicate
 _any rank_ in addressing.
 
 A node's rank SHALL be assigned at broker startup and SHALL NOT change
-for the node's lifetime.  If nodes are added to the comms session, they
-SHALL be assigned new ranks.  If nodes are removed from the comms
-session, their ranks SHALL be retired permanently.
+for the node's lifetime.
+
+The size of the comms session SHALL be determined at startup and SHALL
+not change for the life of the comms session. [Dynamic resize will
+be covered in a future version of this specification.]
 
 === Overlay Networks
 
