@@ -1,0 +1,108 @@
+5/Flux Module Extension Protocol
+================================
+
+This specification describes the format of messages used to
+load Flux dynamic shared object modules, and the sybmols that
+such modules must define.
+
+* Name: github.com/flux-framework/rfc/spec_5.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  http://github.com/flux-framework/rfc/blob/master/spec_3.adoc[3/CMB1 -
+   Flux Comms Message Broker Protocol]
+
+== Goals
+
+Flux components can be extended using dynamic shared object modules.
+The goals of the Flux Module Extension Protocol are:
+
+* Define service-neutral message protocol
+* Facilitate reuse of module management utility by multiple services.
+* Modules should self-identify by defining a name symbol
+* Module name should indicate what service/component the module extends.
+* Define mechanism to pass arguments to modules at insertion time.
+
+== Implementation
+
+=== Extension Module Symbols
+
+A Flux extension module SHALL declare at least the following global symbols:
+
++const char *mod_name = "...";+::
+A null-terminated C string defining the module name.
+The module name SHALL be structured as set of words delimited by periods,
+interpreted as zero or more service name words followed by exactly
+one module base name word.  If the service name is not defined,
+the service is Flux Comms Message Broker.
+
++int mod_main (void *context, int argc, char **argv);+::
+A C function that SHALL be called by the service with argc, argv style
+module arguments and an opaque, service-dependent context at module
+load time.  The purpose of the function is service-specific.
+
+=== Message Definitions
+
+Module management messages SHALL follow the CMB1 rules for requests and
+responses with JSON payloads.   The following ABNF describes
+these messages in a simplified form:
+
+----
+MODULE          = C:insmod-req S:insmod-rep
+                / C:rmmod-req  S:rmmod-rep
+                / C:lsmod-req  S:lsmod-rep
+
+; Multi-part 0MQ messages, ignoring CMB1 routing and PROTO parts
+; JSON- parts are defined in the next section.
+C:insmod-req    = insmod-topic insmod-json
+S:insmod-rep    = insmod-topic
+
+C:rmmod-req     = rmmod-topic rmmod-json
+S:rmmod-rep     = rmmod-topic
+
+C:lsmod-req     = lsmod-topic
+S:lsmod-rep     = lsmod-topic lsmod-json
+
+; topic strings are optional service + module operation
+insmod-topic    = [service] "insmod"
+rmmod-topic     = [service] "rmsmod"
+lsmod-topic     = [service] "lsmod"
+service         = 1*(ALPHA / DIGIT / ".") "."
+----
+
+JSON payloads for the above messages are as follows, described using
+https://tools.ietf.org/html/draft-newton-json-content-rules-04[JSON
+Content Rules]
+
+----
+arg_value : string
+
+insmod-json {
+    "path"     : string,          ; path to module file
+    "args"     : [ *arg_value ]   ; argv array (first element is not special)
+}
+
+rmmod-json {
+    "name"     : string,          ; module name
+}
+
+lsmod-obj {
+    "name"     : string           ; module name
+    "size"     : integer 0..      ; module file size
+    "digest"   : string           ; SHA1 digest of module file
+    "idle"     : integer 0..      ; comms idle time in heartbeats
+    "nodeset"  : string           ; CMB nodeset where module is loaded
+}
+
+lsmod-json [
+    *lsmod-obj
+]
+----
