@@ -1,4 +1,9 @@
-HTML = spec_1.html spec_2.html spec_3.html spec_4.html
+HTML = \
+	spec_1.html \
+	spec_2.html \
+	spec_3.html \
+	spec_4.html \
+	spec_5.html \
 
 all: $(HTML)
 
