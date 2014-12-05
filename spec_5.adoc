@@ -103,11 +103,9 @@ https://tools.ietf.org/html/draft-newton-json-content-rules-04[JSON
 Content Rules]
 
 ----
-arg_value : string
-
 insmod-json {
     "path"     : string,          ; path to module file
-    "args"     : [ *arg_value ]   ; argv array (first element is not special)
+    "args"     : [ *: string ]    ; argv array (first element is not special)
 }
 
 rmmod-json {
