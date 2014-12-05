@@ -37,7 +37,7 @@ The goals of the Flux Module Extension Protocol are:
 
 A Flux extension module SHALL declare at least the following global symbols:
 
-+const char *mod_name = "...";+::
++const char *mod_name;+::
 A null-terminated C string defining the module name.
 The module name SHALL be structured as set of words delimited by periods,
 interpreted as zero or more service name words followed by exactly
@@ -49,33 +49,53 @@ A C function that SHALL be called by the service with argc, argv style
 module arguments and an opaque, service-dependent context at module
 load time.  The purpose of the function is service-specific.
 
+A module loading service MAY call +dlopen()+ with _RTLD_LOCAL_ flag,
+then access these symbols with +dlsym()+.
+
+A module loading service MAY create a new thread and pass control to
++mod_main()+ to create a messaging _actor_.
+
+A module loading service MAY use +mod_main()+ as an accessor to set
+options in a module context, and then use +dlsym()+ to access
+service-specific methods provided by the plugin in a more traditional
+extension model.
+
 === Message Definitions
 
-Module management messages SHALL follow the CMB1 rules for requests and
-responses with JSON payloads.   The following ABNF describes
-these messages in a simplified form:
+Module management messages SHALL follow the CMB1 rules described
+in RFC 3 for requests and responses with JSON payloads.
+
+Module management messages are defined for reuse by multiple services.
+A service supporting module extensions SHALL implement the _insmod_,
+_rmmod_, and _lsmod_ methods.  A general utility supporting module
+management SHALL dynamically construct message topic strings by
+combining the service name with these methods as described in RFC 3.
+
+Module management messages are described in detail by the following
+ABNF grammar:
 
 ----
 MODULE          = C:insmod-req S:insmod-rep
                 / C:rmmod-req  S:rmmod-rep
                 / C:lsmod-req  S:lsmod-rep
 
-; Multi-part 0MQ messages, ignoring CMB1 routing and PROTO parts
-; JSON- parts are defined in the next section.
-C:insmod-req    = insmod-topic insmod-json
-S:insmod-rep    = insmod-topic
+; Multi-part 0MQ messages
+C:insmod-req    = [routing] insmod-topic insmod-json PROTO ; see below for JSON
+S:insmod-rep    = [routing] insmod-topic PROTO
 
-C:rmmod-req     = rmmod-topic rmmod-json
-S:rmmod-rep     = rmmod-topic
+C:rmmod-req     = [routing] rmmod-topic rmmod-json PROTO   ; see below for JSON
+S:rmmod-rep     = [routing] rmmod-topic PROTO
 
-C:lsmod-req     = lsmod-topic
-S:lsmod-rep     = lsmod-topic lsmod-json
+C:lsmod-req     = [routing] lsmod-topic PROTO
+S:lsmod-rep     = [routing] lsmod-topic lsmod-json PROTO   ; see below for JSON
 
 ; topic strings are optional service + module operation
 insmod-topic    = [service] "insmod"
 rmmod-topic     = [service] "rmsmod"
 lsmod-topic     = [service] "lsmod"
 service         = 1*(ALPHA / DIGIT / ".") "."
+
+; PROTO and [routing] are as defined in RFC 3.
 ----
 
 JSON payloads for the above messages are as follows, described using
