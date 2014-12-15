@@ -127,7 +127,10 @@ respond with error number 38, "Function not implemented".
 If the message reaches the root node, but none of the above conditions
 are met, the root broker SHALL respond with error number 38,
 "Function not implemented".
-  
+
+Note that a service may send requests to a parent instance of itself
+using FLUX_NODEID_ANY and a topic string matched by the service.
+
 === Rank Request Routing
 
 Request messages MAY be addressed to a specific rank.
@@ -136,8 +139,7 @@ first match in the following sequence:
 
 . If topic string begins with "cmb." and the sender is not the same rank
   broker, the message SHALL be handled internally by the broker
-. If topic string begins with a word matching a local comms module and
-  the sender is not the same comms module attached to the same rank broker,
+. If topic string begins with a word matching a local comms module,
   the message SHALL be routed to the comms module.
 
 If the message is received by a comms module, but the remaining words of the
@@ -150,6 +152,10 @@ are met, the broker SHALL respond with error number 38,
 
 If the message cannot be routed to the target node, the broker making
 this determination SHALL respond with error number 113, "No route to host".
+
+Note that a service may send requests to itself using the local rank
+and a topic string matched by the service.  Care should be taken to
+avoid deadlock in this case.
 
 === Event Routing
 

@@ -52,8 +52,8 @@ load time.  The purpose of the function is service-specific.
 A module loading service MAY call +dlopen()+ with _RTLD_LOCAL_ flag,
 then access these symbols with +dlsym()+.
 
-A module loading service MAY create a new thread and pass control to
-+mod_main()+ to create a messaging _actor_.
+A module loading service MAY create a new thread or process and
+pass control to +mod_main()+ to create a messaging _actor_.
 
 A module loading service MAY use +mod_main()+ as an accessor to set
 options in a module context, and then use +dlsym()+ to access
@@ -103,11 +103,9 @@ https://tools.ietf.org/html/draft-newton-json-content-rules-04[JSON
 Content Rules]
 
 ----
-arg_value : string
-
 insmod-json {
     "path"     : string,          ; path to module file
-    "args"     : [ *arg_value ]   ; argv array (first element is not special)
+    "args"     : [ *: string ]    ; argv array (first element is not special)
 }
 
 rmmod-json {
