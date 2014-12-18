@@ -117,7 +117,6 @@ lsmod-obj {
     "size"     : integer 0..      ; module file size
     "digest"   : string           ; SHA1 digest of module file
     "idle"     : integer 0..      ; comms idle time in heartbeats
-    "nodeset"  : string           ; CMB nodeset where module is loaded
 }
 
 lsmod-json [
