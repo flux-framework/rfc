@@ -1,13 +1,51 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
 rfc
 ===
 
 This is the Flux RFC project.
 
-We collect specifications for APIs, file formats, wire protocols, and processes.
+We collect specifications for APIs, file formats, wire protocols,
+and processes.
 
-The change process is https://github.com/flux-framework/rfc/blob/master/spec_1.adoc[C4.1] with a few modifications:
+== Active RFC Documents
+
+link:spec_1{outfilesuffix}[1/C4.1 - Collective Code Construction Contract]::
+The Collective Code Construction Contract (C4.1) is an evolution of the
+github.com Fork + Pull Model, aimed at providing an optimal
+collaboration model for free software projects.
+
+link:spec_2{outfilesuffix}[2/Flux Licensing and Collaboration Guidelines]::
+The Flux framework is a family of projects used to build site-customized
+resource management systems for High Performance Computing (HPC) data
+centers.  This document specifies licensing and collaboration guidelines
+for Flux projects.
+
+link:spec_3{outfilesuffix}[3/CMB1 - Flux Comms Message Broker Protocol]::
+This specification describes the format of communications message broker
+messages, Version 1, also referred to as CMB1.
+
+link:spec_4{outfilesuffix}[4/Flux Resource Model]::
+The Flux Resource Model describes the conceptual model used for
+resources within the Flux framework.
+
+link:spec_5{outfilesuffix}[5/Flux Module Extension Protocol]::
+This specification describes the format of messages used to
+load Flux dynamic shared object modules, and the sybmols that
+such modules must define.
+
+link:spec_6{outfilesuffix}[6/Flux Remote Procedure Call Protocol]::
+This specification describes how Flux Remote Procedure Call (RPC) is
+built on top of CMB1 request and response messages.
+
+== Change Process
+
+The change process is
+link:spec_1{outfilesuffix}[C4.1] with a few modifications:
 
 * A specification is created and modified by pull requests according to C4.1.
-* Each specification has an editor who publishes the RFC to (website TBD) as needed.
-* Each specification has a status on that website: Raw, Draft, Stable, Legacy, Retired, Deleted.
+* Each specification has an editor who publishes the RFC to (website TBD)
+  as needed.
+* Each specification has a status on that website: Raw, Draft, Stable,
+  Legacy, Retired, Deleted.
 * Non-cosmetic changes are allowed only on Raw and Draft specifications.

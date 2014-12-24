@@ -1,0 +1,114 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+6/Flux Remote Procedure Call Protocol
+=====================================
+
+This specification describes how Flux Remote Procedure Call (RPC) is
+built on top of CMB1 request and response messages.
+
+* Name: github.com/flux-framework/rfc/spec_6.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_3{outfilesuffix}[3/CMB1 - Flux Comms Message Broker Protocol]
+
+== Goals
+
+Flux RPC protocol enables comms modules, utilities, or other software
+communicating with a Flux comms session to call the methods implemented
+by comms modules.  Flux RPC has the following goals:
+
+* Support location-neutral addressing, without a location broker/name server.
+* Support a high degree of concurrency in both clients and servers
+* Avoid over-engineered mitigations for timeouts, congestion avoidance, etc.
+  that can be a liability in high performance computing environments.
+* Provide a mechanism to abort in-progress RPC calls.
+
+== Implementation
+
+A remote procedure call SHALL consist of one request message
+sent from a client to a server, and one response message sent
+from a server to a client.  The client and server roles are not
+mutually-exclusive--comms modules often act in both roles.
+
+----
++--------+    Request      +--------+
+|        | --------------> |        |
+| Client |                 | Server |
+|        | <-------------- |        |
++--------+    Response     +--------+
+----
+
+Per CMB1, the request message SHALL include a nodeid and topic string
+used to aid the broker in selecting appropriate routes to the server.
+The client MAY address the request in a location-neutral manner
+by setting nodeid to FLUX_NODEID_ANY, then the tree-based overlay network
+will be followed to the root looking for a matching service closest
+to the client.
+
+The server SHALL send a single CMB1 response to each request.  Responses
+MAY be sent in any order.  The server SHALL replicate each request's
+matchtag and topic string values in the response.
+
+The server SHALL set errnum in the response to zero to indicate success,
+or a nonzero value to indicate failure, using
+link:http://man7.org/linux/man-pages/man3/errno.3.html[POSIX.1 errno encoding]. 
+
+Payload frames are OPTIONAL in both request and response messages.
+However, a response with errnum set to a nonzero value SHALL NOT
+return a payload frame.
+
+=== Concurrency
+
+After sending a request, the client MAY block waiting for a response.
+Alternatively, it MAY send multiple concurrent requests to one or more
+servers, and handle the responses asynchronously.  In this case, the
+client SHOULD set matchtag in the request to a value from 1 to(2^32^ - 1)
+such that all concurrent requests from that client have unique matchtags,
+then use them to correlate requests with responses as they arrive.
+
+The client MAY set matchtag to FLUX_MATCHTAG_NONE (0) if it has no need
+to correlate responses.
+
+=== Exceptional Conditions
+
+If a request cannot be delivered to the server, the broker MAY respond to
+the sender with an error.  For example, per CMB1, a broker SHALL respond
+wtih error number 38 "Function not implemented" if the topic string cannot
+be matched to a service, or error number 113, "No route to host" if the
+requested nodeid cannot be reached.
+
+Although overlay networks use reliable transports between brokers,
+exceptional conditions at the endpoints or at intervening broker instances
+MAY cause messages to be lost.  It is the client's responsibility to
+implement any timeouts or other mitigation to handle missing or delayed
+responses.
+
+=== Cancellation
+
+If a client wishes to give up on an in-progress RPC, it MAY send a request
+to the server with a topic string of "_service_.disconnect".
+
+It is optional for the server to implement the disconnect method.
+As usual, if the method is unimplemented, the server SHALL respond with
+error number 38, "Function not implemented".
+
+If the server implements the disconnect method, it SHALL cancel any
+pending RPC requests from the sender, without responding to them,
+and respond to the disconnect request with success, no payload.
+Upon receipt of a successful disconnect response, the client
+MAY reuse the canceled messages' matchtags, if any.
+
+The server MAY determine the sender identity for any request
+by reading the first source-address routing identity frame (closest to
+routing delimiter frame) from the request message.  Servers which
+respond to requests out of order SHOULD retain state for pending
+requests, allowing them to be canceled by sender id as described above.

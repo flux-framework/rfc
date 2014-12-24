@@ -1,3 +1,5 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
 5/Flux Module Extension Protocol
 ================================
 
@@ -17,8 +19,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == Related Standards
 
-*  http://github.com/flux-framework/rfc/blob/master/spec_3.adoc[3/CMB1 -
-   Flux Comms Message Broker Protocol]
+*  link:spec_3{outfilesuffix}[3/CMB1 - Flux Comms Message Broker Protocol]
 
 == Goals
 

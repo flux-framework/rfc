@@ -211,10 +211,10 @@ json		= JSON			; payload 0MQ frame, encoded JSON
 ; Protocol frame
 PROTO		= request / response / event / keepalive
 
-request		= signature version %x01 flags nodeid matchtag
-response	= signature version %x02 flags errnum matchtag
-event		= signature version %x04 flags sequence %x00
-keepalive	= signature version %x08 flags %x00 %x00
+request		= signature version %x01 flags nodeid   matchtag
+response	= signature version %x02 flags errnum   matchtag
+event		= signature version %x04 flags sequence unused
+keepalive	= signature version %x08 flags unused   unused
 
 ; Constants
 signature	= %x8E			; magic cookie
@@ -227,9 +227,9 @@ flag-payload	= %x02			; message has payload frame
 flag-json	= %x04			;         and payload is JSON
 flag-route	= %x08			; message has route delimiter frame
 
-; Match-tag to correlate request/response
-matchtag	= OCTET / matchtag-any
-matchtag-any    = %x00
+; Matchtag to correlate request/response
+matchtag	= 4OCTET / matchtag-none
+matchtag-none	= %x00.00.00.00
 
 ; Target node ID in network byte order
 nodeid		= 4OCTET / nodeid-any
@@ -240,4 +240,9 @@ errnum		= 4OCTET
 
 ; Monotonic sequence number in network byte order
 sequence	= 4OCTET
+
+; unused 4-byte field
+unused		= %x00.00.00.00
 ----
+
+
