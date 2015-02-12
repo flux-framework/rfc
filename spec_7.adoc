@@ -1,7 +1,7 @@
 ifdef::env-github[:outfilesuffix: .adoc]
 
-7/Flux C Coding Style Guide
-===========================
+7/Flux Coding Style Guide
+=========================
 
 This specification presents the recommended standards when contributing C code to the Flux code base.
 
@@ -21,25 +21,27 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == Goals
 
-Consistency: For developers who like to work on code that follows a uniform style and those who want their code modifications to conform to the existing style.  This document presents those standards.
+* Encourage a uniform coding style in flux-framework projects
+* Provide a document to reference when providing style feedback in project pull requests
 
-== Recommendations
+== C Coding Style Recommendations
 
 In general, Flux follows the "Kernighan & Ritchie coding style" with the following exceptions or examples:
 
-* indent with spaces, not tabs
-* one level of indentation is 4 spaces, not 8
-* Put a space between function names and the opening parenthesis (we don't know why we do this)
-* Don't leave trailing spaces (or tabs) after the last non-space character in the line
-* Limit your lines to 80 characters
-* Indent comments to the depth of the code they are describing
-* Put the return type on the same line as the function declaration
-* Declare pointers by putting the white space between the star and the type.  Example:
+1. indent with spaces, not tabs
+2. one level of indentation is 4 spaces, not 8
+3. Put a space between function names and the opening parenthesis (we don't know why we do this)
+4. Don't leave trailing spaces (or tabs) after the last non-space character in the line
+5. Limit your lines to 80 characters
+6. Indent comments to the depth of the code they are describing
+7. Put the return type on the same line as the function declaration
+8. Declare pointers by putting the white space between the star and the type.  Example:
 ----
 int *ptr;
 ----
 
-== Tools That Modify Code to Conform to a Style
+Tools That Modify Code to Conform to C Coding Style
+---------------------------------------------------
 
 "indent -kr" will bring you 95% of the way towards conforming to the Flux coding style
 
@@ -63,7 +65,8 @@ In emacs, add this to your custom-set-variables defs to highlight whitespace err
 '(show-trailing-whitespace t)
 ----
 
-For astyle, the current version would be something like:
+For astyle, the pertinent options would be:
 ----
---indent-coll-comments --style=stroustrup --indent-spaces=4 --align-pointer=name --max-code-length=80 --convert-tabs
+--indent-coll-comments --style=stroustrup --indent-spaces=4
+ --align-pointer=name --max-code-length=80 --convert-tabs
 ----
