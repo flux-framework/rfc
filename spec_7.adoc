@@ -1,0 +1,72 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+7/Flux Coding Style Guide
+=========================
+
+This specification presents the recommended standards when contributing C code to the Flux code base.
+
+* Name: github.com/flux-framework/rfc/spec_7.adoc
+* Editor: Don Lipari <lipari@llnl.gov>
+* State: draft
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+* https://www.kernel.org/doc/Documentation/CodingStyle
+
+== Goals
+
+* Encourage a uniform coding style in flux-framework projects
+* Provide a document to reference when providing style feedback in project pull requests
+
+== C Coding Style Recommendations
+
+In general, Flux follows the "Kernighan & Ritchie coding style" with the following exceptions or examples:
+
+1. indent with spaces, not tabs
+2. one level of indentation is 4 spaces, not 8
+3. Put a space between function names and the opening parenthesis (we don't know why we do this)
+4. Don't leave trailing spaces (or tabs) after the last non-space character in the line
+5. Limit your lines to 80 characters
+6. Indent comments to the depth of the code they are describing
+7. Put the return type on the same line as the function declaration
+8. Declare pointers by putting the white space between the star and the type.  Example:
+----
+int *ptr;
+----
+
+Tools That Modify Code to Conform to C Coding Style
+---------------------------------------------------
+
+"indent -kr" will bring you 95% of the way towards conforming to the Flux coding style
+
+Those using vi will automatically follow some of the Flux style based on the following at the end of each file:
+
+----
+/*
+ * vi:tabstop=4 shiftwidth=4 expandtab
+ */
+----
+
+In vim, use the following to highlight whitespace errors:
+
+----
+let c_space_errors = 1
+----
+
+In emacs, add this to your custom-set-variables defs to highlight whitespace errors:
+
+----
+'(show-trailing-whitespace t)
+----
+
+For astyle, the pertinent options would be:
+----
+--indent-coll-comments --style=stroustrup --indent-spaces=4
+ --align-pointer=name --max-code-length=80 --convert-tabs
+----
