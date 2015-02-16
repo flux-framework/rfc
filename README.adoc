@@ -38,6 +38,10 @@ link:spec_6{outfilesuffix}[6/Flux Remote Procedure Call Protocol]::
 This specification describes how Flux Remote Procedure Call (RPC) is
 built on top of CMB1 request and response messages.
 
+link:spec_7{outfilesuffix}[7/Flux Coding Style Guide]::
+This specification presents the recommended standards when
+contributing C code to the Flux code base.
+
 == Change Process
 
 The change process is
