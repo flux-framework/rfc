@@ -3,7 +3,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 7/Flux Coding Style Guide
 =========================
 
-This specification presents the recommended standards when contributing C code to the Flux code base.
+This specification presents the recommended standards when contributing code to the Flux code base.
 
 * Name: github.com/flux-framework/rfc/spec_7.adoc
 * Editor: Don Lipari <lipari@llnl.gov>
@@ -28,24 +28,24 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 In general, Flux follows the "Kernighan & Ritchie coding style" with the following exceptions or examples:
 
-1. indent with spaces, not tabs
-2. one level of indentation is 4 spaces, not 8
-3. Put a space between function names and the opening parenthesis (we don't know why we do this)
-4. Don't leave trailing spaces (or tabs) after the last non-space character in the line
-5. Limit your lines to 80 characters
-6. Indent comments to the depth of the code they are describing
-7. Put the return type on the same line as the function declaration
-8. Declare pointers by putting the white space between the star and the type.  Example:
+1. Indenting SHOULD be with spaces, and not tabs.
+2. One level of indentation SHOULD be 4 spaces.
+3. One space SHOULD separate function names and the opening parenthesis (enhances readability).
+4. There SHOULD be no trailing spaces (or tabs) after the last non-space character in a line.
+5. Lines SHOULD be limited to 80 characters.
+6. Comments SHOULD be indented to the depth of the code they are describing.
+7. The return type SHOULD be on the same line as the function declaration.
+8. One space SHOULD separate the star and type in pointer declarations.  Example:
 ----
 int *ptr;
 ----
 
 Tools That Modify Code to Conform to C Coding Style
----------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-"indent -kr" will bring you 95% of the way towards conforming to the Flux coding style
+"indent -kr" will bring you most of the way towards conforming to the Flux coding style.
 
-Those using vi will automatically follow some of the Flux style based on the following at the end of each file:
+Those using vi will automatically follow some of the Flux style based on the presence of the following at the end of each file:
 
 ----
 /*
