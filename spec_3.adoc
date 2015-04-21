@@ -161,9 +161,6 @@ are met, the broker SHALL respond with error number 38,
 If the message cannot be routed to the target node, the broker making
 this determination SHALL respond with error number 113, "No route to host".
 
-Note that a service may send requests to itself.
-Care should be taken to avoid deadlock in this case.
-
 === Event Routing
 
 Event messages SHALL only be published by the rank 0 broker.  Other ranks MAY
@@ -233,7 +230,7 @@ flag-payload	= %x02			; message has payload frame
 flag-json	= %x04			;         and payload is JSON
 flag-route	= %x08			; message has route delimiter frame
 flag-upstream   = %x10                  ; request should be routed upstream
-					;  of nodeid sender
+					;   of nodeid sender
 
 ; Matchtag to correlate request/response
 matchtag	= 4OCTET / matchtag-none
