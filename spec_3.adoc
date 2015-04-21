@@ -37,10 +37,10 @@ the following specific goals:
 == Background
 
 `flux-broker` is a message broker daemon for the Flux resource manager
-framework.  A _comms session_ is a set of interconnected `flux-broker` instances
+framework.  A _comms session_ is a set of interconnected `flux-broker` tasks
 that together provide a shared communications substrate for distributed
 resource manager services within a job .  Services and utilities communicate
-by passing messages through the session broker instances.  There are four
+by passing messages through the session brokers.  There are four
 types of messages: events, requests, responses, and keepalives, which
 share a common structure described herein.
 
@@ -65,7 +65,7 @@ peer that it is still alive when it is not otherwise communicating.
 
 === Rank Assignment
 
-A _node_ is defined as a CMB daemon instance.  Each node in a comms
+A _node_ is defined as a CMB daemon task.  Each node in a comms
 session of size N SHALL be assigned a rank in the range of 0 to N - 1.
 Ranks SHALL be represented by a 32 bit unsigned integer, with the highest
 value of (2^32^ - 3).
@@ -113,7 +113,7 @@ module.
 === Default Request Routing
 
 Request messages MAY be addressed to _any rank_ (FLUX_NODEID_ANY).
-Such messages SHALL be routed to the local broker instance, then to the
+Such messages SHALL be routed to the local broker, then to the
 first match in the following sequence:
 
 . If topic string begins with "cmb." and the sender is not the same rank
@@ -133,7 +133,7 @@ If the message reaches the root node, but none of the above conditions
 are met, the root broker SHALL respond with error number 38,
 "Function not implemented".
 
-A service may send a request to a parent instance of itself
+A service may send a request _upstream_ on the tree based overlay network
 by placing the sending nodeid in the message and setting the
 FLUX_MSGFLAG_UPSTREAM (16) flag.  Such a message SHALL handled
 by the broker as if it were addressed to FLUX_NODEID_ANY, except
@@ -142,7 +142,7 @@ that the message SHALL NOT be delivered on the sending node.
 === Rank Request Routing
 
 Request messages MAY be addressed to a specific rank.
-Such messages SHALL be routed to the target broker instance, then to the
+Such messages SHALL be routed to the target broker rank, then to the
 first match in the following sequence:
 
 . If topic string begins with "cmb." and the sender is not the same rank
