@@ -36,8 +36,8 @@ the following specific goals:
 
 == Background
 
-`cmbd` is a message broker daemon for the Flux resource manager
-framework.  A _comms session_ is a set of interconnected `cmbd` instances
+`flux-broker` is a message broker daemon for the Flux resource manager
+framework.  A _comms session_ is a set of interconnected `flux-broker` instances
 that together provide a shared communications substrate for distributed
 resource manager services within a job .  Services and utilities communicate
 by passing messages through the session broker instances.  There are four
@@ -51,7 +51,7 @@ to filter the set of messages they receive.
 
 Requests are messages addressed to a resource manager or broker service.
 A topic string identifies the service and _method_.  A _nodeid_ optionally
-identifies a particular `cmbd` rank.  Requests follow the ZeroMQ
+identifies a particular `flux-broker` rank.  Requests follow the ZeroMQ
 DEALER-ROUTER message flow, which builds a source-address route at each hop.
 
 Responses are optional replies to requests.  They follow the ZeroMQ
@@ -68,10 +68,15 @@ peer that it is still alive when it is not otherwise communicating.
 A _node_ is defined as a CMB daemon instance.  Each node in a comms
 session of size N SHALL be assigned a rank in the range of 0 to N - 1.
 Ranks SHALL be represented by a 32 bit unsigned integer, with the highest
-value of (2^32^ - 2).
+value of (2^32^ - 3).
 
 The rank FLUX_NODEID_ANY (2^32^ - 1) SHALL be reserved to indicate
 _any rank_ in addressing.
+
+The rank FLUX_NODEID_UPSTREAM (2^32^ - 2) SHALL be reserved to indicate
+_any rank_ that is upstreawm of the sender in addressing.
+This value is reserved for the convenience of API implementations
+and SHALL NOT appear in the nodeid slot of an encoded CMB1 message.
 
 A node's rank SHALL be assigned at broker startup and SHALL NOT change
 for the node's lifetime.
@@ -128,8 +133,11 @@ If the message reaches the root node, but none of the above conditions
 are met, the root broker SHALL respond with error number 38,
 "Function not implemented".
 
-Note that a service may send requests to a parent instance of itself
-using FLUX_NODEID_ANY and a topic string matched by the service.
+A service may send a request to a parent instance of itself
+by placing the sending nodeid in the message and setting the
+FLUX_MSGFLAG_UPSTREAM (16) flag.  Such a message SHALL handled
+by the broker as if it were addressed to FLUX_NODEID_ANY, except
+that the message SHALL NOT be delivered on the sending node.
 
 === Rank Request Routing
 
@@ -153,15 +161,10 @@ are met, the broker SHALL respond with error number 38,
 If the message cannot be routed to the target node, the broker making
 this determination SHALL respond with error number 113, "No route to host".
 
-Note that a service may send requests to itself using the local rank
-and a topic string matched by the service.  Care should be taken to
-avoid deadlock in this case.
-
 === Event Routing
 
-Event messages SHALL only be sent by the rank 0 broker.  Other ranks MAY
-cause an event to be sent by forwarding it to rank 0 encapsulated in
-a "cmb.pub" request message.
+Event messages SHALL only be published by the rank 0 broker.  Other ranks MAY
+cause an event to be sent by first forwarding it to rank 0.
 
 === General Message Format
 
@@ -226,6 +229,8 @@ flag-topic	= %x01			; message has topic string frame
 flag-payload	= %x02			; message has payload frame
 flag-json	= %x04			;         and payload is JSON
 flag-route	= %x08			; message has route delimiter frame
+flag-upstream   = %x10                  ; request should be routed upstream
+					;   of nodeid sender
 
 ; Matchtag to correlate request/response
 matchtag	= 4OCTET / matchtag-none
