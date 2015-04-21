@@ -166,9 +166,8 @@ Care should be taken to avoid deadlock in this case.
 
 === Event Routing
 
-Event messages SHALL only be sent by the rank 0 broker.  Other ranks MAY
-cause an event to be sent by forwarding it to rank 0 encapsulated in
-a "cmb.pub" request message.
+Event messages SHALL only be published by the rank 0 broker.  Other ranks MAY
+cause an event to be sent by first forwarding it to rank 0.
 
 === General Message Format
 
