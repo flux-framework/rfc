@@ -36,8 +36,8 @@ the following specific goals:
 
 == Background
 
-`cmbd` is a message broker daemon for the Flux resource manager
-framework.  A _comms session_ is a set of interconnected `cmbd` instances
+`flux-broker` is a message broker daemon for the Flux resource manager
+framework.  A _comms session_ is a set of interconnected `flux-broker` instances
 that together provide a shared communications substrate for distributed
 resource manager services within a job .  Services and utilities communicate
 by passing messages through the session broker instances.  There are four
@@ -51,7 +51,7 @@ to filter the set of messages they receive.
 
 Requests are messages addressed to a resource manager or broker service.
 A topic string identifies the service and _method_.  A _nodeid_ optionally
-identifies a particular `cmbd` rank.  Requests follow the ZeroMQ
+identifies a particular `flux-broker` rank.  Requests follow the ZeroMQ
 DEALER-ROUTER message flow, which builds a source-address route at each hop.
 
 Responses are optional replies to requests.  They follow the ZeroMQ
