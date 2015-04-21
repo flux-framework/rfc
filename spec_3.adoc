@@ -65,7 +65,7 @@ peer that it is still alive when it is not otherwise communicating.
 
 === Rank Assignment
 
-A _node_ is defined as a CMB daemon task.  Each node in a comms
+A _node_ is defined as a `flux-broker` task.  Each node in a comms
 session of size N SHALL be assigned a rank in the range of 0 to N - 1.
 Ranks SHALL be represented by a 32 bit unsigned integer, with the highest
 value of (2^32^ - 3).
