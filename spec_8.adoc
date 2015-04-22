@@ -29,8 +29,9 @@ services required to execute a Flux workload.
 
 * **job** A synonym for _program_.
 
-* **task** A single process that is part of a Flux program. Each task within
-  a program has a unique identifier called the rank.
+* **task** A process that is part of a Flux program. Each task within
+  a program has a unique, zero origin, integer rank.  Any child processes
+  directly spawned by a task are nominally an extension of the task.
 
 * **program parameters** Data for a program that impacts how its tasks are
   executed. For example, arguments, environment, working directory.
@@ -46,8 +47,6 @@ services required to execute a Flux workload.
 
 * **task manager** A service of a Flux instance which manages tasks
   that are part of a Flux workload.
-
-* **task slot** One or more resources which run a single executable task.  
 
 * **instance owner** The user on behalf of which a Flux instance is running.
 
@@ -211,10 +210,13 @@ and control methods:
  * **exec** Execute all pending tasks in program P. 
    _exec(P)_
 
- * **shrink** Remove resource set R' from program P. Tasks currently
-   executing on task slots removed from P SHALL be terminated. 
-   _shrink (P, R')_. If _R' == R_ then P becomes empty again and SHALL
-   have no running tasks.
+ * **shrink** Remove resource set R' from program _P_.
+   Tasks within _P_ will be constrained to the new resource set for _P_.
+   If migration of a task to the new resource set is impossible, the
+   task MAY be terminated, stopped, or hibernated.
+   If _R' == R_ then _P_ becomes an empty program
+   and all running tasks are terminated.
+
 
  * **wait** Wait on status changes in program P.
 
