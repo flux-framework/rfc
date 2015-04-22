@@ -39,6 +39,10 @@ services required to execute a Flux workload.
 * **program specification** The language and/or API used to communicate
   program parameters to a Flux instance. 
 
+* **program context** a per-program datastore in the enclosing instance
+  where a program may store persistent state and exchange information
+  between tasks.
+
 * **instance** A set of Flux framework services running within a single
   Flux _comms session_ [RFC 3], that includes a capability to launch
   programs. A Flux instance is such a _program_.
@@ -224,6 +228,9 @@ and control methods:
   
  * **terminate** Terminate program P and _wait_ for completion.
 
+ * **reap** Transfer data from the _program context_ of a completed program
+   to the _program context_ of the enclosing instance.
+
 Other methods MAY be built using these primitives. For instance, a
 _run_ or _launch_ compound command may combine the _allocate_,
 _new_, _grow_, _map_, and _exec_ into a single interface.
@@ -245,4 +252,4 @@ calls based on security policy and ownership of the instance.
 
 As a program, a Flux instance MAY utilize any of the methods above
 as needed to make requests of its enclosing instance.
-   
+
