@@ -24,14 +24,19 @@ services required to execute a Flux workload.
 
 == Terminology
 
-* **program** A set of one or more tasks running under a single identifier
-  within a Flux instance.
+* **task**  A process, and its child processes, threads and fibers,
+  launched directly by flux and assigned a unique, zero origin,
+  unsigned integer rank. This SHALL serve as the basic granularity
+  of I/O aggregation and state tracking in Flux.
+
+* **task slot** A set of resources, which MAY be constrained by a container,
+  each of which MUST be sufficient to run at least one task.
+
+* **program**  A single unit of execution within a flux instance, defining
+  the environment, initial working directory, arguments, IO handling,
+  and granularity and placement of task slots for its child tasks.
 
 * **job** A synonym for _program_.
-
-* **task** A process that is part of a Flux program. Each task within
-  a program has a unique, zero origin, integer rank.  Any child processes
-  directly spawned by a task are nominally an extension of the task.
 
 * **program parameters** Data for a program that impacts how its tasks are
   executed. For example, arguments, environment, working directory.
@@ -40,8 +45,7 @@ services required to execute a Flux workload.
   program parameters to a Flux instance. 
 
 * **program context** a per-program datastore in the enclosing instance
-  where a program may store persistent state and exchange information
-  between tasks.
+  where a program MAY store persistent state.
 
 * **instance** A set of Flux framework services running within a single
   Flux _comms session_ [RFC 3], that includes a capability to launch
@@ -49,8 +53,8 @@ services required to execute a Flux workload.
 
 * **enclosing instance** The instance in which a program is running.
 
-* **task manager** A service of a Flux instance which manages tasks
-  that are part of a Flux workload.
+* **task manager** A service provided by a Flux instance for the management,
+  execution, and manipulation of tasks within a program.
 
 * **instance owner** The user on behalf of which a Flux instance is running.
 
@@ -60,7 +64,7 @@ services required to execute a Flux workload.
 
 A Flux instance SHALL offer basic services to start programs on behalf of users
 that have access to the instance. Programs SHALL only be started on resources
-to which the current Flux instance has access.
+to which the current Flux instance has been allocated.
 
 == Program Parameters
 
@@ -68,7 +72,6 @@ Program parameters accepted by a Flux instance SHALL be sufficient
 to fully define creation, distribution, and environment of tasks
 executed as part of the program. These parameters MAY include:
 
-* Scheduling Criteria (RFC XX)
 * Arguments (MAY be per task)
 * Working directory (MAY be inherited from instance)
 * Environment
@@ -76,13 +79,13 @@ executed as part of the program. These parameters MAY include:
 * Task mapping
 * Dependencies on other programs
 
-Program parameters MAY be inherited where effective. For example,
-the environment for a task within a program MAY be inhereted from
-the parent program, and a program MAY inherit its environment from
-the enclosing instance. A mechanism to override inhereted program
+Program parameters SHALL be inherited where effective. For example,
+the environment for a task within a program SHALL be inhereted from
+the parent program, and a program SHALL inherit its environment from
+the program that created it. A mechanism to override inhereted program
 parameters SHALL be provided.
 
-A Flux instance MUST support persistence of all program data for normal
+A Flux instance MUST support persistence of program parameters for normal
 program execution.
 
 == Program specification
@@ -95,7 +98,8 @@ in this document it is suggested that the program specification have
 at a minumum the following properties
 
 * scriptable interface
-* ability to describe arbitrarily complex task layout
+* ability to specify task slots
+* ability to map tasks to task slots with arbitrary complexity
 * ability to describe dynamic program properties
 * optionally include binary data (e.g. include a tarball or other
    package format of executables, input data, etc.) 
@@ -151,9 +155,8 @@ as parent, and MAY include:
 * Credentials of the enclosing instance owner
 * Contain a proper subset of enclosing instance
 
-The rank or ranks on which to run the initial program SHALL be at
-the discretion of the enclosing instance, but MAY be influenced by
-the owner during launch of program comprising the enclosing instance.
+The task slot on which to run the initial program MAY be influenced
+by the program parameters of the instance.
 
 The initial program of an instance MAY be used to further customize
 the enclosing instance, e.g. by loading extra modules, spawning
