@@ -144,7 +144,7 @@ A Flux instance SHALL complete and release resources upon exit
 of the initial program.
 
 Parameters of the initial program SHALL be set by the enclosing instance
-as parent, and MAY
+as parent, and MAY include:
 
 * Environment and namespace such that enclosing instance is default
   Flux instance for all subprocesses
