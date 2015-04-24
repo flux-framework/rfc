@@ -231,8 +231,8 @@ and control methods:
   
  * **terminate** Terminate program P and _wait_ for completion.
 
- * **reap** Transfer data from the _program context_ of a completed program
-   to the _program context_ of the enclosing instance.
+ * **reap** Post-processing of the _program context_ of a completed
+   program by its enclosing instance.
 
 Other methods MAY be built using these primitives. For instance, a
 _run_ or _launch_ compound command may combine the _allocate_,
