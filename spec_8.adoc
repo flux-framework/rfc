@@ -106,6 +106,10 @@ at a minumum the following properties
 
 == Scheduling Program Execution
 
+.FIXME
+[NOTE]
+Tom argues this section should be removed. I don't really disagree...
+
 Programs SHALL be executed as scheduled by a Scheduler from the enclosing
 instance, unless an _immediate_ or _unscheduled_ execution is requested.
 It is RECCOMENDED that unscheduled program execution be restricted to
@@ -185,7 +189,10 @@ enclosing instance.
 
 == Program States
 
-TBD. The following states are some ideas though:
+.FIXME
+[NOTE]
+Need to incorporate @dongahn's state as used by Job Status and
+Control Module.
 
 * **empty**
 * **pending**
@@ -196,6 +203,16 @@ TBD. The following states are some ideas though:
 * **shrinking**
 
 == Program Interface
+
+.FIXME
+[NOTE]
+@trws suggests we fully define here which interface and control
+methods are available in what contexts. Is there a different interface
+from within a program?
+
+.FIXME
+[NOTE]
+@dongahn would like to additionally address _sync_, _bind_, and _contain_
 
 A Flux instance SHALL support at least the following program initiation
 and control methods:
