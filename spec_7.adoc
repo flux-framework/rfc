@@ -40,6 +40,34 @@ In general, Flux follows the "Kernighan & Ritchie coding style" with the followi
 int *ptr;
 ----
 
+=== Variable Names
+
+Variable names SHOULD NOT include upper case letters.
+For example `msg_count` is OK, but `MsgCount` or `MSG_COUNT` do not conform.
+
+Preprocessor macro names SHOULD NOT include lower case letters. 
+For example `FLUX_FOO_MAGIC` is OK but `flux_foo_magic` and `FluxFooMagic` do not conform.
+
+=== Typedefs
+
+C typedef names SHOULD NOT include upper case letters.
+
+C typedef names for functions SHOULD end in `_f` and SHOULD be defined as function pointers, for example:
+----
+typedef int (*flux_foo_f)(int arg1, int arg2);
+----
+
+C typedef names for non-functions SHOULD end in `_t`, for example:
+----
+typedef int my_type_t;
+----
+
+Abstract types SHOULD be publicly defined as pointers to incomplete types, for example:
+----
+typedef struct foo_struct *foo_t;
+----
+
+
 Tools That Modify Code to Conform to C Coding Style
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
