@@ -34,9 +34,11 @@ are identified.
   synchronization is employed.  Flux services SHOULD NOT employ a pattern of
   chained watches.
 
-* **KVS replacement updates:** When keys are used as triggers that are meant
- to be watched, services SHOULD NOT use replacement on the value of each
- update.  Race conditions or coalesced updates may cause updates to be missed.
+* **KVS replacement updates:** When keys are used as triggers that represent
+ streams of events to be read, services SHOULD NOT use replacement on the
+ value of each update.  Keys for which only the most recent value is useful,
+ such as monotonically increasing counters, MAY prefer replacement since their
+ historical values can be inferred.
 
 == Best-Practices
 
@@ -60,6 +62,9 @@ are identified.
 * **KVS request and response:** Communication that needs to be logged and then
   triggered may be written to the KVS, but the service SHOULD provide either a
   single touch-point that it will watch in the KVS for requests or an event or
-  request name to trigger the read of the data.
+  request name to trigger the read of the data.  If out-of-band triggers are
+  used, `kvs_get_version()` SHOULD be used to retrieve the KVS version in
+  which the data is ready, and `kvs_wait_version()` SHOULD be used by the
+  client to wait for consistency.
 
 
