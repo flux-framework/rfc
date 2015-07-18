@@ -49,6 +49,11 @@ A Flux workload can include further instances of Flux, to arbitrary
 recursive depth. The goal of this RFC is to specify in detail the
 services required to execute a Flux workload.
 
+link:spec_9{outfilesuffix}[9/Distributed Communication and Synchronization Best Practices]::
+Establishes best practices, preferred patterns and anti-patterns for
+distributed services in the flux framework.
+
+/Flux Task and Program Execution Services]::
 == Change Process
 
 The change process is
