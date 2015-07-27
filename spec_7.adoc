@@ -62,10 +62,11 @@ C typedef names for non-functions SHOULD end in `_t`, for example:
 typedef int my_type_t;
 ----
 
-Abstract types SHOULD be publicly defined as pointers to incomplete types, for example:
+Abstract types SHOULD be publicly defined as incomplete types, for example:
 ----
-typedef struct foo_struct *foo_t;
+typedef struct foo_struct foo_t;
 ----
+Abstract types SHOULD NOT be defined as pointers to incomplete types,
 
 
 Tools That Modify Code to Conform to C Coding Style
