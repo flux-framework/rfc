@@ -81,7 +81,21 @@ C4.1 is meant to provide a reusable optimal collaboration model for open source 
 
 * A patch MUST compile cleanly and pass project self-tests on at least the principle target platform.
 
-* A patch commit message SHOULD consist of a single short (less than 50 character) line summarizing the change, optionally followed by a blank line and then a more thorough description. 
+* A patch MUST be accompanied by a commit message.
+
+* A commit message SHOULD consist of a title (50 characters or less) summarizing the change, optionally followed by a blank line and a message body.
+
+* A commit message SHOULD be written in the imperative (Fixes or Fix).
+
+* A commit message title MAY denote the section of code being changed with a tag followed by a single colon, e.g. `name: short description`.
+
+* A commit message title SHOULD NOT include a period.
+
+* A commit message body SHOULD be wrapped at 72 characters, with the exception of non-prose lines like list items, quoted text, or quotes from other commits.
+
+* A commit message body SHOULD include a description of the change being made and its reason and/or purpose.
+
+* Where applicable, a commit message body SHOULD reference an Issue by number (e.g. Fixes #33").
 
 * A "Correct Patch" is one that satisfies the above requirements.
 
