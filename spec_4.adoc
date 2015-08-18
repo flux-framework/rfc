@@ -18,10 +18,10 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 As in traditional resource management software, the Flux framework
 requires a method for the description, configuration, tracking, and
-assignment or consumable and other resources in the system being
+assignment of consumable and other resources in the system being
 managed. The Flux Framework, however, requires a more generalized and
 flexible definition of resources and overall approach. This document
-describes the basic reosurce model used by Flux, and how it relates
+describes the basic resource model used by Flux, and how it relates
 to other resource management components. We term the model for
 describing resources in Flux _The Flux Resource Model_.
 
@@ -47,7 +47,7 @@ and its related specifications and APIs.
 === Conceptual Model: The Composite Resource Pool
 
 The fundamental model for resources in the Flux framework is
-the _composite resource pool_.  All resources may be modeled
+the _composite resource pool_.  All resources MAY be modeled
 using this concept, which is the combination of a _composite type_
 (resources with 0 or more children arranged in a hierarchical
 ``has-a'' relationship), and a _resource pool_, which allows
@@ -69,12 +69,20 @@ following nice properties:
 
 === Composite Resource Pool Representation
 
-The representation of resources within the Flux framework shall
-allow resources to be modeled as _composite pools_, and thus shall
+The representation of resources within the Flux framework SHALL
+allow resources to be modeled as _composite pools_, and thus SHALL
 store basic resource _pool_ data (attributes of resource) as well
 as _composite_ data (hierarchical parent/child or ``has-a'' relationship
 between resources).  Data required to be stored, tracked, and queried
 is detailed in sections below.
+
+The Flux Resource Model SHALL support multi-granularity scheduling and
+management schemes. In such a scheme, the higher the Flux instance is
+in the Flux hierarchy, the coarser resource granularity it MAY be
+configured to operate at. For example, a higher-order Flux instance
+MAY be configured to operate at the racks and aggregates on their
+containing nodes while a lower-level instance MAY actually operate at
+the nodes and cores as the finest resource granularity.
 
 ==== Resource pool data:
 
@@ -88,9 +96,9 @@ is detailed in sections below.
 * Allocation table (List of active allocations from this pool with metadata)
 * Hierarchy table (Hierarchies and topologies to which this resource belongs)
 
-Resource pools may belong to one or more hierarchies. In Flux, the
+Resource pools MAY belong to one or more hierarchies. In Flux, the
 ``default'' hierarchy holds the _composite_ representation for resource
-pools, though a resource may belong to more than a single hierarchy.
+pools, though a resource MAY belong to more than a single hierarchy.
 
 ==== Resource hierarchy data:
 
@@ -102,92 +110,161 @@ pools, though a resource may belong to more than a single hierarchy.
 === Composite Resource Pool Methods
 
 When operating on a resource as an object, the following methods
-shall be supported
+SHALL be supported
 
-Size:: A method to query the current size of a resource pool shall 
+Size:: A method to query the current size of a resource pool SHALL 
  be provided.
 
 Allocated:: A method to query the number of objects _allocated_ to
- jobs from the current pool shall be provided.
+ jobs from the current pool SHALL be provided.
 
 Available:: A method to query the current amount of available members
- in a resource pool object shall be provided. The _available_ count
+ in a resource pool object SHALL be provided. The _available_ count
  MAY be calculated as _size_ - _allocated_.
 
 Allocate (N, S):: Allocate _N_ resources from the pool
  under the name _S. The available resources in a pool is
  its size minus the total number of allocations. The allocation
- _S shall be stored as a searchable attribute along with
+ _S SHALL be stored as a searchable attribute along with
  the resource for later use with _Find_ and _Match_ methods. If an
  allocation under _S already exists, then the allocation
- shall be grown by amount _N_.
+ SHALL be grown by amount _N_.
 
 Free (S, [N]):: Free the allocation named _string_ from the current
  pool and return all allocated items to the list of available resources.
- Optional argument _N_ shall shrink the allocation by _N_ items, where
+ Optional argument _N_ SHALL shrink the allocation by _N_ items, where
  _N_ is less than or equal to total allocation under name _S_.
 
 Tag (K, [V]):: A method for tagging resource pools with
- arbitrary key/value pairs shall be provided. The value _V_ shall
+ arbitrary key/value pairs SHALL be provided. The value _V_ SHALL
  be optional.
 
-Aggregation:: A method for returning resource contents of composite object
- _in aggregate_ shall be provided. The aggregate method may be implemented
- by traversing all nodes of hierarchy rooted at the current object and
- accumulating the sum of available resources by type name. Resources with
- an available count of 0 shall be pruned from the traversal by default,
+Aggregation:: A method for returning resource contents of composite
+ object _in aggregate_ SHALL be provided. The aggregate method SHALL
+ return the sum of available resources by type name. Resources with an
+ available count of 0 SHALL be pruned from the results by default,
  since the composite model implies that all children of an unavailable
  resource are themselves not available.
 
-Traversal:: A method for traversal shall be provided to visit each node
- in the hierarchy rooted at the current object. The traversal method shall
+Traversal:: A method for traversal SHALL be provided to visit each node
+ in the hierarchy rooted at the current object. The traversal method SHALL
  allow for optionally provided methods for determining the traversal
- pattern for each child resources. This interface shall allow, at least,
+ pattern for each child resources. This interface SHALL allow, at least,
  the pruning of non-matching subtrees and the order of visitation of
  children during traversal.
 
 Match:: A method or set of methods for resource pool matching
- shall be provided by the implementation. Resource pools shall
+ SHALL be provided by the implementation. Resource pools SHALL
  be matched on tags, properties, size, type, name, basename, 
  ids, etc.
 
-Find:: A search method shall be provided by the implementation to 
+Find:: A search method SHALL be provided by the implementation to 
  traverse the tree and return all matching resource pools, along with
  their children, as well as ancestors up to the root of the hierarchy.
- The _find_ method may be implemented as a combination of _traversal_
+ The _find_ method MAY be implemented as a combination of _traversal_
  and _match_.
 
-Copy:: A method for copying a resource composite to a new instance shall
- be provided. This method may be used to create a new instance of
+Copy:: A method for copying a resource composite to a new instance SHALL
+ be provided. This method MAY be used to create a new instance of
  resource description to pass to a sub-job within a Flux instance. The basic
- Copy operation shall copy the tree rooted at the current resource,
+ Copy operation SHALL copy the tree rooted at the current resource,
  pruned of all unavailable resources, as well as all resources
  back to the root of the hierarchy. When copying a resource to a new
- instance, the implementation shall copy only _available_ resources
+ instance, the implementation SHALL copy only _available_ resources
  to the new instance. That is, resource pools with no available
- resources (and their children) shall be ignored during a copy,
+ resources (and their children) SHALL be ignored during a copy,
  and copied resources will have _size_ set to _available_ and
  _allocated_ set to zero.
 
-Duplicate:: A method for duplicating an entire hierarchy shall be 
- provided. This method shall return a copy of of an existing hierarchy
- without any other unecessary changes.
+Duplicate:: A method for duplicating an entire hierarchy SHALL be 
+ provided. This method SHALL return a copy of of an existing hierarchy
+ without any other unnecessary changes.
 
-Merge:: A method for merging one Resource Pool into another shall be
+Merge:: A method for merging one Resource Pool into another SHALL be
  provided. The _merge_ method SHALL allow a Resource Pool at one URI
  to be merged with another Resource Pool Hierarchy at a specified
- ``path'' or new URI. The method shall attach the new hierarchy at
- the common ancestor. This method may be used by the implementation
+ ``path'' or new URI. The method SHALL attach the new hierarchy at
+ the common ancestor. This method MAY be used by the implementation
  to grow a job resource pool, as in a grow operation for a job.
 
 Unlink:: A method for removing or ``unlinking'' a resource from a hierarchy
- shall be provided. This method shall remove the current resource from
+ SHALL be provided. This method SHALL remove the current resource from
  the _children_ list of its parent, and remove the current hierarchy
  or topology from the Hierarchy table in the corresponding Resource pool
  data table. If there are no more entries in this Resource's Hierarchy
- table, then the Resource data object may be garbage collected.
+ table, then the Resource data object MAY be garbage collected.
 
 Serialize:: A method for serializing/deserializing a resource pool and its
- children shall be provided to allow for transmission for resource pool
+ children SHALL be provided to allow for transmission for resource pool
  hierarchy and data over the wire, saving state to a file, etc.
 
+=== Resource Requests
+
+* There SHALL be a means to request a quantity of resources by type,
+  properties, tags, and name.
+
+* There SHALL be a means to request composite resources (a resource of
+  type A that contains a child resource of type B).
+
+* There SHALL be a means to support sparse composite resource requests
+  (a resource of type A that contains grandchild resource of type B
+  where the intervening child resource is not specified).
+
+* There SHALL be a means to request a collection of resources or
+  resource composites (a resource of type A along with a different
+  resource of type B)
+
+* It SHOULD be possible to distinguish a request for "4 cores on a
+  node" from "a node with 4 cores" from "4 cores, each on a different
+  node".
+
+* Resources MAY be associated with resources other than the physical
+  composite and hence MAY be members of multiple hierarchies or graphs
+  that are independent from the physical composite (e.g., a resource
+  wired for n units of power).
+
+* There SHALL be a means to request a collection of resources
+  described by graph-related requirements that are unrelated to the
+  physical composite.
+
+==== Shared vs. Exclusive
+
+* There SHALL be a means to stipulate whether a resource can be shared
+  among multiple jobs.
+
+* There SHALL be a means for a job resource request to stipulate
+  whether the job requires exclusive use of a resource or whether it
+  will accept a resource that is shared with other jobs.
+
+* There SHALL be a means to stipulate a default choice of shared or
+  exclusive in each resource request.
+
+==== Feasibility and Policy Controls
+
+* There SHALL be a means to determine at job submission time whether
+  the job's resource request is valid and feasible.
+  Ref. https://github.com/flux-framework/flux-core/issues/269[Issue
+  269].
+
+* Submission of jobs that are determined to be invalid or infeasible
+  SHALL be rejected.
+
+* There MAY be a means to define political controls that impose limits
+  on scheduling jobs.
+
+* Submission of jobs that exceed defined policy limits MAY be
+  rejected.
+
+=== Resource Allocation Records
+
+* The job ID for a job that is allocated a resource in a composite
+  hierarchy MUST be annotated not only to the resource, but to each
+  parent up the tree of those resources allocated to the enclosing
+  instance.  This allows a scheduler to know when a parental resouce
+  and all its children can be allocated exclusively to a job.
+
+* A resource SHALL have a means to signify that it, and all its child
+  resources, have been allocated exclusively to a job.
+
+* Child resources of a resource allocated exclusively to a job SHOULD
+  NOT be annotated with the job ID.
