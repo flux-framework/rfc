@@ -26,6 +26,8 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == C Coding Style Recommendations
 
+Flux projects wrtten in C SHOULD conform to the C99 version of the language.
+
 In general, Flux follows the "Kernighan & Ritchie coding style" with the following exceptions or examples:
 
 1. Indenting SHOULD be with spaces, and not tabs.
