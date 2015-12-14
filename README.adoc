@@ -53,6 +53,10 @@ link:spec_9{outfilesuffix}[9/Distributed Communication and Synchronization Best 
 Establishes best practices, preferred patterns and anti-patterns for
 distributed services in the flux framework.
 
+link:spec_10{outfilesuffix}[10/Content Storage]::
+This specification describes the Flux content storage service
+and the messages used to access it.
+
 == Change Process
 
 The change process is
