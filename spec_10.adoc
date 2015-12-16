@@ -1,0 +1,171 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+10/Content Storage Service
+==========================
+
+This specification describes the Flux content storage service
+and the messages used to access it.
+
+* Name: github.com/flux-framework/rfc/spec_10.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_3{outfilesuffix}[3/CMB1 - Flux Comms Message Broker Protocol]
+
+== Goals
+
+The Flux content storage service is available for general purpose
+data storage within a Flux instance.  The goals of the content storage
+service are:
+
+* Provide storage for opaque binary blobs.
+* Stored content remains available for the lifetime of the Flux instance.
+* Stored content is immutable.
+* Stored content is available from any broker rank within an instance.
+* Stored content is addressable by its message digest, computed using a
+cryptographic hash.
+* The cryptographic hash algorithm is configurable per instance.
+* Content may be shared between instances
+
+This kind of store has interesting and well-understood properties, as
+explored in Venti, Git, and Camlistore (see References below).
+
+
+== Implementation
+
+=== Content
+
+Content SHALL consist of from zero to 1,048,576 bytes of data.
+Content SHALL NOT be interpreted by the content service.
+
+=== Blobref
+
+Each unique, stored blob of content SHALL be addressable by its blobref.
+A blobref SHALL consist of a string formed by the concatenation of:
+
+* the name of hash algorithm used to store the content
+* a hypen
+* a message digest represented as a hex string
+
+Example:
+----
+sha1-F1D2D2F924E986AC86FDF7B36C94BCDF32BEEC15
+----
+
+Note: "blobrefs" were shamelessly borrowed from Camlistore
+(see References below).
+
+=== Store
+
+A store request SHALL be encoded as a CMB1 request message with the blob
+as raw payload (blob length > 0), or no payload (blob length = 0).
+
+A store response SHALL be encoded as a CMB1 response message with
+NULL-terminated blobref string as raw payload, or an error response.
+
+A request to store content that exceeds the maximum size SHALL
+receive error number 5, "I/O Error", in response.
+
+After the successful store response is received, the returned blobref
+SHALL be valid input to a load request on any rank in the instance.
+
+=== Load
+
+A load request SHALL be encoded as a CMB1 request message with
+NULL-terminated blobref string as raw payload.
+
+A load response SHALL be encoded as a CMB1 response message with blob
+as raw payload (blob length > 0), no payload (blob length = 0),
+or an error response.
+
+A request to load unknown content SHALL receive error number 2,
+"No such file or directory", in response.
+
+=== Flush
+
+A flush request MAY cause the local content service to finish storing any
+dirty entries in its cache before responding.  The definition of dirty
+entries MAY be implementation dependent.
+
+A flush request SHALL receive error number 38, "Function not implemented",
+in response if the implementation does not support flush.
+
+=== Dropcache
+
+A dropcache request MAY cause the local content service to drop all
+non-essential entries from its cache.
+
+A dropcache request SHALL receive error number 38, "Function not implemented",
+in response if the implementation does not support dropcache.
+
+=== Foreign Content
+
+If a load request cannot be satisfied by the instance's content service,
+a load request SHALL be sent to the enclosing instance, if applicable.
+
+The enclosing instance MAY have configured a different hash algorithm.
+The content service thus MUST consider a foreign blobref as valid payload
+in a load request.
+
+=== Garbage Collection
+
+References to content are unconstrained from the perspective of the
+content service, therefore content MUST persist for the lifetime of
+the instance.
+
+During instance shutdown, some content MAY be preserved by storing it
+in the enclosing instance when the instance is _reaped_.  All other
+content SHALL be destroyed when the instance terminates.
+
+=== Message Definitions
+
+Content service messages SHALL follow the CMB1 rules described
+in RFC 3 for requests and responses, and are described in detail by
+the following ABNF grammar:
+
+----
+CONTENT         = C:store-req     S:store-rep
+                / C:load-req      S:load-rep
+                / C:flush-req     S:flush-rep
+                / C:dropcache-req S:dropcache-rep
+
+; Multi-part 0MQ messages
+C:store-req     = [routing] "content.store" [blob] PROTO
+S:store-rep     = [routing] "content.store" blobref PROTO
+
+; Multi-part 0MQ messages
+C:load-req      = [routing] "content.load" blobref PROTO
+S:load-rep      = [routing] "content.load" [blob] PROTO
+
+; Multi-part 0MQ messages
+C:flush-req     = [routing] "content.flush" PROTO
+S:flush-rep     = [routing] "content.flush" PROTO
+
+; Multi-part 0MQ messages
+C:dropcache-req = [routing] "content.dropcache" PROTO
+S:dropcache-rep = [routing] "content.dropcache" PROTO
+
+blobref         = hash-name "-" digest %x00
+hash-name	= 1*(ALPHA / DIGIT)
+digest		= 1*(HEXDIG)
+
+blob            = 0*(OCTET)
+
+; PROTO and [routing] are as defined in RFC 3.
+----
+
+== References
+
+* https://camlistore.org/[Camlistore is your personal storage system for life].
+
+* http://doc.cat-v.org/plan_9/4th_edition/papers/venti/[Venti: a new approach to archival storage], Bell Labs, Quinlan and Dorward.
+
+* http://git-scm.com/doc[git reference manual]
