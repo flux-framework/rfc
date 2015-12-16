@@ -38,8 +38,23 @@ cryptographic hash.
 This kind of store has interesting and well-understood properties, as
 explored in Venti, Git, and Camlistore (see References below).
 
-
 == Implementation
+
+The content service SHALL be implemented as a distributed cache with a
+presence on each broker rank.  Each rank MAY cache content according
+to an implementation-defined heuristic.
+
+Ranks > 0 SHALL make transitive load and store requests to their parent on
+the tree based overlay network to fill invalid cache entries, and flush
+dirty cache entries.
+
+Rank 0 SHALL retain all content previously stored by the instance.
+
+Rank 0 MAY extend its cache with an OPTIONAL backing store, the details
+of which are beyond the scope of this RFC.
+
+Rank 0 SHALL, as a last resort, attempt to satisfy load requests by making
+a transitive request to the enclosing instance, if any.
 
 === Content
 
@@ -52,8 +67,8 @@ Each unique, stored blob of content SHALL be addressable by its blobref.
 A blobref SHALL consist of a string formed by the concatenation of:
 
 * the name of hash algorithm used to store the content
-* a hypen
-* a message digest represented as a hex string
+* a hyphen
+* a message digest represented as a upper-case hex string
 
 Example:
 ----
@@ -74,8 +89,8 @@ NULL-terminated blobref string as raw payload, or an error response.
 A request to store content that exceeds the maximum size SHALL
 receive error number 5, "I/O Error", in response.
 
-After the successful store response is received, the returned blobref
-SHALL be valid input to a load request on any rank in the instance.
+After the successful store response is received, the blob SHALL be
+accessible from any rank in the instance.
 
 === Load
 
@@ -91,20 +106,20 @@ A request to load unknown content SHALL receive error number 2,
 
 === Flush
 
-A flush request MAY cause the local content service to finish storing any
-dirty entries in its cache before responding.  The definition of dirty
-entries MAY be implementation dependent.
+A flush request SHALL cause the local rank content service to finish
+storing any dirty cache entries.  A flush response SHALL NOT be sent
+until there are no dirty cache entries.
+
+On rank 0, "dirty" SHALL be defined as "not stored on a backing store".
+On rank > 0, "dirty" SHALL be defined as "not stored on rank 0".
 
 A flush request SHALL receive error number 38, "Function not implemented",
-in response if the implementation does not support flush.
+on rank 0 if a backing store is not configured.
 
 === Dropcache
 
-A dropcache request MAY cause the local content service to drop all
+A dropcache request SHALL cause the local content service to drop all
 non-essential entries from its cache.
-
-A dropcache request SHALL receive error number 38, "Function not implemented",
-in response if the implementation does not support dropcache.
 
 === Foreign Content
 
@@ -112,8 +127,8 @@ If a load request cannot be satisfied by the instance's content service,
 a load request SHALL be sent to the enclosing instance, if applicable.
 
 The enclosing instance MAY have configured a different hash algorithm.
-The content service thus MUST consider a foreign blobref as valid payload
-in a load request.
+The content service, therefore, SHALL NOT require that blobrefs specified
+in a load request match the configured hash.
 
 === Garbage Collection
 
