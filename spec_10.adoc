@@ -68,7 +68,7 @@ A blobref SHALL consist of a string formed by the concatenation of:
 
 * the name of hash algorithm used to store the content
 * a hyphen
-* a message digest represented as a upper-case hex string
+* a message digest represented as a lower-case hex string
 
 Example:
 ----
