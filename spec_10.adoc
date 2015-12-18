@@ -87,7 +87,7 @@ A store response SHALL be encoded as a CMB1 response message with
 NULL-terminated blobref string as raw payload, or an error response.
 
 A request to store content that exceeds the maximum size SHALL
-receive error number 5, "I/O Error", in response.
+receive error number 27, "File too large", in response.
 
 After the successful store response is received, the blob SHALL be
 accessible from any rank in the instance.
