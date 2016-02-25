@@ -217,7 +217,7 @@ PROTO		= request / response / event / keepalive
 request		= signature version %x01 flags nodeid   matchtag
 response	= signature version %x02 flags errnum   matchtag
 event		= signature version %x04 flags sequence unused
-keepalive	= signature version %x08 flags unused   unused
+keepalive	= signature version %x08 flags errnum   status
 
 ; Constants
 signature	= %x8E			; magic cookie
