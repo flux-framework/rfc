@@ -121,6 +121,6 @@ lsmod-obj {
 }
 
 lsmod-json [
-    *lsmod-obj
+    "mods"     : [ *lsmod-obj ]
 ]
 ----
