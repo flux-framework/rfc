@@ -184,7 +184,10 @@ delimiter, if any.  When the topic string part is first, it is compatible
 with ZeroMQ PUB-SUB sockets.
 
 Finally, CMB1 messages MAY include a payload part, positioned before
-the PROTO part.
+the PROTO part.  Payload parts SHALL use either raw encoding or JSON
+encoding, as indicated by flags.  JSON payloads SHALL conform to
+Internet RFC 7159, and the outermost JSON type SHALL be a JSON object, e.g.
+beginning with the "{" character.
 
 CMB1 messages are specified in detail by the following ABNF grammar.
 
@@ -210,7 +213,7 @@ topic		= 1*(ALPHA / DIGIT / ".")
 ; Payload frame
 payload		= *OCTET		; payload 0MQ frame
 json		= JSON			; payload 0MQ frame, encoded JSON
-					;   c.f. Internet RFC 4624
+
 ; Protocol frame
 PROTO		= request / response / event / keepalive
 
@@ -250,4 +253,7 @@ sequence	= 4OCTET
 unused		= %x00.00.00.00
 ----
 
+== References
 
+* http://www.rfc-editor.org/rfc/rfc7159.txt[RFC 7159: The JavaScript Object
+Notation (JSON) Data Interchange Format], T. Bray, Google, Inc, March 2014.
