@@ -88,13 +88,25 @@ the nodes and cores as the finest resource granularity.
 
 * Type
 * UUID (Unique ID for this resource)
-* Name or Basename
+* Basename
+* Name
 * ID (optional numeric ID to be appended to basename to get name)
 * Properties (static properties associated with this instance)
 * Tags (dynamic list of tags)
 * Size (Total number of resources in this pool)
 * Allocation table (List of active allocations from this pool with metadata)
 * Hierarchy table (Hierarchies and topologies to which this resource belongs)
+
+The default value for `basename` is the `type`.  The default value for
+`name` is a concatenation of `basename` and `ID`, or just `basename`
+when the `ID` value is not assigned.
+
+The value for `name` SHALL support arbitrary resource attributes and
+properties (e.g. a system might have node names formatted like
+"node-${frameid}-${rack}").
+
+The value for `properties` SHALL support multiple identifying
+properties which could be used to uniquely characterize the resource.
 
 Resource pools MAY belong to one or more hierarchies. In Flux, the
 ``default'' hierarchy holds the _composite_ representation for resource
