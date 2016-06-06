@@ -35,7 +35,7 @@ by comms modules.  Flux RPC has the following goals:
 == Implementation
 
 A remote procedure call SHALL consist of one request message
-sent from a client to a server, and one response message sent
+sent from a client to a server, and zero or one response messages sent
 from a server to a client.  The client and server roles are not
 mutually-exclusive--comms modules often act in both roles.
 
@@ -54,9 +54,11 @@ by setting nodeid to FLUX_NODEID_ANY, then the tree-based overlay network
 will be followed to the root looking for a matching service closest
 to the client.
 
-The server SHALL send a single response to each request.  Responses
-MAY be sent in any order.  The server SHALL replicate each request's
-matchtag and topic string values in the response.
+The server SHALL send zero or one responses to each request, as
+established by prior agreement between client and server (e.g. defined
+in their protocol specification).  Responses SHALL contain topic string
+and matchtag values copied from the request, to facilitate client response
+matching.  Responses MAY be sent in any order.
 
 The server SHALL set errnum in the response to zero to indicate success,
 or a nonzero value to indicate failure, using
@@ -76,7 +78,7 @@ such that all concurrent requests from that client have unique matchtags,
 then use them to correlate requests with responses as they arrive.
 
 The client MAY set matchtag to FLUX_MATCHTAG_NONE (0) if it has no need
-to correlate responses.
+to correlate responses, or a response is not expected.
 
 === Exceptional Conditions
 
