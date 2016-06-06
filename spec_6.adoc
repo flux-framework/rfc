@@ -68,17 +68,29 @@ Payload frames are OPTIONAL in both request and response messages.
 However, a response with errnum set to a nonzero value SHALL NOT
 return a payload frame.
 
-=== Concurrency
+=== Matchtag Field
 
-After sending a request, the client MAY block waiting for a response.
-Alternatively, it MAY send multiple concurrent requests to one or more
-servers, and handle the responses asynchronously.  In this case, the
-client SHOULD set matchtag in the request to a value from 1 to(2^32^ - 1)
-such that all concurrent requests from that client have unique matchtags,
-then use them to correlate requests with responses as they arrive.
+RFC 3 provisions request and response messages with a 32-bit matchtag field.
+The client MAY assign a unique (to the client) value to this field,
+which SHALL be echoed back by the server in responses.  The client MAY
+use this matchtag value to correlate responses to its concurrently
+outstanding requests.
+
+Note that matchtags are only unique to the client.  Servers SHALL NOT
+use matchtags to track client state unless paired with the client UUID.
 
 The client MAY set matchtag to FLUX_MATCHTAG_NONE (0) if it has no need
-to correlate responses, or a response is not expected.
+to correlate responses in this way, or a response is not expected.
+
+=== Group RPC
+
+A group RPC is a request sent to multiple nodeids.
+
+The upper 12 bits of the matchtag field are designated as the group id
+portion of the matchtag.  If the group id is nonzero, the lower 20 bits
+SHALL be ignored in response matching and pass through to the group
+RPC implementation, which MAY use the lower 20 bits in an implementation
+dependent way;  for example, as a key to a lookup table.
 
 === Exceptional Conditions
 
