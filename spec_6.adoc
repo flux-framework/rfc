@@ -26,7 +26,7 @@ Flux RPC protocol enables comms modules, utilities, or other software
 communicating with a Flux comms session to call the methods implemented
 by comms modules.  Flux RPC has the following goals:
 
-* Support location-neutral addressing, without a location broker/name server.
+* Support location-neutral service addressing, without a location broker.
 * Support a high degree of concurrency in both clients and servers
 * Avoid over-engineered mitigations for timeouts, congestion avoidance, etc.
   that can be a liability in high performance computing environments.
