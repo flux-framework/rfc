@@ -4,7 +4,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 =====================================
 
 This specification describes how Flux Remote Procedure Call (RPC) is
-built on top of CMB1 request and response messages.
+built on top of request and response messages defined in RFC 3.
 
 * Name: github.com/flux-framework/rfc/spec_6.adoc
 * Editor: Jim Garlick <garlick@llnl.gov>
@@ -26,7 +26,7 @@ Flux RPC protocol enables comms modules, utilities, or other software
 communicating with a Flux comms session to call the methods implemented
 by comms modules.  Flux RPC has the following goals:
 
-* Support location-neutral addressing, without a location broker/name server.
+* Support location-neutral service addressing, without a location broker.
 * Support a high degree of concurrency in both clients and servers
 * Avoid over-engineered mitigations for timeouts, congestion avoidance, etc.
   that can be a liability in high performance computing environments.
@@ -35,7 +35,7 @@ by comms modules.  Flux RPC has the following goals:
 == Implementation
 
 A remote procedure call SHALL consist of one request message
-sent from a client to a server, and one response message sent
+sent from a client to a server, and zero or one response messages sent
 from a server to a client.  The client and server roles are not
 mutually-exclusive--comms modules often act in both roles.
 
@@ -47,16 +47,18 @@ mutually-exclusive--comms modules often act in both roles.
 +--------+    Response     +--------+
 ----
 
-Per CMB1, the request message SHALL include a nodeid and topic string
+Per RFC 3, the request message SHALL include a nodeid and topic string
 used to aid the broker in selecting appropriate routes to the server.
 The client MAY address the request in a location-neutral manner
 by setting nodeid to FLUX_NODEID_ANY, then the tree-based overlay network
 will be followed to the root looking for a matching service closest
 to the client.
 
-The server SHALL send a single CMB1 response to each request.  Responses
-MAY be sent in any order.  The server SHALL replicate each request's
-matchtag and topic string values in the response.
+The server SHALL send zero or one responses to each request, as
+established by prior agreement between client and server (e.g. defined
+in their protocol specification).  Responses SHALL contain topic string
+and matchtag values copied from the request, to facilitate client response
+matching.  Responses MAY be sent in any order.
 
 The server SHALL set errnum in the response to zero to indicate success,
 or a nonzero value to indicate failure, using
@@ -66,23 +68,35 @@ Payload frames are OPTIONAL in both request and response messages.
 However, a response with errnum set to a nonzero value SHALL NOT
 return a payload frame.
 
-=== Concurrency
+=== Matchtag Field
 
-After sending a request, the client MAY block waiting for a response.
-Alternatively, it MAY send multiple concurrent requests to one or more
-servers, and handle the responses asynchronously.  In this case, the
-client SHOULD set matchtag in the request to a value from 1 to(2^32^ - 1)
-such that all concurrent requests from that client have unique matchtags,
-then use them to correlate requests with responses as they arrive.
+RFC 3 provisions request and response messages with a 32-bit matchtag field.
+The client MAY assign a unique (to the client) value to this field,
+which SHALL be echoed back by the server in responses.  The client MAY
+use this matchtag value to correlate responses to its concurrently
+outstanding requests.
+
+Note that matchtags are only unique to the client.  Servers SHALL NOT
+use matchtags to track client state unless paired with the client UUID.
 
 The client MAY set matchtag to FLUX_MATCHTAG_NONE (0) if it has no need
-to correlate responses.
+to correlate responses in this way, or a response is not expected.
+
+=== Group RPC
+
+A group RPC is a request sent to multiple nodeids.
+
+The upper 12 bits of the matchtag field are designated as the group id
+portion of the matchtag.  If the group id is nonzero, the lower 20 bits
+SHALL be ignored in response matching and pass through to the group
+RPC implementation, which MAY use the lower 20 bits in an implementation
+dependent way;  for example, as a key to a lookup table.
 
 === Exceptional Conditions
 
 If a request cannot be delivered to the server, the broker MAY respond to
-the sender with an error.  For example, per CMB1, a broker SHALL respond
-wtih error number 38 "Function not implemented" if the topic string cannot
+the sender with an error.  For example, per RFC 3, a broker SHALL respond
+with error number 38 "Function not implemented" if the topic string cannot
 be matched to a service, or error number 113, "No route to host" if the
 requested nodeid cannot be reached.
 
