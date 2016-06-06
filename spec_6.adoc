@@ -96,7 +96,7 @@ dependent way;  for example, as a key to a lookup table.
 
 If a request cannot be delivered to the server, the broker MAY respond to
 the sender with an error.  For example, per RFC 3, a broker SHALL respond
-wtih error number 38 "Function not implemented" if the topic string cannot
+with error number 38 "Function not implemented" if the topic string cannot
 be matched to a service, or error number 113, "No route to host" if the
 requested nodeid cannot be reached.
 
