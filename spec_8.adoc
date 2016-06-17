@@ -80,9 +80,9 @@ executed as part of the program. These parameters MAY include:
 * Dependencies on other programs
 
 Program parameters SHALL be inherited where effective. For example,
-the environment for a task within a program SHALL be inhereted from
+the environment for a task within a program SHALL be inherited from
 the parent program, and a program SHALL inherit its environment from
-the program that created it. A mechanism to override inhereted program
+the program that created it. A mechanism to override inherited program
 parameters SHALL be provided.
 
 A Flux instance MUST support persistence of program parameters for normal
@@ -95,7 +95,7 @@ communicated to a Flux instance is called the program specification.
 
 The program specification is fully detailed in a future RFC, however
 in this document it is suggested that the program specification have
-at a minumum the following properties
+at a minimum the following properties
 
 * scriptable interface
 * ability to specify task slots
@@ -112,7 +112,7 @@ Tom argues this section should be removed. I don't really disagree...
 
 Programs SHALL be executed as scheduled by a Scheduler from the enclosing
 instance, unless an _immediate_ or _unscheduled_ execution is requested.
-It is RECCOMENDED that unscheduled program execution be restricted to
+It is RECOMMENDED that unscheduled program execution be restricted to
 the instance owner.
  
 When requesting _immediate_ program execution, an explicit list of resources
@@ -170,7 +170,7 @@ initial programs, running initialization scripts and so on.
 
 The initial instance of a Flux installation SHALL be started under
 a bootstrap mechanism. The bootstrap mechanism SHALL provide the
-bare minumum services to simulate an enclosing instance, which
+bare minimum services to simulate an enclosing instance, which
 will then be used to launch the initial instance. The bootstrap
 mechanism itself SHALL be launched by standard available process
 execution mechanisms and MAY use static configuration and/or database
@@ -267,7 +267,7 @@ Flux methods called by programs MUST interact with the enclosing
 instance. Therefore, programs MUST first obtain their own program handle
 in order to affect themselves with the methods above. Programs MAY have
 the ability to call a subset of the above methods on sibling programs within
-the same instance. The enclosing instance SHALL arbirtate these
+the same instance. The enclosing instance SHALL arbitrate these
 calls based on security policy and ownership of the instance.
 
 As a program, a Flux instance MAY utilize any of the methods above
