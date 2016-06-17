@@ -75,7 +75,7 @@ Example:
 sha1-f1d2d2f924e986ac86fdf7b36c94bcdf32beec15
 ----
 
-Note: "blobrefs" were shamelessly borrowed from Camlistore
+Note: "blobref" was shamelessly borrowed from Camlistore
 (see References below).
 
 === Store
@@ -127,7 +127,7 @@ If a load request cannot be satisfied by the instance's content service,
 a load request SHALL be sent to the enclosing instance, if applicable.
 
 The enclosing instance MAY have configured a different hash algorithm.
-The content service, therefore, SHALL NOT require that blobrefs specified
+The content service, therefore, SHALL NOT require that a blobref specified
 in a load request match the configured hash.
 
 === Garbage Collection
@@ -152,19 +152,19 @@ CONTENT         = C:store-req     S:store-rep
                 / C:flush-req     S:flush-rep
                 / C:dropcache-req S:dropcache-rep
 
-; Multi-part 0MQ messages
+; Multi-part ZeroMQ messages
 C:store-req     = [routing] "content.store" [blob] PROTO
 S:store-rep     = [routing] "content.store" blobref PROTO
 
-; Multi-part 0MQ messages
+; Multi-part ZeroMQ messages
 C:load-req      = [routing] "content.load" blobref PROTO
 S:load-rep      = [routing] "content.load" [blob] PROTO
 
-; Multi-part 0MQ messages
+; Multi-part ZeroMQ messages
 C:flush-req     = [routing] "content.flush" PROTO
 S:flush-rep     = [routing] "content.flush" PROTO
 
-; Multi-part 0MQ messages
+; Multi-part ZeroMQ messages
 C:dropcache-req = [routing] "content.dropcache" PROTO
 S:dropcache-rep = [routing] "content.dropcache" PROTO
 
