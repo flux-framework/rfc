@@ -4,7 +4,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 ================================
 
 This specification describes the format of messages used to
-load Flux dynamic shared object modules, and the sybmols that
+load Flux dynamic shared object modules, and the symbols that
 such modules must define.
 
 * Name: github.com/flux-framework/rfc/spec_5.adoc
@@ -45,7 +45,7 @@ that is, extension modules can have extension modules which can have
 extension modules, etc..
 
 Extension modules may be implemented as "messaging actors", which
-execute in their own thread and communicate wtih the base component
+execute in their own thread and communicate with the base component
 exclusively with messages, or as "plugins" that provide a set of
 well known function entry points that are called from the base
 component's thread of control.  Both types of extension module define
@@ -142,7 +142,7 @@ Keepalive messages SHALL be sent to the base component on each state transition.
 In addition, keepalive message MAY be sent to the base component at regular
 intervals.  The keepalive `errnum` field SHALL be zero except
 when `mod_main()` returns a value of -1 indicating failure and state
-transitions to FLUX_MODSTASTE_EXITED.  In this case `errnum` SHALL be set
+transitions to FLUX_MODSTATE_EXITED.  In this case `errnum` SHALL be set
 to the value of POSIX `errno` set by `mod_main()` before returning.
 
 Base components MAY track the number of session heartbeats since an
@@ -181,7 +181,7 @@ MODULE          = C:insmod-req S:insmod-rep
                 / C:rmmod-req  S:rmmod-rep
                 / C:lsmod-req  S:lsmod-rep
 
-; Multi-part 0MQ messages
+; Multi-part zeromq messages
 C:insmod-req    = [routing] insmod-topic insmod-json PROTO ; see below for JSON
 S:insmod-rep    = [routing] insmod-topic PROTO
 
@@ -193,7 +193,7 @@ S:lsmod-rep     = [routing] lsmod-topic lsmod-json PROTO   ; see below for JSON
 
 ; topic strings are optional service + module operation
 insmod-topic    = [service] "insmod"
-rmmod-topic     = [service] "rmsmod"
+rmmod-topic     = [service] "rmmod"
 lsmod-topic     = [service] "lsmod"
 service         = 1*(ALPHA / DIGIT / ".") "."
 
@@ -219,10 +219,10 @@ lsmod-obj {
     "size"     : integer 0..      ; module file size
     "digest"   : string           ; SHA1 digest of module file
     "idle"     : integer 0..      ; comms idle time in heartbeats
-    "state"    : integer 0..      ; module state (enumerated above)
+    "status"   : integer 0..      ; module state (enumerated above)
 }
 
-lsmod-json [
+lsmod-json {
     "mods"     : [ *lsmod-obj ]
-]
+}
 ----
