@@ -272,7 +272,7 @@ Serialize:: A method for serializing/deserializing a resource pool and its
 * The job ID for a job that is allocated a resource in a composite
   hierarchy MUST be annotated not only to the resource, but to each
   parent up the tree of those resources allocated to the enclosing
-  instance.  This allows a scheduler to know when a parental resouce
+  instance.  This allows a scheduler to know when a parental resource
   and all its children can be allocated exclusively to a job.
 
 * A resource SHALL have a means to signify that it, and all its child

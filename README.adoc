@@ -31,7 +31,7 @@ resources within the Flux framework.
 
 link:spec_5{outfilesuffix}[5/Flux Module Extension Protocol]::
 This specification describes the format of messages used to
-load Flux dynamic shared object modules, and the sybmols that
+load Flux dynamic shared object modules, and the symbols that
 such modules must define.
 
 link:spec_6{outfilesuffix}[6/Flux Remote Procedure Call Protocol]::

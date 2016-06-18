@@ -18,3 +18,7 @@ all: $(HTML)
 
 clean:
 	rm -f $(HTML)
+
+
+check:
+	ASPELL=aspell ./spellcheck *.adoc

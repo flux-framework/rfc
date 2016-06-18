@@ -56,7 +56,7 @@ Our licensing and collaboration guidelines have the following goals:
   (C4.1) described in Flux RFC 1.
 
 * It is RECOMMENDED that Flux projects be hosted under the
-  Github https://github.com/flux-framework[flux-framework] orgnaization,
+  Github https://github.com/flux-framework[flux-framework] organization,
   including use of the Github tracker as outlined in C4.1.
 
 * It is RECOMMENDED that Flux projects be discussed on the Flux
@@ -73,7 +73,7 @@ Our licensing and collaboration guidelines have the following goals:
 
 * Flux projects SHALL permit redistribution and/or modification
   under the project's base GPL version, or any later version per
-  http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommentations].
+  http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommendations].
 
 * Flux projects SHALL NOT require a legal document such as a
   contributor license agreement or copyright assignment document
@@ -98,4 +98,4 @@ Our licensing and collaboration guidelines have the following goals:
 
 * Flux user interfaces SHALL permit redistribution and/or modification
   under the interface's base LGPL version, or any later version per
-  http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommentations].
+  http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommendations].
