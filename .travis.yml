@@ -1,0 +1,9 @@
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - aspell-en
+
+script:
+  - make check
