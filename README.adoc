@@ -57,6 +57,12 @@ link:spec_10{outfilesuffix}[10/Content Storage]::
 This specification describes the Flux content storage service
 and the messages used to access it.
 
+link:spec_11{outfilesuffix}[11/Key Value Store Tree Object Format v1]::
+The Flux Key Value Store (KVS) implements hierarchical key namespaces
+layered atop the content storage service described in RFC 10.  Namespaces
+are organized as hash trees of content-addressed tree objects and values.
+This specification defines the version 1 format of key value store tree objects.
+
 == Change Process
 
 The change process is
