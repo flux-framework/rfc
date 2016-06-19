@@ -63,6 +63,12 @@ layered atop the content storage service described in RFC 10.  Namespaces
 are organized as hash trees of content-addressed tree objects and values.
 This specification defines the version 1 format of key value store tree objects.
 
+link:spec_12{outfilesuffix}[12/Flux Security Architecture]::
+This document describes the mechanisms used to secure Flux instances
+against unauthorized access and prevent privilege escalation and other
+attacks, while ensuring programs run with appropriate user credentials
+and are contained within their set of allocated resources.
+
 == Change Process
 
 The change process is
