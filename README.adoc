@@ -69,6 +69,15 @@ against unauthorized access and prevent privilege escalation and other
 attacks, while ensuring programs run with appropriate user credentials
 and are contained within their set of allocated resources.
 
+link:spec_13{outfilesuffix}[13/Simple Process Manager Interface v1]::
+The MPI process manager interface (PMI) version 1 is a de-facto standard
+API and wire protocol for communication between MPI runtimes and resource
+managers.  It was added to the MPICH2 MPI-2 reference implementation in
+late 2001, and has since been widely implemented, but was not officially
+standardized by the MPI Forum and has been only lightly documented.
+This RFC is an attempt to document the subset of the PMI-1 API and its
+wire protocol necessary for a modern resource manager like Flux to implement.
+
 == Change Process
 
 The change process is

@@ -11,7 +11,8 @@ HTML = \
 	spec_9.html \
 	spec_10.html \
 	spec_11.html \
-	spec_12.html
+	spec_12.html \
+	spec_13.html
 
 all: $(HTML)
 
