@@ -25,49 +25,123 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 * link:spec_12{outfilesuffix}[12/Flux Security Architecture]
 
+== Goals
+
+Lacking official guidance from the MPI Forum on this topic,
+this RFC seeks to:
+
+* Document legacy PMI-1 API from MPICH pmi.h[3] header file.
+* Document PMI-1 wire protocol from Hydra source code.
+* Identify deprecated API functions
+* Decrease the amount of research required to implement a process manager.
+* Document MPI runtime quirks that may influence process manager PMI-1
+requirements.
+* Decrease coupling between process managers and MPI runtimes by
+clarifying their "contract" for communication.
+
+== PMI Version
+
+This RFC describes PMI version 1.0.
+
+The "PMI Version 1.1" section documents the changes in PMI version 1.1.
+
 == Overview
+
+PMI was designed as an interface between process managers and parallel
+programs, including, but not limited to, MPI runtimes.  It has two main
+parts, one part designed to assist with bootstrap activities that need
+to take place inside 'MPI_Init()', and the other part designed to
+support MPI-2's new dynamic process management features, such as
+'MPI_Comm_spawn()'.
+
+A newly-launched MPI process needs to find out (minimally) its rank,
+the total number of ranks in the program, and network addresses of
+other ranks.  This information could be figured out by the process
+manager and communicated to the program, but that would require the
+process manager to have intimate knowledge of interconnects that an
+MPI implementation already has.  To achieve a separation of concerns,
+the PMI designers wisely suggested that the process manager only
+provide a generic mechanism for MPI processes to exchange information.
+
+This mechanism consists of a key value store (KVS).
+What one rank puts into the KVS can be read out by another rank,
+after appropriate synchronization.  A simple barrier function provides 
+this synchronization, sometimes referred to as a fence operation.
+Once all processes have reached the fence, all data has been written,
+and can be read once processes are released from the fence.
 
 Programs such as MPI runtimes use PMI-1 in one of two ways:
 
 1. Programs link against a shared library called "libpmi.so" provided
-by the resource manager, which includes the "standard" API functions
+by the process manager, which includes the "standard" API functions
 described here.
-2. Programs are given a connection to the resource manager by passing
+2. Programs are given a connection to the process manager by passing
 an inherited file descriptor, whose number is communicated with an
 environment variable.  Programs then use the wire protocol over that
-file descriptor to communicate with the resource manager.
+file descriptor to communicate with the process manager.
 
 This specification describes a subset of the PMI-1 API and wire protocol,
 culled of:
 
 * Functions necessary for MPI-2[2] dynamic process management
-* API functions which seem not to be in common usage
+* API functions that are not used by extant MPI runtimes
 
-Culled API functions are defined in "Unimplemented API Functions"
-below, but are not described in detail.
+MPI-2 implementations that support dynamic process management SHOULD
+use the much improved interfaces in PMI-2.
 
-Note: significant content in this document was derived or copied verbatim
-from the canonical MPICH pmi.h header[3].
+== Terminology
+
+"Process manager" is the provider of PMI services. A resource manager
+MAY operate in the role of process manager.
+
+"Process group" is a parallel program, including but not limited to
+MPI programs.  It is the user of PMI services.  In this document
+"program" is used interchangeably with process group.
+
+"process" is a UNIX process, in this context, a member of a process
+group or a program.
+
+"PMI library" is a shared library that provides the PMI-1 API.
+
+== Caveats
+
+Some deficiencies of PMI-1 are noted in the PMI-2 paper[7]:
+
+* The process manager may not share information with the program
+using the PMI KVS, as no portion of its namespace was reserved for
+this purpose.
+* There is no mechanism to scope a key locally for a subset of processes.
+* PMI-1 is not thread safe.
+* There is no way for a program to access the PMI KVS of another cooperating
+program.
+* There is no mechanism for respawning processes when a fault occurs.
 
 == Environment
 
-The resource manager communicates some basic information to clients
-using the UNIX environment.
+The process manager MAY use the UNIX environment to communicate basic
+bootstrap information to processes.
 
-The following are REQUIRED to be set when the client is to use the wire
-protocol to communicate with the resource manager as in (2) above.
+If PMI_FD, PMI_SIZE, and PMI_RANK are set, the process MAY use the PMI
+wire protocol directly on the file descriptor number stored in PMI_FD.
+bypassing the PMI library and API.
 
-* PMI_FD: inherited file descriptor number
-* PMI_SIZE: integer value for 'PMI_Get_size()'
-* PMI_RANK: integer value for 'PMI_Get_rank()'
+The process MAY open the PMI library and call 'PMI_init()', whose
+implementation may require the above or process manager specific
+environment variables to be set to determine size, rank, etc..
 
-The following are in common usage and MAY be set by the resource manager:
+A process manager SHOULD alter the LD_LIBRARY_PATH environment
+variable so that programs it launches can bind at runtime with the
+correct PMI library.
 
-* PMI_DEBUG: integer debug level
-* (MPICH) PMI_SPAWNED: boolean value for 'spawned' argument of 'PMI_Init()'
-* (Intel MPI[6]) I_MPI_PMI_LIBRARY: path to PMI shared library
+A process manager MAY set PMI_LIBRARY to the fully qualified path
+to its PMI library as a hint to programs that open the PMI library
+using 'dlopen()'.  Note: Intel MPI looks for I_MPI_PMI_LIBRARY[6].
 
 == Application Programming Interface
+
+Programs SHALL NOT strongly bind to a particular process manager's
+PMI library, for example with rpath, as this complicates running
+a compiled program under multiple process managers.
 
 === Return Codes
 
@@ -91,6 +165,8 @@ indicating the result of the operation:
 * PMI_ERR_INVALID_SIZE (13): invalid size argument
 
 === Initialization
+
+The PMI library SHALL provide the following functions:
 
 [source,c]
 ----
@@ -153,6 +229,8 @@ Notes:
 'kill (0, SIGKILL)' if job ID and step are 0; then call 'exit()'.
 
 === Process Group Information
+
+The PMI library SHALL provide the following functions:
 
 [source,c]
 ----
@@ -228,6 +306,8 @@ Notes
 
 === Local Process Group Information
 
+The PMI library SHALL provide the following functions:
+
 [source,c]
 ----
 int PMI_Get_clique_ranks (int ranks[], int length);
@@ -272,6 +352,8 @@ http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[c
 
 === Key Value Store
 
+The PMI library SHALL provide the following functions:
+
 [source,c]
 ----
 int PMI_KVS_Put (const char kvsname[], const char key[], const char value[]);
@@ -293,10 +375,10 @@ Errors:
 Notes:
 
 * The value is not visible to other processes until 'PMI_KVS_Commit()' is
-called.  
+called.
 * The function may complete locally.
 * After 'PMI_KVS_Commit()' is called, the value may be retrieved by calling
-'PMI_KVS_Get()'. 
+'PMI_KVS_Get()'.
 * All keys put to a keyval space must be unique to the keyval space.
 * You may not put more than once with the same key.
 * Called by: openmpi-1.6, mvapich2-1.7
@@ -325,9 +407,9 @@ into the specified keyval space.
 ----
 int PMI_KVS_Get (const char kvsname[], const char key[], char value[], int length);
 ----
-Get a key/value pair from a keyval space.  
+Get a key/value pair from a keyval space.
 The user SHALL set 'kvsname' to the name returned from 'PMI_KVS_Get_my_name()'.
-The user SHALL set 'length' to the length of the 'value' array, which SHALL 
+The user SHALL set 'length' to the length of the 'value' array, which SHALL
 be no shorter than the length returned by 'PMI_KVS_Get_value_length_max()'.
 The user SHALL set 'key' to a NULL terminated string no longer (with NULL)
 than the size returned by 'PMI_KVS_Get_key_length_max()'.  Upon success,
@@ -466,7 +548,7 @@ Notes:
 by 'PMI_Get_id_length_max()'.
 * In SLURM[5], id is returned as "jobid.stepid", taken from the
 value of SLURM_JOB_ID and SLURM_STEPID environment variables, or "0.0".
-* This function was dropped from pmi.h[3] on 2011-01-28 in 
+* This function was dropped from pmi.h[3] on 2011-01-28 in
 http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
 when MPICH users transitioned to 'PMI_KVS_Get_my_name()'
 * Called by openmpi-1.6
@@ -492,7 +574,11 @@ http://githmpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[c
 when MPICH users transitioned to 'PMI_KVS_Get_name_length_max()'
 * Called by openmpi-1.6
 
-=== Unimplemented API Functions
+=== Deprecated API Functions
+
+The PMI library SHALL provide the following functions.
+The implementations MAY be stubbed such that they have no effect
+and the return code is always PMI_FAIL.
 
 [source,c]
 ----
@@ -536,7 +622,7 @@ int PMI_Unpublish_name( const char service_name[] );
 int PMI_Lookup_name( const char service_name[], char port[] );
 ----
 
-Notes: 
+Notes:
 
 * See MPI-2[2] section https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node104.htm[5.4.4. Name Publishing].
 * Not implemented in SLURM[5] - returns PMI_FAIL.
@@ -565,13 +651,13 @@ int PMI_KVS_Iter_next(const char kvsname[], char key[], int key_len, char val[],
 Notes:
 
 * Implemented in SLURM[5].
-* These functions were dropped from pmi.h[3] on 2011-01-28 in 
+* These functions were dropped from pmi.h[3] on 2011-01-28 in
 http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
 
 == Wire Protocol
 
-The wire protocol was deduced from the MPICH simple PMI implementation[4]
-used by the hydra process manager.
+The PMI-1 wire protocol was deduced from the MPICH simple PMI
+implementation[4] used by the Hydra process manager.
 
 === PMI_Init
 
@@ -631,6 +717,12 @@ C: cmd=get kvsname=<string> key=<string>\n
 S: cmd=get_result rc=0 value=<string>\n
 ----
 
+== PMI Version 1.1
+
+TBD
+
+See https://github.com/flux-framework/flux-core/issues/665[flux-framework/flux-core#665]
+
 == References
 
 * [1] https://drive.google.com/file/d/0B273EWJxZUxsbS15SEkzZGtXU2c/view?usp=sharing[Process Management in MPICH Draft 2.1]
@@ -639,3 +731,4 @@ S: cmd=get_result rc=0 value=<string>\n
 * [4] http://git.mpich.org/mpich.git/tree/HEAD:/src/pmi/simple[MPICH simple PMI implementation]
 * [5] https://github.com/SchedMD/slurm/blob/master/src/api/pmi.c[SLURM PMI-1 implementation]
 * [6] https://software.intel.com/en-us/articles/how-to-use-slurm-pmi-with-the-intel-mpi-library-for-linux[Intel Developer Zone: How to use SLURM PMI with the Intel MPI Library for Linux?]
+* [7] http://www.mcs.anl.gov/papers/P1760.pdf[PMI: A Scalable Parallel Process-Management Interface for Extreme-Scale Systems], P. Balaji et al, EuroMPI Proceedings, 2010.
