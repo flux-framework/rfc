@@ -1,0 +1,638 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+13/Simple Process Manager Interface v1
+======================================
+
+The MPI process manager interface (PMI) version 1 is a de-facto standard
+API and wire protocol for communication between MPI runtimes and resource
+managers.  It was added to the MPICH2 MPI-2 reference implementation in
+late 2001, and has since been widely implemented, but was not officially
+standardized by the MPI Forum and has been only lightly documented.
+This RFC is an attempt to document the subset of the PMI-1 API and its
+wire protocol necessary for a modern resource manager like Flux to implement.
+
+* Name: github.com/flux-framework/rfc/spec_13.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+* link:spec_12{outfilesuffix}[12/Flux Security Architecture]
+
+== Overview
+
+Programs such as MPI runtimes use PMI-1 in one of two ways:
+
+1. Programs link against a shared library called "libpmi.so" provided
+by the resource manager, which includes the "standard" API functions
+described here.
+2. Programs are given a connection to the resource manager by passing
+an inherited file descriptor, whose number is communicated with an
+environment variable.  Programs then use the wire protocol over that
+file descriptor to communicate with the resource manager.
+
+This specification describes a subset of the PMI-1 API and wire protocol,
+culled of:
+
+* Functions necessary for MPI-2 standard https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node89.htm[section 5. Process Creation and Management].
+* API functions which seem not to be in common usage
+
+Culled API functions are defined in "Unimplemented API Functions"
+below, but are not described in detail.
+
+Note: significant content in this document was derived or copied verbatim
+from the canonical MPICH pmi.h header[3].
+
+== Environment
+
+The resource manager communicates some basic information to clients
+using the UNIX environment.
+
+The following are REQUIRED to be set when the client is to use the wire
+protocol to communicate with the resource manager as in (2) above.
+
+* PMI_FD: inherited file descriptor number
+* PMI_SIZE: integer value for 'PMI_Get_size()'
+* PMI_RANK: integer value for 'PMI_Get_rank()'
+
+The following are in common usage and MAY be set by the resource manager:
+
+* PMI_DEBUG: integer debug level
+* (MPICH) PMI_SPAWNED: boolean value for 'spawned' argument of 'PMI_Init()'
+* (Intel MPI) I_MPI_PMI_LIBRARY: path to PMI shared library
+
+== Application Programming Interface
+
+=== Return Codes
+
+All PMI-1 functions SHALL return one of the following integer values,
+indicating the result of the operation:
+
+* PMI_SUCCESS (0): operation completed successfully
+* PMI_FAIL (-1): operation failed
+* PMI_ERR_INIT (1): PMI not initialized
+* PMI_ERR_NOMEM (2): input buffer not large enough
+* PMI_ERR_INVALID_ARG (3): invalid argument
+* PMI_ERR_INVALID_KEY (4): invalid key argument
+* PMI_ERR_INVALID_KEY_LENGTH (5): invalid key length argument
+* PMI_ERR_INVALID_VAL (6): invalid val argument
+* PMI_ERR_INVALID_VAL_LENGTH (7): invalid val length argument
+* PMI_ERR_INVALID_LENGTH (8): invalid length argument
+* PMI_ERR_INVALID_NUM_ARGS (9): invalid number of arguments
+* PMI_ERR_INVALID_ARGS (10): invalid args argument
+* PMI_ERR_INVALID_NUM_PARSED (11): invalid num_parsed length argument
+* PMI_ERR_INVALID_KEYVALP (12): invalid keyvalp argument
+* PMI_ERR_INVALID_SIZE (13): invalid size argument
+
+=== Initialization
+
+[source,c]
+----
+int PMI_Init (int *spawned);
+----
+Initialize the PMI library for this process.  Upon success, the value
+of 'spawned' (boolean) SHALL bet set to (1) if this process was created
+by 'PMI_Spawn_multiple()', or (0) if not.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - initialization failed
+
+Notes:
+
+* SLURM PMI-1: Spawned is set to the value of the PMI_SPAWNED environment
+variable, or (0).
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_Initialized (int *initialized);
+----
+Check if the PMI library has been initialized for this process.
+Upon success, the the value of 'initialized' (boolean) SHALL be set to
+(1) or (0) to indicate whether or not PMI has been successfully initialized.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to set the variable
+* Called by: openmpi-1.6
+
+[source,c]
+----
+int PMI_Finalize (void);
+----
+Finalize the PMI library for this process.
+
+Errors:
+
+* 'PMI_FAIL' - finalization failed
+
+Notes:
+
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_Abort (int exit_code, const char error_msg[]);
+----
+Abort the process group associated with this process.
+The PMI library SHALL print 'error_msg' to standard error, then exit this
+process with with 'exit_code'.  This function SHALL NOT return.
+
+Notes:
+
+* SLURM PMI-1: prints error message to stderr; terminate job step or
+'kill (0, SIGKILL)' if job ID and step are 0; then call 'exit()'.
+
+=== Process Group Information
+
+[source,c]
+----
+int PMI_Get_size (int *size);
+----
+Obtain the size of the process group to which the local process belongs.
+Upon success, the value of 'size' SHALL be set to the size of the process
+group.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to return the size
+
+Notes:
+
+* SLURM PMI-1: Size is set to the value of SLURM_NPROCS or PMI_SIZE environment variables, or (1).
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_Get_rank (int *rank);
+----
+Obtain the rank (0...size-1) of the local process in the process group.
+Upon success, 'rank' SHALL be set to the rank of the local process.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to return the rank
+
+Notes:
+
+* SLURM PMI-1: Rank is set to the value of SLURM_PROCID or PMI_RANK environment variables, or (0).
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_Get_universe_size (int *size);
+----
+Obtain the universe size, which is the the maximum future size of the
+process group for dynamic applications.  Upon success, 'size' SHALL
+be set to the rank of the local process.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to return the size
+
+Notes:
+
+* SLURM PMI-1: Process group size and universe size are presumed identical.
+* MPI 2.0 specification: https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node111.htm[5.5.1. Universe Size].
+* Called by: openmpi-1.6
+
+[source,c]
+----
+int PMI_Get_appnum (int *appnum);
+----
+Obtain the application number.  Upon success, 'appnum' SHALL be set to
+the application number.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to return the size
+
+Notes
+
+* SLURM PMI-1: Appnum is set to the value of the SLURM_JOB_ID environment variable, or (0).
+* MPI 2.0 specification: https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node113.htm[5.5.3. MPI_APPNUM].
+* Called by: openmpi-1.6, mvapich2-1.7
+
+=== Local Process Group Information
+
+[source,c]
+----
+int PMI_Get_clique_ranks (int ranks[], int length);
+----
+Get the ranks of the local processes in the process group.
+This is a simple topology function to distinguish between processes that can
+communicate through IPC mechanisms (e.g., shared memory) and other network
+mechanisms.  The user SHALL set 'length' to the size returned by
+'PMI_Get_clique_size()', and 'ranks' to an integer array of that length.
+Upon success, the PMI library SHALL fill each slot of the array with the
+rank of a local process in the process group.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_ERR_INVALID_LENGTH' - invalid length argument
+* 'PMI_FAIL' - unable to return the ranks
+
+Notes:
+
+* This function returns the ranks of the processes on the local node.
+* The array must be at least as large as the size returned by
+'PMI_Get_clique_size()'.
+* MPICH: dropped from pmi.h on 2011-01-28 in
+http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef]
+* Called by: openmpi-1.6
+
+[source,c]
+----
+int PMI_Get_clique_size (int *size);
+----
+Obtain the number of processes on the local node.  Upon success, 'size'
+SHALL be set to the number of processes on the local node.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to return the clique size
+* MPICH: dropped from pmi.h on 2011-01-28 in
+http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef]
+* Called by: openmpi-1.6
+
+=== Key Value Store
+
+[source,c]
+----
+int PMI_KVS_Put (const char kvsname[], const char key[], const char value[]);
+----
+Put a key/value pair in a keyval space.
+The user SHALL set 'kvsname' to the name returned from 'PMI_KVS_Get_my_name()'.
+The user SHALL set 'key' and 'value' to NULL terminated strings no longer
+(with NULL) than the sizes returned by 'PMI_KVS_Get_key_length_max()' and
+'PMI_KVS_Get_value_length_max()' respectively.  Upon success, the PMI
+library SHALL enqueue the key and value for later 'PMI_KVS_Commit()'.
+
+Errors:
+
+* 'PMI_ERR_INVALID_KVS' - invalid kvsname argument
+* 'PMI_ERR_INVALID_KEY' - invalid key argument
+* 'PMI_ERR_INVALID_VAL' - invalid val argument
+* 'PMI_FAIL' - put failed
+
+Notes:
+
+* The value is not visible to other processes until 'PMI_KVS_Commit()' is
+called.  
+* The function may complete locally.
+* After 'PMI_KVS_Commit()' is called, the value may be retrieved by calling
+'PMI_KVS_Get()'. 
+* All keys put to a keyval space must be unique to the keyval space.
+* You may not put more than once with the same key.
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_KVS_Commit (const char kvsname[]);
+----
+Commit all previous puts to the keyval space.  Upon success, all puts
+since the last 'PMI_KVS_Commit()' shall be stored into the specified
+'kvsname'.
+
+Errors:
+
+* PMI_ERR_INVALID_ARG - invalid argument
+* PMI_FAIL - commit failed
+
+Notes:
+
+* This function commits all previous puts since the last 'PMI_KVS_Commit()'
+into the specified keyval space.
+* It is a process local operation.
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_KVS_Get (const char kvsname[], const char key[], char value[], int length);
+----
+Get a key/value pair from a keyval space.  
+The user SHALL set 'kvsname' to the name returned from 'PMI_KVS_Get_my_name()'.
+The user SHALL set 'length' to the length of the 'value' array, which SHALL 
+be no shorter than the length returned by 'PMI_KVS_Get_value_length_max()'.
+The user SHALL set 'key' to a NULL terminated string no longer (with NULL)
+than the size returned by 'PMI_KVS_Get_key_length_max()'.  Upon success,
+the PMI library SHALL fill 'value' with the value of 'key'.
+
+Errors:
+
+* 'PMI_ERR_INVALID_KVS' - invalid kvsname argument
+* 'PMI_ERR_INVALID_KEY' - invalid key argument
+* 'PMI_ERR_INVALID_VAL' - invalid val argument
+* 'PMI_ERR_INVALID_LENGTH' - invalid length argument
+* 'PMI_FAIL' - get failed
+
+Notes:
+
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_KVS_Get_my_name (char kvsname[], int length);
+----
+This function returns the common keyval space for this process group.
+The user SHALL set set 'length' to the length of the 'kvsname' array,
+which SHALL be no shorter than the length returned by
+'PMI_KVS_Get_name_length_max()'.  Upon success, the PMI library SHALL
+set 'kvsname' to a NULL terminated string representing the keyval space.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_ERR_INVALID_LENGTH' - invalid length argument
+* 'PMI_FAIL' - unable to return the kvsname
+
+Notes:
+
+* length SHALL be greater than or equal to the length returned
+by 'PMI_KVS_Get_name_length_max()'.
+* SLURM PMI-1: The kvsname is returned as "jobid.stepid", taken from the
+value of SLURM_JOB_ID and SLURM_STEPID environment variables, or "0.0".
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_KVS_Get_name_length_max (int *length);
+----
+Obtain the array length necessary to store a kvsname, including terminating
+NULL.  Upon success, the PMI library SHALL set the value of 'length' to the
+maximum name length.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to set the length
+
+Notes:
+
+* [1] recommends minimum length of 16
+* SLURM PMI-1: length is 256.
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_KVS_Get_key_length_max (int *length);
+----
+Obtain the array length necessary to store a key, including terminating NULL.
+Upon success, the PMI library SHALL set the value of 'length' to the
+maximum key length.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to set the length
+
+Notes:
+
+* [1] recommends minimum length of 32
+* SLURM PMI-1: length is 256.
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_KVS_Get_value_length_max (int *length);
+----
+Obtain the array length necessary to store a value, including terminating
+NULL.  Upon success, the PMI library SHALL set the value of 'length' to the
+maximum value length.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to set the length
+
+Notes:
+
+* [1] recommends minimum length of 64
+* SLURM PMI-1: length is 1024.
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_Barrier (void);
+----
+This function is a collective call across all processes in the process group
+the local process belongs to.  The PMI library SHALL attempt to block until
+all processes in the process group have entered the barrier call, or an
+error occurs.
+
+Errors:
+
+* PMI_FAIL - barrier failed
+
+Notes:
+
+* Called by: openmpi-1.6, mvapich2-1.7
+
+[source,c]
+----
+int PMI_Get_kvs_domain_id (char id_str[], int length);
+----
+Obtain the ID of the PMI domain, which uniquely identifies
+the PMI domain where keyval spaces can be shared.
+The user SHALL set set 'length' to the length of the 'id_str' array,
+which SHALL be no shorter than the length returned by
+'PMI_Get_id_length_max()'.  Upon success, the PMI library SHALL
+set 'id_str' to a NULL terminated string representing the PMI domain.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_ERR_INVALID_LENGTH' - invalid length argument
+* 'PMI_FAIL' - unable to return the id
+
+Notes:
+
+* length should be greater than or equal to the length returned
+by 'PMI_Get_id_length_max()'.
+* SLURM PMI-1: The id is returned as "jobid.stepid", taken from the
+value of SLURM_JOB_ID and SLURM_STEPID environment variables, or "0.0".
+* MPICH: This function was dropped from pmi.h on 2011-01-28 in 
+http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
+when MPICH users transitioned to 'PMI_KVS_Get_my_name()'
+* Called by openmpi-1.6
+
+[source,c]
+----
+int PMI_Get_id_length_max (int *length);
+----
+Obtain the array length necessary to store an id string, including
+terminating NULL.  Upon success, the PMI library SHALL set the value
+of 'length' to the maximum id length.
+
+Errors:
+
+* 'PMI_ERR_INVALID_ARG' - invalid argument
+* 'PMI_FAIL' - unable to return the maximum length
+
+Notes:
+
+* SLURM PMI-1: length is 16
+* MPICH: This function were dropped from pmi.h on 2011-01-28 in
+http://githmpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
+when MPICH users transitioned to 'PMI_KVS_Get_name_length_max()'
+* Called by openmpi-1.6
+
+=== Unimplemented API Functions
+
+[source,c]
+----
+typedef struct {
+    const char * key;
+    char * val;
+} PMI_keyval_t;
+
+int PMI_Spawn_multiple(int count,
+                       const char * cmds[],
+                       const char ** argvs[],
+                       const int maxprocs[],
+                       const int info_keyval_sizesp[],
+                       const PMI_keyval_t * info_keyval_vectors[],
+                       int preput_keyval_size,
+                       const PMI_keyval_t preput_keyval_vector[],
+                       int errors[]);
+----
+
+Notes:
+
+* See MPI 2.0 specification: https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node98.htm[5.3.5.1. Manager-worker Example, Using MPI_SPAWN.]
+* SLURM PMI-1: This function is not implemented and returns PMI_FAIL.
+
+[source,c]
+----
+int PMI_Parse_option(int num_args, char *args[], int *num_parsed, PMI_keyval_t **keyvalp, int *size);
+int PMI_Args_to_keyval(int *argcp, char *((*argvp)[]), PMI_keyval_t **keyvalp, int *size);
+int PMI_Free_keyvals(PMI_keyval_t keyvalp[], int size);
+int PMI_Get_options(char *str, int *length);
+----
+
+* MPICH: these functions were dropped from pmi.h on 2009-05-01 in
+http://git.mpich.org/mpich.git/commit/52c462d2be6a8d0720788d36e1e096e991dcff38[commit 52c462d]
+* SLURM PMI-1: these functions are implemented.
+
+[source,c]
+----
+int PMI_Publish_name( const char service_name[], const char port[] );
+int PMI_Unpublish_name( const char service_name[] );
+int PMI_Lookup_name( const char service_name[], char port[] );
+----
+
+Notes: 
+
+* See MPI 2.0 specification: https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node104.htm[5.4.4. Name Publishing].
+* SLURM PMI-1: These functions are unimplemented and returns PMI_FAIL.
+
+[source,c]
+----
+int PMI_Get_id( char id_str[], int length );
+----
+
+Notes:
+
+* SLURM PMI-1: The id is returned as "jobid.stepid", taken from the
+value of SLURM_JOB_ID and SLURM_STEPID environment variables, or "0.0".
+* MPICH: This function was dropped from pmi.h on 2011-01-28 in
+http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
+when MPICH users transitioned to 'PMI_KVS_Get_my_name()'
+
+[source,c]
+----
+int PMI_KVS_Create( char kvsname[], int length );
+int PMI_KVS_Destroy( const char kvsname[] );
+int PMI_KVS_Iter_first(const char kvsname[], char key[], int key_len, char val[], int val_len);
+int PMI_KVS_Iter_next(const char kvsname[], char key[], int key_len, char val[], int val_len);
+----
+
+Notes:
+
+* SLURM PMI-1: These functions are implemented.
+* MPICH: These functions were dropped from pmi.h on 2011-01-28 in 
+http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
+
+== Wire Protocol
+
+The wire protocol was deduced from [4].
+
+=== PMI_Init
+
+----
+C: cmd=init pmi_version=1 pmi_subversion=1\n
+S: cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1\n
+C: cmd=get_maxes\n
+S: cmd=maxes rc=0 kvsname_max=256 keylen_max=256 vallen_max=256\n
+----
+
+=== PMI_Get_universe_size
+
+----
+C: cmd=get_universe_size\n
+S: cmd=universe_size rc=0 size=<integer>\n
+----
+
+=== PMI_Get_appnum
+
+----
+C: cmd=get_appnum\n
+S: cmd=appnum rc=0 appnum=<integer>\n
+----
+
+=== PMI_Barrier
+
+----
+C: cmd=barrier_in\n
+S: cmd=barrier_out rc=0\n
+----
+
+=== PMI_Finalize
+
+----
+C: cmd=finalize\n
+S: cmd=finalize_ack rc=0\n
+----
+
+=== PMI_KVS_Get_my_name
+
+----
+C: cmd=get_my_kvsname\n
+S: cmd=my_kvsname rc=0 kvsname=<string>\n
+----
+
+=== PMI_KVS_Put
+
+----
+C: cmd=put kvsname=<string> key=<string> value=<string>\n
+S: cmd=put_result rc=1\n
+----
+
+=== PMI_KVS_Get
+
+----
+C: cmd=get kvsname=<string> key=<string>\n
+S: cmd=get_result rc=0 value=<string>\n
+----
+
+== References
+
+* [1] http://git.mpich.org/mpich.git/blob/HEAD:/doc/pmi/paper.tex[Process Management in MPICH Draft 2.1]
+* [2] https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/mpi2-report.html[MPI-2: Extensions to the Message-Passing Interface]
+* [3] http://git.mpich.org/mpich.git/blob/HEAD:/src/include/pmi.h[MPICH canonical pmi.h header]
+* [4] http://git.mpich.org/mpich.git/blob/HEAD:/src/pmi/simple/simple_pmi.c[MPICH PMI-1 wire protocol implementation]
