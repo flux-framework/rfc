@@ -107,7 +107,7 @@ Errors:
 
 Notes:
 
-* SLURM PMI-1: Spawned is set to the value of the PMI_SPAWNED environment
+* SLURM[5]: Spawned is set to the value of the PMI_SPAWNED environment
 variable, or (0).
 * Called by: openmpi-1.6, mvapich2-1.7
 
@@ -149,7 +149,7 @@ process with with 'exit_code'.  This function SHALL NOT return.
 
 Notes:
 
-* SLURM PMI-1: prints error message to stderr; terminate job step or
+* SLURM[5]: prints error message to stderr; terminate job step or
 'kill (0, SIGKILL)' if job ID and step are 0; then call 'exit()'.
 
 === Process Group Information
@@ -169,7 +169,7 @@ Errors:
 
 Notes:
 
-* SLURM PMI-1: Size is set to the value of SLURM_NPROCS or PMI_SIZE environment variables, or (1).
+* SLURM[5]: Size is set to the value of SLURM_NPROCS or PMI_SIZE environment variables, or (1).
 * Called by: openmpi-1.6, mvapich2-1.7
 
 [source,c]
@@ -186,7 +186,7 @@ Errors:
 
 Notes:
 
-* SLURM PMI-1: Rank is set to the value of SLURM_PROCID or PMI_RANK environment variables, or (0).
+* SLURM[5]: Rank is set to the value of SLURM_PROCID or PMI_RANK environment variables, or (0).
 * Called by: openmpi-1.6, mvapich2-1.7
 
 [source,c]
@@ -204,7 +204,7 @@ Errors:
 
 Notes:
 
-* SLURM PMI-1: Process group size and universe size are presumed identical.
+* SLURM[5]: Process group size and universe size are presumed identical.
 * MPI 2.0 specification: https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node111.htm[5.5.1. Universe Size].
 * Called by: openmpi-1.6
 
@@ -222,7 +222,7 @@ Errors:
 
 Notes
 
-* SLURM PMI-1: Appnum is set to the value of the SLURM_JOB_ID environment variable, or (0).
+* SLURM[5]: Appnum is set to the value of the SLURM_JOB_ID environment variable, or (0).
 * MPI 2.0 specification: https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node113.htm[5.5.3. MPI_APPNUM].
 * Called by: openmpi-1.6, mvapich2-1.7
 
@@ -365,7 +365,7 @@ Notes:
 
 * length SHALL be greater than or equal to the length returned
 by 'PMI_KVS_Get_name_length_max()'.
-* SLURM PMI-1: The kvsname is returned as "jobid.stepid", taken from the
+* SLURM[5]: The kvsname is returned as "jobid.stepid", taken from the
 value of SLURM_JOB_ID and SLURM_STEPID environment variables, or "0.0".
 * Called by: openmpi-1.6, mvapich2-1.7
 
@@ -385,7 +385,7 @@ Errors:
 Notes:
 
 * [1] recommends minimum length of 16
-* SLURM PMI-1: length is 256.
+* SLURM[5]: length is 256.
 * Called by: openmpi-1.6, mvapich2-1.7
 
 [source,c]
@@ -404,7 +404,7 @@ Errors:
 Notes:
 
 * [1] recommends minimum length of 32
-* SLURM PMI-1: length is 256.
+* SLURM[5]: length is 256.
 * Called by: openmpi-1.6, mvapich2-1.7
 
 [source,c]
@@ -423,7 +423,7 @@ Errors:
 Notes:
 
 * [1] recommends minimum length of 64
-* SLURM PMI-1: length is 1024.
+* SLURM[5]: length is 1024.
 * Called by: openmpi-1.6, mvapich2-1.7
 
 [source,c]
@@ -464,7 +464,7 @@ Notes:
 
 * length should be greater than or equal to the length returned
 by 'PMI_Get_id_length_max()'.
-* SLURM PMI-1: The id is returned as "jobid.stepid", taken from the
+* SLURM[5]: The id is returned as "jobid.stepid", taken from the
 value of SLURM_JOB_ID and SLURM_STEPID environment variables, or "0.0".
 * MPICH: This function was dropped from pmi.h on 2011-01-28 in 
 http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
@@ -486,7 +486,7 @@ Errors:
 
 Notes:
 
-* SLURM PMI-1: length is 16
+* SLURM[5]: length is 16
 * MPICH: This function were dropped from pmi.h on 2011-01-28 in
 http://githmpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
 when MPICH users transitioned to 'PMI_KVS_Get_name_length_max()'
@@ -515,7 +515,7 @@ int PMI_Spawn_multiple(int count,
 Notes:
 
 * See MPI 2.0 specification: https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node98.htm[5.3.5.1. Manager-worker Example, Using MPI_SPAWN.]
-* SLURM PMI-1: This function is not implemented and returns PMI_FAIL.
+* SLURM[5]: Not implemented, returns PMI_FAIL.
 
 [source,c]
 ----
@@ -527,7 +527,7 @@ int PMI_Get_options(char *str, int *length);
 
 * MPICH: these functions were dropped from pmi.h on 2009-05-01 in
 http://git.mpich.org/mpich.git/commit/52c462d2be6a8d0720788d36e1e096e991dcff38[commit 52c462d]
-* SLURM PMI-1: these functions are implemented.
+* SLURM[5]: Implemented.
 
 [source,c]
 ----
@@ -539,7 +539,7 @@ int PMI_Lookup_name( const char service_name[], char port[] );
 Notes: 
 
 * See MPI 2.0 specification: https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node104.htm[5.4.4. Name Publishing].
-* SLURM PMI-1: These functions are unimplemented and returns PMI_FAIL.
+* SLURM[5]: Not implemented, returns PMI_FAIL.
 
 [source,c]
 ----
@@ -548,7 +548,7 @@ int PMI_Get_id( char id_str[], int length );
 
 Notes:
 
-* SLURM PMI-1: The id is returned as "jobid.stepid", taken from the
+* SLURM[5]: The id is returned as "jobid.stepid", taken from the
 value of SLURM_JOB_ID and SLURM_STEPID environment variables, or "0.0".
 * MPICH: This function was dropped from pmi.h on 2011-01-28 in
 http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
@@ -564,7 +564,7 @@ int PMI_KVS_Iter_next(const char kvsname[], char key[], int key_len, char val[],
 
 Notes:
 
-* SLURM PMI-1: These functions are implemented.
+* SLURM[5]: Implemented.
 * MPICH: These functions were dropped from pmi.h on 2011-01-28 in 
 http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef],
 
@@ -636,3 +636,4 @@ S: cmd=get_result rc=0 value=<string>\n
 * [2] https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/mpi2-report.html[MPI-2: Extensions to the Message-Passing Interface]
 * [3] http://git.mpich.org/mpich.git/blob/HEAD:/src/include/pmi.h[MPICH canonical pmi.h header]
 * [4] http://git.mpich.org/mpich.git/blob/HEAD:/src/pmi/simple/simple_pmi.c[MPICH PMI-1 wire protocol implementation]
+* [5] https://github.com/SchedMD/slurm/blob/master/src/api/pmi.c[SLURM PMI-1 implementation]
