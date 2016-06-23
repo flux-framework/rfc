@@ -240,3 +240,10 @@ scalable
 LD
 runtime
 rpath
+OpenMPI
+mpiexec
+unpublish
+exascale
+MPIRUN
+NTASKS
+RSH
