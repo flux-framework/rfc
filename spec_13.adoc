@@ -603,6 +603,11 @@ S: cmd=maxes rc=0 kvsname_max=256 keylen_max=256 vallen_max=256\n
 ----
 
 ----
+C: cmd=abort exitcode=<integer>\n
+S: \n
+----
+
+----
 C: cmd=finalize\n
 S: cmd=finalize_ack rc=0\n
 ----
@@ -643,7 +648,51 @@ S: cmd=get_result rc=0 value=<string>\n
 
 === Dynamic Process Management
 
-TBD
+FIXME: This section needs testing and verification.
+
+----
+C: mcmd=spawn\n
+C: nprocs=<integer>\n
+C: execname=<string>\n
+C: totspawns=<integer>\n
+C: spawnssofar=<integer>\n
+C: arg0=<string>\n
+C: arg1=<string>\n
+C: ...
+C: argcnt=<integer>\n
+
+C: preput_num=<integer>\n
+C: preput_key_0=<string>\n
+C: preput_val_0=<string>\n
+C: preput_key_1=<string>\n
+C: preput_val_1=<string>\n
+C: ...
+
+C: info_num=<integer>\n
+C: info_key_0=<string>\n
+C: info_val_0=<string>\n
+C: info_key_1=<string>\n
+C: info_val_1=<string>\n
+C: ...
+C: endcmd\n
+
+S: cmd=spawn_result rc=0 errcodes 0,0,0,...\n
+----
+
+----
+C: cmd=publish_name service=<string> port=<string>\n
+S: cmd=publish_result rc=0 info=ok\n
+----
+
+----
+C: cmd=unpublish_name service=<string>\n
+S: cmd=unpublish_result rc=0 info=ok\n
+----
+
+----
+C: cmd=lookup_name service=<string>\n
+S: cmd=lookup_result rc=0 info=ok port=<string>\n
+----
 
 == MPI Quirks
 
@@ -652,7 +701,8 @@ specific to popular MPI implementations.
 
 === MPICH
 
-TBD
+If configured without specifying any PMI options, MPICH attempts to use
+the PMI-1 simple wire protocol.
 
 === MVAPICH
 

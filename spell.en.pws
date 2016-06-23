@@ -247,3 +247,14 @@ exascale
 MPIRUN
 NTASKS
 RSH
+argcnt
+endcmd
+errcodes
+execname
+exitcode
+FIXME
+mcmd
+nprocs
+ok
+spawnssofar
+totspawns
