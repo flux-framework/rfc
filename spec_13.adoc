@@ -591,107 +591,113 @@ See https://github.com/flux-framework/flux-core/issues/665[flux-framework/flux-c
 == PMI 1.1 Wire Protocol
 
 The PMI-1 wire protocol was deduced from the MPICH simple PMI
-implementation[4] used by the Hydra process manager.
+implementation[4] used by the Hydra process manager.  It is shown
+below in ABNF form.
 
-=== Initialization
+The client SHALL send the init request first, with the highest version
+of PMI supported by the client.  The server SHALL respond with the
+version of PMI that will be used for this connection.  The client MUST NOT
+send other commands until the init operation has completed.  It SHALL then
+proceed in lock-step with the server, until it successfully completes the
+abort or finalize operations.  It SHOULD then close its file descriptor.
 
-----
-C: cmd=init pmi_version=1 pmi_subversion=1\n
-S: cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1\n
-C: cmd=get_maxes\n
-S: cmd=maxes rc=0 kvsname_max=256 keylen_max=256 vallen_max=256\n
-----
+Some operations include an integer return code.  A server SHALL
+indicate success with a return code of zero.  Some response components
+that are noted as optional by square brackets MAY be omitted in the event
+of failure.  They SHALL be included on success.
 
-----
-C: cmd=abort exitcode=<integer>\n
-S: \n
-----
+As indicated, the name publishing operations SHALL include an error
+string on failure.  This string MAY be omitted on success.
 
-----
-C: cmd=finalize\n
-S: cmd=finalize_ack rc=0\n
-----
-
-=== Process Group Information
-
-----
-C: cmd=get_universe_size\n
-S: cmd=universe_size rc=0 size=<integer>\n
-----
+The spawn operation passes zero or more arguments, zero or more "preput"
+elements, and zero or more "info" elements.  These elements have numbered
+indices that SHALL begin with zero and increase monotonically.
 
 ----
-C: cmd=get_appnum\n
-S: cmd=appnum rc=0 appnum=<integer>\n
-----
+PMI1            = C:init      S:init
+                / C:maxes     S:maxes
+                / C:abort     S:abort
+                / C:finalize  S:finalize
+                / C:universe  S:universe
+                / C:appnum    S:appnum
+                / C:put       S:put
+                / C:kvsname   S:kvsname
+                / C:barrier   S:barrier
+                / C:get       S:get
+                / C:publish   S:publish
+                / C:unpublish S:unpublish
+                / C:lookup    S:lookup
+                / C:spawn     S:spawn
 
-=== Key Value Store
+; Initialization
 
-----
-C: cmd=put kvsname=<string> key=<string> value=<string>\n
-S: cmd=put_result rc=1\n
-----
+C:init          = "cmd=init" SP "pmi_version=" uint SP "pmi_subversion=" uint LF
+S:init          = "cmd=response_to_init" SP "rc=" int [SP "pmi_version=" uint SP "pmi_subversion=" uint] LF
 
-----
-C: cmd=get_my_kvsname\n
-S: cmd=my_kvsname rc=0 kvsname=<string>\n
-----
+C:maxes         = "cmd=get_maxes" LF
+S:maxes         = "cmd=maxes" SP "rc=" int [SP "kvsname_max=" uint SP "keylen_max=" uint SP "vallen_max=" uint] LF
 
-----
-C: cmd=barrier_in\n
-S: cmd=barrier_out rc=0\n
-----
+C:abort         = "cmd=abort" LF
+S:abort         = LF
 
-----
-C: cmd=get kvsname=<string> key=<string>\n
-S: cmd=get_result rc=0 value=<string>\n
-----
+C:finalize      = "cmd=finalize" LF
+S:finalize      = "cmd=finalize_ack" SP "rc=" int LF
 
-=== Dynamic Process Management
+; Process Group Information
 
-FIXME: This section needs testing and verification.
+C:universe      = "cmd=get_universe_size" LF
+S:universe      = "cmd=universe_size" SP "rc=" int [SP "size=" uint] LF
 
-----
-C: mcmd=spawn\n
-C: nprocs=<integer>\n
-C: execname=<string>\n
-C: totspawns=<integer>\n
-C: spawnssofar=<integer>\n
-C: arg0=<string>\n
-C: arg1=<string>\n
-C: ...
-C: argcnt=<integer>\n
+C:appnum        = "cmd=get_appnum" LF
+S:appnum        = "cmd=appnum" SP "rc=" int [SP "appnum=" uint] LF
 
-C: preput_num=<integer>\n
-C: preput_key_0=<string>\n
-C: preput_val_0=<string>\n
-C: preput_key_1=<string>\n
-C: preput_val_1=<string>\n
-C: ...
+; Key Value Store
 
-C: info_num=<integer>\n
-C: info_key_0=<string>\n
-C: info_val_0=<string>\n
-C: info_key_1=<string>\n
-C: info_val_1=<string>\n
-C: ...
-C: endcmd\n
+C:put           = "cmd=put" SP "kvsname=" word SP "key=" word SP "value=" string LF
+S:put           = "cmd=put_result" SP "rc=" int LF
 
-S: cmd=spawn_result rc=0 errcodes 0,0,0,...\n
-----
+C:kvsname       = "cmd=get_my_kvsname" LF
+S:kvsname       = "cmd=my_kvsname" SP "rc=" int [SP "kvsname=" word] LF
 
-----
-C: cmd=publish_name service=<string> port=<string>\n
-S: cmd=publish_result rc=0 info=ok\n
-----
+C:barrier       = "cmd=barrier_in" LF
+S:barrier       = "cmd=barrier_out" SP "rc=" int LF
 
-----
-C: cmd=unpublish_name service=<string>\n
-S: cmd=unpublish_result rc=0 info=ok\n
-----
+C:get           = "cmd=get" SP "kvsname=" word SP "key=" word LF
+S:get           = "cmd=get_result" SP "rc=" int [SP "value=" string] LF
 
-----
-C: cmd=lookup_name service=<string>\n
-S: cmd=lookup_result rc=0 info=ok port=<string>\n
+; Dynamic Process Management
+
+C:publish       = "cmd=publish_name" SP "service=" word SP "port=" word LF
+S:publish       = "cmd=publish_result" SP "rc=" int [SP "msg=" string] LF
+
+C:unpublish     = "cmd=unpublish_name" SP "service=" word LF
+S:unpublish     = "cmd=unpublish_result" SP "rc=" int [SP "msg=" string] LF
+
+C:lookup        = "cmd=lookup_name" SP "service=" word LF
+S:lookup        = "cmd=lookup_result" SP "rc=" int SP ["port=" word / "msg=" string ] LF
+
+C:spawn         = "mcmd=spawn" LF
+                = "nprocs=" uint LF
+                = "execname=" string LF
+                = "totspawns=" uint LF
+                = "spawnssofar=" uint LF
+                = *["arg" int "=" string LF]
+                = "argcnt=" uint LF
+                = "preput_num=" uint LF
+                = *["preput_key_" uint "=" word LF "preput_val_" uint "=" string LF]
+                = "info_num=" uint LF
+                = *["info_key_" uint "=" string LF "info_val_" uint "=" string LF]
+                = "endcmd" LF
+S: spawn        = "cmd=spawn_result" SP "rc=" int [SP "errcodes=" intlist] LF
+
+; macros
+
+intlist         = int *[%x2C int]               ; comma-delimited integers
+word            = 1*(%x21-3C %x3E-7E)           ; visible char minus =
+string          = 1*(SP HTAB VCHAR)             ; visible char plus tab, space
+int             = *1(%x2B %x2D) uint            ; signed integer
+uint            = 1*DIGIT                       ; unsigned integer
+
 ----
 
 == MPI Quirks

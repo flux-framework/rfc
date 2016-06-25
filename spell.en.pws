@@ -258,3 +258,8 @@ nprocs
 ok
 spawnssofar
 totspawns
+HTAB
+intlist
+LF
+uint
+VCHAR
