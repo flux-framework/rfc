@@ -39,15 +39,20 @@ managers seeking a wide range of compatibility
 
 == PMI Versions
 
-The main changes between PMI 1.0 and PMI 1.1 are in the wire protocol
-and allowing local process group information to be communicated from
-process manager to program via the key-value store.
+This document covers PMI 1.1.  The API is identical in PMI version 1.0
+and 1.1; the differences are in the wire protocol.
 
-PMI version 2 is a separate API and protocol and is not covered here.
+The PMI version 2 API is disjoint from version 1.  The version 2 wire
+protocol is backwards compatible with PMI version 1 in that a client or
+server that does not support version 2 can negotiate down to version 1.
+PMI version 2 is not covered here.
 
-PMIx ("x" for exascale, from the OpenMPI community) and PMIX extensions
-to PMI-2 ("X" for extension, from the MVAPICH community) are also not
-covered.
+PMIx ("x" for exascale, from the OpenMPI community) is a separate effort
+that provides compatible PMI version 1 and 2 APIs but uses an incompatible
+wire protocol.  PMIx is not covered here.
+
+PMIX ("X" for extension), is as set of extensions to PMI-2.  The PMIX
+extensions are not covered here.
 
 == Overview
 
@@ -76,22 +81,16 @@ synchronization.  Once all processes have reached the barrier, all
 data has been written, and can be read once processes are released
 from the barrier.
 
-Programs generally use PMI-1 by linking against a shared library
-which includes the "standard" API functions described here.
-
-The PMI library, on behalf of a process, MAY communicate with the process
-manager using the PMI-1 wire protocol.  If that method is used, the
-process manager SHOULD pass a "pre-connected" file descriptor, whose
-number is communicated via an environment variable to the process.
-The process then uses the wire protocol over that file descriptor to
-communicate with the process manager.  In principle such a PMI library
-could be independent of both process manager and program.  In practice,
-most PMI libraries are provided by process managers, and use proprietary
-protocols.
+Programs MAY use PMI-1 by linking against a shared library which includes
+the "standard" API functions described below.
 
 If the PMI_FD environment variable is set, this indicates that the PMI
-wire protocol is offered, and a program MAY bypass the PMI library and
-communicate directly with the process manager using the wire protocol.
+wire protocol is offered on an inherited file descriptor, and a program
+MAY bypass the PMI library and communicate directly with the process
+manager over the file descriptor.
+
+The PMI library, on behalf of a process, SHOULD communicate with the
+process manager using the PMI wire protocol.
 
 == Terminology
 
@@ -136,7 +135,7 @@ PMI_SIZE, and PMI_RANK to the file descriptor, size, and rank.
 In addition, if the program was created by 'PMI_Spawn_multiple()',
 the PMI_SPAWNED environment variable SHALL be set to (1).
 
-A process manager SHOULD alter the LD_LIBRARY_PATH environment
+A process manager MAY alter the LD_LIBRARY_PATH environment
 variable so that programs it launches can bind at runtime with the
 correct PMI library.
 
@@ -147,7 +146,7 @@ the PMI library using 'dlopen()'.
 == Application Programming Interface
 
 The PMI library for PMI version 1 SHALL be named "libpmi" and SHALL
-have a shared library major version of 1.
+have a shared library major version of 0.
 
 All function signatures below SHALL be present in a PMI library.
 Functions tagged as OPTIONAL below that are not supported by a process
@@ -588,30 +587,41 @@ TBD
 
 See https://github.com/flux-framework/flux-core/issues/665[flux-framework/flux-core#665]
 
-== PMI 1.1 Wire Protocol
+== Wire Protocol
 
-The PMI-1 wire protocol was deduced from the MPICH simple PMI
-implementation[4] used by the Hydra process manager.  It is shown
-below in ABNF form.
+The reference implementation of the PMI-1 wire protocol is the MPICH
+Hydra[4] process manager.
+
+=== Connection
+
+If the wire protocol is offered, the process manager SHALL "pre-connect"
+a file descriptor, arrange for the file descriptor to be inherited by
+the process, and pass its number in the PMI_FD environment variable
+at process launch time.
+
+=== Version 1.1
+
+The protocol is shown below in ABNF form.
 
 The client SHALL send the init request first, with the highest version
 of PMI supported by the client.  The server SHALL respond with the
-version of PMI that will be used for this connection.  The client MUST NOT
-send other commands until the init operation has completed.  It SHALL then
-proceed in lock-step with the server, until it successfully completes the
-abort or finalize operations.  It SHOULD then close its file descriptor.
+version of PMI that will be used for this connection.  The client SHALL NOT
+send other commands until the init operation has completed.
 
-Some operations include an integer return code.  A server SHALL
-indicate success with a return code of zero.  Some response components
-that are noted as optional by square brackets MAY be omitted in the event
-of failure.  They SHALL be included on success.
+The client SHALL proceed in lock-step with the server, until it successfully
+completes the abort or finalize operations, after which it SHOULD close its
+file descriptor.
 
-As indicated, the name publishing operations SHALL include an error
-string on failure.  This string MAY be omitted on success.
+Some operations include an integer return code "rc".  A server SHALL
+indicate success of these operations with a zero return code, or failure
+with a non-zero return code.  Upon failure, response components that are
+noted as optional by square brackets in the ABNF MAY be omitted from
+the response.  Upon failure, the publish, unpublish, and lookup operations
+MAY include an error string in "msg".
 
 The spawn operation passes zero or more arguments, zero or more "preput"
-elements, and zero or more "info" elements.  These elements have numbered
-indices that SHALL begin with zero and increase monotonically.
+elements, and zero or more "info" elements.  The numbered indices of these
+elements SHALL begin with zero and increase monotonically.
 
 ----
 PMI1            = C:init      S:init
@@ -632,10 +642,12 @@ PMI1            = C:init      S:init
 ; Initialization
 
 C:init          = "cmd=init" SP "pmi_version=" uint SP "pmi_subversion=" uint LF
-S:init          = "cmd=response_to_init" SP "rc=" int [SP "pmi_version=" uint SP "pmi_subversion=" uint] LF
+S:init          = "cmd=response_to_init" SP "rc=" int
+                  [SP "pmi_version=" uint SP "pmi_subversion=" uint] LF
 
 C:maxes         = "cmd=get_maxes" LF
-S:maxes         = "cmd=maxes" SP "rc=" int [SP "kvsname_max=" uint SP "keylen_max=" uint SP "vallen_max=" uint] LF
+S:maxes         = "cmd=maxes" SP "rc=" int
+                  [SP "kvsname_max=" uint SP "keylen_max=" uint SP "vallen_max=" uint] LF
 
 C:abort         = "cmd=abort" LF
 S:abort         = LF
@@ -677,17 +689,17 @@ C:lookup        = "cmd=lookup_name" SP "service=" word LF
 S:lookup        = "cmd=lookup_result" SP "rc=" int SP ["port=" word / "msg=" string ] LF
 
 C:spawn         = "mcmd=spawn" LF
-                = "nprocs=" uint LF
-                = "execname=" string LF
-                = "totspawns=" uint LF
-                = "spawnssofar=" uint LF
-                = *["arg" int "=" string LF]
-                = "argcnt=" uint LF
-                = "preput_num=" uint LF
-                = *["preput_key_" uint "=" word LF "preput_val_" uint "=" string LF]
-                = "info_num=" uint LF
-                = *["info_key_" uint "=" string LF "info_val_" uint "=" string LF]
-                = "endcmd" LF
+                  "nprocs=" uint LF
+                  "execname=" string LF
+                  "totspawns=" uint LF
+                  "spawnssofar=" uint LF
+                  *["arg" int "=" string LF]
+                  "argcnt=" uint LF
+                  "preput_num=" uint LF
+                  *["preput_key_" uint "=" word LF "preput_val_" uint "=" string LF]
+                  "info_num=" uint LF
+                  *["info_key_" uint "=" string LF "info_val_" uint "=" string LF]
+                  "endcmd" LF
 S: spawn        = "cmd=spawn_result" SP "rc=" int [SP "errcodes=" intlist] LF
 
 ; macros
@@ -700,6 +712,10 @@ uint            = 1*DIGIT                       ; unsigned integer
 
 ----
 
+=== Version 1.0 Differences
+
+TBD
+
 == MPI Quirks
 
 Process managers SHOULD take into account the following requirements
@@ -708,7 +724,7 @@ specific to popular MPI implementations.
 === MPICH
 
 If configured without specifying any PMI options, MPICH attempts to use
-the PMI-1 simple wire protocol.
+the wire protocol.
 
 === MVAPICH
 
