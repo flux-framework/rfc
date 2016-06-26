@@ -578,15 +578,6 @@ Notes:
 * These functions were dropped from pmi.h[3] on 2009-05-01 in
 http://git.mpich.org/mpich.git/commit/52c462d2be6a8d0720788d36e1e096e991dcff38[commit 52c462d]
 
-== PMI 1.1 KVS Schema
-
-In PMI 1.1, the process manager SHALL store the local process group information
-in the KVS under the "PMI_process_mapping" key.
-
-TBD
-
-See https://github.com/flux-framework/flux-core/issues/665[flux-framework/flux-core#665]
-
 == Wire Protocol
 
 The reference implementation of the PMI-1 wire protocol is the MPICH
@@ -704,10 +695,10 @@ S: spawn        = "cmd=spawn_result" SP "rc=" int [SP "errcodes=" intlist] LF
 
 ; macros
 
-intlist         = int *[%x2C int]               ; comma-delimited integers
+intlist         = int *["," int]                ; comma-delimited integers
 word            = 1*(%x21-3C %x3E-7E)           ; visible char minus =
 string          = 1*(SP HTAB VCHAR)             ; visible char plus tab, space
-int             = *1(%x2B %x2D) uint            ; signed integer
+int             = *1("+" "-") uint              ; signed integer
 uint            = 1*DIGIT                       ; unsigned integer
 
 ----
@@ -715,6 +706,36 @@ uint            = 1*DIGIT                       ; unsigned integer
 === Version 1.0 Differences
 
 TBD
+
+=== PMI 1.1 Local Process Group Information
+
+In PMI 1.1, the process manager SHALL provide the local process group
+information to programs via the KVS under the "PMI_process_mapping" key.
+The value SHALL consist of a vector of "blocks", where a block is a
+3-tuple of starting node id, number of nodes, and number of processes per
+node, in the following format, expressed in ABNF:
+
+----
+PROCMAP         = "(vector," blocklist ")"
+
+block           = "(" uint "," uint "," uint ")"   ; 3-tuple: (nodeid,nnodes,ppn)
+blocklist       = block *["," block]               ; comma delimited blocks
+
+uint            = 1*DIGIT                          ; unsigned integer
+----
+
+Examples:
+
+* '(vector,(0,16,16))' - 256 processes regularly mapped to 16 nodes,
+16 processes per node.
+* '(vector,(0,8,16),(8,4,32))' - 256 processes irregularly mapped to 12
+nodes, 16 processes per node on the first eight nodes, 32 processes per
+node on the last 4 nodes.
+
+If the process mapping value is too long to fit in a KVS value, the process
+manager SHALL return a value consisting of an empty string, indicating that
+the mapping is unknown.
+
 
 == MPI Quirks
 

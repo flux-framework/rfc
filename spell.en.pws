@@ -264,3 +264,9 @@ LF
 uint
 VCHAR
 indices
+sid
+tuple
+blocklist
+procmap
+nnodes
+ppn
