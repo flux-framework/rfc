@@ -33,8 +33,6 @@ clarifying their "contract" for communication.
 * Document the PMI-1 wire protocol
 * Identify what changed between PMI 1.0 and 1.1
 * Decrease the amount of research required to implement a process manager.
-* Document MPI PMI implementation quirks that should be dealt with by process
-managers seeking a wide range of compatibility
 * Identify which functions are optional, and under what circumstances.
 
 == PMI Versions
@@ -108,7 +106,7 @@ group or a program.
 
 == Caveats
 
-Some deficiencies of PMI 1.0 are noted in the PMI-2 paper[7]:
+Some deficiencies of PMI 1.0 are noted in the PMI-2 paper[6]:
 
 * The process manager may not share information with the program
 using the PMI KVS, as no portion of its namespace was reserved for
@@ -716,12 +714,12 @@ The value SHALL consist of a vector of "blocks", where a block is a
 node, in the following format, expressed in ABNF:
 
 ----
-PROCMAP         = "(vector," blocklist ")"
+PMI_process_mapping = "(vector," blocklist ")"
 
-block           = "(" uint "," uint "," uint ")"   ; 3-tuple: (nodeid,nnodes,ppn)
-blocklist       = block *["," block]               ; comma delimited blocks
+block               = "(" uint "," uint "," uint ")" ; 3-tuple: (nodeid,nnodes,ppn)
+blocklist           = block *["," block]             ; comma delimited blocks
 
-uint            = 1*DIGIT                          ; unsigned integer
+uint                = 1*DIGIT                        ; unsigned integer
 ----
 
 Examples:
@@ -736,37 +734,6 @@ If the process mapping value is too long to fit in a KVS value, the process
 manager SHALL return a value consisting of an empty string, indicating that
 the mapping is unknown.
 
-
-== MPI Quirks
-
-Process managers SHOULD take into account the following requirements
-specific to popular MPI implementations.
-
-=== MPICH
-
-If configured without specifying any PMI options, MPICH attempts to use
-the wire protocol.
-
-=== MVAPICH
-
-MVAPICH, a derivative of MPICH, requires the following environment variables
-to be set to enable PMI:
-
-* MPIRUN_NTASKS - set to the process group size
-* MPIRUN_RANK - set to the process rank
-* MPIRUN_RSH_LAUNCH - set to 1
-
-=== Intel MPI
-
-Intel MPI[6], a derivative of MPICH, requires the following environment
-variable to be set to enable PMI
-
-* I_PMI_MPI_LIBRARY - set to path of PMI library
-
-=== OpenMPI
-
-TBD
-
 == References
 
 * [1] https://drive.google.com/file/d/0B273EWJxZUxsbS15SEkzZGtXU2c/view?usp=sharing[Process Management in MPICH Draft 2.1]
@@ -774,5 +741,4 @@ TBD
 * [3] http://git.mpich.org/mpich.git/blob/HEAD:/src/include/pmi.h[MPICH canonical pmi.h header]
 * [4] http://git.mpich.org/mpich.git/tree/HEAD:/src/pmi/simple[MPICH simple PMI implementation]
 * [5] https://github.com/SchedMD/slurm/blob/master/src/api/pmi.c[SLURM PMI-1 implementation]
-* [6] https://software.intel.com/en-us/articles/how-to-use-slurm-pmi-with-the-intel-mpi-library-for-linux[Intel Developer Zone: How to use SLURM PMI with the Intel MPI Library for Linux?]
-* [7] http://www.mcs.anl.gov/papers/P1760.pdf[PMI: A Scalable Parallel Process-Management Interface for Extreme-Scale Systems], P. Balaji et al, EuroMPI Proceedings, 2010.
+* [6] http://www.mcs.anl.gov/papers/P1760.pdf[PMI: A Scalable Parallel Process-Management Interface for Extreme-Scale Systems], P. Balaji et al, EuroMPI Proceedings, 2010.
