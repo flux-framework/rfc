@@ -33,21 +33,24 @@ clarifying their "contract" for communication.
 * Document the PMI-1 wire protocol
 * Identify what changed between PMI 1.0 and 1.1
 * Decrease the amount of research required to implement a process manager.
-* Document MPI PMI implementation quirks that should be dealt with by process
-managers seeking a wide range of compatibility
 * Identify which functions are optional, and under what circumstances.
 
 == PMI Versions
 
-The main changes between PMI 1.0 and PMI 1.1 are in the wire protocol
-and allowing local process group information to be communicated from
-process manager to program via the key-value store.
+This document covers PMI 1.1.  The API is identical in PMI version 1.0
+and 1.1; the differences are in the wire protocol.
 
-PMI version 2 is a separate API and protocol and is not covered here.
+The PMI version 2 API is disjoint from version 1.  The version 2 wire
+protocol is backwards compatible with PMI version 1 in that a client or
+server that does not support version 2 can negotiate down to version 1.
+PMI version 2 is not covered here.
 
-PMIx ("x" for exascale, from the OpenMPI community) and PMIX extensions
-to PMI-2 ("X" for extension, from the MVAPICH community) are also not
-covered.
+PMIx ("x" for exascale, from the OpenMPI community) is a separate effort
+that provides compatible PMI version 1 and 2 APIs but uses an incompatible
+wire protocol.  PMIx is not covered here.
+
+PMIX ("X" for extension), is as set of extensions to PMI-2.  The PMIX
+extensions are not covered here.
 
 == Overview
 
@@ -76,22 +79,16 @@ synchronization.  Once all processes have reached the barrier, all
 data has been written, and can be read once processes are released
 from the barrier.
 
-Programs generally use PMI-1 by linking against a shared library
-which includes the "standard" API functions described here.
-
-The PMI library, on behalf of a process, MAY communicate with the process
-manager using the PMI-1 wire protocol.  If that method is used, the
-process manager SHOULD pass a "pre-connected" file descriptor, whose
-number is communicated via an environment variable to the process.
-The process then uses the wire protocol over that file descriptor to
-communicate with the process manager.  In principle such a PMI library
-could be independent of both process manager and program.  In practice,
-most PMI libraries are provided by process managers, and use proprietary
-protocols.
+Programs MAY use PMI-1 by linking against a shared library which includes
+the "standard" API functions described below.
 
 If the PMI_FD environment variable is set, this indicates that the PMI
-wire protocol is offered, and a program MAY bypass the PMI library and
-communicate directly with the process manager using the wire protocol.
+wire protocol is offered on an inherited file descriptor, and a program
+MAY bypass the PMI library and communicate directly with the process
+manager over the file descriptor.
+
+The PMI library, on behalf of a process, SHOULD communicate with the
+process manager using the PMI wire protocol.
 
 == Terminology
 
@@ -109,7 +106,7 @@ group or a program.
 
 == Caveats
 
-Some deficiencies of PMI 1.0 are noted in the PMI-2 paper[7]:
+Some deficiencies of PMI 1.0 are noted in the PMI-2 paper[6]:
 
 * The process manager may not share information with the program
 using the PMI KVS, as no portion of its namespace was reserved for
@@ -136,7 +133,7 @@ PMI_SIZE, and PMI_RANK to the file descriptor, size, and rank.
 In addition, if the program was created by 'PMI_Spawn_multiple()',
 the PMI_SPAWNED environment variable SHALL be set to (1).
 
-A process manager SHOULD alter the LD_LIBRARY_PATH environment
+A process manager MAY alter the LD_LIBRARY_PATH environment
 variable so that programs it launches can bind at runtime with the
 correct PMI library.
 
@@ -147,7 +144,7 @@ the PMI library using 'dlopen()'.
 == Application Programming Interface
 
 The PMI library for PMI version 1 SHALL be named "libpmi" and SHALL
-have a shared library major version of 1.
+have a shared library major version of 0.
 
 All function signatures below SHALL be present in a PMI library.
 Functions tagged as OPTIONAL below that are not supported by a process
@@ -579,150 +576,163 @@ Notes:
 * These functions were dropped from pmi.h[3] on 2009-05-01 in
 http://git.mpich.org/mpich.git/commit/52c462d2be6a8d0720788d36e1e096e991dcff38[commit 52c462d]
 
-== PMI 1.1 KVS Schema
+== Wire Protocol
 
-In PMI 1.1, the process manager SHALL store the local process group information
-in the KVS under the "PMI_process_mapping" key.
+The reference implementation of the PMI-1 wire protocol is the MPICH
+Hydra[4] process manager.
+
+=== Connection
+
+If the wire protocol is offered, the process manager SHALL "pre-connect"
+a file descriptor, arrange for the file descriptor to be inherited by
+the process, and pass its number in the PMI_FD environment variable
+at process launch time.
+
+=== Version 1.1
+
+The protocol is shown below in ABNF form.
+
+The client SHALL send the init request first, with the highest version
+of PMI supported by the client.  The server SHALL respond with the
+version of PMI that will be used for this connection.  The client SHALL NOT
+send other commands until the init operation has completed.
+
+The client SHALL proceed in lock-step with the server, until it successfully
+completes the abort or finalize operations, after which it SHOULD close its
+file descriptor.
+
+Some operations include an integer return code "rc".  A server SHALL
+indicate success of these operations with a zero return code, or failure
+with a non-zero return code.  Upon failure, response components that are
+noted as optional by square brackets in the ABNF MAY be omitted from
+the response.  Upon failure, the publish, unpublish, and lookup operations
+MAY include an error string in "msg".
+
+The spawn operation passes zero or more arguments, zero or more "preput"
+elements, and zero or more "info" elements.  The numbered indices of these
+elements SHALL begin with zero and increase monotonically.
+
+----
+PMI1            = C:init      S:init
+                / C:maxes     S:maxes
+                / C:abort     S:abort
+                / C:finalize  S:finalize
+                / C:universe  S:universe
+                / C:appnum    S:appnum
+                / C:put       S:put
+                / C:kvsname   S:kvsname
+                / C:barrier   S:barrier
+                / C:get       S:get
+                / C:publish   S:publish
+                / C:unpublish S:unpublish
+                / C:lookup    S:lookup
+                / C:spawn     S:spawn
+
+; Initialization
+
+C:init          = "cmd=init" SP "pmi_version=" uint SP "pmi_subversion=" uint LF
+S:init          = "cmd=response_to_init" SP "rc=" int
+                  [SP "pmi_version=" uint SP "pmi_subversion=" uint] LF
+
+C:maxes         = "cmd=get_maxes" LF
+S:maxes         = "cmd=maxes" SP "rc=" int
+                  [SP "kvsname_max=" uint SP "keylen_max=" uint SP "vallen_max=" uint] LF
+
+C:abort         = "cmd=abort" LF
+S:abort         = LF
+
+C:finalize      = "cmd=finalize" LF
+S:finalize      = "cmd=finalize_ack" SP "rc=" int LF
+
+; Process Group Information
+
+C:universe      = "cmd=get_universe_size" LF
+S:universe      = "cmd=universe_size" SP "rc=" int [SP "size=" uint] LF
+
+C:appnum        = "cmd=get_appnum" LF
+S:appnum        = "cmd=appnum" SP "rc=" int [SP "appnum=" uint] LF
+
+; Key Value Store
+
+C:put           = "cmd=put" SP "kvsname=" word SP "key=" word SP "value=" string LF
+S:put           = "cmd=put_result" SP "rc=" int LF
+
+C:kvsname       = "cmd=get_my_kvsname" LF
+S:kvsname       = "cmd=my_kvsname" SP "rc=" int [SP "kvsname=" word] LF
+
+C:barrier       = "cmd=barrier_in" LF
+S:barrier       = "cmd=barrier_out" SP "rc=" int LF
+
+C:get           = "cmd=get" SP "kvsname=" word SP "key=" word LF
+S:get           = "cmd=get_result" SP "rc=" int [SP "value=" string] LF
+
+; Dynamic Process Management
+
+C:publish       = "cmd=publish_name" SP "service=" word SP "port=" word LF
+S:publish       = "cmd=publish_result" SP "rc=" int [SP "msg=" string] LF
+
+C:unpublish     = "cmd=unpublish_name" SP "service=" word LF
+S:unpublish     = "cmd=unpublish_result" SP "rc=" int [SP "msg=" string] LF
+
+C:lookup        = "cmd=lookup_name" SP "service=" word LF
+S:lookup        = "cmd=lookup_result" SP "rc=" int SP ["port=" word / "msg=" string ] LF
+
+C:spawn         = "mcmd=spawn" LF
+                  "nprocs=" uint LF
+                  "execname=" string LF
+                  "totspawns=" uint LF
+                  "spawnssofar=" uint LF
+                  *["arg" int "=" string LF]
+                  "argcnt=" uint LF
+                  "preput_num=" uint LF
+                  *["preput_key_" uint "=" word LF "preput_val_" uint "=" string LF]
+                  "info_num=" uint LF
+                  *["info_key_" uint "=" string LF "info_val_" uint "=" string LF]
+                  "endcmd" LF
+S: spawn        = "cmd=spawn_result" SP "rc=" int [SP "errcodes=" intlist] LF
+
+; macros
+
+intlist         = int *["," int]                ; comma-delimited integers
+word            = 1*(%x21-3C %x3E-7E)           ; visible char minus =
+string          = 1*(SP HTAB VCHAR)             ; visible char plus tab, space
+int             = *1("+" "-") uint              ; signed integer
+uint            = 1*DIGIT                       ; unsigned integer
+
+----
+
+=== Version 1.0 Differences
 
 TBD
 
-See https://github.com/flux-framework/flux-core/issues/665[flux-framework/flux-core#665]
+=== PMI 1.1 Local Process Group Information
 
-== PMI 1.1 Wire Protocol
-
-The PMI-1 wire protocol was deduced from the MPICH simple PMI
-implementation[4] used by the Hydra process manager.
-
-=== Initialization
-
-----
-C: cmd=init pmi_version=1 pmi_subversion=1\n
-S: cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1\n
-C: cmd=get_maxes\n
-S: cmd=maxes rc=0 kvsname_max=256 keylen_max=256 vallen_max=256\n
-----
+In PMI 1.1, the process manager SHALL provide the local process group
+information to programs via the KVS under the "PMI_process_mapping" key.
+The value SHALL consist of a vector of "blocks", where a block is a
+3-tuple of starting node id, number of nodes, and number of processes per
+node, in the following format, expressed in ABNF:
 
 ----
-C: cmd=abort exitcode=<integer>\n
-S: \n
+PMI_process_mapping = "(vector," blocklist ")"
+
+block               = "(" uint "," uint "," uint ")" ; 3-tuple: (nodeid,nnodes,ppn)
+blocklist           = block *["," block]             ; comma delimited blocks
+
+uint                = 1*DIGIT                        ; unsigned integer
 ----
 
-----
-C: cmd=finalize\n
-S: cmd=finalize_ack rc=0\n
-----
+Examples:
 
-=== Process Group Information
+* '(vector,(0,16,16))' - 256 processes regularly mapped to 16 nodes,
+16 processes per node.
+* '(vector,(0,8,16),(8,4,32))' - 256 processes irregularly mapped to 12
+nodes, 16 processes per node on the first eight nodes, 32 processes per
+node on the last 4 nodes.
 
-----
-C: cmd=get_universe_size\n
-S: cmd=universe_size rc=0 size=<integer>\n
-----
-
-----
-C: cmd=get_appnum\n
-S: cmd=appnum rc=0 appnum=<integer>\n
-----
-
-=== Key Value Store
-
-----
-C: cmd=put kvsname=<string> key=<string> value=<string>\n
-S: cmd=put_result rc=1\n
-----
-
-----
-C: cmd=get_my_kvsname\n
-S: cmd=my_kvsname rc=0 kvsname=<string>\n
-----
-
-----
-C: cmd=barrier_in\n
-S: cmd=barrier_out rc=0\n
-----
-
-----
-C: cmd=get kvsname=<string> key=<string>\n
-S: cmd=get_result rc=0 value=<string>\n
-----
-
-=== Dynamic Process Management
-
-FIXME: This section needs testing and verification.
-
-----
-C: mcmd=spawn\n
-C: nprocs=<integer>\n
-C: execname=<string>\n
-C: totspawns=<integer>\n
-C: spawnssofar=<integer>\n
-C: arg0=<string>\n
-C: arg1=<string>\n
-C: ...
-C: argcnt=<integer>\n
-
-C: preput_num=<integer>\n
-C: preput_key_0=<string>\n
-C: preput_val_0=<string>\n
-C: preput_key_1=<string>\n
-C: preput_val_1=<string>\n
-C: ...
-
-C: info_num=<integer>\n
-C: info_key_0=<string>\n
-C: info_val_0=<string>\n
-C: info_key_1=<string>\n
-C: info_val_1=<string>\n
-C: ...
-C: endcmd\n
-
-S: cmd=spawn_result rc=0 errcodes 0,0,0,...\n
-----
-
-----
-C: cmd=publish_name service=<string> port=<string>\n
-S: cmd=publish_result rc=0 info=ok\n
-----
-
-----
-C: cmd=unpublish_name service=<string>\n
-S: cmd=unpublish_result rc=0 info=ok\n
-----
-
-----
-C: cmd=lookup_name service=<string>\n
-S: cmd=lookup_result rc=0 info=ok port=<string>\n
-----
-
-== MPI Quirks
-
-Process managers SHOULD take into account the following requirements
-specific to popular MPI implementations.
-
-=== MPICH
-
-If configured without specifying any PMI options, MPICH attempts to use
-the PMI-1 simple wire protocol.
-
-=== MVAPICH
-
-MVAPICH, a derivative of MPICH, requires the following environment variables
-to be set to enable PMI:
-
-* MPIRUN_NTASKS - set to the process group size
-* MPIRUN_RANK - set to the process rank
-* MPIRUN_RSH_LAUNCH - set to 1
-
-=== Intel MPI
-
-Intel MPI[6], a derivative of MPICH, requires the following environment
-variable to be set to enable PMI
-
-* I_PMI_MPI_LIBRARY - set to path of PMI library
-
-=== OpenMPI
-
-TBD
+If the process mapping value is too long to fit in a KVS value, the process
+manager SHALL return a value consisting of an empty string, indicating that
+the mapping is unknown.
 
 == References
 
@@ -731,5 +741,4 @@ TBD
 * [3] http://git.mpich.org/mpich.git/blob/HEAD:/src/include/pmi.h[MPICH canonical pmi.h header]
 * [4] http://git.mpich.org/mpich.git/tree/HEAD:/src/pmi/simple[MPICH simple PMI implementation]
 * [5] https://github.com/SchedMD/slurm/blob/master/src/api/pmi.c[SLURM PMI-1 implementation]
-* [6] https://software.intel.com/en-us/articles/how-to-use-slurm-pmi-with-the-intel-mpi-library-for-linux[Intel Developer Zone: How to use SLURM PMI with the Intel MPI Library for Linux?]
-* [7] http://www.mcs.anl.gov/papers/P1760.pdf[PMI: A Scalable Parallel Process-Management Interface for Extreme-Scale Systems], P. Balaji et al, EuroMPI Proceedings, 2010.
+* [6] http://www.mcs.anl.gov/papers/P1760.pdf[PMI: A Scalable Parallel Process-Management Interface for Extreme-Scale Systems], P. Balaji et al, EuroMPI Proceedings, 2010.

@@ -258,3 +258,15 @@ nprocs
 ok
 spawnssofar
 totspawns
+HTAB
+intlist
+LF
+uint
+VCHAR
+indices
+sid
+tuple
+blocklist
+procmap
+nnodes
+ppn
