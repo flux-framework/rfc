@@ -31,19 +31,21 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 clarifying their "contract" for communication.
 * Document the PMI-1 application programming interface (API)
 * Document the PMI-1 wire protocol
-* Identify what changed between PMI 1.0 and 1.1
+* Document compatibility issues between protocol versions.
 * Decrease the amount of research required to implement a process manager.
 * Identify which functions are optional, and under what circumstances.
 
 == PMI Versions
 
-This document covers PMI 1.1.  The API is identical in PMI version 1.0
-and 1.1; the differences are in the wire protocol.
+This document covers PMI 1.1 with a few notes about backwards
+compatibility with earlier versions.
 
-The PMI version 2 API is disjoint from version 1.  The version 2 wire
-protocol is backwards compatible with PMI version 1 in that a client or
-server that does not support version 2 can negotiate down to version 1.
-PMI version 2 is not covered here.
+The PMI version 2 API is disjoint from version 1.  The version 2
+wire protocol builds on the same fundamental structures as version 1,
+but includes incompatible operations.  Clients and servers negotiate
+the highest mutually supported protocol version, including across major
+protocol versions.  Apart from version negotiation and the common
+fundamentals, PMI version 2 a different protocol and not covered here.
 
 PMIx ("x" for exascale, from the OpenMPI community) is a separate effort
 that provides compatible PMI version 1 and 2 APIs but uses an incompatible
@@ -79,16 +81,10 @@ synchronization.  Once all processes have reached the barrier, all
 data has been written, and can be read once processes are released
 from the barrier.
 
-Programs MAY use PMI-1 by linking against a shared library which includes
-the "standard" API functions described below.
-
-If the PMI_FD environment variable is set, this indicates that the PMI
-wire protocol is offered on an inherited file descriptor, and a program
-MAY bypass the PMI library and communicate directly with the process
-manager over the file descriptor.
-
-The PMI library, on behalf of a process, SHOULD communicate with the
-process manager using the PMI wire protocol.
+Programs may access PMI-1 services provided by a process manager using
+the PMI-1 wire protocol; a shared library providing the PMI-1 API
+implemented using the PMI-1 wire protocol; or less flexibly, a shared
+library providing the PMI-1 API implemented using a proprietary protocol.
 
 == Terminology
 
@@ -106,58 +102,56 @@ group or a program.
 
 == Caveats
 
-Some deficiencies of PMI 1.0 are noted in the PMI-2 paper[6]:
+Some deficiencies of PMI 1 are noted in the PMI-2 paper[6]:
 
-* The process manager may not share information with the program
-using the PMI KVS, as no portion of its namespace was reserved for
-this purpose, though PMI 1.1 does allow local process group information
-to be shared in this way.
 * There is no mechanism to scope a key locally for a subset of processes.
-* PMI-1 is not thread safe.
+* PMI-1 is not thread safe.  On a given PMI connection, only one request
+can be in flight concurrently.
 * There is no way for a program to access the PMI KVS of another cooperating
 program.
 * There is no mechanism for respawning processes when a fault occurs.
 
 In addition, the lack of strong guidance from the MPI Forum has limited
-acceptance of the PMI wire protocol, resulted in incomplete and
-non-scalable PMI implementations, and resulted in stronger coupling
-between process managers and MPI implementations than necessary.
+acceptance of the PMI wire protocol and resulted in incomplete and
+non-conforming PMI library implementations.  This in turn has resulted
+in stronger coupling between process managers and MPI implementations
+than necessary.
 
 == Environment
 
 The process manager MAY use the UNIX environment to communicate basic
 process group information to processes.
 
-If the PMI wire protocol is offered, the process manager SHALL set PMI_FD,
-PMI_SIZE, and PMI_RANK to the file descriptor, size, and rank.
-In addition, if the program was created by 'PMI_Spawn_multiple()',
-the PMI_SPAWNED environment variable SHALL be set to (1).
+If the PMI wire protocol is offered, the process manager SHALL
+set the following environment variables:
 
-A process manager MAY alter the LD_LIBRARY_PATH environment
-variable so that programs it launches can bind at runtime with the
-correct PMI library.
-
-A process manager MAY set the PMI_LIBRARY environment variable to the
-fully qualified path to its PMI library as a hint to programs that open
-the PMI library using 'dlopen()'.
+* PMI_FD - file descriptor process SHALL use to communicate with
+process manager
+* PMI_RANK - rank of this process within the program (zero-origin)
+* PMI_SIZE - size of the program (number of ranks)
+* PMI_SPAWNED - only set (to 1) if the program was created by
+'PMI_Spawn_multiple()'
 
 == Application Programming Interface
 
-The PMI library for PMI version 1 SHALL be named "libpmi" and SHALL
-have a shared library major version of 0.
+Programs SHOULD NOT strongly bind to a particular process manager's
+PMI library, for example with rpath, as this complicates running a
+compiled program under multiple process managers, especially if a
+system includes process managers that use proprietary protocols.
 
-All function signatures below SHALL be present in a PMI library.
-Functions tagged as OPTIONAL below that are not supported by a process
-manager MAY be stubbed so that they return PMI_FAIL and have no effect.
+To provide maximum interoperability, a PMI library SHOULD
 
-Programs SHALL NOT strongly bind to a particular process manager's
-PMI library, for example with rpath, as this complicates running
-a compiled program under multiple process managers.
+* implement the PMI-1 wire protocol
+* be named "libpmi"
+* have a shared library major version number of 0
+* provide all function signatures defined below
 
-Function signatures not described below SHALL NOT be present in a PMI
-library.  There is no defined mechanism for a process manager to
-extend PMI-1 without inadvertently coupling users of the extension
-to the process manager.
+Functions tagged as "OPTIONAL" SHOULD be defined, but may be implemented
+to return PMI_FAIL with no effect.
+
+There is no defined mechanism to extend PMI-1 without inadvertently
+coupling users of a extension to a PMI library and/or process manager,
+therefore PMI libraries SHALL NOT implement functions not defined below.
 
 === Return Codes
 
@@ -339,8 +333,8 @@ Notes:
 'PMI_Get_clique_size()'.
 * This function was dropped from pmi.h[3] on 2011-01-28 in
 http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef]
-* In PMI 1.1 implementations, this information MAY be retrieved from the KVS
-as described under "PMI 1.1 KVS Schema".
+* The implementation should fetch the "PMI_process_mapping" value from the KVS
+and calculate the clique ranks (see below).
 
 [source,c]
 ----
@@ -358,8 +352,8 @@ Notes:
 
 * This function was dropped from pmi.h[3] on 2011-01-28 in
 http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e[commit f17423ef]
-* In PMI 1.1 implementations, this information MAY be retrieved from the KVS
-as described under "PMI 1.1 KVS Schema".
+* The implementation should fetch the "PMI_process_mapping" value from the KVS
+and calculate the clique ranks (see below).
 
 === Key Value Store
 
@@ -578,8 +572,23 @@ http://git.mpich.org/mpich.git/commit/52c462d2be6a8d0720788d36e1e096e991dcff38[c
 
 == Wire Protocol
 
-The reference implementation of the PMI-1 wire protocol is the MPICH
+The reference implementation of the PMI-1.1 wire protocol is the MPICH
 Hydra[4] process manager.
+
+The protocol is comprised of request and response messages.
+All messages SHALL be terminated with a newline.
+Messages SHALL consist of a series of key=value tuples, as defined below.
+
+Only the client (process) SHALL send request messages.  Only the server
+(process manager) SHALL send response messages.  The client and server
+exchange request and response messages in lock-step.
+
+The PMI-1.1 wire protocol is defined below in ABNF form.
+For maximum interoperability, a message parser SHOULD allow
+
+* key=value tuples to appear out of order within a message
+* additional white space to appear between tuples
+* additional keys to be present
 
 === Connection
 
@@ -588,29 +597,37 @@ a file descriptor, arrange for the file descriptor to be inherited by
 the process, and pass its number in the PMI_FD environment variable
 at process launch time.
 
-=== Version 1.1
-
-The protocol is shown below in ABNF form.
+=== Version Negotiation
 
 The client SHALL send the init request first, with the highest version
 of PMI supported by the client.  The server SHALL respond with the
 version of PMI that will be used for this connection.  The client SHALL NOT
 send other commands until the init operation has completed.
 
-The client SHALL proceed in lock-step with the server, until it successfully
-completes the abort or finalize operations, after which it SHOULD close its
-file descriptor.
+=== Error Handling
 
-Some operations include an integer return code "rc".  A server SHALL
-indicate success of these operations with a zero return code, or failure
-with a non-zero return code.  Upon failure, response components that are
-noted as optional by square brackets in the ABNF MAY be omitted from
-the response.  Upon failure, the publish, unpublish, and lookup operations
-MAY include an error string in "msg".
+All responses MAY include an "rc" key.
+On error, the "rc" key SHALL be set to a nonzero value.
+On success, the "rc" key MAY be set to zero, or it may be omitted.
+
+Some responses MAY include a "msg" key.
+On error, the "msg" key MAY be set to an error message.
+On success, the "msg" key MAY be set to "success", or it may be omitted.
+
+If a protocol error occurs, the detecting side SHALL immediately close
+the connection and abort the program.  IT SHOULD log the message so that
+the problem can be tracked down.
+
+=== Spawn Operation
+
+The spawn request consists of multiple newline-terminated messages.
+These messages SHALL NOT be interspersed with messages for other operations.
 
 The spawn operation passes zero or more arguments, zero or more "preput"
 elements, and zero or more "info" elements.  The numbered indices of these
 elements SHALL begin with zero and increase monotonically.
+
+=== Protocol Definition
 
 ----
 PMI1            = C:init      S:init
@@ -631,51 +648,82 @@ PMI1            = C:init      S:init
 ; Initialization
 
 C:init          = "cmd=init" SP "pmi_version=" uint SP "pmi_subversion=" uint LF
-S:init          = "cmd=response_to_init" SP "rc=" int
-                  [SP "pmi_version=" uint SP "pmi_subversion=" uint] LF
+S:init          = "cmd=response_to_init"
+                  [SP "rc=" int]
+                  [SP "pmi_version=" uint SP "pmi_subversion=" uint]
+                  LF
 
 C:maxes         = "cmd=get_maxes" LF
-S:maxes         = "cmd=maxes" SP "rc=" int
-                  [SP "kvsname_max=" uint SP "keylen_max=" uint SP "vallen_max=" uint] LF
+S:maxes         = "cmd=maxes"
+                  [SP "rc=" int]
+                  [SP "kvsname_max=" uint SP "keylen_max=" uint SP "vallen_max=" uint]
+                  LF
 
 C:abort         = "cmd=abort" LF
 S:abort         = LF
 
 C:finalize      = "cmd=finalize" LF
-S:finalize      = "cmd=finalize_ack" SP "rc=" int LF
+S:finalize      = "cmd=finalize_ack"
+                  [SP "rc=" int]
+                  LF
 
 ; Process Group Information
 
 C:universe      = "cmd=get_universe_size" LF
-S:universe      = "cmd=universe_size" SP "rc=" int [SP "size=" uint] LF
+S:universe      = "cmd=universe_size"
+                  [SP "rc=" int]
+                  [SP "size=" uint]
+                  LF
 
 C:appnum        = "cmd=get_appnum" LF
-S:appnum        = "cmd=appnum" SP "rc=" int [SP "appnum=" uint] LF
+S:appnum        = "cmd=appnum"
+                  [SP "rc=" int]
+                  [SP "appnum=" uint]
+                  LF
 
 ; Key Value Store
 
 C:put           = "cmd=put" SP "kvsname=" word SP "key=" word SP "value=" string LF
-S:put           = "cmd=put_result" SP "rc=" int LF
+S:put           = "cmd=put_result"
+                  [SP "rc=" int]
+                  LF
 
 C:kvsname       = "cmd=get_my_kvsname" LF
-S:kvsname       = "cmd=my_kvsname" SP "rc=" int [SP "kvsname=" word] LF
+S:kvsname       = "cmd=my_kvsname"
+                  [SP "rc=" int]
+                  [SP "kvsname=" word]
+                  LF
 
 C:barrier       = "cmd=barrier_in" LF
-S:barrier       = "cmd=barrier_out" SP "rc=" int LF
+S:barrier       = "cmd=barrier_out"
+                  [SP "rc=" int]
+                  LF
 
 C:get           = "cmd=get" SP "kvsname=" word SP "key=" word LF
-S:get           = "cmd=get_result" SP "rc=" int [SP "value=" string] LF
+S:get           = "cmd=get_result"
+                  [SP "rc=" int]
+                  [SP "value=" string]
+                  LF
 
 ; Dynamic Process Management
 
 C:publish       = "cmd=publish_name" SP "service=" word SP "port=" word LF
-S:publish       = "cmd=publish_result" SP "rc=" int [SP "msg=" string] LF
+S:publish       = "cmd=publish_result"
+                  [SP "rc=" int]
+                  [SP "msg=" string]
+                  LF
 
 C:unpublish     = "cmd=unpublish_name" SP "service=" word LF
-S:unpublish     = "cmd=unpublish_result" SP "rc=" int [SP "msg=" string] LF
+S:unpublish     = "cmd=unpublish_result"
+                  [SP "rc=" int]
+                  [SP "msg=" string]
+                  LF
 
 C:lookup        = "cmd=lookup_name" SP "service=" word LF
-S:lookup        = "cmd=lookup_result" SP "rc=" int SP ["port=" word / "msg=" string ] LF
+S:lookup        = "cmd=lookup_result"
+                  [SP "rc=" int]
+                  SP ["port=" word / "msg=" string ]
+                  LF
 
 C:spawn         = "mcmd=spawn" LF
                   "nprocs=" uint LF
@@ -689,7 +737,10 @@ C:spawn         = "mcmd=spawn" LF
                   "info_num=" uint LF
                   *["info_key_" uint "=" string LF "info_val_" uint "=" string LF]
                   "endcmd" LF
-S: spawn        = "cmd=spawn_result" SP "rc=" int [SP "errcodes=" intlist] LF
+S: spawn        = "cmd=spawn_result"
+                  [SP "rc=" int]
+                  [SP "errcodes=" intlist]
+                  LF
 
 ; macros
 
@@ -701,14 +752,16 @@ uint            = 1*DIGIT                       ; unsigned integer
 
 ----
 
-=== Version 1.0 Differences
+=== Back Compatibility
 
-TBD
+Earlier versions of the PMI-1 wire protocol did not include the init
+operation in which versions are exchanged.  Protocol operations that
+were culled in PMI 1.1 are not covered here.
 
-=== PMI 1.1 Local Process Group Information
+=== Local Process Group Information
 
-In PMI 1.1, the process manager SHALL provide the local process group
-information to programs via the KVS under the "PMI_process_mapping" key.
+The process manager SHALL provide the local process group information
+to programs via the KVS under the "PMI_process_mapping" key.
 The value SHALL consist of a vector of "blocks", where a block is a
 3-tuple of starting node id, number of nodes, and number of processes per
 node, in the following format, expressed in ABNF:
