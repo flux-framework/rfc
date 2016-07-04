@@ -1,0 +1,105 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+11/Key Value Store Tree Object Format v1
+========================================
+
+The Flux Key Value Store (KVS) implements hierarchical key namespaces
+layered atop the content storage service described in RFC 10.
+Namespaces are organized as hash trees of content-addressed _tree objects_
+and values.  This specification defines the version 1 format of key value
+store tree objects.
+
+* Name: github.com/flux-framework/rfc/spec_11.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_10{outfilesuffix}[10/Content Storage Service]
+
+== Goals
+
+* Facilitate services implementing private KVS namespaces.
+* Users may directly walk a KVS namespace, starting with a blobref/treeref.
+* Tree objects can be exchanged between Flux instances.
+* Tree objects can be parsed years after they were written (provenance).
+* Values exceeding the blob size limit (RFC 10) can be represented.
+* Tree objects exceeding the blob size limit (RFC 10) can be represented.
+* Values support an append operation.
+* A KVS namespace of arbitrary depth can be "rolled up" into one tree object.
+* Tree objects are (somewhat) self-describing.
+
+== Implementation
+
+All tree objects SHALL be represented as JSON objects containing three top
+level names:
+
+* _ver_, an integer version number
+* _type_, a string type name
+* _val_, a type dependent JSON object
+
+There are five types: 
+
+* _valref_, val is an array of blobrefs comprising opaque data
+* _treeref_, val is an array of blobrefs comprising a tree object
+* _dir_, val is a map of names to tree objects
+* _symlink_, val is a hierarchical key name
+* _value_, val is an arbitrary JSON object, array, or value
+
+=== Valref ===
+
+----
+{ "ver":1,
+  "type":"valref",
+  "val":["sha1-aaa...","sha1-bbb...",...],
+}
+----
+
+=== Treeref ===
+
+----
+{ "ver":1,
+  "type":"treeref",
+  "val":["sha1-aaa...","sha1-bbb...",...],
+}
+----
+
+=== Dir ===
+
+----
+{ "ver":1,
+  "type":"dir",
+  "val":{
+     "a":{"ver":1,"type":"treeref","val":["sha1-aaa"]},
+     "b":{"ver":1,"type":"value","val":42}
+     "c":{"ver":1,"type":"valref","val":["sha1-aaa","sha1-bbb"]},
+     "d":{"ver":1,"type":"dir","val":{...},
+  }
+}
+----
+
+=== Symlink ===
+
+----
+{ "ver":1,
+  "type":"symlink",
+  "val":"a.aa",
+}
+----
+
+=== Value ===
+
+----
+{ "ver":1,
+  "type":"value",
+  "val":42,
+}
+----
+
+

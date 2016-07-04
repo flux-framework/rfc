@@ -141,6 +141,20 @@ C4.1 is meant to provide a reusable optimal collaboration model for open source 
 
 * Maintainers MAY commit changes to non-source documentation directly to the project.
 
+* Autotools products, if applicable, SHOULD NOT be checked into the project
+  revision control system
+
+=== Release Process
+
+* Releases SHALL be tagged with git annotated tags.
+
+* Release names SHALL employ version numbers that follow the
+  Semantic Versioning 2.0.0 standard, (C.f. http://semver.org).
+
+* Release materials for projects that use GNU Autotools SHOULD include
+  "dist tarballs"; that is, a source distribution with pre-generated
+  configure script, Makefile.in, etc..
+
 === Creating Stable Releases
 
 * The project SHALL have one branch ("master") that always holds the latest in-progress version and SHOULD always build.

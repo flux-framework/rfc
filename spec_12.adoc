@@ -1,0 +1,252 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+12/Flux Security Architecture
+=============================
+
+This document describes the mechanisms used to secure Flux instances
+against unauthorized access and prevent privilege escalation and other
+attacks, while ensuring programs run with appropriate user credentials
+and are contained within their set of allocated resources.
+
+* Name: github.com/flux-framework/rfc/spec_12.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_3{outfilesuffix}[3/CMB1 - Flux Comms Message Broker Protocol]
+
+== Goals
+
+* Design for auditability.
+* Minimize code running with elevated privilege.
+* Security algorithms should be configurable according to site policy.
+* Run programs with the credentials of the submitting user.
+* Prevent unauthorized access.
+* Assume networks are NOT physically secure by default.
+* Programs are contained within allotted resources.
+* Integration with Linux distribution security services
+* Integration with site security services
+
+== Overview
+
+Flux is distributed software that runs parallel programs on behalf of
+users in a multi-user Linux environment, including but not limited to
+commodity HPC Linux clusters.   Flux is unique among resource managers
+in that a Flux instance may be launched as a parallel program by an
+unprivileged user.
+
+Flux runs in single and multi-user mode.  A single-user Flux instance
+only launches work as the instance owner.  A multi-user Flux instance
+launches work as other users.
+
+The bootstrap instance of Flux runs as a system service started by
+systemd(8) or equivalent and runs in multi-user mode.  Other instances
+may run in single or multi-user mode, and may be launched by Flux,
+another resource manager, or with a standalone launcher.
+
+== Implementation
+
+This early draft is mainly focused on single-user, non-bootstrap
+Flux instances.
+
+=== Instance Owner ===
+
+The Flux broker processes comprising a Flux instance SHALL run
+as a common user ID termed the "instance owner".  The instance owner
+SHALL have control over the instance and its resources; however,
+the instance owner SHALL NOT have the capability to launch work as
+other users without their consent.
+
+A bootstrap instance MAY run as a dedicated user, such as "flux".
+
+The instance owner SHALL NOT be the root user.
+
+=== Overlay Networks ===
+
+Users other than the instance owner SHALL NOT be permitted to connect
+to an instance's overlay networks.  Since overlay networks are implemented
+using the ZeroMQ messaging library, these connections SHALL be secured
+using a configurable ZeroMQ security plugin other than "NONE".
+ZeroMQ security is documented in:
+
+* http://rfc.zeromq.org/spec:23[ZeroMQ RFC 23 ZMTP ZeroMQ Message Transport Protocol]
+* http://rfc.zeromq.org/spec:24[ZeroMQ RFC 24 ZMTP PLAIN]
+* http://rfc.zeromq.org/spec:25[ZeroMQ RFC 25 ZMTP CURVE]
+* http://rfc.zeromq.org/spec:26[ZeroMQ RFC 26 CurveZMQ]
+* http://rfc.zeromq.org/spec:27[ZeroMQ RFC 27 ZAP ZeroMQ Authentication Protocol]
+* http://rfc.zeromq.org/spec:38[ZeroMQ RFC 38 ZMTP GSSAPI]
+
+The default ZeroMQ security plugin SHALL be "CURVE", which provides
+message privacy, authenticity, and integrity with low overhead.
+The long-term CURVE keys of the instance owner are loaded from the
+file system at instance startup (by default, from their home directory).
+Long term CURVE keys SHALL be encoded in ZeroMQ certificate format that
+is documented in:
+
+* http://hintjens.com/blog:53[Securing ZeroMQ: Soul of a New Certificate], P. Hintjens, October 2013.
+* http://hintjens.com/blog:62[ZeroMQ Certificates, Design Iteration 1], P. Hintjens, October 2013.
+
+A long-term CURVE certificate SHALL NOT be used if it is damaged, or if
+file system permissions allow the private key portion to be read by other
+users.  If certificates are stored in a network file system, it is strongly
+RECOMMENDED that network file system traffic be protected from eavesdropping.
+
+The optional EPGM multicast overlay for Flux events cannot at present be
+secured using ZeroMQ security plugins; therefore, it SHALL be secured by
+encapsulating each message in a MUNGE credential encoded as the instance
+owner with the MUNGE_OPT_UID_RESTRICTION flag set to prevent unauthorized
+access.  MUNGE comes with the presumption of pre-shared MUNGE keys and
+numerical user id synchronization over participating hosts.  If MUNGE is
+unavailable within these constraints, the optional EPGM overlay network
+SHALL NOT be enabled.
+
+=== Direct Broker Connection
+
+The Flux API provides the +flux_open()+ function which connects
+directly to the Flux broker, then permits unrestricted use of Flux
+instance services over that connection.  Users other than the instance
+owner SHALL NOT be permitted to directly connect to the Flux broker.
+Direct broker connections that traverse physical networks SHALL implement
+authenticity, privacy, and integrity.
+
++flux_open()+ uses "connectors" to implement different connection mechanisms.
+The broker side of a connector implementation SHALL provide appropriate
+security, depending on the implementation:
+
+The *local* connector only permits connection via PF_LOCAL socket.
+Users SHALL be authenticated using the SO_PEERCRED socket option, or
+equivalent.  Privacy and integrity are unnecessary in this context.
+
+The *ssh* connector permits connection over untrusted networks.
+Its spawns a remote process using SSH protocol, which implements
+privacy, security, and integrity.  The remote process connects to the
+broker using any of the available connectors.  The *ssh* connector
+has no broker side implementation and therefore adds no new ingress
+points to the broker to be secured.  Its security relies on proper
+configuration of SSH, therefore it is RECOMMENDED that best practices be
+followed when configuring up SSH.
+
+The *shmem* connector only permits connection via ZeroMQ "inproc"
+sockets from comms modules loaded by the broker and spawned as threads.
+No security is required in this context.
+
+The *loop* connector is used only for testing and doesn't connect
+to the broker.  No security is required in this context.
+
+=== Process Management Interface (PMI)
+
+Programs launched by a Flux instance MAY use PMI services,
+a quasi-standard set of APIs and wire protocols, to obtain program
+attributes, exchange endpoint information, and to spawn additional tasks.
+Programs use PMI in one of three methods:
+
+1. Programs link against a shared library provided by the resource
+manager, which provides well known PMI API calls.
+2. Programs are given a connection to the resource manager by passing
+an inherited file descriptor, whose number is communicated with an
+environment variable.  Programs then use a well known PMI wire protocol
+to communicate with the resource manager.
+3. programs and resource managers link against a shared library provided
+by a standalone PMI implementation, which implements both a well known PMI
+API and a resource manager API.  The PMI implementation manages connections
+between programs and resource managers.
+
+In a multi-user instance, PMI service as in (1) SHALL be provided by
+a shared library that implements PMI API in terms of its wire protocol,
+and proceeds as in (2).
+
+In a single-user instance, PMI service as in (1) MAY be provided by
+a shared library that implements PMI API directly in terms of Flux
+services, as a stop-gap measure while multi-user PMI is under development.
+Security is as described for direct broker connections.
+
+PMI service as in (2) SHALL be provided by a purpose-built Flux service
+that implements a handler for PMI wire protocol and pre-connects programs
+using file descriptor passing.  No security is required in this context.
+This PMI service SHALL NOT expose Flux services directly to programs;
+for example, the PMI KVS calls SHALL NOT be allowed full access to the
+Flux KVS namespace.
+
+PMI service as in (3) requires auditing of the standalone PMI implementation
+to ensure that connections are properly secured, and access to Flux services
+is limited as in (2).  (This is the "preferred" PMIx model - viability TBD).
+
+=== Other Program Services
+
+TBD: Tool interfaces, grow/shrink.
+
+=== External Services
+
+TBD: Users other than instance owner ability to list queue, submit work,
+kill their jobs, retrieve I/O, check status, etc..  A web service started
+by instance's initial program?  ACL?
+
+=== Resource Containment
+
+Programs launched by an instance SHALL be contained within their resource
+allotment.
+
+TBD: Unprivileged instance needs to call unshare(2), which requires
+CAP_SYS_ADMIN, etc.
+
+TBD: Containment should be implemented as a stack of plugins that execute
+at different points in the life cycle of a program.
+
+=== Multi-user Considerations
+
+TBD: Unprivileged instance needs to call seteuid(2), which requires
+CAP_SET_UID, etc.
+
+TBD: Unprivileged instance SHALL NOT be able to launch processes
+as a user other than the instance owner without approval of that user.
+(The instance owner "owns" the resources allocated to the instance;
+the user "owns" their identity)
+
+=== Integration with OS Security Software
+
+As a general rule Flux, and the packages it depends on, SHOULD link against
+packaged, shared library versions of security significant software provided
+by the OS distribution.  This allows Flux to receive timely fixes for
+security vulnerabilities, without requiring Flux to be rebuilt.
+These include:
+
+* libzmq.so, libczmq.so
+* libsodium.so (libzmq should avoid configuring built in "tweetnacl" alternative)
+* libgssapi_krb5.so, libkrb5.so, libk5crypto.so, etc..
+
+TBD: integration MAY be required with:
+
+* SELinux
+* Linux pluggable authentication modules (PAM)
+* Linux cgroups
+* Linux private namespaces (unshare(2))
+* systemd
+* SSH
+
+=== Integration with site services
+
+TBD: integration MAY be required with:
+
+* Kerberos V
+* LDAP
+* file systems
+
+== See also
+
+* https://github.com/dun/munge/wiki[MUNGE Uid 'N' Gid Emporium], C. Dunlap
+* http://hintjens.com/blog:35[Securing ZeroMQ: the Sodium Library], P. Hintjens, March 2013.
+* http://hintjens.com/blog:36[Securing ZeroMQ: CurveZMQ protocol and implementation], P. Hintjens, March 2013.
+* http://hintjens.com/blog:39[Securing ZeroMQ: draft ZMTP v3.0 Protocol], P. Hintjens, April 2013.
+* http://hintjens.com/blog:45[Securing ZeroMQ: Circus Time], P. Hintjens, July 2013.
+* http://hintjens.com/blog:48[Using ZeroMQ Security (part 1)], P. Hintjens, September 2013.
+* http://hintjens.com/blog:49[Using ZeroMQ Security (part 2)], P. Hintjens, September 2013.
+* https://gist.github.com/cbusbey/11265987[Gist: ZeroMQ with GSSAPI], C. Busbey, April 2014.
+
+

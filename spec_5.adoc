@@ -4,7 +4,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 ================================
 
 This specification describes the format of messages used to
-load Flux dynamic shared object modules, and the sybmols that
+load Flux dynamic shared object modules, and the symbols that
 such modules must define.
 
 * Name: github.com/flux-framework/rfc/spec_5.adoc
@@ -32,45 +32,146 @@ The goals of the Flux Module Extension Protocol are:
 * Module name should indicate what service/component the module extends.
 * Define mechanism to pass arguments to modules at insertion time.
 
+== Introduction ==
+
+In this description, "base component" is used to describe any Flux
+component that is being extended with modules, and "extension module"
+is used to describe the extension.  A Flux component may have both
+roles; For example, comms modules, introduced in RFC 3, are extension
+modules that extend the Flux broker base component.  When a comms
+module _itself_ has extension modules, it is also a base component.
+The design places no limit on the depth of the extension hierarchy;
+that is, extension modules can have extension modules which can have
+extension modules, etc..
+
+Extension modules may be implemented as "messaging actors", which
+execute in their own thread and communicate with the base component
+exclusively with messages, or as "plugins" that provide a set of
+well known function entry points that are called from the base
+component's thread of control.  Both types of extension module define
+common symbols and can be loaded/unloaded/listed with common management
+messages and user tools, thus reducing duplication of effort across Flux
+components.  A base component may support one or both types, according
+to its requirements.
+
+Extension modules are assigned names that indicate their position
+the extension hierarchy.   An extension module with a single word
+name like "foo" is a comms module;  its module extension names have
+"foo." as a prefix, e.g. "foo.bar";  _its_ module extension names
+of "foo.bar." as a prefix, e.g. "foo.bar.baz; etc..
+
+Base components with extension modules must handle requests to load,
+unload, and list their extension modules.  For example, a comms module
+named "foo" would implement request handlers for "foo.insmod", "foo.rmmod",
+and "foo.lsmod".  This allows a single tool to be used to manage
+extension modules for all Flux components that have them.
+
+Base components that are extended by messaging actor based extension
+modules should provide message routing services to their extension modules.
+For example, a request to "foo.bar.ping" would be delivered to "foo",
+which should have registered a request handler for "foo.bar.*".  That
+request should be routed by "foo" to "bar", which would send a ping
+response message back through the same routes taken by the request.
+
+Plugin style extension modules have no communications path to the base
+component and no thread of control, so they cannot have managed extension
+modules without a proxy arrangement with the base component.
+
+
 == Implementation
 
 === Extension Module Symbols
 
-A Flux extension module SHALL declare at least the following global symbols:
+A Flux extension module SHALL export the following global symbols:
 
 +const char *mod_name;+::
 A null-terminated C string defining the module name.
-The module name SHALL be structured as set of words delimited by periods,
-interpreted as zero or more service name words followed by exactly
-one module base name word.  If the service name is not defined,
-the service is Flux Comms Message Broker.
+The module name SHALL be structured as set of component names
+delimited by periods.
 
 +int mod_main (void *context, int argc, char **argv);+::
-A C function that SHALL be called by the service with argc, argv style
-module arguments and an opaque, service-dependent context at module
-load time.  The purpose of the function is service-specific.
+A C function that SHALL either be the entry point for a thread
+of control, or an initialization function.  This function SHALL
+return zero to indicate success or -1 to indicate failure.
+The POSIX `errno` thread-specific variable should be set to indicate the
+type of error on failure.
 
-A module loading service MAY call +dlopen()+ with _RTLD_LOCAL_ flag,
+A Flux extension module MAY export the following global symbols:
+
++const char *service_name;+::
+A null-terminated C string defining the service name provided by the
+module, if different from the module name.
+
+A base component MAY call +dlopen()+ with _RTLD_LOCAL_ flag,
 then access these symbols with +dlsym()+.
 
-A module loading service MAY create a new thread or process and
-pass control to +mod_main()+ to create a messaging _actor_.
+=== Loading an Extension Module ===
 
-A module loading service MAY use +mod_main()+ as an accessor to set
-options in a module context, and then use +dlsym()+ to access
-service-specific methods provided by the plugin in a more traditional
-extension model.
+A base component SHALL load an extension module either as a
+messaging actor or a plugin.
 
-=== Message Definitions
+A messaging actor style extension module SHALL be launched in its own
+thread or process with a communications socket connected to its base component.
+In the new thread or process, +mod_main()+ SHALL be called with optional
+arguments and a handle representing the communications socket.  When
++mod_main()+ returns, the module thread or process SHALL exit.
+While the module thread or process is executing, the base component provides
+message routing services on its behalf.
+
+A plugin style extension module's  +mod_main()+ SHALL be called as an
+initialization function in the base component's thread of control.
+The base component MAY use +dlsym()+ to access service-specific methods.
+
+=== Monitoring an Extension Module ===
+
+A messaging actor style extension module SHALL send RFC 3 keepalive messages
+containing status integers to the base component over its communications
+socket.  Status integers are enumerated as follows:
+
+* FLUX_MODSTATE_INIT (0) - initializing
+
+* FLUX_MODSTATE_SLEEPING (1) - sleeping
+
+* FLUX_MODSTATE_RUNNING (2) - running
+
+* FLUX_MODSTATE_FINALIZING (3) - finalizing
+
+* FLUX_MODSTATE_EXITED (4) - `mod_main()` exited
+
+Keepalive messages SHALL be sent to the base component on each state transition.
+In addition, keepalive message MAY be sent to the base component at regular
+intervals.  The keepalive `errnum` field SHALL be zero except
+when `mod_main()` returns a value of -1 indicating failure and state
+transitions to FLUX_MODSTATE_EXITED.  In this case `errnum` SHALL be set
+to the value of POSIX `errno` set by `mod_main()` before returning.
+
+Base components MAY track the number of session heartbeats since an
+extension module last sent a message to the base component and report
+this as "idle time" for the extension module.
+
+=== Unloading an Extension Module ===
+
+A base component that supports dynamic unloading of messaging actor style
+extension modules SHALL send a shutdown request to the extension module.
+In response, the extension module SHALL exit `mod_main()`, send a
+keepalive transition to FLUX_MODSTATE_EXITED state, and exit the
+extension module's thread or process.  This final state transition indicates
+to the base component that it MAY clean up the thread or process.
+
+=== Module Management Message Definitions
 
 Module management messages SHALL follow the CMB1 rules described
 in RFC 3 for requests and responses with JSON payloads.
 
-Module management messages are defined for reuse by multiple services.
-A service supporting module extensions SHALL implement the _insmod_,
+A base component supporting extension modules SHALL implement the _insmod_,
 _rmmod_, and _lsmod_ methods.  A general utility supporting module
 management SHALL dynamically construct message topic strings by
 combining the service name with these methods as described in RFC 3.
+
+The base component's `insmod` request handler SHALL wait until the
+state transitions out of FLUX_MODSTATE_INIT before returning a response.
+If it transitions immediately to FLUX_MODSTATE_EXITED, and the `errnum`
+value is nonzero, an error response SHALL be returned as described in RFC 3.
 
 Module management messages are described in detail by the following
 ABNF grammar:
@@ -80,7 +181,7 @@ MODULE          = C:insmod-req S:insmod-rep
                 / C:rmmod-req  S:rmmod-rep
                 / C:lsmod-req  S:lsmod-rep
 
-; Multi-part 0MQ messages
+; Multi-part zeromq messages
 C:insmod-req    = [routing] insmod-topic insmod-json PROTO ; see below for JSON
 S:insmod-rep    = [routing] insmod-topic PROTO
 
@@ -92,7 +193,7 @@ S:lsmod-rep     = [routing] lsmod-topic lsmod-json PROTO   ; see below for JSON
 
 ; topic strings are optional service + module operation
 insmod-topic    = [service] "insmod"
-rmmod-topic     = [service] "rmsmod"
+rmmod-topic     = [service] "rmmod"
 lsmod-topic     = [service] "lsmod"
 service         = 1*(ALPHA / DIGIT / ".") "."
 
@@ -100,7 +201,7 @@ service         = 1*(ALPHA / DIGIT / ".") "."
 ----
 
 JSON payloads for the above messages are as follows, described using
-https://tools.ietf.org/html/draft-newton-json-content-rules-04[JSON
+https://tools.ietf.org/html/draft-newton-json-content-rules-05[JSON
 Content Rules]
 
 ----
@@ -118,9 +219,10 @@ lsmod-obj {
     "size"     : integer 0..      ; module file size
     "digest"   : string           ; SHA1 digest of module file
     "idle"     : integer 0..      ; comms idle time in heartbeats
+    "status"   : integer 0..      ; module state (enumerated above)
 }
 
-lsmod-json [
-    *lsmod-obj
-]
+lsmod-json {
+    "mods"     : [ *lsmod-obj ]
+}
 ----
