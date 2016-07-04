@@ -9,14 +9,14 @@ definition in a job specification (jobspec) context.
   resource graph where a resource is unavailable.
 - **Id-List:** A possibly-condensed name/id set, following the semantics of a
   hostlist
-- **Link:** Conceptually every specification is a directed graph of nodes and
-  edges.  *Links* represent the edges, and consist of a source, destination,
-  type and tags.  Links from root to child `(cluster->Rack->Node...)` of type
-  "with" form the hardware tree, and can be assumed to be directed downward.
-- **Resource:** A single resource node, consisting of either: a resource
+- **Resource:** A single resource vertex, consisting of either: a resource
   type/name and range; or an id-list.  Each resource may optionally contain
-  tags and *links* to other resources.
-- **Slot/Shard:** A resource with an associated task. The leaf-resources in a
+  attributes and *edges* connecting to other resources.
+- **Edges:** Conceptually every specification is a directed graph of nodes and
+  edges.  Edges consist of a source, destination, type and attributes.  Edges
+  from root to child `(cluster->Rack->Node...)` of type "with" form the
+  hardware tree, and can be assumed to be directed to form a strict tree.
+- **Slot (Task Slot):** A resource with an associated task. The leaf-resources in a
   resource-tree under a program are implicitly converted into slots if no
   slots are explicitly specified in the tree.
 - **Sharing:** A resource may be allocated as: exclusive, unique to this job;
@@ -42,48 +42,95 @@ with a *task*, thus making it a *slot* or *shard*.
 more *programs*.
 
 
-## TLDR
+## Canonical jobspec
 
-There are two languages in here, but they are both usable in both places.
-Here are common case examples in the long and short forms.
+A short-form of the spec is likely to be required to be practical on the
+command line, but the canonical representation should form the basis for other
+versions.  This is a leaner version of what we've previously discussed, but
+retains the core features while simplifying the parsing and requirements in
+the short term.  Examples are presented in YAML, but any nested key-value
+format would be reasonable, and in fact lua may be wise as the final form once
+constraints can be determined.  Either way, the general format should stay the
+same.
+
+### General structure
+
+A jobspec is composed of at least one task specification and one resource
+specification. This document discusses these things as specified together, but
+it is likely that components of each will be generated from command-line
+arguments in some cases.  Assume strings are matched case-insensitive by
+default.  The general form follows:
+
+```yaml
+program:
+    <program properties> #wallclock, etc, are set at this level
+    tasks: #optional top-level task specification, will be inherited by inner
+           #tasks
+        name: #optional name to disambiguate this task of this program
+        command: #string or list of arguments
+        count: #number of tasks of this type to run
+        slot: #name of slot to associate with, only meaningful on top-level
+              #task-spec
+        attributes: #arbitrary dictionary of attributes
+    resources: # list of required resources, nested to allow with-a
+               # relationships
+        type: #resource type
+        name: #resource name or expression
+        id: #resource id or expression
+        count: #number of discrete instances of this resource required
+        amount: <num><unit>#amount of given resource required, for pool
+                           #resources, exclusive of count
+        with: #special shorthand for edges: { type: with, ...}
+        edges:
+            - type: #edge type
+              attributes: # arbitrary attributes
+              count: #number of edges of this type allowed
+```
+
+The outermost "program" name can be assumed in most user-specified contexts,
+and is in examples below.
 
 ### Run a flux instance on one Node
 
 Long:
 
 ```yaml
-Node
+resources:
+    type: node
 ```
-
-Short: `Node`
 
 ### Run an instance on between 9 and 300 nodes, allowing only counts which are cubes of 9
 
 Long:
 
 ```yaml
-Node[9:300:^3]
-```
+resources:
+    type: node
+    count: 
+        min: 9
+        max: 300
+        stride:^3
 
-Short: why?
+--- # OR
+
+resources:
+    type: node[9:300:^3]
+```
 
 ### Run `hostname` 20 times, 5 each on four nodes
 
 Long:
 
 ```yaml
-tasks: #program-level default inherited by slots
-  - command: hostname
-    range: 5
-    # range-type: per-slot # already the default
 resources:
-  - name: Node
-    range: 4 #leaf-level is a slot, inherits task
+  - type: node
+    count: 4
+    tasks:
+        command: hostname
+        count: 5 # replicate 5 times *per node*
 ```
 
-Short: `Node[4]?tasks:{"command":"hostname"}[5]`
-
-CLI version: `-r 'Node[4]' -t 5 hostname`
+Possible CLI version: `-r 'node[4]' -t 5 hostname`
 
 ### 11 tasks, one node, first 10 using one core and 4G of RAM for `read-db`, last using 6 cores and 24G of RAM for `db`
 
@@ -94,49 +141,25 @@ Long:
 
 ```yaml
 resources:
-    - name: Node
-      with>:
-        - name: Group
+    - type: node
+      with:
+        - type: group # Note, special resource type "group" to add a level
           tasks: 
               command: read-db
-              range: 10
-          with>: 
-            - Core
-            - name: Memory
-              range: 4
-              range-unit: G
-        - name: Group
-          tasks: db
-          with>:
-            - name: Core
-              range: 6
-            - name: Memory
-              range: 24
-              range-unit: G
-```
-
-Medium:
-
-```yaml
-resources:
-    - name: Node
-      with>:
-        - name: Group
+              count: 10
+          with: 
+            - core
+            - type: Memory
+              amount: 4GB
+        - type: group
           tasks: 
-            command: read-db
-            range: 10
-          with>: 
-            - Core
-            - Memory[4]G
-        - name: Group
-          tasks: db
-          with>:
-            - Core[6]
-            - Memory[24]G
+              command: db
+          with:
+            - type: Core
+              count: 6
+            - type: Memory
+              amount: 24GB
 ```
-
-Short: `Node(>Group(?tasks:{"command":"read-db","range":"[10]"}, >Core, >Memory[4]G),>Group(?tasks:db, >Core[6], >Memory[24]G))`
-Short with backref and inward links: `Node=n1, @n1>Memory[4]G(>Core,?tasks:{"command":"read-db","range":"[10]"}), @n1>Memory[24]G?tasks:{"command":"db"}>Core[6]`
 
 ### Crazy example from OAR
 
@@ -144,20 +167,24 @@ Short with backref and inward links: `Node=n1, @n1>Memory[4]G(>Core,?tasks:{"com
 
 ```yaml
 resources:
-    - name: Cluster
-      with>:
-        - name: Node
-          range: 2
-          with>:
-            - Memory[4096]GB
-            - InfiniBand10G
-        - Switch>Node[2]>Core
+    - type: Cluster
+      with:
+        - type: Node
+          count: 2
+          with:
+            - type: Memory
+              amount: 4096GB
+            - type: InfiniBand10G
+        - type: Switch
+          with:
+            type: Node
+            count: 2
+            with:
+                type: Core
 walltime: 4h
 ```
 
 Or short: `Cluster(>Node[2](>Memory[4096]GB,>InfiniBand10G),>Switch>Node[2]>Core)`
-
-Walltime being separate.
 
 ## Concept
 
@@ -174,7 +201,7 @@ A program MUST contain:
   *resources*
 
 A program MAY contain:
-- *tags* a list of zero or more tags
+- *attributes* a list of zero or more tags
 - *dependencies* a list of zero or more dependencies, when no dependencies
   exist, a per-job logical dependency can be assumed
 
@@ -182,13 +209,13 @@ A program MAY contain:
 
 A resource node MUST contain:
 - One of:
-    - *name/type* and *range*, where the range may default to 1 OR
+    - *type* and *count*, where the count may default to 1 OR
     - *id-list* of the hostlist form representing the unique IDs of the
       constituent resources OR
     - *uuid-list* a list of uuids, referencing all constituent resources
 
 A resource MAY contain:
-- *links* a list of links to other resources or nodes generally, in or out, of
+- *edges* a list of edges to other resources or nodes generally, in or out, of
   any type, a link of type `t` may also be represented by a key named `t>` for
   an outbound link `<t` for an inbound link or `<t>` for an omnidirectional
   link.  When specified as such, the link accepts a list of targets, this is
@@ -212,9 +239,9 @@ A task MUST contain:
 A task MAY contain:
 - *tags* a key-value dictionary of arbitrary tags
 
-### Link
+### Edge
 
-Usually links are not inspected as nodes themselves, but when greater
+Usually edges are not inspected as vertices themselves, but when greater
 precision is necessary, they may be specified in full form.
 
 A link MUST contain:
@@ -225,74 +252,24 @@ A link MUST contain:
   may be used to represent other hierarcies or graphs
 
 A link MAY contain:
-- *tags* a key-value dictionary of extra attributes
-
-## Short-form
-
-To reduce typing, and make it possible to use this on the command line without
-losing one's mind, a short-form syntax is also proposed.  The EBNF grammar is
-currently approximately as follows:
-
-```ebnf
-(* Range *)
-range-min = numeric
-range-max = numeric
-range-stride-op = "*", "+", "-", "^"
-range-stride-num = numeric
-range = "[", range-min, [ ":", range-max, [ ":", [range-stride-op], range-stride-num ] ], "]"
-range-unit = ident (* Unit to apply to the range, used in resource to denote
-                      pools, and in queries to denote a unit to extract from the pool,
-                      such as MB, GB or MBps *)
-
-(* Link *)
-with-link-out = ">"
-with-link-in = ">"
-link-type = ident | quoted_string
-link-body = "-", [link-type], [range], "-"
-typed-link-in = ">", link-body, ">"
-typed-link-out = "<", link-body, "<"
-typed-link-omni = "<", link-body, ">"
-link-target = resource
-link = (with-link-in
-      |with-link-out
-      |typed-link-in
-      |typed-link-out
-      |typed-link-omni ) , link-target
-
-(* Task *)
-command = ident | quoted_string | '[' , yaml_list , ']' (* double braces *)
-task = '$', [ command ], [ range ] (* Per-shard range only for now *)
-
-(* Resource *)
-id-list = { ident | hostlist-ident } 
-id-definition = "=", ident
-tag-key = ident | quoted_string
-tag-value = ident | quoted_string | yaml_block
-attribute-assignment = "?", tag-key, [ ":", tag-value ]
-attribute = link | attribute-assignment
-attribute-list = [task], attribute | "(", { attribute | task, "," } , ")"
-resource-type = ident | quoted_string (* any resource type *)
-resource = (resource-type, [( range, [ range-unit ] | id-definition)] 
-            |  "@", id-list) , [attribute-list]
-```
+- *attributes* a key-value dictionary of extra attributes
 
 ## Usage
 
-In order to make use of this hierarchy less onerous,
-a complete default tree is provided.  If a jobspec contains only lower levels,
-they will override values in the default to form a full jobspec.  That default
-jobspec is currently this:
+In order to make use of this hierarchy less onerous, a complete default tree
+could be provided in the future.  The following proposes a default that might
+be used for this purpose. 
 
 ```yaml
 --- #!job
 # each document is a job, which contains a list of programs
 default-task: &def-task
       command: flux-broker
-      range: 1
-      range-type: per-shard #could also be total or others later
+      count: 1
+      range-type: per-slot #could also be total or others later
       affinity: bind
 default-resource: &def-res #!resource
-  - range: 1
+  - count: 1
     name: PU # Smallest allocatable unit
     allocate: exclusive #default when not specified is shared, innermost exclusive
 default-program: &def-prog
