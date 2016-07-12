@@ -78,6 +78,13 @@ standardized by the MPI Forum and has been only lightly documented.
 This RFC is an attempt to document PMI-1 to guide developers of resource
 managers that must support current and legacy MPI implementations.
 
+link:spec_14{outfilesuffix}[14/Canonical Job Specification]::
+A domain specific language based on YAML is defined to express the
+resource requirements and other attributes of one or more programs
+submitted to a Flux instance for execution.  This RFC describes the
+canonical form of the jobspec language, which represents a request to
+run exactly one program.
+
 == Change Process
 
 The change process is

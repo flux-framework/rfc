@@ -1,0 +1,109 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+14/Canonical Job Specification
+==============================
+
+A domain specific language based on YAML is defined to express the
+resource requirements and other attributes of one or more programs
+submitted to a Flux instance for execution.  This RFC describes the
+canonical jobspec form, which represents a request to run exactly
+one program.
+
+
+* Name: github.com/flux-framework/rfc/spec_14.adoc
+* Editor: Tom Scogland <scogland1@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+* link:spec_4{outfilesuffix}[4/Flux Resource Model]
+* link:spec_12{outfilesuffix}[12/Flux Task and Program Execution Services]
+
+== Goals
+
+* Express the resource requirements of a program to the scheduler.
+* Allow graph-oriented resource requirements to be expressed.
+* Express program attributes such as arguments, run time, and
+task layout, to be considered by the program execution service (RFC 12)
+* Express dependencies relative to other programs executing within
+the same Flux instance.
+* Emphasize expressivity over simplicity, as this canonical form
+may be generated from other user-friendly forms or interfaces.
+* Facilitate reproducible runs.
+* Promote sharing and reuse of jobspec.
+
+== Overview
+
+This RFC describes the canonical form of "jobspec", a domain specific
+language based on YAML[1].  The canonical jobspec SHALL consist of
+a single YAML document representing a reusable request to run
+exactly one program.  Hereafter, "jobspec" refers to the canonical
+form, and "non-canonical jobspec" refers to the non-canonical form.
+
+Non-canonical jobspec SHALL be decomposed into jobspec before
+it is enqueued for the scheduler and program execution service.
+
+User facing tools MAY generate jobspec from non-canonical jobspec,
+or other sources.  Such tools MAY:
+
+* generate a batch of dependent jobspecs representing a scientific workflow
+* generate a stream of jobspecs representing a steered parameter study
+* convert simulation parameters into jobspec containing computed
+resource requirements, etc.
+* convert command line arguments to jobspec, e.g. "flux mpirun"
+
+=== Jobspec and Program Life Cycle
+
+The jobspec SHALL be submitted to a job submission service.  Malformed
+jobspec SHALL be immediately rejected by the job submission service.
+A stack of plugins SHALL test jobspec against site or user defined
+criteria, and on failure, MAY reject the jobspec, or MAY warn the user
+and continue on.  The job submission service SHALL enqueue the jobspec
+for consideration by the scheduler.
+
+The scheduler SHALL consider each enqueued jobspec in the context of its
+dependencies and the pool of available resources.  When the scheduler
+chooses to execute a job, it allocates resources, associates them
+with the jobspec, and notifies the program execution service to start
+the program(s).
+
+The program execution service, described in RFC 12, launches the program(s).
+Task slots, containment, and task layout SHALL be created within the
+allocated resources as described by the jobspec, or if that is not
+possible, the job SHALL enter a failed state and resources SHALL
+be returned to the scheduler.
+
+Once a job is retired, the jobspec SHALL be retained as part of
+its provenance record.
+
+=== Resource Matching
+
+Resources are represented as hierarchies or graphs, as described in RFC 4.
+
+FIXME: describe how Flux hierarchical resource representation affects
+jobspec design.
+
+=== Terminology
+
+FIXME: Fill in
+
+== Jobspec Language Definition
+
+FIXME: Fill in
+
+== Basic Use Cases
+
+To implement basic resource manager functionality, the following use
+cases SHALL be supported by the jobspec:
+
+FIXME: Fill in
+
+== References
+
+* [1]http://yaml.org/spec/current.html#representation[YAML Ain't Markup Language (YAML™) Version 1.1], O. Ben-Kiki, C. Evans, B. Ingerson, 2004.

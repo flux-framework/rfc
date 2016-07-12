@@ -272,3 +272,15 @@ nnodes
 ppn
 tuples
 interoperability
+jobspecs
+jobspec
+workflow
+acyclic
+reusability
+hostlist
+expressivity
+enqueued
+Ingerson
+Kiki
+YAML
+mpirun
