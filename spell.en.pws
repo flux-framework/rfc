@@ -303,7 +303,6 @@ memnode
 myapp
 nbcore
 nnodes
-nodoes
 ntasks
 oarsub
 salloc
