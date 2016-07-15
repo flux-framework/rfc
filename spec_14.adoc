@@ -95,7 +95,306 @@ FIXME: Fill in
 
 == Jobspec Language Definition
 
-FIXME: Fill in
+A canonical jobspec YAML document SHALL consist of a dictionary
+defining the resources, tasks and other attributes of a single
+program. The dictionary MUST contain the keys `resources`, `tasks`,
+`walltime`, `attrs`, and `version`.
+
+Each of the listed jobspec keys SHALL meet the form and requirements
+listed in detail in the sections below. For reference, a ruleset for
+compliant canonical jobspec is provided using *JSON Content Rules*[2]
+in the *Content Rules* at the end of this section.
+
+=== Resources
+
+The value of the `resources` key SHALL be a strict list which MUST
+define at least one resource. Each list element SHALL represent a
+*resource vertex*  or resource descriptor object as a dictionary
+(described below).  The list of resources defined under the `resources`
+key SHALL represent a composite resource request for the program
+defined in the jobspec.
+
+A resource vertex SHALL contain the following keys:
+
+ *type*::
+ The `type` key for a resource SHALL indicate the type of resource to
+ be matched. Some type names MAY be reserved for use in the jobspec
+ language itself. Currently reserved types include `slot`, used to
+ define *task slots*, and `group` used to add an unnamed level of
+ grouping to a resource request. Reserved types are described in the
+ *Reserved Resource Types* section below.
+
+ *count*::
+ The `count` key SHALL indicate the desired number or range of
+ resources matching the current vertex. The value of `count` SHALL be a
+ dictionary which SHALL contain the following keys:
++
+[horizontal]
+   *min*::: The minimum required count or amount of this resource
+
+   *max*::: The maximum required count or amount of this resource
+
+   *operator*::: An operator applied between `min` and `max` which
+   returns the next acceptable value
+
+   *operand*::: The operand used in conjunction with `operator`
+   to get the next value between `min` and `max`.
+
+A resource vertex MAY additionally contain one or more of the
+following keys
+
+ *unit*::
+ The `unit` key, if supplied, SHALL have a string value indicating
+ the chosen units applied to the `count` value or values.
+
+ *exclusive*::
+ The `exclusive` key SHALL be a boolean  indicating, when true,  that
+ the current resource is requested to be allocated exclusively to
+ the current program. If unset, the default value for `exclusive` SHALL
+ be `false` for vertices that are not within a task slot. The default
+ value for `exclusive` SHALL be `true` for task slots (`type: slot`)
+ and their associated resources.
+
+ *with*::
+ The `with` key SHALL indicate an edge of type `out` from this resource
+ vertex to another resource. Therefore, the value of the `with` key
+ SHALL be a dictionary conforming to the resource vertex specification.
+
+ *edge*::
+ **XXX**: need specification for other "edge match descriptors"
+
+ *id*::
+ The value of the `id` key SHALL be a string indicating a set of
+ matching resource identifiers.
+
+ *uuid*::
+ The value of the `uuid` key SHALL be a string indicating a set of
+ matching resource UUIDs.
+
+ *tags*::
+ The value of the `tags` key SHALL be a dictionary with supported key
+ `list` which SHALL be a list of string tags required. Other keys MAY
+ be reserved for future or site-specific extensions.
+
+ *attributes*::
+ The value of the `attributes` key SHALL be a dictionary with supported
+ key `list` which SHALL be a list of dictionaries with required attributes
+ as keys, and their required values as the key values. Other keys in
+ the attributes dictionary MAY be reserved for future or site-specific
+ extensions.
+
+
+==== Reserved Resource Types
+
+*group*:: A resource type of `type: group` SHALL indicate an anonymous
+grouping of resources in the resource request.
+
+*slot*:: A resource type of `type: slot` SHALL indicate a grouping
+of resources into a named *task slot*. A `slot` SHALL be a valid
+resource spec including a `label` key, the value of which may be used
+to reference the named task slot during tasks definition. The `label`
+provided SHALL be local to the namespace of the current jobspec.
++
+A task slot SHALL have at least one edge specified using `with:`, and
+the resources associated with a slot SHALL be exclusively allocated
+to the program described in the jobspec.
+
+=== Tasks
+
+The value of the `tasks` key SHALL be a strict list which MUST
+define at least one task. Each list element SHALL be a dictionary
+representing a task or tasks to run as part of the program. A task
+descriptor SHALL contain the following keys:
+
+ *command*::
+ The value of the `command` key SHALL be a string OR list representing
+ an executable and its arguments.
+
+ *slot*::
+ The value of the `slot` key SHALL be used to indicate the *task slot*
+ on which this task or tasks shall be contained and executed. The
+ number of tasks executed per task slot SHALL be a function of the
+ number of resource slots and total number of tasks requested to execute.
++
+ The value of the `slot` key SHALL be a dictionary with supported key
+ of either `label` or `level`. The `level` key SHALL reference a `label`
+ from the `resources` list, indicating an explicitly created and named
+ *task slot*. The `level` key SHALL reference a resource name, such
+ as `core` or `node`, indicating an implicitly created *task slot* on
+ which to map the defined tasks.
+
+ *count*::
+ The value of the `count` key SHALL be a dictionary supporting at least
+ the keys `per_slot` and `total`, with other keys reserved for future
+ or site-specific extensions.
++
+[horizontal]
+  *per_slot*:::
+  The value of `per_slot` SHALL be a number indicating the number
+  of tasks to execute per task slot allocated to the program.
+
+  *total*:::
+  The value of the `total` field SHALL indicate the total number of
+  tasks to be run across all task slots, possibly oversubscribed.
+
+ *attrs*::
+ The `attrs` key SHALL be a free-form dictionary of keys which may
+ be used for platform independent or optional extensions.
+
+ *distribution*::
+ The value of the `distribution` key SHALL be a string, which MAY
+ be used as input to the launcher's algorithm for task placement and
+ layout among task slots.
+
+=== Walltime
+The value of the `walltime` key SHALL be a dictionary with currently
+supported keys `duration` or `range`. Other keys MAY be reserved for
+future or site specific extensions. It SHALL be considered an error
+if multiple, conflicting keys are set in the `walltime` dictionary.
+
+Supported keys for `walltime` are described in detail below.
+
+ *duration*:: The `duration` key SHALL have a string value interpreted
+ as a single duration walltime estimate/limit for the program described
+ by the current jobspec.
+
+ *range*:: The `range` key SHALL be a dictionary with duration keys
+ `min` and `max` indicating the minimum and maximum walltime
+ estimate/limit for the program in the current jobspec.
+
+=== Attributes
+The value of the `attrs` key SHALL be a dictionary of generic
+program attributes, system or user defined, which MAY affect program
+execution, scheduling, task placement, etc. Some key names in the
+`attrs` dictionary MAY be reserved.
+
+
+=== Example Jobspec
+
+Under the description above, the following is an example of a fully compliant
+version 1 jobspec. The example below declares a request for 4 "nodes"
+each of which with 1 task slot consisting of 2 cores each, for a total
+of 4 task slots. A single copy of the command `app` will be run on each
+task slot for a total of 4 tasks.
+
+[source,yaml]
+----
+version: 1
+resources:
+  - type: node
+    count: 4
+    with:
+      - type: slot
+        count: 1
+        label: default
+        with:
+          - type: core
+            count: 2
+tasks:
+  - command: app
+    slot:
+      label: default
+    count:
+        per_slot: 1
+walltime:
+  duration: 1h
+----
+
+A simpler example using implicit *task slot* definition to run 4 tasks
+across 4 nodes
+
+[source,yaml]
+----
+version: 1
+resources:
+  - type: node
+    count: 4
+tasks:
+  - command: hostname
+    slot:
+      level: node
+    count:
+      per_slot: 1
+----
+
+=== Content Rules
+
+A jobspec conforming to version 1 of the language definition SHALL
+adhere to the following ruleset, described using JSON Content Rules[2]
+draft version 0.6.
+
+----
+# jcr-version 0.6
+
+{
+   "resources" : [ +vertex ],
+   "tasks" : tasks,
+   "walltime" : walltime,
+   "attrs" :  { /.*/ : any },
+   "version" : 1,
+}
+
+vertex_common {
+    "count" : resource_count,
+    ?"exclusive" : boolean,
+    ?"with" : [ +vertex ],
+    ?"edge" : TBD,
+}
+
+group_vertex {
+    "type" : "group",
+    vertex_common,
+}
+
+slot_vertex {
+    "type"  : "slot",
+    "label" : string,
+    vertex_common,
+}
+
+resource_vertex {
+    "type" : ( :string, + @{reject} ( "group", "slot")),
+    vertex_common
+    ?"id" : string,
+    ?"uuid" : string,
+    ?"tags" : resource_tags,
+    ?"attributes" : resource_attributes,
+    ?"unit" : string,
+}
+
+vertex ( group_vertex | slot_vertex | resource_vertex )
+
+resource_count {
+    "min" 1..,
+    "max" 1..,
+    "operator" : ( :"+" | :"*" | : "^" ),
+    "operand" : 1..,
+}
+
+resource_tags {
+    ?"list" : [ +string ],
+}
+
+resource_attributes {
+    ?"list" : TBD,
+}
+
+tasks {
+    "command" : [ +string ],
+    "slot" : { "label" : string  | "level": string },
+    "count" : { "per_slot" : 1.. | "total" : 1.. },
+    "distribution" : string,
+    ?"attrs" : { /.*/ : any },
+}
+
+walltime {
+    "duration" : string |
+    "range" { "min" : 0.., "max" : 0.. },
+}
+
+----
+
+
 
 == Basic Use Cases
 
@@ -107,3 +406,4 @@ FIXME: Fill in
 == References
 
 * [1]http://yaml.org/spec/current.html#representation[YAML Ain't Markup Language (YAML™) Version 1.1], O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
+* [2]http://www.ietf.org/id/draft-newton-json-content-rules-06.txt[JSON Content Rules (jcr-version 0.6), A. Newton, P. Cordell, 2016]
