@@ -401,7 +401,430 @@ walltime {
 To implement basic resource manager functionality, the following use
 cases SHALL be supported by the jobspec:
 
-FIXME: Fill in
+=== Section 1: Resource only requests
+
+The following "resource only" requests are assumed to be the equivalent
+of existing resource manager batch job submission or allocation
+requests, i.e. equivalent to `oarsub`, `qsub`, and `salloc`. In terms
+of a canonical jobspec, these requests are assumed to be requests
+to start an instance, i.e. run a single copy of `flux start` per
+allocated node.  Thus, it should be assumed that all jobspec examples
+for use cases in Section 1 below have appended to them the following
+`tasks` block:
+
+[source,yaml]
+tasks:
+  - command: [ "flux", "start" ]
+    slot:
+      level: node
+    count:
+      per_task: 1
+
+
+'''
+Use Case 1.1:: Request Single Resource with Count
++
+Specific Example:: Request 4 nodes
++
+Existing Equivalents:: 
++
+|===
+| Slurm | `salloc -N4`     
+| PBS | `qsub -l nodes=4`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+walltime: 1h
+resources:
+  - type: node
+    count: 4
+
+'''
+Use Case 1.2:: Request a range of a type of resource
++
+Specific Example:: Request between 3 and 30 nodes
++
+Existing Equivalents::
++
+|===
+| Slurm | `salloc -N3-30`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+walltime: 1h
+resources:
+  - type: node
+    count: "[3:30]"
+
+'''
+Use Case 1.3:: Request M nodes with a minimum number of sockets per node
+and cores per socket
++
+Specific Example:: Request 4 nodes with at least 2 sockets each,
+and 4 cores per socket
++
+Existing Equivalents::
++
+|===
+| Slurm (a)| `srun -N4 --sockets-per-node=2 --cores-per-socket=4`
+| Slurm (b)| `srun -N4 -B '2:4:*'`
+| OAR      | `oarsub -l nodes=4/sockets=2/cores=4`
+|=== 
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+walltime: 1h
+resources:
+  - type: node
+    count: 4
+    with:
+      - type: socket
+        count: 2
+        with:
+          - type: core
+            count: 4
+
+'''
+Use Case 1.4:: Exclusively allocate nodes, while constraining cores and
+sockets.
++
+Specific Example:: Request an *exclusive* allocation of 4 nodes that have at
+least two sockets and 4 cores per socket:
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+walltime: 1h
+resources:
+  - type: slot
+    with:
+    - type: node
+      count: 4
+      with:
+        - type: socket
+          count: 2
+          with:
+            - type: core
+              count: 4
+
+'''
+Use Case 1.5:: Complex example from OAR
++
+Specific Example::
++
+[quote, http://oar.imag.fr/docs/2.5/user/usecases.html#mixing-every-together]
+ask for 1 core on 2 nodes on the same cluster with 4096 GB of memory
+and Infiniband 10G + 1 cpu on 2 nodes on the same switch with bicore
+processors for a walltime of 4 hours
++
+Existing Equivalents::
++
+|===
+| OAR | `oarsub -I -l "{memnode=4096 and ib10g='YES'}/cluster=1/nodes=2/core=1+{nbcore=2}/switch=1/nodes=2/cpu=1,walltime=4:0:0"`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+resources:
+  - type: cluster
+    count: 1
+    with:
+      - type: node
+        count: 2
+        with:
+          - type: memory
+            amount: 4GB
+          - type: ib10g
+      - type: switch
+        with:
+          type: node
+            count: 2
+            with:
+                - type: core
+walltime: 4h
+
+'''
+Use Case 1.6:: Request resources across multiple clusters
++
+Specific Example::
+Ask for 1 core on 15 nodes across 2 clusters (total = 30 cores)
++
+Existing Equivalents::
++
+|===
+| OAR |  `oarsub -I -l /cluster=2/nodes=15/core=1`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+walltime: 1h
+resources:
+    - type: cluster
+      count: 2
+      with:
+          - type: node
+            count: 15
+            with:
+              - type: core
+
+'''
+Use Case 1.7:: Request N cores across M switches
++
+Specific Example::
+Request 3 cores across 3 switches
++
+Existing Equivalents::
++
+|===
+| OAR | `oarsub -I -l /switch=3/core=1`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+walltime: 1h
+resources:
+  - type: switch
+    count: 3
+    with:
+      - type: core
+
+'''
+
+=== Section 2: Resource and task jobspec
+
+The following use cases include task specification in addition to resource
+request, demonstrating the use of task slot *labels* and *levels* to relate
+tasks to resources.
+
+'''
+Use Case 2.1:: Run N tasks across M nodes
++
+Specific Example:: Run `hostname` 20 times on 4 nodes, 5 per node
++
+Existing Equivalents::
++
+|===
+| Slurm | `srun -N4 -n20 hostname` or `srun -N4 --ntasks-per-node=5 hostname`
+| PBS   | `qsub -l nodes=4,mppnppn=5`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+walltime: 1h
+resources:
+  - type: slot
+    label: default
+    count: 4
+    with:
+    - type: node
+      count: 1
+tasks:
+  command: hostname
+  slot: default
+  count:
+    per_slot: 5
+
+'''
+Use Case 2.2:: Run N tasks across M nodes, unequal distribution
++
+Specific Example:: Run 5 copies of `hostname` across 4 nodes,
+default distribution
++
+Existing Equivalents::
++
+|===
+| Slurm | `srun -n5 -N4 hostname`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+----
+version: 1
+walltime: 1h
+resources:
+  - type: node
+    count: 4
+tasks:
+  - command: hostname
+    slot:
+      level: node
+    count:
+      total: 5
+----
++
+or, with explicit task slots:
++
+[source,yaml]
+----
+version: 1
+walltime: 1h
+resources:
+  - type: slot
+    count: 4
+    label: myslot
+    with:
+      - type: node
+        count: 1
+tasks:
+  - command: hostname
+    slot:
+      label: myslot
+    count:
+      total: 5
+----
+
+'''
+Use Case 2.3:: Run N tasks, Require M cores per task
++
+Specific Example:: Run 10 copies of `myapp`, require 2 cores per copy,
+for a total of 20 cores
++
+Existing Equivalents::
++
+|===
+| Slurm | `srun -n10 -c 2 myapp`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+resources:
+  - type: slot
+    label: default
+    count: 10
+    with:
+      - type: core
+        count: 2
+tasks:
+  - command: myapp
+    slot: default
+    count:
+      per_slot: 1
+
+'''
+Use Case 2.4:: Run different binaries with differing resource
+requirements as single program
++
+Specific Example:: 11 tasks, one node, first 10 using one core and 4G of RAM for
+`read-db`, last using 6 cores and 24G of RAM for `db`
++
+Existing Equivalents:: None Known
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+walltime: 1h
+resources:
+  - type: node
+    with:
+      - type: slot
+        label: read-db
+        count: 10
+        with:
+          - type: core
+          - type: memory
+            amount: 4GB
+      - type: slot
+        label: db
+        count: 1
+        with:
+          - type: core
+            count: 6
+          - type: memory
+            amount: 24GB
+tasks:
+  - command: read-db
+    slot: read-db
+    count:
+      per_slot: 1
+  - command: db
+    slot: db
+    count:
+      per_slot: 1
+
+'''
+Use Case 2.5:: Run command requesting minimum amount of RAM per core
++
+Specific Example::
+Run 10 copies of `app` across 10 cores with at least 2GB per core
++
+Existing Equivalents::
++
+|===
+| Slurm | `srun -n 10 --mem-per-cpu=2048 app`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+----
+version: 1
+walltime: 1h
+resources:
+  - type: slot
+    label: default
+    count: 10
+    with:
+    - type: memory
+      amount: 2GB
+    - type: core
+tasks:
+  - command: app
+    slot: default
+    count:
+      per_slot: 1
+----
+'''
+Use Case 2.6:: Run N copies of a command with minimum amount of RAM per node
++
+Specific Example::
+Run 10 copies of `app` across 2 nodes with at least 4GB per node
++
+Existing Equivalents::
++
+|===
+| Slurm | `srun -n10 -N2 --mem=4096 app`
+| OAR   | `oarsub -p memnode=4096 -l nodes=2 "taktuk -c oarsh -f $OAR_FILE_NODES broadcast exec [app]"`
+|===
++
+Jobspec YAML::
++
+[source,yaml]
+version: 1
+walltime: 1h
+resources:
+  - type: slot
+    label: 2GB-node
+    count: 2
+    with:
+    - type: node
+      with:
+        - type: memory
+          amount: 4GB
+tasks:
+  - command: app
+    slot: 2GB-node
+    count:
+      total: 10
 
 == References
 
