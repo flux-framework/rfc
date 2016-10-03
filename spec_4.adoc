@@ -135,11 +135,11 @@ Available:: A method to query the current amount of available members
  MAY be calculated as _size_ - _allocated_.
 
 Allocate (N, S):: Allocate _N_ resources from the pool
- under the name _S. The available resources in a pool is
+ under the name _S_. The available resources in a pool is
  its size minus the total number of allocations. The allocation
- _S SHALL be stored as a searchable attribute along with
+ _S_ SHALL be stored as a searchable attribute along with
  the resource for later use with _Find_ and _Match_ methods. If an
- allocation under _S already exists, then the allocation
+ allocation under _S_ already exists, then the allocation
  SHALL be grown by amount _N_.
 
 Free (S, [N]):: Free the allocation named _string_ from the current
