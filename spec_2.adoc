@@ -60,7 +60,7 @@ Our licensing and collaboration guidelines have the following goals:
   including use of the Github tracker as outlined in C4.1.
 
 * It is RECOMMENDED that Flux projects be discussed on the Flux
-  development list <flux-devel@lists.llnl.gov>.
+  discussion list <flux-discuss@lists.llnl.gov>.
 
 * Interfaces exported by Flux projects to the Flux framework SHOULD
   be documented as a https://github.com/flux-framework/rfc[Flux RFC].
