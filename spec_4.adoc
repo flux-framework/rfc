@@ -142,8 +142,8 @@ Allocate (N, S):: Allocate _N_ resources from the pool
  allocation under _S already exists, then the allocation
  SHALL be grown by amount _N_.
 
-Free (S, [N]):: Free the allocation named _string_ from the current
- pool and return all allocated items to the list of available resources.
+Free (S, [N]):: Free the allocation named _S_ from the current pool
+ and return all allocated items to the list of available resources.
  Optional argument _N_ SHALL shrink the allocation by _N_ items, where
  _N_ is less than or equal to total allocation under name _S_.
 
