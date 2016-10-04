@@ -173,8 +173,8 @@ Match:: A method or set of methods for resource pool matching
 Find:: A search method SHALL be provided by the implementation to 
  traverse the tree and return all matching resource pools, along with
  their children, as well as ancestors up to the root of the hierarchy.
- The _find_ method MAY be implemented as a combination of _traversal_
- and _match_.
+ The _Find_ method MAY be implemented as a combination of _Traversal_
+ and _Match_.
 
 Copy:: A method for copying a resource composite to a new instance SHALL
  be provided. This method MAY be used to create a new instance of
@@ -193,7 +193,7 @@ Duplicate:: A method for duplicating an entire hierarchy SHALL be
  without any other unnecessary changes.
 
 Merge:: A method for merging one Resource Pool into another SHALL be
- provided. The _merge_ method SHALL allow a Resource Pool at one URI
+ provided. The _Merge_ method SHALL allow a Resource Pool at one URI
  to be merged with another Resource Pool Hierarchy at a specified
  ``path'' or new URI. The method SHALL attach the new hierarchy at
  the common ancestor. This method MAY be used by the implementation
