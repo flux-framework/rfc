@@ -216,12 +216,12 @@ descriptor SHALL contain the following keys:
  number of tasks executed per task slot SHALL be a function of the
  number of resource slots and total number of tasks requested to execute.
 +
- The value of the `slot` key SHALL be a dictionary with supported key
- of either `label` or `level`. The `level` key SHALL reference a `label`
- from the `resources` list, indicating an explicitly created and named
- *task slot*. The `level` key SHALL reference a resource name, such
- as `core` or `node`, indicating an implicitly created *task slot* on
- which to map the defined tasks.
+The value of the `slot` key SHALL be a dictionary with supported key
+of either `label` or `level`. The `level` key SHALL reference a `label`
+from the `resources` list, indicating an explicitly created and named
+*task slot*. The `level` key SHALL reference a resource name, such
+as `core` or `node`, indicating an implicitly created *task slot* on
+which to map the defined tasks.
 
  *count*::
  The value of the `count` key SHALL be a dictionary supporting at least
