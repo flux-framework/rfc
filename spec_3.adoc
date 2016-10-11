@@ -253,6 +253,7 @@ sequence	= 4OCTET
 unused		= %x00.00.00.00
 ----
 
+[sect2]
 == References
 
 * http://www.rfc-editor.org/rfc/rfc7159.txt[RFC 7159: The JavaScript Object

@@ -39,6 +39,8 @@ goals of this model are to:
 
 == Related Specifications
 
+TBD
+
 == Design
 
 The sections below describe in detail the Flux Resource Model

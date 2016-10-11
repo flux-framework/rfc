@@ -787,6 +787,7 @@ If the process mapping value is too long to fit in a KVS value, the process
 manager SHALL return a value consisting of an empty string, indicating that
 the mapping is unknown.
 
+[sect2]
 == References
 
 * [1] https://drive.google.com/file/d/0B273EWJxZUxsbS15SEkzZGtXU2c/view?usp=sharing[Process Management in MPICH Draft 2.1]

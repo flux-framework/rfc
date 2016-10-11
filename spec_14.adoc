@@ -826,6 +826,7 @@ tasks:
     count:
       total: 10
 
+[sect2]
 == References
 
 * [1]http://yaml.org/spec/current.html#representation[YAML Ain't Markup Language (YAML™) Version 1.1], O. Ben-Kiki, C. Evans, B. Ingerson, 2004.

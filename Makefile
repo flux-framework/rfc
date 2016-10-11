@@ -1,28 +1,37 @@
-HTML = \
-	README.html \
-	spec_1.html \
-	spec_2.html \
-	spec_3.html \
-	spec_4.html \
-	spec_5.html \
-	spec_6.html \
-	spec_7.html \
-	spec_8.html \
-	spec_9.html \
-	spec_10.html \
-	spec_11.html \
-	spec_12.html \
-	spec_13.html \
-	spec_14.html
+SOURCES = \
+	README.adoc \
+	spec_1.adoc \
+	spec_2.adoc \
+	spec_3.adoc \
+	spec_4.adoc \
+	spec_5.adoc \
+	spec_6.adoc \
+	spec_7.adoc \
+	spec_8.adoc \
+	spec_9.adoc \
+	spec_10.adoc \
+	spec_11.adoc \
+	spec_12.adoc \
+	spec_13.adoc \
+	spec_14.adoc
 
-all: $(HTML)
+HTML = $(SOURCES:.adoc=.html)
+PDF = $(SOURCES:.adoc=.pdf)
+
+all: html
+
+html: $(HTML)
+
+pdf: $(PDF)
 
 %.html: %.adoc
 	asciidoc -o $@ $^
 
-clean:
-	rm -f $(HTML)
+%.pdf: %.adoc
+	a2x -f pdf $^
 
+clean:
+	rm -f $(HTML) $(PDF)
 
 check:
 	ASPELL=aspell ./spellcheck *.adoc
