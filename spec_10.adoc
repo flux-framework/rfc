@@ -177,6 +177,7 @@ blob            = 0*(OCTET)
 ; PROTO and [routing] are as defined in RFC 3.
 ----
 
+[sect2]
 == References
 
 * https://camlistore.org/[Camlistore is your personal storage system for life].
