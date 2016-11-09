@@ -100,11 +100,12 @@ Hash buckets MAY be sparsely populated.
   "val":{
     "size":8,
     "func":"city32",
-    "bucket":{
-      "0":{"ver":1,"type":"treeref","val":["sha1-aaa"]},
-      "6":{"ver":1,"type":"treeref","val":["sha1-eee"]},
-      "7":{"ver":1,"type":"treeref","val":["sha1-fff"]},
-    }
+    "bucket":[
+      {"ver":1,"type":"treeref","val":["sha1-aaa"]},
+      ,,,,,
+      {"ver":1,"type":"treeref","val":["sha1-eee"]},
+      {"ver":1,"type":"treeref","val":["sha1-fff"]},
+    ]
   }
 }
 ----
