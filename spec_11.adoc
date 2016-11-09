@@ -34,6 +34,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 * Values support an append operation.
 * A KVS namespace of arbitrary depth can be "rolled up" into one tree object.
 * Tree objects are (somewhat) self-describing.
+* Large directories are not expensive to access or update.
 
 == Implementation
 
@@ -44,11 +45,12 @@ level names:
 * _type_, a string type name
 * _val_, a type dependent JSON object
 
-There are five types: 
+There are six types:
 
 * _valref_, val is an array of blobrefs comprising opaque data
 * _treeref_, val is an array of blobrefs comprising a tree object
 * _dir_, val is a map of names to tree objects
+* _hdir_, val is a map of integer-hashed names to _treeref_ objects
 * _symlink_, val is a hierarchical key name
 * _value_, val is an arbitrary JSON object, array, or value
 
@@ -80,6 +82,30 @@ There are five types:
      "b":{"ver":1,"type":"value","val":42}
      "c":{"ver":1,"type":"valref","val":["sha1-aaa","sha1-bbb"]},
      "d":{"ver":1,"type":"dir","val":{...},
+  }
+}
+----
+
+=== Hdir ===
+
+A _dir_ SHALL be converted to an _hdir_ once the number of entries exceeds
+a configurable _maxdirent_ value.  The _hdir_ SHALL have a fixed number of
+buckets represented by _size_, fixed when the _hdir_ is created.  The hash
+function used to map keys to buckets SHALL be identified with _func_.
+Hash buckets MAY be sparsely populated.
+
+----
+{ "ver":1,
+  "type":"hdir",
+  "val":{
+    "size":8,
+    "func":"city32",
+    "bucket":[
+      {"ver":1,"type":"treeref","val":["sha1-aaa"]},
+      ,,,,,
+      {"ver":1,"type":"treeref","val":["sha1-eee"]},
+      {"ver":1,"type":"treeref","val":["sha1-fff"]},
+    ]
   }
 }
 ----
