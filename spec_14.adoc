@@ -217,7 +217,7 @@ descriptor SHALL contain the following keys:
  number of resource slots and total number of tasks requested to execute.
 +
 The value of the `slot` key SHALL be a dictionary with supported key
-of either `label` or `level`. The `level` key SHALL reference a `label`
+of either `label` or `level`. The `label` key SHALL reference a `label`
 from the `resources` list, indicating an explicitly created and named
 *task slot*. The `level` key SHALL reference a resource name, such
 as `core` or `node`, indicating an implicitly created *task slot* on
@@ -418,7 +418,7 @@ tasks:
     slot:
       level: node
     count:
-      per_task: 1
+      per_slot: 1
 
 
 '''
@@ -813,7 +813,7 @@ version: 1
 walltime: 1h
 resources:
   - type: slot
-    label: 2GB-node
+    label: 4GB-node
     count: 2
     with:
     - type: node
@@ -822,7 +822,7 @@ resources:
           amount: 4GB
 tasks:
   - command: app
-    slot: 2GB-node
+    slot: 4GB-node
     count:
       total: 10
 
