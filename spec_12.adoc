@@ -46,14 +46,14 @@ Flux runs in single and multi-user mode.  A single-user Flux instance
 only launches work as the instance owner.  A multi-user Flux instance
 launches work as other users.
 
-The bootstrap instance of Flux runs as a system service started by
+The system instance of Flux runs as a system service started by
 systemd(8) or equivalent and runs in multi-user mode.  Other instances
 may run in single or multi-user mode, and may be launched by Flux,
 another resource manager, or with a standalone launcher.
 
 == Implementation
 
-This early draft is mainly focused on single-user, non-bootstrap
+This early draft is mainly focused on single-user, non-system
 Flux instances.
 
 === Instance Owner ===
@@ -64,7 +64,7 @@ SHALL have control over the instance and its resources; however,
 the instance owner SHALL NOT have the capability to launch work as
 other users without their consent.
 
-A bootstrap instance MAY run as a dedicated user, such as "flux".
+A system instance MAY run as a dedicated user, such as "flux".
 
 The instance owner SHALL NOT be the root user.
 
