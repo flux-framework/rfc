@@ -168,16 +168,10 @@ initial programs, running initialization scripts and so on.
 
 == Bootstrap Mechanism
 
-The initial instance of a Flux installation SHALL be started under
-a bootstrap mechanism. The bootstrap mechanism SHALL provide the
-bare minimum services to simulate an enclosing instance, which
-will then be used to launch the initial instance. The bootstrap
-mechanism itself SHALL be launched by standard available process
-execution mechanisms and MAY use static configuration and/or database
-information to initialize and launch the initial Flux instance.
-The initial instance SHALL be a program with access to all resources
-that are to be managed by Flux.
-
+All instances of Flux SHALL be started under a bootstrap mechanism.
+The bootstrap mechanism SHALL provide the bare minimum
+services required to provide the processes with their initial configuration
+data and to assist them with network discovery.
 
 == Program Containers
 
