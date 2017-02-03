@@ -59,7 +59,7 @@ with a given size.
 This conceptual model leads to the natural representation of
 resources in Flux as a hierarchy of individual or pooled resources
 bound to a _root_ which will typically be a ``cluster'' or ``center''
-resource. 
+resource.
 
 Use of the composite pool model for resources in Flux has the
 following nice properties:
@@ -126,7 +126,7 @@ pools, though a resource MAY belong to more than a single hierarchy.
 When operating on a resource as an object, the following methods
 SHALL be supported
 
-Size:: A method to query the current size of a resource pool SHALL 
+Size:: A method to query the current size of a resource pool SHALL
  be provided.
 
 Allocated:: A method to query the number of objects _allocated_ to
@@ -169,10 +169,10 @@ Traversal:: A method for traversal SHALL be provided to visit each node
 
 Match:: A method or set of methods for resource pool matching
  SHALL be provided by the implementation. Resource pools SHALL
- be matched on tags, properties, size, type, name, basename, 
+ be matched on tags, properties, size, type, name, basename,
  ids, etc.
 
-Find:: A search method SHALL be provided by the implementation to 
+Find:: A search method SHALL be provided by the implementation to
  traverse the tree and return all matching resource pools, along with
  their children, as well as ancestors up to the root of the hierarchy.
  The _Find_ method MAY be implemented as a combination of _Traversal_
@@ -190,7 +190,7 @@ Copy:: A method for copying a resource composite to a new instance SHALL
  and copied resources will have _size_ set to _available_ and
  _allocated_ set to zero.
 
-Duplicate:: A method for duplicating an entire hierarchy SHALL be 
+Duplicate:: A method for duplicating an entire hierarchy SHALL be
  provided. This method SHALL return a copy of of an existing hierarchy
  without any other unnecessary changes.
 
