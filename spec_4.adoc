@@ -102,6 +102,7 @@ the nodes and cores as the finest resource granularity.
 * Size (Total number of resources in this pool)
 * Units (optional units associated with the size value)
 * State (e.g., up, down, degraded, failing, unknown, null)
+* Resource composite data (see below)
 * Allocation table (List of active allocations from this pool with metadata)
 * Hierarchy table (Hierarchies and topologies to which this resource belongs)
 
@@ -120,7 +121,7 @@ Resource pools MAY belong to one or more hierarchies. In Flux, the
 ``default'' hierarchy holds the _composite_ representation for resource
 pools, though a resource MAY belong to more than a single hierarchy.
 
-==== Resource hierarchy data:
+==== Resource Composite Data:
 
 * URI (in ``name:/path/to/resource'' form)
 * Children
