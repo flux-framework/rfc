@@ -100,6 +100,8 @@ the nodes and cores as the finest resource granularity.
 * Properties (static properties associated with this instance)
 * Tags (dynamic list of tags)
 * Size (Total number of resources in this pool)
+* Units (optional units associated with the size value)
+* State (e.g., up, down, degraded, failing, unknown, null)
 * Allocation table (List of active allocations from this pool with metadata)
 * Hierarchy table (Hierarchies and topologies to which this resource belongs)
 
@@ -156,6 +158,9 @@ Free (S, [N]):: Free the allocation named _S_ from the current pool
 Tag (K, [V]):: A method for tagging resource pools with
  arbitrary key/value pairs SHALL be provided. The value _V_ SHALL
  be optional.
+
+State:: Methods for setting and returning the state of the resource
+ SHALL be provided.
 
 Aggregation:: A method for returning resource contents of composite
  object _in aggregate_ SHALL be provided. The aggregate method SHALL
