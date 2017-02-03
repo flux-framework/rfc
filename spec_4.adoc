@@ -104,7 +104,7 @@ the nodes and cores as the finest resource granularity.
 * State (e.g., up, down, degraded, failing, unknown, null)
 * Resource composite data (see below)
 * Graph data (see below)
-* Allocation table (List of active allocations from this pool with metadata)
+* Resource allocation data (see below)
 
 The default value for `basename` is the `type`.  The default value for
 `name` is a concatenation of `basename` and `ID`, or just `basename`
@@ -133,6 +133,19 @@ vertices in other graphs to which the resource is associated.
 Examples include graphs that model power distribution or network
 topology.
 
+==== Resource Allocation Data:
+
+* Exclusive | Shared (limit to how many jobs can be allocated)
+* Staged (temporary lock when this resource is being considered for a job)
+* Flux-core instances and ranks running on this resource
+* Allocations  (List of jobs to which this resource is allocated)
+* Reservations (List of jobs to which this resource is reserved)
+
+Allocations and reservations change over the course of time.  The
+allocations and reservations data MAY become an array of job
+allocations and reservations over time to support scheduling jobs in
+the future.
+
 === Composite Resource Pool Methods
 
 When operating on a resource as an object, the following methods
@@ -140,26 +153,6 @@ SHALL be supported
 
 Size:: A method to query the current size of a resource pool SHALL
  be provided.
-
-Allocated:: A method to query the number of objects _allocated_ to
- jobs from the current pool SHALL be provided.
-
-Available:: A method to query the current amount of available members
- in a resource pool object SHALL be provided. The _available_ count
- MAY be calculated as _size_ - _allocated_.
-
-Allocate (N, S):: Allocate _N_ resources from the pool
- under the name _S_. The available resources in a pool is
- its size minus the total number of allocations. The allocation
- _S_ SHALL be stored as a searchable attribute along with
- the resource for later use with _Find_ and _Match_ methods. If an
- allocation under _S_ already exists, then the allocation
- SHALL be grown by amount _N_.
-
-Free (S, [N]):: Free the allocation named _S_ from the current pool
- and return all allocated items to the list of available resources.
- Optional argument _N_ SHALL shrink the allocation by _N_ items, where
- _N_ is less than or equal to total allocation under name _S_.
 
 Tag (K, [V]):: A method for tagging resource pools with
  arbitrary key/value pairs SHALL be provided. The value _V_ SHALL
@@ -227,6 +220,28 @@ Serialize:: A method for serializing/deserializing a resource pool and its
  children SHALL be provided to allow for transmission for resource pool
  hierarchy and data over the wire, saving state to a file, etc.
 
+=== Job Allocations and Reservations
+
+Allocated:: A method to query the number of objects _allocated_ to
+ jobs from the current pool SHALL be provided.
+
+Available:: A method to query the current amount of available members
+ in a resource pool object SHALL be provided. The _available_ count
+ MAY be calculated as _size_ - _allocated_.
+
+Allocate (N, S):: Allocate _N_ resources from the pool
+ under the name _S_. The available resources in a pool is
+ its size minus the total number of allocations. The allocation
+ _S_ SHALL be stored as a searchable attribute along with
+ the resource for later use with _Find_ and _Match_ methods. If an
+ allocation under _S_ already exists, then the allocation
+ SHALL be grown by amount _N_.
+
+Free (S, [N]):: Free the allocation named _S_ from the current pool
+ and return all allocated items to the list of available resources.
+ Optional argument _N_ SHALL shrink the allocation by _N_ items, where
+ _N_ is less than or equal to total allocation under name _S_.
+
 === Resource Requests
 
 * There SHALL be a means to request a quantity of resources by type,
@@ -257,9 +272,6 @@ Serialize:: A method for serializing/deserializing a resource pool and its
   physical composite.
 
 ==== Shared vs. Exclusive
-
-* There SHALL be a means to stipulate whether a resource can be shared
-  among multiple jobs.
 
 * There SHALL be a means for a job resource request to stipulate
   whether the job requires exclusive use of a resource or whether it
