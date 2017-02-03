@@ -242,60 +242,6 @@ Free (S, [N]):: Free the allocation named _S_ from the current pool
  Optional argument _N_ SHALL shrink the allocation by _N_ items, where
  _N_ is less than or equal to total allocation under name _S_.
 
-=== Resource Requests
-
-* There SHALL be a means to request a quantity of resources by type,
-  properties, tags, and name.
-
-* There SHALL be a means to request composite resources (a resource of
-  type A that contains a child resource of type B).
-
-* There SHALL be a means to support sparse composite resource requests
-  (a resource of type A that contains grandchild resource of type B
-  where the intervening child resource is not specified).
-
-* There SHALL be a means to request a collection of resources or
-  resource composites (a resource of type A along with a different
-  resource of type B)
-
-* It SHOULD be possible to distinguish a request for "4 cores on a
-  node" from "a node with 4 cores" from "4 cores, each on a different
-  node".
-
-* Resources MAY be associated with resources other than the physical
-  composite and hence MAY be members of multiple hierarchies or graphs
-  that are independent from the physical composite (e.g., a resource
-  wired for n units of power).
-
-* There SHALL be a means to request a collection of resources
-  described by graph-related requirements that are unrelated to the
-  physical composite.
-
-==== Shared vs. Exclusive
-
-* There SHALL be a means for a job resource request to stipulate
-  whether the job requires exclusive use of a resource or whether it
-  will accept a resource that is shared with other jobs.
-
-* There SHALL be a means to stipulate a default choice of shared or
-  exclusive in each resource request.
-
-==== Feasibility and Policy Controls
-
-* There SHALL be a means to determine at job submission time whether
-  the job's resource request is valid and feasible.
-  Ref. https://github.com/flux-framework/flux-core/issues/269[Issue
-  269].
-
-* Submission of jobs that are determined to be invalid or infeasible
-  SHALL be rejected.
-
-* There MAY be a means to define political controls that impose limits
-  on scheduling jobs.
-
-* Submission of jobs that exceed defined policy limits MAY be
-  rejected.
-
 === Resource Allocation Records
 
 * The job ID for a job that is allocated a resource in a composite
