@@ -103,8 +103,8 @@ the nodes and cores as the finest resource granularity.
 * Units (optional units associated with the size value)
 * State (e.g., up, down, degraded, failing, unknown, null)
 * Resource composite data (see below)
+* Graph data (see below)
 * Allocation table (List of active allocations from this pool with metadata)
-* Hierarchy table (Hierarchies and topologies to which this resource belongs)
 
 The default value for `basename` is the `type`.  The default value for
 `name` is a concatenation of `basename` and `ID`, or just `basename`
@@ -117,16 +117,21 @@ properties (e.g. a system might have node names formatted like
 The value for `properties` SHALL support multiple identifying
 properties which could be used to uniquely characterize the resource.
 
-Resource pools MAY belong to one or more hierarchies. In Flux, the
-``default'' hierarchy holds the _composite_ representation for resource
-pools, though a resource MAY belong to more than a single hierarchy.
-
 ==== Resource Composite Data:
 
 * URI (in ``name:/path/to/resource'' form)
 * Children
 * Parent
 * UUID of resource pool (or other pointer to resource data)
+
+==== Resource Graph Data:
+
+Resource pools MAY be associated with other resource pools that are
+not members of the same composite hierarchy.  These relationships
+SHALL be modeled with graphs.  The graph data SHALL contain links to
+vertices in other graphs to which the resource is associated.
+Examples include graphs that model power distribution or network
+topology.
 
 === Composite Resource Pool Methods
 
