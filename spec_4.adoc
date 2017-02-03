@@ -191,7 +191,7 @@ Copy:: A method for copying a resource composite to a new instance SHALL
  instance, the implementation SHALL copy only _available_ resources
  to the new instance. That is, resource pools with no available
  resources (and their children) SHALL be ignored during a copy,
- and copied resources will have _size_ set to _available_ and
+ and copied resources SHALL have _size_ set to _available_ and
  _allocated_ set to zero.
 
 Duplicate:: A method for duplicating an entire hierarchy SHALL be
