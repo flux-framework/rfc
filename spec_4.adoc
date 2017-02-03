@@ -37,9 +37,9 @@ goals of this model are to:
 * Provide a common storage, access, modification and discovery APIs for
   managing resource information
 
-== Related Specifications
+== Related Standards
 
-TBD
+link:spec_14{outfilesuffix}[14/Canonical Job Specification]
 
 == Design
 
