@@ -6,7 +6,7 @@ resources within the Flux framework.
 
 * Name: github.com/flux-framework/rfc/spec_4.adoc
 * Editor: Mark Grondona <mgrondona@llnl.gov>
-* State: raw
+* State: draft
 
 == Language
 
