@@ -78,6 +78,10 @@ as _composite_ data (hierarchical parent/child or ``has-a'' relationship
 between resources).  Data required to be stored, tracked, and queried
 is detailed in sections below.
 
+The Flux Resource Model SHALL support a range of resource sets, from
+all of the resources in the center to a small subset allocated to one
+Flux instance.
+
 The Flux Resource Model SHALL support multi-granularity scheduling and
 management schemes. In such a scheme, the higher the Flux instance is
 in the Flux hierarchy, the coarser resource granularity it MAY be
