@@ -89,15 +89,9 @@ be covered in a future version of this specification.]
 
 The nodes of a comms session SHALL at minimum be interconnected in
 tree based overlay network with rank 0 at the root of the tree.
-This overlay network SHALL use ZeroMQ DEALER-ROUTER sockets.
 
-The nodes of a comms session MAY be interconnected in another overlay
-topology to facilitate message delivery to specific ranks.  This overlay
-network SHALL use ZeroMQ DEALER-ROUTER sockets.
-
-The nodes of a comms session MAY be interconnected in another overlay
-topology for event propagation.  This overlay network SHALL use ZeroMQ
-PUB-SUB sockets.
+The nodes of a comms session MAY be interconnected in additional
+overlay networks to improve efficiency or fault tolerance.
 
 === Service Addressing
 
