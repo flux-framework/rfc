@@ -6,7 +6,7 @@ resources within the Flux framework.
 
 * Name: github.com/flux-framework/rfc/spec_4.adoc
 * Editor: Mark Grondona <mgrondona@llnl.gov>
-* State: raw
+* State: draft
 
 == Language
 
@@ -37,9 +37,9 @@ goals of this model are to:
 * Provide a common storage, access, modification and discovery APIs for
   managing resource information
 
-== Related Specifications
+== Related Standards
 
-TBD
+link:spec_14{outfilesuffix}[14/Canonical Job Specification]
 
 == Design
 
@@ -59,7 +59,7 @@ with a given size.
 This conceptual model leads to the natural representation of
 resources in Flux as a hierarchy of individual or pooled resources
 bound to a _root_ which will typically be a ``cluster'' or ``center''
-resource. 
+resource.
 
 Use of the composite pool model for resources in Flux has the
 following nice properties:
@@ -77,6 +77,10 @@ store basic resource _pool_ data (attributes of resource) as well
 as _composite_ data (hierarchical parent/child or ``has-a'' relationship
 between resources).  Data required to be stored, tracked, and queried
 is detailed in sections below.
+
+The Flux Resource Model SHALL support a range of resource sets, from
+all of the resources in the center to a small subset allocated to one
+Flux instance.
 
 The Flux Resource Model SHALL support multi-granularity scheduling and
 management schemes. In such a scheme, the higher the Flux instance is
@@ -96,8 +100,11 @@ the nodes and cores as the finest resource granularity.
 * Properties (static properties associated with this instance)
 * Tags (dynamic list of tags)
 * Size (Total number of resources in this pool)
-* Allocation table (List of active allocations from this pool with metadata)
-* Hierarchy table (Hierarchies and topologies to which this resource belongs)
+* Units (optional units associated with the size value)
+* State (e.g., up, down, degraded, failing, unknown, null)
+* Resource composite data (see below)
+* Graph data (see below)
+* Resource allocation data (see below)
 
 The default value for `basename` is the `type`.  The default value for
 `name` is a concatenation of `basename` and `ID`, or just `basename`
@@ -110,48 +117,49 @@ properties (e.g. a system might have node names formatted like
 The value for `properties` SHALL support multiple identifying
 properties which could be used to uniquely characterize the resource.
 
-Resource pools MAY belong to one or more hierarchies. In Flux, the
-``default'' hierarchy holds the _composite_ representation for resource
-pools, though a resource MAY belong to more than a single hierarchy.
-
-==== Resource hierarchy data:
+==== Resource Composite Data:
 
 * URI (in ``name:/path/to/resource'' form)
 * Children
 * Parent
 * UUID of resource pool (or other pointer to resource data)
 
+==== Resource Graph Data:
+
+Resource pools MAY be associated with other resource pools that are
+not members of the same composite hierarchy.  These relationships
+SHALL be modeled with graphs.  The graph data SHALL contain links to
+vertices in other graphs to which the resource is associated.
+Examples include graphs that model power distribution or network
+topology.
+
+==== Resource Allocation Data:
+
+* Exclusive | Shared (limit to how many jobs can be allocated)
+* Staged (temporary lock when this resource is being considered for a job)
+* Flux-core instances and ranks running on this resource
+* Allocations  (List of jobs to which this resource is allocated)
+* Reservations (List of jobs to which this resource is reserved)
+
+Allocations and reservations change over the course of time.  The
+allocations and reservations data MAY become an array of job
+allocations and reservations over time to support scheduling jobs in
+the future.
+
 === Composite Resource Pool Methods
 
 When operating on a resource as an object, the following methods
 SHALL be supported
 
-Size:: A method to query the current size of a resource pool SHALL 
+Size:: A method to query the current size of a resource pool SHALL
  be provided.
-
-Allocated:: A method to query the number of objects _allocated_ to
- jobs from the current pool SHALL be provided.
-
-Available:: A method to query the current amount of available members
- in a resource pool object SHALL be provided. The _available_ count
- MAY be calculated as _size_ - _allocated_.
-
-Allocate (N, S):: Allocate _N_ resources from the pool
- under the name _S_. The available resources in a pool is
- its size minus the total number of allocations. The allocation
- _S_ SHALL be stored as a searchable attribute along with
- the resource for later use with _Find_ and _Match_ methods. If an
- allocation under _S_ already exists, then the allocation
- SHALL be grown by amount _N_.
-
-Free (S, [N]):: Free the allocation named _S_ from the current pool
- and return all allocated items to the list of available resources.
- Optional argument _N_ SHALL shrink the allocation by _N_ items, where
- _N_ is less than or equal to total allocation under name _S_.
 
 Tag (K, [V]):: A method for tagging resource pools with
  arbitrary key/value pairs SHALL be provided. The value _V_ SHALL
  be optional.
+
+State:: Methods for setting and returning the state of the resource
+ SHALL be provided.
 
 Aggregation:: A method for returning resource contents of composite
  object _in aggregate_ SHALL be provided. The aggregate method SHALL
@@ -169,10 +177,10 @@ Traversal:: A method for traversal SHALL be provided to visit each node
 
 Match:: A method or set of methods for resource pool matching
  SHALL be provided by the implementation. Resource pools SHALL
- be matched on tags, properties, size, type, name, basename, 
+ be matched on tags, properties, size, type, name, basename,
  ids, etc.
 
-Find:: A search method SHALL be provided by the implementation to 
+Find:: A search method SHALL be provided by the implementation to
  traverse the tree and return all matching resource pools, along with
  their children, as well as ancestors up to the root of the hierarchy.
  The _Find_ method MAY be implemented as a combination of _Traversal_
@@ -187,10 +195,10 @@ Copy:: A method for copying a resource composite to a new instance SHALL
  instance, the implementation SHALL copy only _available_ resources
  to the new instance. That is, resource pools with no available
  resources (and their children) SHALL be ignored during a copy,
- and copied resources will have _size_ set to _available_ and
+ and copied resources SHALL have _size_ set to _available_ and
  _allocated_ set to zero.
 
-Duplicate:: A method for duplicating an entire hierarchy SHALL be 
+Duplicate:: A method for duplicating an entire hierarchy SHALL be
  provided. This method SHALL return a copy of of an existing hierarchy
  without any other unnecessary changes.
 
@@ -212,62 +220,27 @@ Serialize:: A method for serializing/deserializing a resource pool and its
  children SHALL be provided to allow for transmission for resource pool
  hierarchy and data over the wire, saving state to a file, etc.
 
-=== Resource Requests
+=== Job Allocations and Reservations
 
-* There SHALL be a means to request a quantity of resources by type,
-  properties, tags, and name.
+Allocated:: A method to query the number of objects _allocated_ to
+ jobs from the current pool SHALL be provided.
 
-* There SHALL be a means to request composite resources (a resource of
-  type A that contains a child resource of type B).
+Available:: A method to query the current amount of available members
+ in a resource pool object SHALL be provided. The _available_ count
+ MAY be calculated as _size_ - _allocated_.
 
-* There SHALL be a means to support sparse composite resource requests
-  (a resource of type A that contains grandchild resource of type B
-  where the intervening child resource is not specified).
+Allocate (N, S):: Allocate _N_ resources from the pool
+ under the name _S_. The available resources in a pool is
+ its size minus the total number of allocations. The allocation
+ _S_ SHALL be stored as a searchable attribute along with
+ the resource for later use with _Find_ and _Match_ methods. If an
+ allocation under _S_ already exists, then the allocation
+ SHALL be grown by amount _N_.
 
-* There SHALL be a means to request a collection of resources or
-  resource composites (a resource of type A along with a different
-  resource of type B)
-
-* It SHOULD be possible to distinguish a request for "4 cores on a
-  node" from "a node with 4 cores" from "4 cores, each on a different
-  node".
-
-* Resources MAY be associated with resources other than the physical
-  composite and hence MAY be members of multiple hierarchies or graphs
-  that are independent from the physical composite (e.g., a resource
-  wired for n units of power).
-
-* There SHALL be a means to request a collection of resources
-  described by graph-related requirements that are unrelated to the
-  physical composite.
-
-==== Shared vs. Exclusive
-
-* There SHALL be a means to stipulate whether a resource can be shared
-  among multiple jobs.
-
-* There SHALL be a means for a job resource request to stipulate
-  whether the job requires exclusive use of a resource or whether it
-  will accept a resource that is shared with other jobs.
-
-* There SHALL be a means to stipulate a default choice of shared or
-  exclusive in each resource request.
-
-==== Feasibility and Policy Controls
-
-* There SHALL be a means to determine at job submission time whether
-  the job's resource request is valid and feasible.
-  Ref. https://github.com/flux-framework/flux-core/issues/269[Issue
-  269].
-
-* Submission of jobs that are determined to be invalid or infeasible
-  SHALL be rejected.
-
-* There MAY be a means to define political controls that impose limits
-  on scheduling jobs.
-
-* Submission of jobs that exceed defined policy limits MAY be
-  rejected.
+Free (S, [N]):: Free the allocation named _S_ from the current pool
+ and return all allocated items to the list of available resources.
+ Optional argument _N_ SHALL shrink the allocation by _N_ items, where
+ _N_ is less than or equal to total allocation under name _S_.
 
 === Resource Allocation Records
 
