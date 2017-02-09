@@ -30,7 +30,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 * Run programs with the credentials of the submitting user.
 * Prevent unauthorized access.
 * Assume networks are NOT physically secure by default.
-* Programs are contained within allotted resources.
+* Programs are contained within allocated resources.
 * Integration with Linux distribution security services
 * Integration with site security services
 
@@ -42,19 +42,56 @@ commodity HPC Linux clusters.   Flux is unique among resource managers
 in that a Flux instance may be launched as a parallel program by an
 unprivileged user.
 
-Flux runs in single and multi-user mode.  A single-user Flux instance
-only launches work as the instance owner.  A multi-user Flux instance
-launches work as other users.
+A Flux instance is built upon message brokers communicating via overlay
+network(s).  A Flux instance has an "instance owner" whose identity is
+used to launch the broker processes, and whose credentials secure overlay
+network connections, for privacy and message integrity.
 
-The system instance of Flux runs as a system service started by
-systemd(8) or equivalent and runs in multi-user mode.  Other instances
-may run in single or multi-user mode, and may be launched by Flux,
-another resource manager, or with a standalone launcher.
+The instance owner has full control over the instance, including
+its resources (within bounds enforced by the enclosing instance),
+its scheduling policies, its loadable extension modules, the access
+rights of other users within the instance, even the non-privileged
+executable components of the instance.
+
+Neither the instance owner nor the broker executables require special
+system privileges.  The privilege necessary to launch work as other users
+and establish containment to the allocated resources is concentrated in
+a single privileged command.  Only work cryptographically shown to have
+been requested by a user AND authorized by the instance owner to use a
+set of resources that it owns will be launched by the privileged command
+in a container with those resources.
+
+This concentration of privilege combined with simple rules makes Flux
+security auditable, and _safely_ gives the instance owner flexibility
+to customize and augment Flux services.
+
+A user interacts with a Flux instance (for example via a job submission
+command) by connecting to a broker, then sending and receiving messages
+as described in RFC 3.  Connections are established using broker plugins
+called "connectors".  The connector is responsible for authenticating
+the user, looking the user up in an instance user database to obtain a
+numeric userid and set of "roles" granted to the user, and accepting
+or denying the connection.
+
+If a connection is accepted, the userid and role set are saved with
+connection state in the connector and subsequent messages originating
+from the connection are stamped with this information.  The instance
+owner controls the user database and assignment of roles, thus controls
+what other users will be allowed do within the instance.
+
+Services that have arranged to receive requests by users other than the
+instance owner can gate access to operations using the userid and role
+stamped on the request message by the connector, according to the service's
+security policy.  For example, a scheduler could allow a user to dequeue
+their own jobs, or if they have the "admin" role, to dequeue jobs belonging
+to others.
+
+A service's security policy resides within the service, and is initialized
+to a default state by the service.  The default security policy for some
+services may be altered by instance owner.  For example, the instance owner
+could extend job cancellation to anyone with the "user" role.
 
 == Implementation
-
-This early draft is mainly focused on single-user, non-system
-Flux instances.
 
 === Instance Owner ===
 
