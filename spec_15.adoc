@@ -1,0 +1,327 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+15/Independent Minister of Privilege for Flux: The Security IMP
+===============================================================
+
+This specification describes Flux Security IMP, a privileged service
+used by multi-user Flux instances to launch, monitor, and control
+processes running as users other than the instance owner.
+
+* Name: github.com/flux-framework/rfc/spec_10.adoc
+* Editor: Mark A. Grondona <mgrondona@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_12{outfilesuffix}[12/Flux Security Architecture]
+
+== Introduction
+
+In the traditional resource management model, a monolithic resource
+manager runs with the credentials of a privileged user, typically using
+long-running daemons with elevated privileges on compute resources. These
+daemons allow the resource manager to complete necessary privileged
+work, such as modification of containers, system preparation (such as
+prolog/epilog scripts), and most importantly allow the transition of
+credentials to that of the requesting user, so that jobs may be successfully
+executed in a multi-user environment.
+
+Drawbacks to this monolithic approach include:
+
+ * Total amount of code running with privilege is increased above what
+   is strictly necessary
+ * Testing of privileged code is more difficult
+ * Security patches and updates require a new release of entire project
+
+In the Flux model, however, an instance runs at most with the credentials
+of the _instance owner_ (a normal, unprivileged user), including all
+processes running on computational resources of the instance. This design
+works well for single-user instances of Flux, but multi-user capable
+instances require some mechanism to perform privileged operations, most
+notably when executing work on behalf of a non instance owner (a guest).
+
+In the Flux system, this privilege - along with all related operations - is
+contained within a single service, the _Independent Minister of Privilege_
+(IMP), which is responsible for allowing instance owners to run work on
+behalf of a guest when the guest user has authorized the instance to do so.
+
+By placing all code running with elevated privilege into a single service,
+the following benefits are realized:
+
+ * Code running under privilege is reduced to the logical minimum
+ * The privileged service can be tested separately from other Flux components
+ * The privileged software release cycle is decoupled from core
+   Flux code, allowing updates to be applied out of band.
+ * The privileged service is completely under sysadmin control, while
+   still allowing users to run test or private versions of Flux even
+   in multi-user mode.
+ * More fine grained administrative control of privilege. For example,
+   simple filesystem access controls may be used to limit which
+   users are allowed to run multi-user without preventing these users
+   from launching Flux instances altogether.
+ * Arbitrary users can run multi-user instances of Flux, thus allowing
+   users to share their jobs 
+
+=== User Roles
+
+For the purposes of this RFC there are four main user roles:
+
+ owner, instance owner, or resource owner
+  The user under which a Flux instance is running, not privileged.
+  This user is considered the owner of all resources to which the Flux
+  instance is running.
+
+ system owner
+  The user under which the system instance of Flux is running.
+  The default owner of all resources on the system.
+
+ guest user, or guest
+  A user wishing to use services or run work in a Flux instance when
+  they are not the instance owner.
+
+ superuser, or root
+  A user with access to perform required privileged operations during
+  multi-user execution, such as gaining credentials of other users,
+  system setup or initialization, container manipulation, etc. Typically
+  the root user.
+
+=== Implementation Requirements
+
+The Flux Security IMP SHALL be implemented with the following overall
+design
+
+ * The IMP SHALL be an independent Flux Framework project, with the ability
+   to be tested standalone
+ * The IMP SHALL be implemented as an executable, `flux-security-imp`,
+   which MAY be installed with setuid permissions in cases where multi-user
+   Flux is required.
+ * The IMP SHALL accept and process data using stdin, to avoid putting
+   sensitive data on the command line or environment.
+
+Implementation of the IMP as a separately installed, setuid executable
+allows sysadmin control over where and how the IMP is enabled. If the
+`flux-security-imp` executable is not installed, or installed without
+setuid bits enabled, then multi-user Flux is simply not available, though
+single user instances of Flux will still operate. The file permissions,
+access controls, or SELinux policy of `flux-security-imp` may also be
+manipulated to restrict access to a user or group of users. For instance,
+a site may configure permissions such that only a `flux` user has execute
+permissions, thus allowing a multi-user system instance running as `flux`,
+but disallowing sub-instance jobs access to multi-user capabilities.
+
+=== Overall Design
+
+The operation of the Flux Security IMP is based on the use of structured
+request tokens by both the instance owner with control of some resources
+and a guest user requesting use of those resources. Each of these tokens
+have a guarantee of data integrity and authenticity, such that these requests
+cannot be modified in an unauthorized or undetectable manner, and the
+identity of the creators may be absolutely verified.
+
+When a guest makes a request for a job to a multi-user instance of
+Flux, the guest will create a message with information such as the job
+specification, a time-to-live, and authorized resource owner, and then
+uses IMP client API to sign all fields of the message. The signed message
+becomes the user request token *_J_* which authorizes the resource owner to
+execute the request at some point on behalf of the guest.
+
+This signed request then becomes part of the user's job.  When the job is
+scheduled by the instance, the owner assigns a resource set to the job,
+and signs that data _including_ the user's original request. The resource
+owner's signature and the assigned resources, in addition to an additional
+time-to-live, become a job request token *_R_* which authorizes the guest
+user access to the specific resources in the resource set.
+
+This final signed job request token *_R_* becomes the input to the
+Flux IMP executable. This allows the IMP to verify that the
+resource owner has granted certain resources to a guest user, and that
+the guest has authorized the resource owner to execute specific work on
+their behalf.
+
+The IMP verifies the integrity and authenticity of both *_R_* and *_J_*
+using cryptographic methods provided by plugins.  Once the verification
+step is complete, the privileged IMP will invoke system configured
+plugins for setup and containment, then change credentials to the
+guest user, and finally execute the processes of the job as specified
+in *_J_*.
+
+In most cases, the IMP will execute a _job shell_ on behalf of the user,
+passing the verfied *_J_* as input to the shell. The shell itself is
+provided either by the user or by system configuration, but should not be
+provided or modified by the instance owner. The shell re-verifies
+integrity and authenticity of *_J_* before proceeding, then interprets
+the jobspec contained in *_J_* to determine the set of tasks to invoke
+on the current resource set.
+
+[NOTE]
+It may be noted that the user's request *_J_* is verified twice when a job
+shell is invoked, and this is by design. The IMP verifes *_J_* to avoid
+passing tainted input to the job shell, which runs as the guest user.
+The shell re-verifies *_J_* because it has no guarantee that the caller
+has already done this verification, or that *_J_* has not been changed
+since any past verification.
+
+Figure 1 below summarizes the overall role of the IMP in a multi-user
+Flux instance.
+
+.Depiction of multi-user Flux IMP overall design. Here user `bob` is the instance owner, and `alice` is a guest.
+image::data/spec_15/imp.png[width=600,align=center]
+
+== Job Request
+
+The proposed contents of the owner's Job Request (*_R_*) as follows
+
+ * User Request (*_J_*) (described below)
+ * Assigned resource set
+ * Timestamp and TTL
+ * UUID
+ * Owner Signature (of above fields)
+
+Where *_J_* is the User Request or reference to such a request,
+which SHALL contain
+
+ * Jobspec as per link:spec_14{outfilesuffix}[14/Canonical Job Specification]
+ * UUID
+ * Timestamp and TTL
+ * Intended recipient (instance owner)
+ * Allowed resource set
+ * User signature (of above fields)
+
+Where above fields have the following specific meanings and requirements
+
+ * _Assigned resource set_ is the list of resources assigned to this
+   job by the resource owner
+ * _Timestamp and TTL_ signifies that the request in question SHALL
+   only be valid between _Timestamp_ and _Timestamp+TTL_. This puts a
+   time horizon on request usage
+ * _UUID_ is a globally unique identifier
+ * _Intended recipient_ is set to the instance owner that is the target
+   of the request. This ensures that the user's request cannot be
+   used by another arbitrary user.
+ * The _user signature_ signs all fields of *_J_*
+ * The _owner signature_ signs all fields of *_R_* _including_ *_J_*
+
+
+== IMP Internal Operation
+
+=== Privilege Separation
+
+When the IMP is invoked _and_ has setuid privileges, the process MAY
+use privilege separation to limit the impact of programming errors or
+bugs in libraries. For more information on privilege separation, see
+the paper on privilege separated OpenSSH: "Preventing Privilege
+Escalation".
+footnote:[http://www.citi.umich.edu/u/provos/papers/privsep.pdf[Preventing Privilege Escalation], Niels Provos, Markus Friedl, Peter Honeyman.]
+
+=== Request Verification
+
+Once the privileged IMP process has obtained the Job Request *_R_*,
+it SHALL perform the following verification steps:
+
+ 1. Verify integrity and authenticity of *_R_*
+ 2. Verify owner has access to assigned resource set
+ 3. Verify integrity and authenticity of *_J_*
+ 4. Verify TTL on *_R_* and *_J_*
+ 5. Verify recipient field in *_J_* matches resource owner
+ 6. Verify, if included, that assigned resource set is a strict subset
+    of the allowed resource set
+
+==== Resource ownership verification
+
+Resources in Flux are initially owned by the _system owner_, i.e. the
+user which runs the system instance. Typically, this would be some
+special system user, e.g. `flux`. The system owner is the only trusted
+user and resource ownership of requests from this user SHALL NOT require
+verification.
+
+In order to verify resource ownership for non-system users, the
+following requirements should be met:
+
+ * The IMP SHALL support some sort of containment strategy, implemented
+   via plugins for maximum flexibility.
+ * The IMP's container mechanism MUST support, at a minimum, process
+   tracking functionality capable of creating inescapable process groups.
+ * The IMP's container strategy MUST be hierarchical, such that containers
+   for jobs within an instance are created as sub-containers of
+   container of the parent.
+ * The IMP SHALL keep an original copy of the request *_R_* as ancillary
+   data for each container.
+
+With the following requirements met, the IMP may verify resource
+ownership by ensuring that the current container includes the
+resources in the assigned resource set, and that the invoking user
+is owner of the current container.
+
+==== Revoking resource ownership
+
+Resource ownership MUST be revokable. The result of a revocation SHALL
+include termination of all processes currently running in the container
+associated with the revoked resource grant. A revocation is recursive,
+and removes the container and all child containers, including ancillary
+data.
+
+=== IMP post-verification execution
+
+After verification of *_R_* is complete, the `flux-security-imp`
+invokes required job setup code as the superuser. This setup code SHALL
+be implemented as system-installed and verified plugins, and MAY include
+such things as
+
+ * Execution of some sort of job prolog
+ * modification of system settings
+ * creation of directories
+ * state cleanup
+
+Once privileged setup is complete, the security IMP SHALL generate a log
+message or other audit trail for the individual request.  The IMP then
+SHALL proceed to obtain credentials of the guest user and finally exec(2)
+either explicit command in *J*, or a *job shell* as specified by the
+user or system configuration. After the call to exec(2) the security IMP
+is replaced by the guest user process, and is no longer active.
+
+=== Other IMP operational requirements
+
+A multi-user instance of Flux not only requires the ability to execute
+work as a guest user, but it must also have privilege to monitor and
+kill these processes as part of normal resource manager operation.
+
+==== Signaling and terminating jobs in a multi-user instance
+
+For terminating and signaling processes the IMP SHALL include a `kill`
+subcommand which, using the process tracking functionality, SHALL allow
+an instance owner to signal or terminate any guest processes including
+ancestors thereof that were started by the owner's instance.
+
+=== IMP configuration
+
+On execution, the `flux-security-imp` SHALL read a site configuration
+file which MAY contain site-specific information such as paths to trusted
+executables, plugin locations, certificate authority information etc.
+The IMP SHALL check for correct permissions on all configuration
+files to reduce the risk of tampering.
+
+=== Specific Defenses
+
+This section describes some attacks and their specific defenses. It
+is still a work in progress.
+
+ * _Executing arbitrary process as another user_: The entirety of a user
+   job request, including executables, arguments, working directory,
+   environment variables, etc, has an integrity guarantee, therefore
+   a request cannot be forged, even by the instance owner.
+
+ * _Replay attacks_, where a user's job request is run again without their
+   express permission, or a request is taken to another system and executed
+   without authority. The _intended recipient_ field of the user request
+   protects against users other than the instance owner using the
+   guest request, and a fixed time-to-live prevents the request from
+   being used indefinitely. Finally, the `flux-security-imp` logs all
+   invocations, thereby allowing replays to be detected and audited.
+
+[footnotes]
