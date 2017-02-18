@@ -13,7 +13,8 @@ SOURCES = \
 	spec_11.adoc \
 	spec_12.adoc \
 	spec_13.adoc \
-	spec_14.adoc
+	spec_14.adoc \
+	spec_15.adoc \
 
 HTML = $(SOURCES:.adoc=.html)
 PDF = $(SOURCES:.adoc=.pdf)
