@@ -141,7 +141,6 @@ Execution Services]
 
 * Exclusive | Shared (limit to how many jobs can be allocated)
 * Staged (temporary lock when this resource is being considered for a job)
-* Flux-core instances and ranks running on this resource
 * Allocations  (List of jobs to which this resource is allocated)
 * Reservations (List of jobs to which this resource is reserved)
 
