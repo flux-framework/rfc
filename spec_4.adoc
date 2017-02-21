@@ -135,6 +135,10 @@ topology.
 
 ==== Resource Allocation Data
 
+For the discussion that follows, the term _job_ is to be interpreted
+as described in link:spec_8{outfilesuffix}[8/Flux Task and Program
+Execution Services]
+
 * Exclusive | Shared (limit to how many jobs can be allocated)
 * Staged (temporary lock when this resource is being considered for a job)
 * Flux-core instances and ranks running on this resource
