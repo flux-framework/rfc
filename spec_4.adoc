@@ -141,7 +141,7 @@ Execution Services]
 
 * Exclusive flag - all `size` elements of resource pool MUST be
   allocated to job when set
-* Staged (temporary lock when this resource is being considered for a job)
+* Staged - Portion of resource `size` being considered for a job
 * Allocations  - List of jobs (with `size`) to which this resource is allocated
 * Reservations - List of jobs (with `size`) to which this resource is reserved
 * Shared       - List of jobs (without `size`) sharing this resource
@@ -259,6 +259,14 @@ Find:: A search method SHALL be provided by the implementation to
  their children, as well as ancestors up to the root of the hierarchy.
  The _Find_ method MAY be implemented as a combination of _Traversal_
  and _Match_.
+
+Stage:: A method to incrementally build a set of candidates for
+ allocation MAY be provided.  Without the _Stage_ method, resources
+ have to be allocated one at a time following a successful _Match_.
+ If not enough resources can be found to satisfy the quantity
+ requested, the allocated resources would have to be either converted
+ to reservations or rescinded.  If a _Stage_ method is provided, an
+ _UnStage_ method MUST be provided.
 
 === Job Allocations and Reservations
 
