@@ -158,6 +158,23 @@ SHALL be supported.
 
 === Load / Save
 
+Load:: At least one of methods for creating a set of resources from the
+ following sources SHALL be provided.
+
+ * Configuration file
+ * Using the Portable Hardware Locality (hwloc) library
+ * KVS of enclosing instance
+ * Database
+
+Save:: Methods for saving a resource set to the following destinations
+ MAY be provided.  For any method implemented, an option SHALL be
+ provided to save the entire resource set or only those resources that
+ changed since the last save.
+
+ * KVS of child instance
+ * Configuration file
+ * Database
+
 Serialize:: A method for serializing/deserializing a resource pool and
  its children SHALL be provided to allow for transmission for resource
  pool hierarchy and data over the wire, saving state to a file, etc.
