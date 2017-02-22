@@ -242,6 +242,11 @@ Match:: A method or set of methods for resource pool matching SHALL be
  provided by the implementation. Resource pools SHALL be matched on
  tags, properties, size, type, name, basename, ids, etc.
 
+Score:: A method to score the degree of a match MAY be provided.  A
+ resource score would be used to identify the optimal set of resources
+ from all the candidates found that match the criteria.  The _Score_
+ method MAY be implemented as an option to the _Match_ method.
+
 Traversal:: A method for traversal SHALL be provided to visit each
  node in the hierarchy rooted at the current object. The traversal
  method SHALL allow for optionally provided methods for determining
