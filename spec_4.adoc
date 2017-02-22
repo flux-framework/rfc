@@ -214,6 +214,9 @@ Unlink:: A method for removing or ``unlinking'' a resource from a hierarchy
  data table. If there are no more entries in this Resource's Hierarchy
  table, then the Resource data object MAY be garbage collected.
 
+Destroy:: A method to destroy the resource representation and reclaim
+ associated memory SHALL be provided.
+
 === Resource Pool Data Methods
 
 Size:: A method to query the size of a resource pool SHALL be
