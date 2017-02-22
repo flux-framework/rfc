@@ -156,40 +156,16 @@ scheduling jobs in the future.
 When operating on a resource as an object, the following methods
 SHALL be supported.
 
-Size:: A method to query the current size of a resource pool SHALL
- be provided.
+=== Load / Save
 
-Tag (K, [V]):: A method for tagging resource pools with
- arbitrary key/value pairs SHALL be provided. The value _V_ SHALL
- be optional.
+Serialize:: A method for serializing/deserializing a resource pool and
+ its children SHALL be provided to allow for transmission for resource
+ pool hierarchy and data over the wire, saving state to a file, etc.
 
-State:: Methods for setting and returning the state of the resource
- SHALL be provided.
+=== Copying and Destroying
 
-Aggregation:: A method for returning resource contents of composite
- object _in aggregate_ SHALL be provided. The aggregate method SHALL
- return the sum of available resources by type name. Resources with an
- available count of 0 SHALL be pruned from the results by default,
- since the composite model implies that all children of an unavailable
- resource are themselves not available.
-
-Traversal:: A method for traversal SHALL be provided to visit each node
- in the hierarchy rooted at the current object. The traversal method SHALL
- allow for optionally provided methods for determining the traversal
- pattern for each child resources. This interface SHALL allow, at least,
- the pruning of non-matching subtrees and the order of visitation of
- children during traversal.
-
-Match:: A method or set of methods for resource pool matching
- SHALL be provided by the implementation. Resource pools SHALL
- be matched on tags, properties, size, type, name, basename,
- ids, etc.
-
-Find:: A search method SHALL be provided by the implementation to
- traverse the tree and return all matching resource pools, along with
- their children, as well as ancestors up to the root of the hierarchy.
- The _Find_ method MAY be implemented as a combination of _Traversal_
- and _Match_.
+These methods below MAY be limited to the composite resource pool and
+not the associated graphs.
 
 Copy:: A method for copying a resource composite to a new instance SHALL
  be provided. This method MAY be used to create a new instance of
@@ -221,9 +197,43 @@ Unlink:: A method for removing or ``unlinking'' a resource from a hierarchy
  data table. If there are no more entries in this Resource's Hierarchy
  table, then the Resource data object MAY be garbage collected.
 
-Serialize:: A method for serializing/deserializing a resource pool and its
- children SHALL be provided to allow for transmission for resource pool
- hierarchy and data over the wire, saving state to a file, etc.
+=== Resource Pool Data Methods
+
+Size:: A method to query the size of a resource pool SHALL be
+ provided.
+
+Tag (K, [V]):: A method for tagging resource pools with
+ arbitrary key/value pairs SHALL be provided. The value _V_ SHALL
+ be optional.
+
+State:: Methods for setting and returning the state of the resource
+ SHALL be provided.
+
+Aggregation:: A method for returning resource contents of composite
+ object _in aggregate_ SHALL be provided. The _Aggregate_ method SHALL
+ return the sum of available resources by type name. Resources with an
+ available count of 0 SHALL be pruned from the results by default,
+ since the composite model implies that all children of an unavailable
+ resource are themselves not available.
+
+=== Find and Stage Methods
+
+Match:: A method or set of methods for resource pool matching SHALL be
+ provided by the implementation. Resource pools SHALL be matched on
+ tags, properties, size, type, name, basename, ids, etc.
+
+Traversal:: A method for traversal SHALL be provided to visit each
+ node in the hierarchy rooted at the current object. The traversal
+ method SHALL allow for optionally provided methods for determining
+ the traversal pattern for each child resources. This interface SHALL
+ allow, at least, the pruning of non-matching subtrees and the order
+ of visitation of children during traversal.
+
+Find:: A search method SHALL be provided by the implementation to
+ traverse the tree and return all matching resource pools, along with
+ their children, as well as ancestors up to the root of the hierarchy.
+ The _Find_ method MAY be implemented as a combination of _Traversal_
+ and _Match_.
 
 === Job Allocations and Reservations
 
