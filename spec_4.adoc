@@ -240,7 +240,8 @@ Aggregation:: A method for returning resource contents of composite
 
 Match:: A method or set of methods for resource pool matching SHALL be
  provided by the implementation. Resource pools SHALL be matched on
- tags, properties, size, type, name, basename, ids, etc.
+ tags, properties, size, type, name, basename, ids, etc.  The _Match_
+ method MAY consider the resource pool's allocations and reservations.
 
 Score:: A method to score the degree of a match MAY be provided.  A
  resource score would be used to identify the optimal set of resources
@@ -283,11 +284,21 @@ Allocate (N, S):: A method to allocate _N_ resources from the pool
  use with _Find_ and _Match_ methods. If an allocation under _S_
  already exists, then the allocation SHALL be grown by amount _N_.
 
+Reserve (N, S):: A method to reserve _N_ resources from the pool under
+ the name _S_ MAY be provided.  If a reservation under _S_ already
+ exists, then the reservation SHALL be grown by the amount _N_.
+
 Release (S, [N]):: A method to release the allocation named _S_ from
  the current pool and return all allocated items to the list of
  available resources SHALL be provided.  Optional argument _N_ SHALL
  shrink the allocation by _N_ items, where _N_ is less than or equal
  to total allocation under name _S_.
+
+Cancel (S, [N]):: A method to cancel the reservation named _S_ from
+ the current pool and return all reserved items to the list of
+ available resources SHALL be provided.  Optional argument _N_ SHALL
+ shrink the reservation by _N_ items, where _N_ is less than or equal
+ to total reservation under name _S_.
 
 === Resource Allocation Records
 
