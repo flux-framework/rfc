@@ -70,6 +70,10 @@ typedef struct foo_struct foo_t;
 ----
 Abstract types SHOULD NOT be defined as pointers to incomplete types,
 
+Typedef names SHOULD be chosen such that they are unique within a framework project.
+For example avoid generic types like `struct a` or typedefs like `ctx_t`. A good
+practice is to include the name of the relevant source file, module or service in
+the typedef (e.g. `fooservice_ctx_t`).
 
 Tools That Modify Code to Conform to C Coding Style
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
