@@ -23,7 +23,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 == Related Standards
 
 * link:spec_4{outfilesuffix}[4/Flux Resource Model]
-* link:spec_12{outfilesuffix}[12/Flux Task and Program Execution Services]
+* link:spec_8{outfilesuffix}[8/Flux Task and Program Execution Services]
 
 == Goals
 
