@@ -83,6 +83,7 @@ SHA
 zeromq
 multi
 APIs
+Basename
 basename
 deserializing
 frameid
@@ -330,3 +331,5 @@ rolemask
 dequeue
 ctx
 fooservice
+UnStage
+hwloc

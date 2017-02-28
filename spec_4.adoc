@@ -90,7 +90,7 @@ MAY be configured to operate at the racks and aggregates on their
 containing nodes while a lower-level instance MAY actually operate at
 the nodes and cores as the finest resource granularity.
 
-==== Resource pool data:
+==== Resource Pool Data
 
 * Type
 * UUID (Unique ID for this resource)
@@ -100,9 +100,9 @@ the nodes and cores as the finest resource granularity.
 * Properties (static properties associated with this instance)
 * Tags (dynamic list of tags)
 * Size (Total number of resources in this pool)
-* Units (optional units associated with the size value)
+* Units (optional units associated with the `size` value)
 * State (e.g., up, down, degraded, failing, unknown, null)
-* Resource composite data (see below)
+* Composite resource data (see below)
 * Graph data (see below)
 * Resource allocation data (see below)
 
@@ -117,14 +117,14 @@ properties (e.g. a system might have node names formatted like
 The value for `properties` SHALL support multiple identifying
 properties which could be used to uniquely characterize the resource.
 
-==== Resource Composite Data:
+==== Composite Resource Data
 
 * URI (in ``name:/path/to/resource'' form)
 * Children
 * Parent
 * UUID of resource pool (or other pointer to resource data)
 
-==== Resource Graph Data:
+==== Resource Graph Data
 
 Resource pools MAY be associated with other resource pools that are
 not members of the same composite hierarchy.  These relationships
@@ -133,58 +133,56 @@ vertices in other graphs to which the resource is associated.
 Examples include graphs that model power distribution or network
 topology.
 
-==== Resource Allocation Data:
+==== Resource Allocation Data
 
-* Exclusive | Shared (limit to how many jobs can be allocated)
-* Staged (temporary lock when this resource is being considered for a job)
-* Flux-core instances and ranks running on this resource
-* Allocations  (List of jobs to which this resource is allocated)
-* Reservations (List of jobs to which this resource is reserved)
+For the discussion that follows, the term _job_ is to be interpreted
+as described in link:spec_8{outfilesuffix}[8/Flux Task and Program
+Execution Services]
 
-Allocations and reservations change over the course of time.  The
-allocations and reservations data MAY become an array of job
-allocations and reservations over time to support scheduling jobs in
-the future.
+* Exclusive flag - all `size` elements of resource pool MUST be
+  allocated to job when set
+* Staged - Portion of resource `size` being considered for a job
+* Allocations  - List of jobs (with `size`) to which this resource is allocated
+* Reservations - List of jobs (with `size`) to which this resource is reserved
+* Shared       - List of jobs (without `size`) sharing this resource
 
-=== Composite Resource Pool Methods
+Allocations, reservations and shared change over the course of time.
+The allocations, reservations and shared data MAY become an array of
+job allocations, reservations and shared over time to support
+scheduling jobs in the future.
+
+== Composite Resource Pool Methods
 
 When operating on a resource as an object, the following methods
-SHALL be supported
+SHALL be supported.
 
-Size:: A method to query the current size of a resource pool SHALL
- be provided.
+=== Load / Save
 
-Tag (K, [V]):: A method for tagging resource pools with
- arbitrary key/value pairs SHALL be provided. The value _V_ SHALL
- be optional.
+Load:: At least one of methods for creating a set of resources from the
+ following sources SHALL be provided.
 
-State:: Methods for setting and returning the state of the resource
- SHALL be provided.
+ * Configuration file
+ * Using the Portable Hardware Locality (hwloc) library
+ * KVS of enclosing instance
+ * Database
 
-Aggregation:: A method for returning resource contents of composite
- object _in aggregate_ SHALL be provided. The aggregate method SHALL
- return the sum of available resources by type name. Resources with an
- available count of 0 SHALL be pruned from the results by default,
- since the composite model implies that all children of an unavailable
- resource are themselves not available.
+Save:: Methods for saving a resource set to the following destinations
+ MAY be provided.  For any method implemented, an option SHALL be
+ provided to save the entire resource set or only those resources that
+ changed since the last save.
 
-Traversal:: A method for traversal SHALL be provided to visit each node
- in the hierarchy rooted at the current object. The traversal method SHALL
- allow for optionally provided methods for determining the traversal
- pattern for each child resources. This interface SHALL allow, at least,
- the pruning of non-matching subtrees and the order of visitation of
- children during traversal.
+ * KVS of child instance
+ * Configuration file
+ * Database
 
-Match:: A method or set of methods for resource pool matching
- SHALL be provided by the implementation. Resource pools SHALL
- be matched on tags, properties, size, type, name, basename,
- ids, etc.
+Serialize:: A method for serializing/deserializing a resource pool and
+ its children SHALL be provided to allow for transmission for resource
+ pool hierarchy and data over the wire, saving state to a file, etc.
 
-Find:: A search method SHALL be provided by the implementation to
- traverse the tree and return all matching resource pools, along with
- their children, as well as ancestors up to the root of the hierarchy.
- The _Find_ method MAY be implemented as a combination of _Traversal_
- and _Match_.
+=== Copying and Destroying
+
+These methods below MAY be limited to the composite resource pool and
+not the associated graphs.
 
 Copy:: A method for copying a resource composite to a new instance SHALL
  be provided. This method MAY be used to create a new instance of
@@ -195,7 +193,7 @@ Copy:: A method for copying a resource composite to a new instance SHALL
  instance, the implementation SHALL copy only _available_ resources
  to the new instance. That is, resource pools with no available
  resources (and their children) SHALL be ignored during a copy,
- and copied resources SHALL have _size_ set to _available_ and
+ and copied resources SHALL have `size` set to _available_ and
  _allocated_ set to zero.
 
 Duplicate:: A method for duplicating an entire hierarchy SHALL be
@@ -216,42 +214,112 @@ Unlink:: A method for removing or ``unlinking'' a resource from a hierarchy
  data table. If there are no more entries in this Resource's Hierarchy
  table, then the Resource data object MAY be garbage collected.
 
-Serialize:: A method for serializing/deserializing a resource pool and its
- children SHALL be provided to allow for transmission for resource pool
- hierarchy and data over the wire, saving state to a file, etc.
+Destroy:: A method to destroy the resource representation and reclaim
+ associated memory SHALL be provided.
+
+=== Resource Pool Data Methods
+
+Size:: A method to query the size of a resource pool SHALL be
+ provided.
+
+Tag (K, [V]):: A method for tagging resource pools with
+ arbitrary key/value pairs SHALL be provided. The value _V_ SHALL
+ be optional.
+
+State:: Methods for setting and returning the state of the resource
+ SHALL be provided.
+
+Aggregation:: A method for returning resource contents of composite
+ object _in aggregate_ SHALL be provided. The _Aggregate_ method SHALL
+ return the sum of available resources by type name. Resources with an
+ available count of 0 SHALL be pruned from the results by default,
+ since the composite model implies that all children of an unavailable
+ resource are themselves not available.
+
+=== Find and Stage Methods
+
+Match:: A method or set of methods for resource pool matching SHALL be
+ provided by the implementation. Resource pools SHALL be matched on
+ tags, properties, size, type, name, basename, ids, etc.  The _Match_
+ method MAY consider the resource pool's allocations and reservations.
+
+Score:: A method to score the degree of a match MAY be provided.  A
+ resource score would be used to identify the optimal set of resources
+ from all the candidates found that match the criteria.  The _Score_
+ method MAY be implemented as an option to the _Match_ method.
+
+Traversal:: A method for traversal SHALL be provided to visit each
+ node in the hierarchy rooted at the current object. The traversal
+ method SHALL allow for optionally provided methods for determining
+ the traversal pattern for each child resources. This interface SHALL
+ allow, at least, the pruning of non-matching subtrees and the order
+ of visitation of children during traversal.
+
+Find:: A search method SHALL be provided by the implementation to
+ traverse the tree and return all matching resource pools, along with
+ their children, as well as ancestors up to the root of the hierarchy.
+ The _Find_ method MAY be implemented as a combination of _Traversal_
+ and _Match_.
+
+Stage:: A method to incrementally build a set of candidates for
+ allocation MAY be provided.  Without the _Stage_ method, resources
+ have to be allocated one at a time following a successful _Match_.
+ If not enough resources can be found to satisfy the quantity
+ requested, the allocated resources would have to be either converted
+ to reservations or rescinded.  If a _Stage_ method is provided, an
+ _UnStage_ method MUST be provided.
 
 === Job Allocations and Reservations
 
 Allocated:: A method to query the number of objects _allocated_ to
  jobs from the current pool SHALL be provided.
 
-Available:: A method to query the current amount of available members
+Available:: A method to query the current number of available members
  in a resource pool object SHALL be provided. The _available_ count
  MAY be calculated as _size_ - _allocated_.
 
-Allocate (N, S):: Allocate _N_ resources from the pool
- under the name _S_. The available resources in a pool is
- its size minus the total number of allocations. The allocation
- _S_ SHALL be stored as a searchable attribute along with
- the resource for later use with _Find_ and _Match_ methods. If an
- allocation under _S_ already exists, then the allocation
- SHALL be grown by amount _N_.
+Allocate (N, S):: A method to allocate _N_ resources from the pool
+ under the name _S_ SHALL be provided. The allocation _S_ SHALL be
+ stored as a searchable attribute along with the resource for later
+ use with _Find_ and _Match_ methods. If an allocation under _S_
+ already exists, then the allocation SHALL be grown by amount _N_.
 
-Free (S, [N]):: Free the allocation named _S_ from the current pool
- and return all allocated items to the list of available resources.
- Optional argument _N_ SHALL shrink the allocation by _N_ items, where
- _N_ is less than or equal to total allocation under name _S_.
+Reserve (N, S):: A method to reserve _N_ resources from the pool under
+ the name _S_ MAY be provided.  If a reservation under _S_ already
+ exists, then the reservation SHALL be grown by the amount _N_.
+
+Release (S, [N]):: A method to release the allocation named _S_ from
+ the current pool and return all allocated items to the list of
+ available resources SHALL be provided.  Optional argument _N_ SHALL
+ shrink the allocation by _N_ items, where _N_ is less than or equal
+ to total allocation under name _S_.
+
+Cancel (S, [N]):: A method to cancel the reservation named _S_ from
+ the current pool and return all reserved items to the list of
+ available resources SHALL be provided.  Optional argument _N_ SHALL
+ shrink the reservation by _N_ items, where _N_ is less than or equal
+ to total reservation under name _S_.
 
 === Resource Allocation Records
 
-* The job ID for a job that is allocated a resource in a composite
-  hierarchy MUST be annotated not only to the resource, but to each
-  parent up the tree of those resources allocated to the enclosing
-  instance.  This allows a scheduler to know when a parental resource
-  and all its children can be allocated exclusively to a job.
+* One `unit` of the `size` resource pool SHALL be the most granular
+  allocatable resource.  Multiple jobs may be allocated `size` units
+  of a resource, but no two jobs MAY be allocated the same resource
+  unit.  In other words, the total number of resource units allocated
+  to jobs MAY not exceed the `size` count defined for the resource.
 
-* A resource SHALL have a means to signify that it, and all its child
-  resources, have been allocated exclusively to a job.
+* When all `size` elements of a resource pool have been allocated to a
+  job, the resource is allocated exclusively to the job.  The `shared`
+  list of an exclusively allocated resource MUST be empty.
 
-* Child resources of a resource allocated exclusively to a job SHOULD
-  NOT be annotated with the job ID.
+* By definition, when a resource is allocated exclusively to a job,
+  all of its child resources MUST implicitly be allocated to the job.
+  To save processing effort, child resources SHOULD NOT be given
+  resource allocations or reservations when the parent resource is
+  allocated exclusively to a job.  The allocation or reservation of
+  the parent's job is implied.
+
+* When a composite resource is allocated to a job, the job ID MUST be
+  added to the `shared` list of each parent resource.  This allows a
+  scheduler to quickly determine when a parental resource and all its
+  children can be allocated exclusively to a job.
