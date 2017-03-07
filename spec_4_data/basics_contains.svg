@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="196.61891174316406" height="185.32167053222656" viewBox="-60.7599983215332 14.247604370117188 196.61891174316406 185.32167053222656">
+   <title>Neo4j Graph Visualization</title>
+   <desc>Created using Neo4j (http://www.neo4j.com/)</desc>
+   <g class="layer relationships">
+      <g class="relationship" transform="translate(-31.759998321533203 43.24760409502014) rotate(402.5130069345641)">
+         <path class="outline" fill="#A5ABB6" stroke="none" d="M 25 0.5 L 31.99008558816122 0.5 L 31.99008558816122 -0.5 L 25 -0.5 Z M 99.10922621316122 0.5 L 106.09931180132244 0.5 L 106.09931180132244 3.5 L 113.09931180132244 0 L 106.09931180132244 -3.5 L 106.09931180132244 -0.5 L 99.10922621316122 -0.5 Z" />
+         <text text-anchor="middle" pointer-events="none" font-size="8px" fill="#000000" x="65.54965590066122" y="3" font-family="sans-serif">CONTAINS</text>
+      </g>
+   </g>
+   <g class="layer nodes">
+      <g class="node" transform="translate(-31.759998321533203,43.24760409502014)">
+         <circle class="outline" cx="0" cy="0" r="25" fill="#FB95AF" stroke="#E0849B" stroke-width="2px" />
+         <text text-anchor="middle" pointer-events="none" y="0" font-size="10px" fill="#FFFFFF" font-family="sans-serif">Cluster</text>
+         <text text-anchor="middle" pointer-events="none" y="10" font-size="10px" fill="#FFFFFF" font-family="sans-serif">A</text>
+      </g>
+      <g class="node selected" transform="translate(70.0363118153748,136.56925840155992)">
+         <circle class="outline" cx="0" cy="0" r="25" fill="#FB95AF" stroke="#E0849B" stroke-width="2px" />
+         <text text-anchor="middle" pointer-events="none" y="5" font-size="10px" fill="#FFFFFF" font-family="sans-serif">Rack1</text>
+      </g>
+   </g>
+</svg>

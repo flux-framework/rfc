@@ -47,65 +47,54 @@ link:spec_14{outfilesuffix}[14/Canonical Job Specification]
 == The Flux Resource Model
 
 The Flux Resource Model combines two basic concepts to describe
-individual resources and various relationships bewteen them.  
+individual resources and various relationships among them.
 
-The basic concept to describe each individual resource
-SHALL be called _resource pool_. A resource pool SHALL allow
-the grouping of 1 or more _indistinct_ resources into a pool
-with a given size.
-
-The Flux Resource Model SHALL use a graph as its basic concept
-to describe relationships among individual resources.
-A graph SHALL consist of a set of vertices and edges, and
-each vertex SHALL represent a resource pool and an edge
-between two vertices SHALL represent a relationship between
-them. Each edge MAY be named such a way that the set 
-of the same namded edges and the vertices connected by
-these edges MAY represent a resource set comprising
-a subsystem or simply a system. 
-
-The most common system of resources SHALL be called _composite
-resource pool_. A composite resource pool is a set of
-resource pools that are hierarchically related through
-the _composite_ relationships, i.e., resources with 0
-or more children arranged in a hierarchical ``has-a''
-relationship.
-
-The composite resource pool SHALL lead to the natural representation of
-resources in Flux as a hierarchy of individual or pooled resources
-bound to a _root_ which will typically be a ``cluster'' or ``center''
-resource.
-
-A common subsystem of resources used in Flux MAY a tree graph
-representing a hierarchy. However, 
+The concept to describe each individual resource is called
+_resource pool_. A resource pool allows the grouping of 1
+or more _indistinct_ resources into a pool with a given size.
+For example, a compute node MAY be modeled as a distinct
+compute-node resource pool with its pool size being 1.  Memory
+on a socket MAY be modeled as a distinct memory resource
+pool with its pool size being 8 GB (e.g., 8 equal chunks of
+1 GB memory) or as 2 distinct memory resource pools if each
+has significantly different performance characteristics.
+As such, the pool concept allows a modeler to capture the
+characteristics of a resource at different levels of details.
 
 
+The second concept borrows from graph theory to describe relationships
+among such individual resource pools. A graph consists of
+a set of vertices and edges, where each vertex represents
+an individual resource pool and an edge a certain relationship
+between them.
 
+Each edge SHALL be either directional or bidirectional
+and have a type as well as a subsystem name such that the union
+of the set of all edges with a same name and the set of all vertices
+connected by these edges MAY represent a unique subsystem
+of resources (e.g., a compute subsystem, a parallel
+I/O subsystem, a power subsystem, etc).
 
-vertices and edges 
+==== Resource Pool Data Model
 
-
- A vertex in a graph SHALL represent an
-individual resource, i.e., a resource pool, and a directed edge
-between two vertices SHALL represent a relationship between
-two individual resources.  While a common form used in Flux is
-a tree graph to capture a hierarhical relaitionship among resources,
-more complex graph forms MAY be supported. An individual resource
-MAY belong to one or more distinct vertices.
-
-==== Resource Pool Data
+This section describes the resource pool data required
+to be stored, tracked, and queried.
+Resource pool data SHALL be composed of base data and
+OPTIONAL extended data. The base data captures the static
+properties of the resource pool instance being modeled so
+that it SHALL include, but be not limited to:
 
 * Type
 * UUID (Unique ID for this resource)
 * Basename
 * Name
-* ID (optional numeric ID to be appended to basename to get name)
+* ID (OPTIONAL numeric ID to be appended to basename to get name)
 * Properties (static properties associated with this instance)
 * Size (Total number of resources in this pool)
-* Units (optional units associated with the `size` value)
+* Units (OPTIONAL units associated with the `size` value)
 
-The default value for `basename` is the `type`.  The default value for
-`name` is a concatenation of `basename` and `ID`, or just `basename`
+The default value for `basename` SHALL be the `type`. The default value for
+`name` SHALL be a concatenation of `basename` and `ID`, or just `basename`
 when the `ID` value is not assigned.
 
 The value for `name` SHALL support arbitrary resource attributes and
@@ -115,140 +104,242 @@ properties (e.g. a system might have node names formatted like
 The value for `properties` SHALL support multiple identifying
 properties which could be used to uniquely characterize the resource.
 
+On the other hand, the OPTIONAL extended data SHALL enable a user,
+typically a management service such as a scheduler, to extend,
+store and update its own data along with the base data of
+the target resource pool instance.
+
+It MAY include, but be not limited to:
+
+* Tags (dynamic list of tags)
+* State (e.g., up, down, degraded, failing, unknown, null)
+* Scheduling state data such as job allocations and reservations
+
+==== Graph Data Model
+
+A graph consists of a set of vertices and edges.
+The Flux Resource Model uses a vertex to represent a resource pool.
+However, it is RECOMMENDED to avoid embedding all of the resource
+pool data (i.e., base and extended data) directly into the vertex itself.
+Instead, only a minimal set of metadata on the resource pool is
+RECOMMENDED to be embedded directly within to the vertex
+while keeping a reference to the pool data itself. The metadata
+MAY pertain to traversal and search optimization: e.g.,
+optimizing the retrieval of vertices of certain types
+of resources, speeding up graph traversal by eliminating
+unnecessary descents of a tree graph, etc.
+
+An edge SHALL have data indicating its direction(s), type and belonging
+subsystem name. The direction and type of an edge SHALL provide
+a semantic meaning to the relationship between its connecting
+vertices, and the name SHALL identify a subsystem this edge
+belongs to.
+
+.An edge capturing a ``has-a'' relationship
+image::spec_4_data/basics_contains.png[]
+
+{sp} +
+
+As shown in Figure 1, for example, the edge of the ``CONTAINS''
+type represents the ``has-a'' relationship: i.e., Cluster A has a rack
+called Rack1.
+
+.Edges representing ``conduit-of'' relationships
+image::spec_4_data/basics_channel.png[]
+
+{sp} +
+
+Similarly, as shown in Figure 2, each edge of ``CONDUIT_OF''
+type represents a directional flow relationship: i.e.,
+EdgeSwitch3 is a conduit of CoreSwitch1 through which
+data flows. A bidirectional relationship MAY be represented
+either as a single edge with arrows in the both ends
+or two opposite directional edges.
+
+.Opposite relationship
+image::spec_4_data/basics_in.png[]
+
+{sp} +
+
+A directional relationship MAY be accompanied
+not only by the same type but also by the opposite type
+in the opposite direction.
+For example, a directional ``CONTAINS'' edge MAY be accompanied
+by an ``IN'' edge in the other direction, as shown in Figure 3.
 
 
-==== Resource Pool Data
+Finally, the subsystem name of an edge SHALL be given such that the union of the
+set of all edges annotated with a same name and the set of
+all vertices connected by these edges represent a subsystem of resources.
+Both edges in Figure 3 MAY be named "physical hierarchy"
+if this graph belongs to that named hierarchy. Similarly, if the graph
+shown in Figure 2 is a part of the I/O data path of a parallel file system,
+PFS1, its name MAY be "PFS1 I/O bandwidth hierarchy."
 
-* Type
-* UUID (Unique ID for this resource)
-* Basename
-* Name
-* ID (optional numeric ID to be appended to basename to get name)
-* Properties (static properties associated with this instance)
-* Size (Total number of resources in this pool)
-* Units (optional units associated with the `size` value)
 
-The default value for `basename` is the `type`.  The default value for
-`name` is a concatenation of `basename` and `ID`, or just `basename`
-when the `ID` value is not assigned.
+== Common Patterns
 
-The value for `name` SHALL support arbitrary resource attributes and
-properties (e.g. a system might have node names formatted like
-"node-${frameid}-${rack}").
+The Flux Resource Model SHALL support a range of resource sets, from
+all of the resources in the center
+to a small subset allocated to one Flux instance.
+In addition, the Flux Resource Model SHALL support management
+operations at multiple granularity.
+In such a scheme, the higher the Flux instance is
+in the Flux instance hierarchy, the coarser resource granularity it MAY be
+configured to operate at. For example, a higher-order Flux instance
+MAY be configured to operate at the racks and aggregates on their
+containing nodes while a lower-level instance MAY actually operate at
+the nodes and cores as the finest resource granularity.
 
-The value for `properties` SHALL support multiple identifying
-properties which could be used to uniquely characterize the resource.
-
-==== Graph Data
-
-TBD: Vertex and Annodated Edges
-
-== Concrete Compositions 
-
-The sections below details how Flux composes the above concepts
-to describe some of the common HPC resources.
+The following provides common examples to illustrate how Flux composes
+two basic concepts to model some of the common HPC resources.
 
 === The Composite Resource Pool
 
-A dominant instance of the Flux Resource Model is called
-the _composite resource pool_, the combination of a _composite type_ 
-(resources with 0 or more children arranged in a hierarchical
-``has-a'' graph relationship), and a _resource pool_.
+The dominant form of the Flux Resource Model is called
+_composite resource pool_, the combination of a _composite type_
+(i.e., resources with 0 or more children and at most one parent,
+arranged in a hierarchical ``has-a'' graph relationship),
+and a _resource pool_.
 
-The composite resource pool leads to the natural representation of
-resources in Flux as a hierarchy of individual or pooled resources
+Borrowing from an object-oriented design pattern,
+the composite resource pool leads to the natural representation of
+resources as a hierarchy of individual or pooled resources
 bound to a _root_ which will typically be a ``cluster'' or ``center''
 resource.
 
-Use of the composite resource pool in Flux has the following nice properties:
+.Modeling a containment hierarchy using the composite resource pool
+image::spec_4_data/in.png[4]
+
+{sp} +
+
+Figure 4 shows a simple example of a composite resource pool
+representing a compute-hardware containment hierarchy.
+
+Use of the composite resource pool in Flux has the following properties:
 
 * Groups of related resources are treated the same as a single instance
 * A subset of a composite resource pool is a valid composite resource pool
 * Composite resource naturally describes resources in a ``has-a'' relationship
 * High level resources can be created piece-wise from base resource types.
 
-=== Composite Resource Pool Representation
 
-The representation of resources within the Flux framework SHALL
-allow resources to be modeled as _composite pools_, and thus SHALL
-store basic resource _pool_ data (attributes of resource) as well
-as _composite_ data (hierarchical parent/child or ``has-a'' relationship
-between resources).  Data required to be stored, tracked, and queried
-is detailed in sections below.
+=== The Channeled Resource Pool
 
-The Flux Resource Model SHALL support a range of resource sets, from
-all of the resources in the center to a small subset allocated to one
-Flux instance.
+As HPC centers are becoming increasingly data- and power-constrained,
+the Flux Resource Model MUST be flexible to be able to model
+how data and/or power flow through its distribution units (e.g.,
+a high performance switch for data and a power distribution unit for power).
+One specific form of the Flux Resource Model to represent
+the notion of a flow is called _channeled resource pool_. Here,
+two resource pool instances, each representing a distribution capacity
+of a flow, are related under a _channel-of_ or _conduit-of_ relationship.
 
-The Flux Resource Model SHALL support multi-granularity scheduling and
-management schemes. In such a scheme, the higher the Flux instance is
-in the Flux hierarchy, the coarser resource granularity it MAY be
-configured to operate at. For example, a higher-order Flux instance
-MAY be configured to operate at the racks and aggregates on their
-containing nodes while a lower-level instance MAY actually operate at
-the nodes and cores as the finest resource granularity.
+.Modeling a file I/O bandwidth hierarchy using the channeled resource pool
+image::spec_4_data/channel_of.png[]
 
-==== Resource Pool Data
+{sp} +
 
-* Type
-* UUID (Unique ID for this resource)
-* Basename
-* Name
-* ID (optional numeric ID to be appended to basename to get name)
-* Properties (static properties associated with this instance)
-* Size (Total number of resources in this pool)
-* Units (optional units associated with the `size` value)
+Figure 5 shows how the I/O bandwidth subsystem of a parallel file
+system, PFS1, can be modeled using this form. The resource pool in
+each vertex describes its distribution capacity and each edge represents
+which direction data is distributed to.
 
-The default value for `basename` is the `type`.  The default value for
-`name` is a concatenation of `basename` and `ID`, or just `basename`
-when the `ID` value is not assigned.
+Using this representation, an I/O bandwidth-aware scheduler
+MAY allocate the bandwidth capacity required by a job
+on all of the distribution units that lie along the data path
+up to PFS1 when the platform is I/O bandwidth-constrained.
 
-The value for `name` SHALL support arbitrary resource attributes and
-properties (e.g. a system might have node names formatted like
-"node-${frameid}-${rack}").
+=== Unifying Different Patterns under the Same Model
+Because any specialized form of a resource subsystem SHALL be
+itself built out of the same basic concepts, the Flux Resource Model
+SHALL be capable of easily combining different patterns into a unified form.
 
-The value for `properties` SHALL support multiple identifying
-properties which could be used to uniquely characterize the resource.
+.Unified graph
+image::spec_4_data/combined.png[]
 
-==== Resource Transient Data
+{sp} +
 
-* Tags (dynamic list of tags)
-* State (e.g., up, down, degraded, failing, unknown, null)
+Figure 6 shows how the above two different forms of the Flux Resource Model
+can be seamlessly represented under the same paradigm.
+While simple, this example shows how the Flux Resource Model
+generalizes ways to model any resources, their individual
+relationships, and perhaps more importantly subsystems
+of these resources.
 
-==== Resource Pool Representation 
+== Abstract Interfaces
 
-Resource pools MAY be associated with other resource pools in
-relationships that SHALL be modeled by graphs.  This include the
-composite ``has-a'' relationship.  Other examples include graphs that
-model power distribution or network topology.
+The abstract interfaces of the Flux Resource Model SHALL
+include, but not be limited to the following.
+These interfaces are again broken down by two fundamental
+concepts of the Flux Resource Model: resource pool and graph.
+The implementors of the Flux Resource Model MAY
+use this as a guide to determine the proper abstraction
+level exposed by the implementations.
 
-=== Composite Resource Pool Methods
+=== Resource Pool
 
-When operating on a resource as an object, the following methods
-SHALL be supported
+When operating on a resource pool as an object, the following methods
+SHALL be supported. The majority of methods are accessors.
 
-Size:: A method to query the current size of a resource pool SHALL
- be provided.
+Getters:: Query both the base and extended data
+  of the resource pool, including its size.
 
-Tag (K, [V]):: A method for tagging resource pools with
- arbitrary key/value pairs SHALL be provided. The value _V_ SHALL
- be optional.
+Setters:: Update certain base and extended data, which
+  includes ``Tag (K, [V])'', a method for tagging a resource pool
+  object with arbitrary key (K) and OPTIONAL value (V) pairs, if
+  the extended data includes Tags, and ``State'', a method for setting
+  the state of the resource, if state is included in the extended data.
 
-State:: Methods for setting and returning the state of the resource
- SHALL be provided.
+Matching support:: Support various comparison operations from the filters
+  that are being invoked by a walker (See the Graph subsection). Getters SHALL
+  expose sufficiently detailed information so the evaluating
+  filter can match on both base and extended data (e.g., tags,
+  properties, size, type, name, basename, ids, etc).
 
-Match:: A method or set of methods for resource pool matching
- SHALL be provided by the implementation. Resource pools SHALL
- be matched on tags, properties, size, type, name, basename,
- ids, etc.
+=== Graph
+The following are the primary abstract types and their
+roles as relevant to the graph.
 
-Find:: A search method SHALL be provided by the implementation to
- return all matching resource pools.
+Walker:: Provide generic ways to traverse the graph, visiting
+  a subset of its vertices with a specific traversal pattern.
+  It is passed in the starting vertex and the name of a subsystem
+  (e.g., the root vertex of a compute-hardware containment hierarchy
+  or an I/O bandwidth hierarchy) from which to walk.
+  In particular, on a tree hierarchy, preorder and postorder
+  visiting patterns SHALL be supported, and a user MAY be able to
+  register with it pre- and/or post-order callbacks, or ``filters'',
+  which are invoked by the walker on each visit event.
+  The filters MAY be passed in either from within the same
+  service space or from a remote service space.
+  The implementation that supports the remote filter passing
+  facilitates providing the the Flux Resource Model as a standalone
+  ``Resource'' service.
 
-Duplicate:: A method for duplicating an entire hierarchy SHALL be
- provided. This method SHALL return a copy of of an existing hierarchy
- without any other unnecessary changes.
+Pruning Filter:: Allow a user of the walker to continue
+  or stop further traversal from the visiting vertex.
+  On a tree hierarchy, this filter is called back by the walker
+  on each preorder visit event, and its return code influences
+  the walker's next traversal action.
 
-Serialize:: A method for serializing/deserializing a resource pool and its
- children SHALL be provided to allow for transmission for resource pool
- hierarchy and data over the wire, saving state to a file, etc.
+Evaluating Filter:: Allow a user to evaluate the resource pool data
+  of the visiting vertex. In particular, on a tree hierarchy,
+  it is invoked by the walker on each postorder visit event.
+  This filter will typically calculate the matching score
+  of the visiting vertex, and if the score satisfies the criteria,
+  it pushes the vertex into an accumulator that is capable of
+  tracking the selected vertices in descending score order.
+  In addition, an evaluating filter can initiate a new sub-walk
+  into connecting vertices that belong to a subsystem different
+  from the currently walking subsystem.
+  In this case, a different walker and filters MAY be used.
+
+Accumulator:: Allow an evaluating filter to store
+  and keep the matching vertices in their sorted score order.
+
+Serializer:: Allow for serializing/deserializing a subset
+ of vertices along with their resource pool data.
+ Allow for transmission of this data over the wire,
+ saving state to a file, etc.
+
+
