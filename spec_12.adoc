@@ -93,19 +93,111 @@ could extend job cancellation to anyone with the "user" role.
 
 == Implementation
 
+=== Assumptions ===
+
+Users of a Flux instance MUST be assigned the same POSIX UID on all systems
+spanned by the instance.
+
+=== User Database ===
+
+The optional Flux user database contains entries for each user of a
+a Flux instance.  A valid entry SHALL contain, at minimum, a 32-bit _userid_
+key, corresponding to the user's POSIX UID;  and a 32-bit _rolemask_, which
+assigns one or more privileges to the user.  A userid with no assigned roles
+SHALL be considered invalid.
+
+A single-user Flux instance MAY load the user database.  If the user database
+is not loaded, then only the instance owner SHALL be allowed to access the
+instance.
+
+A multi-user Flux instance SHALL load the user database.  Only users in
+the database SHALL be allowed to access the instance.
+
+FLUX_USERID_UNKNOWN (2^32^ - 1) SHALL be reserved to indicate "invalid user".
+
+FLUX_ROLE_NONE (0) SHALL indicate "invalid rolemask".
+
+FLUX_ROLE_OWNER (1) SHALL confer the maximum privilege upon the user,
+and is REQUIRED to be assigned to the instance owner.
+
+FLUX_ROLE_USER (2) SHALL confer access, but no administrative privilege
+upon the user.
+
+Other role bit definitions are TBD.
+
+=== Connector Security ===
+
+Flux connectors SHALL authenticate each connection, mapping it to a valid
+Flux userid and rolemask, or rejecting it.
+
+If the authenticated userid can be proven to be the instance owner without
+accessing the user database, the connection SHALL be allowed, and assigned
+a rolemask of FLUX_ROLE_OWNER.
+
+If the user database is loaded, and the authenticated userid has a valid
+entry, the connection SHALL be allowed, and assigned the looked up rolemask.
+
+Other connections SHALL be denied.
+
+As indicated in RFC 3, Flux messages have a userid and rolemask field.
+In messages received en route to the broker, the connector SHALL rewrite
+these fields from the expected values of FLUX_USERID_UNKNOWN and FLUX_ROLE_NONE
+to the authenticated userid and rolemask.
+
+If the user is not authenticated with FLUX_ROLE_OWNER, and a message is
+received en route to the broker with the userid and rolemask NOT set to
+the expected values, the message SHALL be rejected:  if it is a request,
+a POSIX EPERM (1) error response SHALL be returned to the sender; otherwise
+the message SHALL be dropped.
+
+If the user is authenticated with FLUX_ROLE_OWNER, valid userid and rolemask
+fields SHALL NOT be rewritten.  This facilitates testing, and allows
+connectors implemented as processes or threads running as the instance owner
+to authenticate messages, while themselves connecting to the broker via
+authenticated connector.
+
+Connectors that support connections spanning physical networks SHALL protect
+against eavesdropping, man-in-the-middle, and other attacks on public
+networks.
+
+=== Service Security Policy ===
+
+Flux services that implement message handlers SHALL implement security
+policy based on the userid and/or rolemask fields in inbound messages.
+
+A policy mechanism SHALL be provided by the Flux reactor for each message
+handler that compares the rolemask of inbound messages against an "allow"
+rolemask.  If a logical and of the two rolemasks produces zero, the message
+is rejected: requests SHALL receive a POSIX EPERM (1) error response; other
+message types SHALL be dropped.  By default the handler rolemask contains
+only FLUX_ROLE_OWNER.
+
+A message handler MAY disable the built-in policy by setting its rolemask
+to FLUX_ROLE_ALL (2^32^ - 1).  It MAY then use message functions to
+access userid and rolemask to implement its own algorithm for accepting
+or rejecting messages.
+
+FLUX_ROLE_OWNER MUST NOT be excluded from the "allow" rolemask of a message
+handler.
+
 === Instance Owner ===
 
 The Flux broker processes comprising a Flux instance SHALL run
-as a common user ID termed the "instance owner".  The instance owner
+as a common userid termed the "instance owner".  The instance owner
 SHALL have control over the instance and its resources; however,
 the instance owner SHALL NOT have the capability to launch work as
 other users without their consent.
 
 A system instance MAY run as a dedicated user, such as "flux".
+The system instance owner SHALL NOT be the root user.
 
-The instance owner SHALL NOT be the root user.
+Other users MAY start their own instances as parallel programs according
+to the policy of the enclosing instance.
 
 === Overlay Networks ===
+
+The overlay networks are for direct broker to broker communication
+within an instance.
 
 Users other than the instance owner SHALL NOT be permitted to connect
 to an instance's overlay networks.  Since overlay networks are implemented
@@ -143,39 +235,6 @@ access.  MUNGE comes with the presumption of pre-shared MUNGE keys and
 numerical user id synchronization over participating hosts.  If MUNGE is
 unavailable within these constraints, the optional EPGM overlay network
 SHALL NOT be enabled.
-
-=== Direct Broker Connection
-
-The Flux API provides the +flux_open()+ function which connects
-directly to the Flux broker, then permits unrestricted use of Flux
-instance services over that connection.  Users other than the instance
-owner SHALL NOT be permitted to directly connect to the Flux broker.
-Direct broker connections that traverse physical networks SHALL implement
-authenticity, privacy, and integrity.
-
-+flux_open()+ uses "connectors" to implement different connection mechanisms.
-The broker side of a connector implementation SHALL provide appropriate
-security, depending on the implementation:
-
-The *local* connector only permits connection via PF_LOCAL socket.
-Users SHALL be authenticated using the SO_PEERCRED socket option, or
-equivalent.  Privacy and integrity are unnecessary in this context.
-
-The *ssh* connector permits connection over untrusted networks.
-Its spawns a remote process using SSH protocol, which implements
-privacy, security, and integrity.  The remote process connects to the
-broker using any of the available connectors.  The *ssh* connector
-has no broker side implementation and therefore adds no new ingress
-points to the broker to be secured.  Its security relies on proper
-configuration of SSH, therefore it is RECOMMENDED that best practices be
-followed when configuring up SSH.
-
-The *shmem* connector only permits connection via ZeroMQ "inproc"
-sockets from comms modules loaded by the broker and spawned as threads.
-No security is required in this context.
-
-The *loop* connector is used only for testing and doesn't connect
-to the broker.  No security is required in this context.
 
 === Process Management Interface (PMI)
 
@@ -219,12 +278,6 @@ is limited as in (2).  (This is the "preferred" PMIx model - viability TBD).
 
 TBD: Tool interfaces, grow/shrink.
 
-=== External Services
-
-TBD: Users other than instance owner ability to list queue, submit work,
-kill their jobs, retrieve I/O, check status, etc..  A web service started
-by instance's initial program?  ACL?
-
 === Resource Containment
 
 Programs launched by an instance SHALL be contained within their resource
@@ -235,16 +288,6 @@ CAP_SYS_ADMIN, etc.
 
 TBD: Containment should be implemented as a stack of plugins that execute
 at different points in the life cycle of a program.
-
-=== Multi-user Considerations
-
-TBD: Unprivileged instance needs to call seteuid(2), which requires
-CAP_SET_UID, etc.
-
-TBD: Unprivileged instance SHALL NOT be able to launch processes
-as a user other than the instance owner without approval of that user.
-(The instance owner "owns" the resources allocated to the instance;
-the user "owns" their identity)
 
 === Integration with OS Security Software
 
