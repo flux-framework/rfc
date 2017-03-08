@@ -101,8 +101,8 @@ spanned by the instance.
 === User Database ===
 
 The optional Flux user database contains entries for each user of a
-a Flux instance.  A valid entry SHALL contain a 32-bit _userid_ key,
-corresponding to the user's POSIX UID;  and a 32-bit _rolemask_, which
+a Flux instance.  A valid entry SHALL contain, at minimum, a 32-bit _userid_
+key, corresponding to the user's POSIX UID;  and a 32-bit _rolemask_, which
 assigns one or more privileges to the user.  A userid with no assigned roles
 SHALL be considered invalid.
 
