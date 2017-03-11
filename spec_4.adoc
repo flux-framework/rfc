@@ -49,18 +49,29 @@ link:spec_14{outfilesuffix}[14/Canonical Job Specification]
 The Flux Resource Model combines two basic concepts to describe
 individual resources and various relationships among them.
 
-The concept to describe each individual resource is called
-_resource pool_. A resource pool allows the grouping of 1
-or more _indistinct_ resources into a pool with a given size.
-For example, a compute node MAY be modeled as a distinct
-compute-node resource pool with its pool size being 1.  Memory
-on a socket MAY be modeled as a distinct memory resource
-pool with its pool size being 8 GB (e.g., 8 equal chunks of
-1 GB memory) or as 2 distinct memory resource pools if each
-has significantly different performance characteristics.
-As such, the pool concept allows a modeler to capture the
-characteristics of a resource at different levels of details.
+The concept to describe each identifiable resource is called
+_resource pool_. A resource pool is a group of one or more
+_indistinguishable_ resources of a same kind. Each resource
+in a pool cannot be individually identified, and therefore,
+the resources in the pool are collectively represented as a
+quantity. 32GB memory on a compute node, for instance, MAY be
+described as a memory-resource pool with its pool size being
+32 (i.e., 32 equal chunks of 1 GB memory). 
 
+One of the benefits of introducing the pool concept is flexibility
+in describing a resource with different levels of detail.
+When a resource needs to described at coarse granularity,
+it can be pooled together with other resources of the same type.
+Conversely, when finer granularity is required, it can be promoted
+to its own individual pool. If the compute node consists of 2 sockets
+and non-uniform memory access performance between them is an important
+consideration, 32GB memory can be modeled as 2 distinct memory-resource
+pools instead, each on a socket with its pool size being
+16 (i.e., 16 equal chunks of 1 GB memory).
+
+The fully promoted resource pool will have only 1 resource. This SHALL
+still be called a resource pool to avoid introducing a new concept
+for this degenerate case.
 
 The second concept borrows from graph theory to describe relationships
 among such individual resource pools. A graph consists of
@@ -71,7 +82,7 @@ between them.
 Each edge SHALL be either directional or bidirectional
 and have a type as well as a subsystem name such that the union
 of the set of all edges with a same name and the set of all vertices
-connected by these edges MAY represent a unique subsystem
+connected by these edges SHALL represent a unique subsystem
 of resources (e.g., a compute subsystem, a parallel
 I/O subsystem, a power subsystem, etc).
 
