@@ -69,9 +69,12 @@ consideration, 32GB memory can be modeled as 2 distinct memory-resource
 pools instead, each on a socket with its pool size being
 16 (i.e., 16 equal chunks of 1 GB memory).
 
-The fully promoted resource pool will have only 1 resource. This SHALL
-still be called a resource pool to avoid introducing a new concept
-for this degenerate case.
+A resource pool with size 1 SHALL be the finest granularity at which
+a resource can be described.
+Although this is identical to describing the resource as a scalar, we
+SHALL still call it a resource pool to avoid introducing a new concept.
+When a distinction is needed, a pool with size 1 SHALL be called
+a ``degenerate resource pool''.
 
 The second concept borrows from graph theory to describe relationships
 among such individual resource pools. A graph consists of
