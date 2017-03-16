@@ -1,3 +1,5 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
 4/Flux Resource Model
 =====================
 
@@ -14,19 +16,9 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
 be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
-== Background
+== Related Standards
 
-As in traditional resource management software, the Flux framework
-requires a method for the description, configuration, tracking, and
-assignment of consumable and other resources in the system
-being managed. The Flux Framework, however, requires a more generalized and
-flexible definition of resources and overall approach. This document
-describes the basic concepts used to describe each individual
-resource and its relationship with other resources. Further, it illustrates
-how Flux uses these concepts to model some of the common high performance
-computing (HPC) resources in relation to other resource management components.
-We term the model for describing resources in Flux
-_The Flux Resource Model_.
+link:spec_14{outfilesuffix}[14/Canonical Job Specification]
 
 == Goals
 
@@ -40,9 +32,19 @@ goals of this model are to:
 * Provide a common storage, access, modification and discovery APIs for
   managing resource information
 
-== Related Standards
+== Background
 
-link:spec_14{outfilesuffix}[14/Canonical Job Specification]
+As in traditional resource management software, the Flux framework
+requires a method for the description, configuration, tracking, and
+assignment of consumable and other resources in the system
+being managed. The Flux Framework, however, requires a more generalized and
+flexible definition of resources and overall approach. This document
+describes the basic concepts used to describe each individual
+resource and its relationship with other resources. Further, it illustrates
+how Flux uses these concepts to model some of the common high performance
+computing (HPC) resources in relation to other resource management components.
+We term the model for describing resources in Flux
+_The Flux Resource Model_.
 
 == The Flux Resource Model
 
