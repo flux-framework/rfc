@@ -152,14 +152,14 @@ vertices, and the name SHALL identify a subsystem this edge
 belongs to.
 
 .An edge capturing a ``has-a'' relationship
-image::spec_4_data/basics_contains.png[width=250]
+image::data/spec_4/basics_contains.png[width=250]
 
 As shown in Figure 1, for example, the edge of the ``CONTAINS''
 type represents the ``has-a'' relationship: i.e., Cluster A has a rack
 called Rack1.
 
 .Edges representing ``conduit-of'' relationships
-image::spec_4_data/basics_channel.png[width=250]
+image::data/spec_4/basics_channel.png[width=250]
 
 Similarly, as shown in Figure 2, each edge of ``CONDUIT_OF''
 type represents a directional flow relationship: i.e.,
@@ -169,7 +169,7 @@ either as a single edge with arrows in the both ends
 or two opposite directional edges.
 
 .Opposite relationship
-image::spec_4_data/basics_in.png[width=200]
+image::data/spec_4/basics_in.png[width=200]
 
 A directional relationship MAY be accompanied
 not only by the same type but also by the opposite type
@@ -219,7 +219,7 @@ bound to a _root_ which will typically be a ``cluster'' or ``center''
 resource.
 
 .Modeling a containment hierarchy using the composite resource pool
-image::spec_4_data/in.png[width=350]
+image::data/spec_4/in.png[width=350]
 
 Figure 4 shows a simple example of a composite resource pool
 representing a compute-hardware containment hierarchy.
@@ -244,7 +244,7 @@ two resource pool instances, each representing a distribution capacity
 of a flow, are related under a _channel-of_ or _conduit-of_ relationship.
 
 .Modeling a file I/O bandwidth hierarchy using the channeled resource pool
-image::spec_4_data/channel_of.png[width=200]
+image::data/spec_4/channel_of.png[width=200]
 
 Figure 5 shows how the I/O bandwidth subsystem of a parallel file
 system, PFS1, can be modeled using this form. The resource pool in
@@ -262,7 +262,7 @@ itself built out of the same basic concepts, the Flux Resource Model
 SHALL be capable of easily combining different patterns into a unified form.
 
 .Unified graph
-image::spec_4_data/combined.png[width=450]
+image::data/spec_4/combined.png[width=450]
 
 Figure 6 shows how the above two different forms of the Flux Resource Model
 can be seamlessly represented under the same paradigm.
