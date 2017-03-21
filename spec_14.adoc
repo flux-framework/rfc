@@ -41,7 +41,9 @@ may be generated from other user-friendly forms or interfaces.
 == Overview
 
 This RFC describes the canonical form of "jobspec", a domain specific
-language based on YAML[1].  The canonical jobspec SHALL consist of
+language based on YAML
+footnote:[http://yaml.org/spec/1.1/current.html[YAML Ain't Markup Language (YAML) Version 1.1], O. Ben-Kiki, C. Evans, B. Ingerson, 2004.]
+.  The canonical jobspec SHALL consist of
 a single YAML document representing a reusable request to run
 exactly one program.  Hereafter, "jobspec" refers to the canonical
 form, and "non-canonical jobspec" refers to the non-canonical form.
@@ -102,7 +104,8 @@ program. The dictionary MUST contain the keys `resources`, `tasks`,
 
 Each of the listed jobspec keys SHALL meet the form and requirements
 listed in detail in the sections below. For reference, a ruleset for
-compliant canonical jobspec is provided using *JSON Content Rules*[2]
+compliant canonical jobspec is provided using *JSON Content Rules*
+footnoteref:[contentrules,https://tools.ietf.org/id/draft-newton-json-content-rules-06.txt[JSON Content Rules (jcr-version 0.6)]&#44; A. Newton&#44; P. Cordell&#44; 2016]
 in the *Content Rules* at the end of this section.
 
 === Resources
@@ -340,7 +343,7 @@ attrs:
 === Content Rules
 
 A jobspec conforming to version 1 of the language definition SHALL
-adhere to the following ruleset, described using JSON Content Rules[2]
+adhere to the following ruleset, described using JSON Content Rules footnoteref:[contentrules]
 draft version 0.6.
 
 ----
@@ -1060,6 +1063,4 @@ attrs:
 [sect2]
 == References
 
-* [1]http://yaml.org/spec/current.html#representation[YAML Ain't Markup Language (YAML) Version 1.1], O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
-* [2]http://www.ietf.org/id/draft-newton-json-content-rules-06.txt[JSON Content Rules (jcr-version 0.6), A. Newton, P. Cordell, 2016]
-* [3]https://www.ogf.org/documents/GFD.56.pdf[Job Submission Description Language (JSDL) Specification, Version 1.0, Ali Anjomshoaa, et al., 2005]
+* https://www.ogf.org/documents/GFD.56.pdf[Job Submission Description Language (JSDL) Specification, Version 1.0, Ali Anjomshoaa, et al., 2005]
