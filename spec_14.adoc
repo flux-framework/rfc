@@ -282,22 +282,35 @@ task slot for a total of 4 tasks.
 version: 1
 resources:
   - type: node
-    count: 4
+    count:
+      min: 4
+      max: 4
+      operator: "+"
+      operand: 1
     with:
       - type: slot
-        count: 1
+        count:
+          min: 1
+          max: 1
+          operator: "+"
+          operand: 1
         label: default
         with:
           - type: core
-            count: 2
+            count:
+              min: 2
+              max: 2
+              operator: "+"
+              operand: 1
 tasks:
   - command: app
     slot:
       label: default
     count:
-        per_slot: 1
+      per_slot: 1
 walltime:
   duration: 1h
+attrs:
 ----
 
 A simpler example using implicit *task slot* definition to run 4 tasks
@@ -308,13 +321,20 @@ across 4 nodes
 version: 1
 resources:
   - type: node
-    count: 4
+    count:
+      min: 4
+      max: 4
+      operator: "+"
+      operand: 1
 tasks:
   - command: hostname
     slot:
       level: node
     count:
       per_slot: 1
+walltime:
+  duration: 1h
+attrs:
 ----
 
 === Content Rules
@@ -408,28 +428,17 @@ of existing resource manager batch job submission or allocation
 requests, i.e. equivalent to `oarsub`, `qsub`, and `salloc`. In terms
 of a canonical jobspec, these requests are assumed to be requests
 to start an instance, i.e. run a single copy of `flux start` per
-allocated node.  Thus, it should be assumed that all jobspec examples
-for use cases in Section 1 below have appended to them the following
-`tasks` block:
-
-[source,yaml]
-tasks:
-  - command: [ "flux", "start" ]
-    slot:
-      level: node
-    count:
-      per_slot: 1
-
+allocated node.
 
 '''
 Use Case 1.1:: Request Single Resource with Count
 +
 Specific Example:: Request 4 nodes
 +
-Existing Equivalents:: 
+Existing Equivalents::
 +
 |===
-| Slurm | `salloc -N4`     
+| Slurm | `salloc -N4`
 | PBS | `qsub -l nodes=4`
 |===
 +
@@ -440,7 +449,18 @@ version: 1
 walltime: 1h
 resources:
   - type: node
-    count: 4
+    count:
+      min: 4
+      max: 4
+      operator: "+"
+      operand: 1
+tasks:
+  - command: [ "flux", "start" ]
+    slot:
+      level: node
+    count:
+      per_slot: 1
+attrs:
 
 '''
 Use Case 1.2:: Request a range of a type of resource
@@ -460,7 +480,18 @@ version: 1
 walltime: 1h
 resources:
   - type: node
-    count: "[3:30]"
+    count:
+      min: 3
+      max: 30
+      operator: "+"
+      operand: 1
+tasks:
+  - command: [ "flux", "start" ]
+    slot:
+      level: node
+    count:
+      per_slot: 1
+attrs:
 
 '''
 Use Case 1.3:: Request M nodes with a minimum number of sockets per node
@@ -484,13 +515,32 @@ version: 1
 walltime: 1h
 resources:
   - type: node
-    count: 4
+    count:
+      min: 4
+      max: 4
+      operator: "+"
+      operand: 1
     with:
       - type: socket
-        count: 2
+        count:
+          min: 2
+          max: 2
+          operator: "+"
+          operand: 1
         with:
           - type: core
-            count: 4
+            count:
+              min: 4
+              max: 4
+              operator: "+"
+              operand: 1
+tasks:
+  - command: [ "flux", "start" ]
+    slot:
+      level: node
+    count:
+      per_slot: 1
+attrs:
 
 '''
 Use Case 1.4:: Exclusively allocate nodes, while constraining cores and
@@ -508,13 +558,32 @@ resources:
   - type: slot
     with:
     - type: node
-      count: 4
+      count:
+        min: 4
+        max: 4
+        operator: "+"
+        operand: 1
       with:
         - type: socket
-          count: 2
+          count:
+            min: 2
+            max: 2
+            operator: "+"
+            operand: 1
           with:
             - type: core
-              count: 4
+              count:
+                min: 4
+                max: 4
+                operator: "+"
+                operand: 1
+tasks:
+  - command: [ "flux", "start" ]
+    slot:
+      level: node
+    count:
+      per_slot: 1
+attrs:
 
 '''
 Use Case 1.5:: Complex example from OAR
@@ -538,21 +607,55 @@ Jobspec YAML::
 version: 1
 resources:
   - type: cluster
-    count: 1
+    count:
+      min: 1
+      max: 1
+      operator: "+"
+      operand: 1
     with:
       - type: node
-        count: 2
+        count:
+          min: 2
+          max: 2
+          operator: "+"
+          operand: 1
         with:
           - type: memory
-            amount: 4GB
+            count:
+              min: 4
+              max: 4
+              operator: "+"
+              operand: 1
+            unit: GB
           - type: ib10g
+            count:
+              min: 1
+              max: 1
+              operator: "+"
+              operand: 1
       - type: switch
         with:
           type: node
-            count: 2
+            count:
+              min: 2
+              max: 2
+              operator: "+"
+              operand: 1
             with:
                 - type: core
+                  count:
+                    min: 1
+                    max: 1
+                    operator: "+"
+                    operand: 1
 walltime: 4h
+tasks:
+  - command: [ "flux", "start" ]
+    slot:
+      level: node
+    count:
+      per_slot: 1
+attrs:
 
 '''
 Use Case 1.6:: Request resources across multiple clusters
@@ -573,12 +676,32 @@ version: 1
 walltime: 1h
 resources:
     - type: cluster
-      count: 2
+      count:
+        min: 2
+        max: 2
+        operator: "+"
+        operand: 1
       with:
           - type: node
-            count: 15
+            count:
+              min: 15
+              max: 15
+              operator: "+"
+              operand: 1
             with:
               - type: core
+                count:
+                  min: 1
+                  max: 1
+                  operator: "+"
+                  operand: 1
+tasks:
+  - command: [ "flux", "start" ]
+    slot:
+      level: node
+    count:
+      per_slot: 1
+attrs:
 
 '''
 Use Case 1.7:: Request N cores across M switches
@@ -599,9 +722,25 @@ version: 1
 walltime: 1h
 resources:
   - type: switch
-    count: 3
+    count:
+      min: 3
+      max: 3
+      operator: "+"
+      operand: 1
     with:
       - type: core
+        count:
+          min: 1
+          max: 1
+          operator: "+"
+          operand: 1
+tasks:
+  - command: [ "flux", "start" ]
+    slot:
+      level: node
+    count:
+      per_slot: 1
+attrs:
 
 '''
 
@@ -631,15 +770,24 @@ walltime: 1h
 resources:
   - type: slot
     label: default
-    count: 4
+    count:
+      min: 4
+      max: 4
+      operator: "+"
+      operand: 1
     with:
     - type: node
-      count: 1
+      count:
+        min: 1
+        max: 1
+        operator: "+"
+        operand: 1
 tasks:
-  command: hostname
-  slot: default
-  count:
-    per_slot: 5
+  - command: hostname
+    slot: default
+    count:
+      per_slot: 5
+attrs:
 
 '''
 Use Case 2.2:: Run N tasks across M nodes, unequal distribution
@@ -661,13 +809,18 @@ version: 1
 walltime: 1h
 resources:
   - type: node
-    count: 4
+    count:
+      min: 4
+      max: 4
+      operator: "+"
+      operand: 1
 tasks:
   - command: hostname
     slot:
       level: node
     count:
       total: 5
+attrs:
 ----
 +
 or, with explicit task slots:
@@ -678,17 +831,26 @@ version: 1
 walltime: 1h
 resources:
   - type: slot
-    count: 4
+    count:
+      min: 4
+      max: 4
+      operator: "+"
+      operand: 1
     label: myslot
     with:
       - type: node
-        count: 1
+        count:
+          min: 1
+          max: 1
+          operator: "+"
+          operand: 1
 tasks:
   - command: hostname
     slot:
       label: myslot
     count:
       total: 5
+attrs:
 ----
 
 '''
@@ -706,18 +868,29 @@ Existing Equivalents::
 Jobspec YAML::
 +
 [source,yaml]
+version: 1
+walltime: 1h
 resources:
   - type: slot
     label: default
-    count: 10
+    count:
+      min: 10
+      max: 10
+      operator: "+"
+      operand: 1
     with:
       - type: core
-        count: 2
+        count:
+          min: 2
+          max: 2
+          operator: "+"
+          operand: 1
 tasks:
   - command: myapp
     slot: default
     count:
       per_slot: 1
+attrs:
 
 '''
 Use Case 2.4:: Run different binaries with differing resource
@@ -738,19 +911,46 @@ resources:
     with:
       - type: slot
         label: read-db
-        count: 10
+        count:
+          min: 10
+          max: 10
+          operator: "+"
+          operand: 1
         with:
           - type: core
+            count:
+              min: 1
+              max: 1
+              operator: "+"
+              operand: 1
           - type: memory
-            amount: 4GB
+            count:
+              min: 4
+              max: 4
+              operator: "+"
+              operand: 1
+            unit: GB
       - type: slot
         label: db
-        count: 1
+        count:
+          min: 1
+          max: 1
+          operator: "+"
+          operand: 1
         with:
           - type: core
-            count: 6
+            count:
+              min: 6
+              max: 6
+              operator: "+"
+              operand: 1
           - type: memory
-            amount: 24GB
+            count:
+              min: 24
+              max: 24
+              operator: "+"
+              operand: 1
+            unit: GB
 tasks:
   - command: read-db
     slot: read-db
@@ -760,6 +960,7 @@ tasks:
     slot: db
     count:
       per_slot: 1
+attrs:
 
 '''
 Use Case 2.5:: Run command requesting minimum amount of RAM per core
@@ -782,16 +983,31 @@ walltime: 1h
 resources:
   - type: slot
     label: default
-    count: 10
+    count:
+      min: 10
+      max: 10
+      operator: "+"
+      operand: 1
     with:
     - type: memory
-      amount: 2GB
+      count:
+        min: 2
+        max: 2
+        operator: "+"
+        operand: 1
+      unit: GB
     - type: core
+      count:
+        min: 1
+        max: 1
+        operator: "+"
+        operand: 1
 tasks:
   - command: app
     slot: default
     count:
       per_slot: 1
+attrs:
 ----
 '''
 Use Case 2.6:: Run N copies of a command with minimum amount of RAM per node
@@ -814,17 +1030,32 @@ walltime: 1h
 resources:
   - type: slot
     label: 4GB-node
-    count: 2
+    count:
+      min: 2
+      max: 2
+      operator: "+"
+      operand: 1
     with:
     - type: node
+      count:
+        min: 1
+        max: 1
+        operator: "+"
+        operand: 1
       with:
         - type: memory
-          amount: 4GB
+          count:
+            min: 4
+            max: 4
+            operator: "+"
+            operand: 1
+          unit: GB
 tasks:
   - command: app
     slot: 4GB-node
     count:
       total: 10
+attrs:
 
 [sect2]
 == References
