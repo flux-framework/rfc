@@ -1060,6 +1060,6 @@ attrs:
 [sect2]
 == References
 
-* [1]http://yaml.org/spec/current.html#representation[YAML Ain't Markup Language (YAML™) Version 1.1], O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
+* [1]http://yaml.org/spec/current.html#representation[YAML Ain't Markup Language (YAML) Version 1.1], O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
 * [2]http://www.ietf.org/id/draft-newton-json-content-rules-06.txt[JSON Content Rules (jcr-version 0.6), A. Newton, P. Cordell, 2016]
 * [3]https://www.ogf.org/documents/GFD.56.pdf[Job Submission Description Language (JSDL) Specification, Version 1.0, Ali Anjomshoaa, et al., 2005]

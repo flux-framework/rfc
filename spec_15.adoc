@@ -152,7 +152,7 @@ guest user, and finally execute the processes of the job as specified
 in *_J_*.
 
 In most cases, the IMP will execute a _job shell_ on behalf of the user,
-passing the verfied *_J_* as input to the shell. The shell itself is
+passing the verified *_J_* as input to the shell. The shell itself is
 provided either by the user or by system configuration, but should not be
 provided or modified by the instance owner. The shell re-verifies
 integrity and authenticity of *_J_* before proceeding, then interprets
@@ -161,7 +161,7 @@ on the current resource set.
 
 [NOTE]
 It may be noted that the user's request *_J_* is verified twice when a job
-shell is invoked, and this is by design. The IMP verifes *_J_* to avoid
+shell is invoked, and this is by design. The IMP verifies *_J_* to avoid
 passing tainted input to the job shell, which runs as the guest user.
 The shell re-verifies *_J_* because it has no guarantee that the caller
 has already done this verification, or that *_J_* has not been changed

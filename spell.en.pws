@@ -298,18 +298,14 @@ InfiniBand
 Infiniband
 bicore
 cpu
-hostname
 ib
 memnode
 myapp
 nbcore
-nnodes
 ntasks
 oarsub
 salloc
 srun
-walltime
-yaml
 mem
 mppnppn
 oarsh
@@ -333,7 +329,6 @@ fooservice
 EPERM
 rolemasks
 cryptographically
-<<<<<<< HEAD
 CoreSwitch
 EdgeSwitch
 Getters
@@ -351,10 +346,15 @@ subcommand
 timestamp
 ttl
 filesystem
-subcommand
 subcommands
 setuid
 canonicalize
 canonicalized
 IMP's
 revokable
+proven
+Friedl
+Honeyman
+OpenSSH
+Provos
+alice
