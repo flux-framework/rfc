@@ -85,6 +85,10 @@ submitted to a Flux instance for execution.  This RFC describes the
 canonical form of the jobspec language, which represents a request to
 run exactly one program.
 
+link:spec_16{outfilesuffix}[16/Flux Resource Scheduling Methods]::
+The Flux Resource Scheduling methods are the methods used to schedule
+resources within the Flux framework.
+
 == Change Process
 
 The change process is

@@ -1,0 +1,244 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+16/Flux Resource Scheduling Methods
+===================================
+
+The Flux Resource Scheduling methods are the methods used to schedule
+resources within the Flux framework.
+
+* Name: github.com/flux-framework/rfc/spec_16.adoc
+* Editor: Don Lipari
+* State: draft
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+* link:spec_4{outfilesuffix}[4/Flux Resource Model]
+* link:spec_8{outfilesuffix}[8/Flux Task and Program Execution Services]
+* link:spec_14{outfilesuffix}[14/Canonical Job Specification]
+
+== Goals
+
+RFC 4 presents the Flux Resource Model: a versatile and extensible
+system for representing a diverse collection of computing resources
+along with their complex associations.  One of the primary objectives
+for scheduling Flux resources is to enable the search, selection, and
+allocation of these resources in a simple and efficient manor.
+
+Another important objective is to enable and support recursive or
+hierarchical scheduling models.  These models include the patterns
+defined or prescribed by the user as well as the scheduling behavior
+imposed by the system to enforce policy and achieve resource
+utilization goals.
+
+Using one common scheduling framework, users or system administrators
+should be able to equally and easily create and utilize a hierarchy of
+scheduler instances with distinct scheduling policies tailored to the
+application workload and system constraints.
+
+The goal of this RFC is to describe the methods developers can use to
+identify and allocate Flux resources to Flux programs in a way that is
+flexible enough to support all scheduling policies.  The specific
+goals of these methods are to:
+
+* Load Flux resources into the context of a scheduler instance
+* Create records of resources allocated to Flux programs
+* Remove resource allocation records from Flux resources
+* Save changes in allocation information to Flux resources
+* Display the allocation status of any Flux resource
+
+These goals SHALL apply regardless of whether the resources are
+managed by a dedicated resource service or through a library call.
+
+== Background
+
+Flux programs described in RFC 8 run on or consume Flux computing
+resources described in RFC 4.  In the context of this RFC, a scheduler
+is a Flux framework service that runs within a Flux instance.
+
+A scheduler is responsible for scheduling the computing resources used
+by Flux programs.  In addidition, a scheduler MAY schedule ancillary
+resources like power and file system bandwidth needed to deliver
+computing services.
+
+This RFC defines the Flux Resource Scheduling methods for operating on
+Flux resources in support of the scheduling activities.  In the
+description to follow, the term "job" will be used as defined in RFC 4
+as a synonym for Flux program.
+
+A scheduler receives requests for resources, identifies resources that
+meet the request, and allocates resources to the requesting entity.
+An _allocation_ is a record of a resource assignment to a requesting
+entity.
+
+The methods described in this RFC are the methods that act on those
+resources by a scheduler.  A scheduler reads the resource pool data as
+well as the graph data.  When a set of resources are selected that
+satisfy a resource request, the scheduler modifies the extended data
+of the selected resources to record the allocation.  When the
+allocation expires or is rescinded, the record is removed from the
+allocated resources.
+
+How a scheduler searches the resources and selects resources to assign
+to the requesting entity is outside the scope of this RFC.  This RFC
+presents the methods a scheduler SHALL use to operate on Flux
+resources in support of Flux programs.
+
+== Resource Allocation Considerations
+
+A scheduler's core activity is to find resources that meet a resource
+request and allocate those resources to a Flux program for its use.
+The scheduler records such allocations and thereby removes them from
+consideration as candidates for future requests.
+
+There are two orthogonal characteristics of a resource, its size and
+its composite nature as defined in link:spec_4{outfilesuffix}[4/Flux
+Resource Model].
+
+It is straightforward to represent the allocation of a resource of
+size 1.  We can record the allocation of such a resource to a Flux
+program by adding to the resource's extended data a simple tag that
+represents the ID of the Flux program.
+
+For resources with a size value greater than 1, we have the option of
+allocating `size` units to one Flux program and remaining `size` units
+to a different Flux program.  Such allocations can be recorded as an
+array of Flux program IDs and the number of units allocated.
+
+The Flux Composite Resource Pool model allows for linking resources
+together in a "has-a" relationship.  When a child resource is
+allocated to a Flux program, what should be recorded for the parent
+resource and each parent thereof?
+
+Similarly, shall we allow a resource of size 1 to be allocated to more
+than one Flux program?
+
+== Resource Annotation Considerations
+
+The above resource allocation considerations address the allocation of
+resource size unit(s) to a job.  RFC 4 proposes the use of graphs to
+define the relationships of one resource to another.  Composite
+"has-a" relationships are represented with graphs.
+
+Under this plan, the question arises of how to reflect the allocation
+of a resource to a job to all of the parent resources to which that
+resource belongs.  For example, if a single core is allocated to a
+job, how should that allocation be recorded in the node that contains
+that core and even the rack that contains that node?
+
+For this, an additional system of allocation recording is proposed:
+_annotation_.  Annotations differ from allocations in that annotations
+have no associated size units.  Annotations are simply tags.  In the
+example above, when the core is allocated to a job, the node and rack
+parents MAY be annotated with the job id to which the core is
+allocated.
+
+Annotation is not a hard requirement.  It is simply a bookkeeping
+solution to facilitate the search for available resources.  If a
+resource request requires the exclusive allocation of all the
+resources within a rack for example, the absence of job annotations on
+a rack resource will readily indicate that the rack resource is a
+candidate for exclusive use.
+
+The rules below prescribe the recommended resolution to the above
+considerations.
+
+== Resource Allocation Data and Rules
+
+* One `unit` of the `size` resource pool datum SHALL be the most
+  granular allocatable resource.  Multiple jobs MAY be allocated
+  `size` units of a resource, but no two jobs SHALL be allocated the
+  same resource unit.  In other words, the total number of resource
+  units allocated to jobs MAY not exceed the `size` count defined for
+  the resource.
+
+* The number of `size` units of a Flux resource allocated to a job
+  SHALL be recorded in the resource pool extended data.
+
+* When all `size` elements of a resource pool have been allocated to a
+  job, the resource SHALL be considered exclusively allocated to the
+  job.
+
+* A resource's requirement to be allocated exclusively to a job SHALL
+  be recorded in the resource pool extended data.  In the absence of
+  an exclusive allocation requirement, a scheduler MAY allocate the
+  resource to multiple jobs.
+
+* Allocations change over the course of time.  The allocation data
+  SHALL become an array of job allocations over time to support
+  scheduling jobs in the future.  For schedulers concerned only with
+  scheduling jobs to currently available resources, the size of the
+  job allocation array SHALL be 1.
+
+* When a composite resource is allocated exclusively to a job, all of
+  its child resources MUST implicitly be allocated to the job.  To
+  save processing effort, resource allocation records NEED NOT be
+  created for child resources when the parent resource is allocated
+  exclusively to a job.  The allocation of the parent's job is
+  implied.
+
+* When a composite resource is allocated to a job, the allocation MAY
+  be annotated to each parent in the composite hierarchy.  This
+  provides the scheduler an aggregate view of all of the allocated
+  descendants of a composite resource.
+
+* If a job annotation is added to to a resource, it MAY be recorded
+  in the resource pool extended data or in the graph data.
+
+== Abstract Interfaces
+
+The abstract interfaces for scheduling the Flux resources include, but
+not be limited to the following.
+
+=== Load / Save
+
+Load:: At least one method for creating a set of resources from the
+ following sources SHALL be provided.
+
+ * Configuration file
+ * Using the Portable Hardware Locality (hwloc) library
+ * KVS of enclosing instance
+ * Database
+
+Save:: Methods for saving a resource set to the following destinations
+ MAY be provided.  For any method implemented, an option SHALL be
+ provided to save the entire resource set or only those resources that
+ changed since the last save.
+
+ * KVS of child instance
+ * Configuration file
+ * Database
+
+Destroy:: A method to destroy a resource representation and reclaim
+ associated memory SHALL be provided.
+
+=== Find
+
+Find:: A search method SHALL be provided to traverse the composite
+ resource pool and return all matching resources.  The _Find_ method
+ MAY be implemented as a combination of the _Walker_ and _Match_
+ interfaces specified in RFC 4.
+
+=== Resource Allocation Records
+
+Allocate:: A method to allocate a single or set of composite resources
+ to a Flux program SHALL be provided.  The allocation SHALL be
+ recorded using the _Resource Allocation Data and Rules_ presented
+ above.  The start and end times of the allocation MUST be specified
+ when scheduling resources into the future.  The option to grow and
+ shrink a resource allocation MAY be provided.
+
+Release:: A method to remove an allocation record from a single or set
+ of composite resources in response to a job's expiration or
+ termination SHALL be provided.
+
+Allocated:: A method to query the set of composite resources
+ _allocated_ to a job or all jobs SHALL be provided.
+
+Available:: A method to query the set of composite resources _not
+ allocated_ to any job SHALL be provided.
