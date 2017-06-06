@@ -50,6 +50,26 @@ For example `msg_count` is OK, but `MsgCount` or `MSG_COUNT` do not conform.
 Preprocessor macro names SHOULD NOT include lower case letters. 
 For example `FLUX_FOO_MAGIC` is OK but `flux_foo_magic` and `FluxFooMagic` do not conform.
 
+=== Function Names
+
+Function names should be descriptive and concise, and SHOULD NOT contain
+upper case letters. Functions that perform an action should have a name
+that makes it clear what the function does, e.g. `check_errors()` instead
+of `checkit()`.
+
+For functions or methods that operate on a possibly opaque class type,
+the function name SHOULD start with the name of the class, and if
+exported via the Flux API, the class name SHALL start with `flux_`,
+e.g. `flux_object_do_something()`.  Functions that get or set *properties*
+of an object SHOULD be named with `obj_get_item()` and `obj_set_item()`,
+not `obj_item_get()` or `object_item_set()`.  In some cases, the `get`
+MAY be dropped, e.g. `obj_size()` instead of `obj_get_size()`. Some classes
+have extra *interfaces* that they export via the class methods, and these
+functions MAY be named with the interface name *before* the action, for
+example `flux_aux_get()` and `flux_aux_set()`, which expose an interface
+to the `aux` data of the `flux_t` object, and do not get or set an
+individual `aux` property.
+
 === Typedefs
 
 C typedef names SHOULD NOT include upper case letters.
