@@ -347,59 +347,59 @@ draft version 0.6.
 # jcr-version 0.6
 
 {
-   "resources" : [ +vertex ],
+   "resources" : [ +$vertex ],
    "tasks" : tasks,
    "walltime" : walltime,
    "attrs" :  { /.*/ : any },
    "version" : 1,
 }
 
-vertex_common {
-    "count" : resource_count,
+$vertex_common = {
+    "count" : $resource_count,
     ?"exclusive" : boolean,
-    ?"with" : [ +vertex ],
+    ?"with" : [ +$vertex ],
     ?"edge" : TBD,
 }
 
-group_vertex {
+$group_vertex = {
     "type" : "group",
-    vertex_common,
+    $vertex_common,
 }
 
-slot_vertex {
+$slot_vertex = {
     "type"  : "slot",
     "label" : string,
-    vertex_common,
+    $vertex_common,
 }
 
-resource_vertex {
+$resource_vertex = {
     "type" : ( :string, + @{reject} ( "group", "slot")),
-    vertex_common
+    $vertex_common
     ?"id" : string,
     ?"uuid" : string,
-    ?"tags" : resource_tags,
-    ?"attributes" : resource_attributes,
+    ?"tags" : $resource_tags,
+    ?"attributes" : $resource_attributes,
     ?"unit" : string,
 }
 
-vertex ( group_vertex | slot_vertex | resource_vertex )
+$vertex = ( $group_vertex | $slot_vertex | $resource_vertex )
 
-resource_count {
+$resource_count = {
     "min" 1..,
     "max" 1..,
     "operator" : ( :"+" | :"*" | : "^" ),
     "operand" : 1..,
 }
 
-resource_tags {
+$resource_tags = {
     ?"list" : [ +string ],
 }
 
-resource_attributes {
+$resource_attributes = {
     ?"list" : TBD,
 }
 
-tasks {
+$tasks = {
     "command" : [ +string ],
     "slot" : { "label" : string  | "level": string },
     "count" : { "per_slot" : 1.. | "total" : 1.. },
