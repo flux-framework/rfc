@@ -332,7 +332,7 @@ draft version 0.6.
 # jcr-version 0.6
 
 {
-   "resources" : [ +$vertex ],
+   "resources" : [ $vertex + ],
    "tasks" : tasks,
    "walltime" : walltime,
    "attrs" :  { /.*/ : any },
@@ -342,7 +342,7 @@ draft version 0.6.
 $vertex_common = {
     "count" : ( 1.. | $complex_range),
     ?"exclusive" : boolean,
-    ?"with" : [ +$vertex ],
+    ?"with" : [ $vertex + ],
     ?"edge" : TBD,
 }
 
@@ -377,7 +377,7 @@ $complex_range = {
 }
 
 $resource_tags = {
-    ?"list" : [ +string ],
+    ?"list" : [ string + ],
 }
 
 $resource_attributes = {
@@ -385,7 +385,7 @@ $resource_attributes = {
 }
 
 $tasks = {
-    "command" : [ +string ],
+    "command" : [ string + ],
     "slot" : { "label" : string  | "level": string },
     "count" : { "per_slot" : 1.. | "total" : 1.. },
     "distribution" : string,
