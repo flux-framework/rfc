@@ -126,8 +126,9 @@ A resource vertex SHALL contain the following keys:
 
  *count*::
  The `count` key SHALL indicate the desired number or range of
- resources matching the current vertex. The value of `count` SHALL be a
- dictionary which SHALL contain the following keys:
+ resources matching the current vertex. The `count` SHALL have one
+ of two possible values: either a single integer value representing
+ a fixed count, or a dictionary which SHALL contain the following keys:
 +
 [horizontal]
    *min*::: The minimum required count or amount of this resource
@@ -282,26 +283,14 @@ task slot for a total of 4 tasks.
 version: 1
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
     with:
       - type: slot
-        count:
-          min: 1
-          max: 1
-          operator: "+"
-          operand: 1
+        count: 1
         label: default
         with:
           - type: core
-            count:
-              min: 2
-              max: 2
-              operator: "+"
-              operand: 1
+            count: 2
 tasks:
   - command: app
     slot:
@@ -321,11 +310,7 @@ across 4 nodes
 version: 1
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
 tasks:
   - command: hostname
     slot:
@@ -355,7 +340,7 @@ draft version 0.6.
 }
 
 $vertex_common = {
-    "count" : $resource_count,
+    "count" : ( 1.. | $complex_range),
     ?"exclusive" : boolean,
     ?"with" : [ +$vertex ],
     ?"edge" : TBD,
@@ -384,9 +369,9 @@ $resource_vertex = {
 
 $vertex = ( $group_vertex | $slot_vertex | $resource_vertex )
 
-$resource_count = {
-    "min" 1..,
-    "max" 1..,
+$complex_range = {
+    "min" : 1..,
+    "max" : 1..,
     "operator" : ( :"+" | :"*" | : "^" ),
     "operand" : 1..,
 }
@@ -449,11 +434,7 @@ version: 1
 walltime: 1h
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
 tasks:
   - command: [ "flux", "start" ]
     slot:
@@ -515,25 +496,13 @@ version: 1
 walltime: 1h
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
     with:
       - type: socket
-        count:
-          min: 2
-          max: 2
-          operator: "+"
-          operand: 1
+        count: 2
         with:
           - type: core
-            count:
-              min: 4
-              max: 4
-              operator: "+"
-              operand: 1
+            count: 4
 tasks:
   - command: [ "flux", "start" ]
     slot:
@@ -558,25 +527,13 @@ resources:
   - type: slot
     with:
     - type: node
-      count:
-        min: 4
-        max: 4
-        operator: "+"
-        operand: 1
+      count: 4
       with:
         - type: socket
-          count:
-            min: 2
-            max: 2
-            operator: "+"
-            operand: 1
+          count: 2
           with:
             - type: core
-              count:
-                min: 4
-                max: 4
-                operator: "+"
-                operand: 1
+              count: 4
 tasks:
   - command: [ "flux", "start" ]
     slot:
@@ -607,47 +564,23 @@ Jobspec YAML::
 version: 1
 resources:
   - type: cluster
-    count:
-      min: 1
-      max: 1
-      operator: "+"
-      operand: 1
+    count: 1
     with:
       - type: node
-        count:
-          min: 2
-          max: 2
-          operator: "+"
-          operand: 1
+        count: 2
         with:
           - type: memory
-            count:
-              min: 4
-              max: 4
-              operator: "+"
-              operand: 1
+            count: 4
             unit: GB
           - type: ib10g
-            count:
-              min: 1
-              max: 1
-              operator: "+"
-              operand: 1
+            count: 4
       - type: switch
         with:
           type: node
-            count:
-              min: 2
-              max: 2
-              operator: "+"
-              operand: 1
+            count: 2
             with:
                 - type: core
-                  count:
-                    min: 1
-                    max: 1
-                    operator: "+"
-                    operand: 1
+                  count: 1
 walltime: 4h
 tasks:
   - command: [ "flux", "start" ]
@@ -676,25 +609,13 @@ version: 1
 walltime: 1h
 resources:
     - type: cluster
-      count:
-        min: 2
-        max: 2
-        operator: "+"
-        operand: 1
+      count: 2
       with:
           - type: node
-            count:
-              min: 15
-              max: 15
-              operator: "+"
-              operand: 1
+            count: 15
             with:
               - type: core
-                count:
-                  min: 1
-                  max: 1
-                  operator: "+"
-                  operand: 1
+                count: 1
 tasks:
   - command: [ "flux", "start" ]
     slot:
@@ -722,18 +643,10 @@ version: 1
 walltime: 1h
 resources:
   - type: switch
-    count:
-      min: 3
-      max: 3
-      operator: "+"
-      operand: 1
+    count: 3
     with:
       - type: core
-        count:
-          min: 1
-          max: 1
-          operator: "+"
-          operand: 1
+        count: 1
 tasks:
   - command: [ "flux", "start" ]
     slot:
@@ -770,18 +683,10 @@ walltime: 1h
 resources:
   - type: slot
     label: default
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
     with:
     - type: node
-      count:
-        min: 1
-        max: 1
-        operator: "+"
-        operand: 1
+      count: 1
 tasks:
   - command: hostname
     slot: default
@@ -809,11 +714,7 @@ version: 1
 walltime: 1h
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
 tasks:
   - command: hostname
     slot:
@@ -831,19 +732,11 @@ version: 1
 walltime: 1h
 resources:
   - type: slot
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
     label: myslot
     with:
       - type: node
-        count:
-          min: 1
-          max: 1
-          operator: "+"
-          operand: 1
+        count: 1
 tasks:
   - command: hostname
     slot:
@@ -873,18 +766,10 @@ walltime: 1h
 resources:
   - type: slot
     label: default
-    count:
-      min: 10
-      max: 10
-      operator: "+"
-      operand: 1
+    count: 10
     with:
       - type: core
-        count:
-          min: 2
-          max: 2
-          operator: "+"
-          operand: 1
+        count: 2
 tasks:
   - command: myapp
     slot: default
@@ -911,45 +796,21 @@ resources:
     with:
       - type: slot
         label: read-db
-        count:
-          min: 10
-          max: 10
-          operator: "+"
-          operand: 1
+        count: 10
         with:
           - type: core
-            count:
-              min: 1
-              max: 1
-              operator: "+"
-              operand: 1
+            count: 1
           - type: memory
-            count:
-              min: 4
-              max: 4
-              operator: "+"
-              operand: 1
+            count: 4
             unit: GB
       - type: slot
         label: db
-        count:
-          min: 1
-          max: 1
-          operator: "+"
-          operand: 1
+        count: 1
         with:
           - type: core
-            count:
-              min: 6
-              max: 6
-              operator: "+"
-              operand: 1
+            count: 6
           - type: memory
-            count:
-              min: 24
-              max: 24
-              operator: "+"
-              operand: 1
+            count: 24
             unit: GB
 tasks:
   - command: read-db
@@ -983,25 +844,13 @@ walltime: 1h
 resources:
   - type: slot
     label: default
-    count:
-      min: 10
-      max: 10
-      operator: "+"
-      operand: 1
+    count: 10
     with:
     - type: memory
-      count:
-        min: 2
-        max: 2
-        operator: "+"
-        operand: 1
+      count: 2
       unit: GB
     - type: core
-      count:
-        min: 1
-        max: 1
-        operator: "+"
-        operand: 1
+      count: 1
 tasks:
   - command: app
     slot: default
@@ -1030,25 +879,13 @@ walltime: 1h
 resources:
   - type: slot
     label: 4GB-node
-    count:
-      min: 2
-      max: 2
-      operator: "+"
-      operand: 1
+    count: 2
     with:
     - type: node
-      count:
-        min: 1
-        max: 1
-        operator: "+"
-        operand: 1
+      count: 1
       with:
         - type: memory
-          count:
-            min: 4
-            max: 4
-            operator: "+"
-            operand: 1
+          count: 4
           unit: GB
 tasks:
   - command: app
