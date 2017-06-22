@@ -98,7 +98,7 @@ FIXME: Fill in
 A canonical jobspec YAML document SHALL consist of a dictionary
 defining the resources, tasks and other attributes of a single
 program. The dictionary MUST contain the keys `resources`, `tasks`,
-`walltime`, `attrs`, and `version`.
+`attributes`, and `version`.
 
 Each of the listed jobspec keys SHALL meet the form and requirements
 listed in detail in the sections below. For reference, a ruleset for
@@ -238,8 +238,8 @@ which to map the defined tasks.
   The value of the `total` field SHALL indicate the total number of
   tasks to be run across all task slots, possibly oversubscribed.
 
- *attrs*::
- The `attrs` key SHALL be a free-form dictionary of keys which may
+ *attributes*::
+ The `attributes` key SHALL be a free-form dictionary of keys which may
  be used for platform independent or optional extensions.
 
  *distribution*::
@@ -247,28 +247,35 @@ which to map the defined tasks.
  be used as input to the launcher's algorithm for task placement and
  layout among task slots.
 
-=== Walltime
-The value of the `walltime` key SHALL be a dictionary with currently
-supported keys `duration` or `range`. Other keys MAY be reserved for
-future or site specific extensions. It SHALL be considered an error
-if multiple, conflicting keys are set in the `walltime` dictionary.
-
-Supported keys for `walltime` are described in detail below.
-
- *duration*:: The `duration` key SHALL have a string value interpreted
- as a single duration walltime estimate/limit for the program described
- by the current jobspec.
-
- *range*:: The `range` key SHALL be a dictionary with duration keys
- `min` and `max` indicating the minimum and maximum walltime
- estimate/limit for the program in the current jobspec.
-
 === Attributes
-The value of the `attrs` key SHALL be a dictionary of generic
-program attributes, system or user defined, which MAY affect program
-execution, scheduling, task placement, etc. Some key names in the
-`attrs` dictionary MAY be reserved.
 
+The value of the `attributes` key SHALL be a dictionary of dictionaries.
+The `attributes` dictionary MAY contain one or more of the following keys
+which, if present, must have dictionary values:
+
+ *user*::
+ Attributes in the `user` dictionary are unrestricted, and may be used
+ as the application demands.  Flux may provide addition tools that can
+ identify jobs based on `user` attributes.
+
+ *system*::
+Attributes in the `system` dictionary are additional parameters to
+a Flux instance that affect program execution, scheduling, etc.  All
+attributes in `system` are reserved words, however unrecognized
+words SHALL trigger no more than a warning.  This permits jobspec
+reuse between multiple flux instances which may be configured differently
+and recognize different sets of attributes.
++
+Most system attributes are optional.  Flux modules SHALL provide
+reasonable defaults for any system attributes that they recognize when
+at all possible.
+
+Some common system attributes are:
+
+ *duration*::
+ The value of the `duration` attribute is a string representing time span.
+ The scheduler will make an effort to allocate the requested resources
+ for the time specified in `duration`.
 
 === Example Jobspec
 
@@ -297,9 +304,9 @@ tasks:
       label: default
     count:
       per_slot: 1
-walltime:
-  duration: 1h
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 ----
 
 A simpler example using implicit *task slot* definition to run 4 tasks
@@ -317,9 +324,9 @@ tasks:
       level: node
     count:
       per_slot: 1
-walltime:
-  duration: 1h
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 ----
 
 === Content Rules
@@ -334,8 +341,7 @@ draft version 0.6.
 {
    "resources" : [ $vertex + ],
    "tasks" : tasks,
-   "walltime" : walltime,
-   "attrs" :  { /.*/ : any },
+   "attributes" : { $system_attributes, $user_attributes },
    "version" : 1,
 }
 
@@ -389,13 +395,15 @@ $tasks = {
     "slot" : { "label" : string  | "level": string },
     "count" : { "per_slot" : 1.. | "total" : 1.. },
     "distribution" : string,
-    ?"attrs" : { /.*/ : any },
+    ?"attributes" : { /.*/ : any },
 }
 
-walltime {
-    "duration" : string |
-    "range" { "min" : 0.., "max" : 0.. },
+$system_attributes = {
+    "duration" : string,
+    /.*/ : string
 }
+
+$user_attributes = { /.*/ : string }
 
 ----
 
@@ -431,7 +439,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: node
     count: 4
@@ -441,7 +448,9 @@ tasks:
       level: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.2:: Request a range of a type of resource
@@ -458,7 +467,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: node
     count:
@@ -472,7 +480,9 @@ tasks:
       level: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.3:: Request M nodes with a minimum number of sockets per node
@@ -493,7 +503,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: node
     count: 4
@@ -509,7 +518,9 @@ tasks:
       level: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.4:: Exclusively allocate nodes, while constraining cores and
@@ -522,7 +533,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: slot
     with:
@@ -540,7 +550,9 @@ tasks:
       level: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.5:: Complex example from OAR
@@ -581,14 +593,15 @@ resources:
             with:
                 - type: core
                   count: 1
-walltime: 4h
 tasks:
   - command: [ "flux", "start" ]
     slot:
       level: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 4 hours
 
 '''
 Use Case 1.6:: Request resources across multiple clusters
@@ -606,7 +619,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
     - type: cluster
       count: 2
@@ -622,7 +634,9 @@ tasks:
       level: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.7:: Request N cores across M switches
@@ -640,7 +654,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: switch
     count: 3
@@ -653,7 +666,9 @@ tasks:
       level: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1h
 
 '''
 
@@ -679,7 +694,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: slot
     label: default
@@ -692,7 +706,9 @@ tasks:
     slot: default
     count:
       per_slot: 5
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 2.2:: Run N tasks across M nodes, unequal distribution
@@ -711,7 +727,6 @@ Jobspec YAML::
 [source,yaml]
 ----
 version: 1
-walltime: 1h
 resources:
   - type: node
     count: 4
@@ -721,7 +736,9 @@ tasks:
       level: node
     count:
       total: 5
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 ----
 +
 or, with explicit task slots:
@@ -729,7 +746,6 @@ or, with explicit task slots:
 [source,yaml]
 ----
 version: 1
-walltime: 1h
 resources:
   - type: slot
     count: 4
@@ -743,7 +759,10 @@ tasks:
       label: myslot
     count:
       total: 5
-attrs:
+attributes:
+  system:
+    duration: 1 hour
+
 ----
 
 '''
@@ -762,7 +781,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: slot
     label: default
@@ -775,7 +793,9 @@ tasks:
     slot: default
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 2.4:: Run different binaries with differing resource
@@ -790,7 +810,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: node
     with:
@@ -821,7 +840,9 @@ tasks:
     slot: db
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 2.5:: Run command requesting minimum amount of RAM per core
@@ -840,7 +861,6 @@ Jobspec YAML::
 [source,yaml]
 ----
 version: 1
-walltime: 1h
 resources:
   - type: slot
     label: default
@@ -856,7 +876,9 @@ tasks:
     slot: default
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 ----
 '''
 Use Case 2.6:: Run N copies of a command with minimum amount of RAM per node
@@ -875,7 +897,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: slot
     label: 4GB-node
@@ -892,7 +913,9 @@ tasks:
     slot: 4GB-node
     count:
       total: 10
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 [sect2]
 == References
