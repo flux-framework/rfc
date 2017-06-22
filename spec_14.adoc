@@ -168,22 +168,6 @@ following keys
  The value of the `id` key SHALL be a string indicating a set of
  matching resource identifiers.
 
- *uuid*::
- The value of the `uuid` key SHALL be a string indicating a set of
- matching resource UUIDs.
-
- *tags*::
- The value of the `tags` key SHALL be a dictionary with supported key
- `list` which SHALL be a list of string tags required. Other keys MAY
- be reserved for future or site-specific extensions.
-
- *attributes*::
- The value of the `attributes` key SHALL be a dictionary with supported
- key `list` which SHALL be a list of dictionaries with required attributes
- as keys, and their required values as the key values. Other keys in
- the attributes dictionary MAY be reserved for future or site-specific
- extensions.
-
 
 ==== Reserved Resource Types
 
@@ -367,9 +351,6 @@ $resource_vertex = {
     "type" : ( :string, + @{reject} ( "group", "slot")),
     $vertex_common
     ?"id" : string,
-    ?"uuid" : string,
-    ?"tags" : $resource_tags,
-    ?"attributes" : $resource_attributes,
     ?"unit" : string,
 }
 
@@ -380,14 +361,6 @@ $complex_range = {
     "max" : 1..,
     "operator" : ( :"+" | :"*" | : "^" ),
     "operand" : 1..,
-}
-
-$resource_tags = {
-    ?"list" : [ string + ],
-}
-
-$resource_attributes = {
-    ?"list" : TBD,
 }
 
 $tasks = {
