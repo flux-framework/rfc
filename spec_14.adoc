@@ -167,8 +167,6 @@ following keys
  SHALL be local to the namespace of the current jobspec, and each `label`
  in the  current jobspec must be unique.  `label` SHALL be mandatory in
  resource vertices of type `slot`.
- *edge*::
- **XXX**: need specification for other "edge match descriptors"
 
  *id*::
  The value of the `id` key SHALL be a string indicating a set of
