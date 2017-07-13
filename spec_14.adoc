@@ -202,11 +202,12 @@ descriptor SHALL contain the following keys:
  number of resource slots and total number of tasks requested to execute.
 +
 The value of the `slot` key SHALL be a dictionary with supported key
-of either `label` or `level`. The `label` key SHALL reference a `label`
-from the `resources` list, indicating an explicitly created and named
-*task slot*. The `level` key SHALL reference a resource name, such
-as `core` or `node`, indicating an implicitly created *task slot* on
-which to map the defined tasks.
+of either `label` or `type`. The `label` key SHALL reference a `label`
+of a resource vertex of type `slot`, indicating an explicitly created
+and named *task slot*. The `type` key SHALL reference a real resource type,
+such as `core` or `node`, indicating an implicitly created *task slot* on
+which to map the defined tasks.  `type` SHALL NOT be `slot`; slots must
+be referred to by their `label`.
 
  *count*::
  The value of the `count` key SHALL be a dictionary supporting at least
@@ -305,7 +306,7 @@ resources:
 tasks:
   - command: hostname
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
 attributes:
@@ -326,14 +327,15 @@ draft version 0.6.
    "resources" : [ $vertex + ],
    "tasks" : tasks,
    "attributes" : { $system_attributes, $user_attributes },
-   "version" : 1,
+   "version" : 1
 }
+
+$label := string
 
 $vertex_common = {
     "count" : ( 1.. | $complex_range),
     ?"exclusive" : boolean,
-    ?"with" : [ $vertex + ],
-    ?"edge" : TBD,
+    ?"with" : [ $vertex + ]
 }
 
 $group_vertex = {
@@ -343,7 +345,7 @@ $group_vertex = {
 
 $slot_vertex = {
     "type"  : "slot",
-    "label" : string,
+    "label" : $label,
     $vertex_common,
 }
 
@@ -365,7 +367,7 @@ $complex_range = {
 
 $tasks = {
     "command" : [ string + ],
-    "slot" : { "label" : string  | "level": string },
+    "slot" : { "label" : string  | "type": string },
     "count" : { "per_slot" : 1.. | "total" : 1.. },
     "distribution" : string,
     ?"attributes" : { /.*/ : any },
@@ -418,7 +420,7 @@ resources:
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
 attributes:
@@ -450,7 +452,7 @@ resources:
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
 attributes:
@@ -488,7 +490,7 @@ resources:
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
 attributes:
@@ -520,7 +522,7 @@ resources:
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
 attributes:
@@ -569,7 +571,7 @@ resources:
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
 attributes:
@@ -604,7 +606,7 @@ resources:
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
 attributes:
@@ -636,7 +638,7 @@ resources:
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
 attributes:
@@ -648,7 +650,7 @@ attributes:
 === Section 2: Resource and task jobspec
 
 The following use cases include task specification in addition to resource
-request, demonstrating the use of task slot *labels* and *levels* to relate
+request, demonstrating the use of task slot *labels* and *types* to relate
 tasks to resources.
 
 '''
@@ -706,7 +708,7 @@ resources:
 tasks:
   - command: hostname
     slot:
-      level: node
+      type: node
     count:
       total: 5
 attributes:
