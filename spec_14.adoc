@@ -161,6 +161,12 @@ following keys
  vertex to another resource. Therefore, the value of the `with` key
  SHALL be a dictionary conforming to the resource vertex specification.
 
+ *label*::
+ The `label` key SHALL be a string that may be used to reference this
+ resource vertex from other locations within the same jobspec. `label`
+ SHALL be local to the namespace of the current jobspec, and each `label`
+ in the  current jobspec must be unique.  `label` SHALL be mandatory in
+ resource vertices of type `slot`.
  *edge*::
  **XXX**: need specification for other "edge match descriptors"
 
