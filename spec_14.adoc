@@ -119,9 +119,8 @@ A resource vertex SHALL contain the following keys:
  *type*::
  The `type` key for a resource SHALL indicate the type of resource to
  be matched. Some type names MAY be reserved for use in the jobspec
- language itself. Currently reserved types include `slot`, used to
- define *task slots*, and `group` used to add an unnamed level of
- grouping to a resource request. Reserved types are described in the
+ language itself. The currently reserved type is `slot`, used to
+ define *task slots*.  Reserved types are described in the
  *Reserved Resource Types* section below.
 
  *count*::
@@ -174,9 +173,6 @@ following keys
 
 
 ==== Reserved Resource Types
-
-*group*:: A resource type of `type: group` SHALL indicate an anonymous
-grouping of resources in the resource request.
 
 *slot*:: A resource type of `type: slot` SHALL indicate a grouping
 of resources into a named *task slot*. A `slot` SHALL be a valid
@@ -342,25 +338,20 @@ $vertex_common = {
     ?"with" : [ $vertex + ]
 }
 
-$group_vertex = {
-    "type" : "group",
-    $vertex_common,
-}
-
-$slot_vertex = {
+slot_vertex = {
     "type"  : "slot",
     "label" : $label,
     $vertex_common,
 }
 
-$resource_vertex = {
-    "type" : ( :string, + @{reject} ( "group", "slot")),
+resource_vertex = {
+    "type" : ( :string, + @{reject} ("slot")),
     $vertex_common
     ?"id" : string,
     ?"unit" : string,
 }
 
-$vertex = ( $group_vertex | $slot_vertex | $resource_vertex )
+vertex = ( $slot_vertex | $resource_vertex )
 
 $complex_range = {
     "min" : 1..,
