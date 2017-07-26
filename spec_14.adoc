@@ -98,7 +98,7 @@ FIXME: Fill in
 A canonical jobspec YAML document SHALL consist of a dictionary
 defining the resources, tasks and other attributes of a single
 program. The dictionary MUST contain the keys `resources`, `tasks`,
-`walltime`, `attrs`, and `version`.
+`attributes`, and `version`.
 
 Each of the listed jobspec keys SHALL meet the form and requirements
 listed in detail in the sections below. For reference, a ruleset for
@@ -119,15 +119,15 @@ A resource vertex SHALL contain the following keys:
  *type*::
  The `type` key for a resource SHALL indicate the type of resource to
  be matched. Some type names MAY be reserved for use in the jobspec
- language itself. Currently reserved types include `slot`, used to
- define *task slots*, and `group` used to add an unnamed level of
- grouping to a resource request. Reserved types are described in the
+ language itself. The currently reserved type is `slot`, used to
+ define *task slots*.  Reserved types are described in the
  *Reserved Resource Types* section below.
 
  *count*::
  The `count` key SHALL indicate the desired number or range of
- resources matching the current vertex. The value of `count` SHALL be a
- dictionary which SHALL contain the following keys:
+ resources matching the current vertex. The `count` SHALL have one
+ of two possible values: either a single integer value representing
+ a fixed count, or a dictionary which SHALL contain the following keys:
 +
 [horizontal]
    *min*::: The minimum required count or amount of this resource
@@ -160,34 +160,19 @@ following keys
  vertex to another resource. Therefore, the value of the `with` key
  SHALL be a dictionary conforming to the resource vertex specification.
 
- *edge*::
- **XXX**: need specification for other "edge match descriptors"
+ *label*::
+ The `label` key SHALL be a string that may be used to reference this
+ resource vertex from other locations within the same jobspec. `label`
+ SHALL be local to the namespace of the current jobspec, and each `label`
+ in the  current jobspec must be unique.  `label` SHALL be mandatory in
+ resource vertices of type `slot`.
 
  *id*::
  The value of the `id` key SHALL be a string indicating a set of
  matching resource identifiers.
 
- *uuid*::
- The value of the `uuid` key SHALL be a string indicating a set of
- matching resource UUIDs.
-
- *tags*::
- The value of the `tags` key SHALL be a dictionary with supported key
- `list` which SHALL be a list of string tags required. Other keys MAY
- be reserved for future or site-specific extensions.
-
- *attributes*::
- The value of the `attributes` key SHALL be a dictionary with supported
- key `list` which SHALL be a list of dictionaries with required attributes
- as keys, and their required values as the key values. Other keys in
- the attributes dictionary MAY be reserved for future or site-specific
- extensions.
-
 
 ==== Reserved Resource Types
-
-*group*:: A resource type of `type: group` SHALL indicate an anonymous
-grouping of resources in the resource request.
 
 *slot*:: A resource type of `type: slot` SHALL indicate a grouping
 of resources into a named *task slot*. A `slot` SHALL be a valid
@@ -217,11 +202,12 @@ descriptor SHALL contain the following keys:
  number of resource slots and total number of tasks requested to execute.
 +
 The value of the `slot` key SHALL be a dictionary with supported key
-of either `label` or `level`. The `label` key SHALL reference a `label`
-from the `resources` list, indicating an explicitly created and named
-*task slot*. The `level` key SHALL reference a resource name, such
-as `core` or `node`, indicating an implicitly created *task slot* on
-which to map the defined tasks.
+of either `label` or `type`. The `label` key SHALL reference a `label`
+of a resource vertex of type `slot`, indicating an explicitly created
+and named *task slot*. The `type` key SHALL reference a real resource type,
+such as `core` or `node`, indicating an implicitly created *task slot* on
+which to map the defined tasks.  `type` SHALL NOT be `slot`; slots must
+be referred to by their `label`.
 
  *count*::
  The value of the `count` key SHALL be a dictionary supporting at least
@@ -237,8 +223,8 @@ which to map the defined tasks.
   The value of the `total` field SHALL indicate the total number of
   tasks to be run across all task slots, possibly oversubscribed.
 
- *attrs*::
- The `attrs` key SHALL be a free-form dictionary of keys which may
+ *attributes*::
+ The `attributes` key SHALL be a free-form dictionary of keys which may
  be used for platform independent or optional extensions.
 
  *distribution*::
@@ -246,28 +232,35 @@ which to map the defined tasks.
  be used as input to the launcher's algorithm for task placement and
  layout among task slots.
 
-=== Walltime
-The value of the `walltime` key SHALL be a dictionary with currently
-supported keys `duration` or `range`. Other keys MAY be reserved for
-future or site specific extensions. It SHALL be considered an error
-if multiple, conflicting keys are set in the `walltime` dictionary.
-
-Supported keys for `walltime` are described in detail below.
-
- *duration*:: The `duration` key SHALL have a string value interpreted
- as a single duration walltime estimate/limit for the program described
- by the current jobspec.
-
- *range*:: The `range` key SHALL be a dictionary with duration keys
- `min` and `max` indicating the minimum and maximum walltime
- estimate/limit for the program in the current jobspec.
-
 === Attributes
-The value of the `attrs` key SHALL be a dictionary of generic
-program attributes, system or user defined, which MAY affect program
-execution, scheduling, task placement, etc. Some key names in the
-`attrs` dictionary MAY be reserved.
 
+The value of the `attributes` key SHALL be a dictionary of dictionaries.
+The `attributes` dictionary MAY contain one or more of the following keys
+which, if present, must have dictionary values:
+
+ *user*::
+ Attributes in the `user` dictionary are unrestricted, and may be used
+ as the application demands.  Flux may provide addition tools that can
+ identify jobs based on `user` attributes.
+
+ *system*::
+Attributes in the `system` dictionary are additional parameters to
+a Flux instance that affect program execution, scheduling, etc.  All
+attributes in `system` are reserved words, however unrecognized
+words SHALL trigger no more than a warning.  This permits jobspec
+reuse between multiple flux instances which may be configured differently
+and recognize different sets of attributes.
++
+Most system attributes are optional.  Flux modules SHALL provide
+reasonable defaults for any system attributes that they recognize when
+at all possible.
+
+Some common system attributes are:
+
+ *duration*::
+ The value of the `duration` attribute is a string representing time span.
+ The scheduler will make an effort to allocate the requested resources
+ for the time specified in `duration`.
 
 === Example Jobspec
 
@@ -282,35 +275,23 @@ task slot for a total of 4 tasks.
 version: 1
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
     with:
       - type: slot
-        count:
-          min: 1
-          max: 1
-          operator: "+"
-          operand: 1
+        count: 1
         label: default
         with:
           - type: core
-            count:
-              min: 2
-              max: 2
-              operator: "+"
-              operand: 1
+            count: 2
 tasks:
   - command: app
     slot:
       label: default
     count:
       per_slot: 1
-walltime:
-  duration: 1h
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 ----
 
 A simpler example using implicit *task slot* definition to run 4 tasks
@@ -321,20 +302,16 @@ across 4 nodes
 version: 1
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
 tasks:
   - command: hostname
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
-walltime:
-  duration: 1h
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 ----
 
 === Content Rules
@@ -347,70 +324,56 @@ draft version 0.6.
 # jcr-version 0.6
 
 {
-   "resources" : [ +vertex ],
+   "resources" : [ $vertex + ],
    "tasks" : tasks,
-   "walltime" : walltime,
-   "attrs" :  { /.*/ : any },
-   "version" : 1,
+   "attributes" : { $system_attributes, $user_attributes },
+   "version" : 1
 }
 
-vertex_common {
-    "count" : resource_count,
+$label := string
+
+$vertex_common = {
+    "count" : ( 1.. | $complex_range),
     ?"exclusive" : boolean,
-    ?"with" : [ +vertex ],
-    ?"edge" : TBD,
+    ?"with" : [ $vertex + ]
 }
 
-group_vertex {
-    "type" : "group",
-    vertex_common,
-}
-
-slot_vertex {
+slot_vertex = {
     "type"  : "slot",
-    "label" : string,
-    vertex_common,
+    "label" : $label,
+    $vertex_common,
 }
 
-resource_vertex {
-    "type" : ( :string, + @{reject} ( "group", "slot")),
-    vertex_common
+resource_vertex = {
+    "type" : ( :string, + @{reject} ("slot")),
+    $vertex_common
     ?"id" : string,
-    ?"uuid" : string,
-    ?"tags" : resource_tags,
-    ?"attributes" : resource_attributes,
     ?"unit" : string,
 }
 
-vertex ( group_vertex | slot_vertex | resource_vertex )
+vertex = ( $slot_vertex | $resource_vertex )
 
-resource_count {
-    "min" 1..,
-    "max" 1..,
+$complex_range = {
+    "min" : 1..,
+    "max" : 1..,
     "operator" : ( :"+" | :"*" | : "^" ),
     "operand" : 1..,
 }
 
-resource_tags {
-    ?"list" : [ +string ],
-}
-
-resource_attributes {
-    ?"list" : TBD,
-}
-
-tasks {
-    "command" : [ +string ],
-    "slot" : { "label" : string  | "level": string },
+$tasks = {
+    "command" : [ string + ],
+    "slot" : { "label" : string  | "type": string },
     "count" : { "per_slot" : 1.. | "total" : 1.. },
     "distribution" : string,
-    ?"attrs" : { /.*/ : any },
+    ?"attributes" : { /.*/ : any },
 }
 
-walltime {
-    "duration" : string |
-    "range" { "min" : 0.., "max" : 0.. },
+$system_attributes = {
+    "duration" : string,
+    /.*/ : string
 }
+
+$user_attributes = { /.*/ : string }
 
 ----
 
@@ -446,21 +409,18 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.2:: Request a range of a type of resource
@@ -477,7 +437,6 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: node
     count:
@@ -488,10 +447,12 @@ resources:
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.3:: Request M nodes with a minimum number of sockets per node
@@ -512,35 +473,24 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
     with:
       - type: socket
-        count:
-          min: 2
-          max: 2
-          operator: "+"
-          operand: 1
+        count: 2
         with:
           - type: core
-            count:
-              min: 4
-              max: 4
-              operator: "+"
-              operand: 1
+            count: 4
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.4:: Exclusively allocate nodes, while constraining cores and
@@ -553,37 +503,26 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: slot
     with:
     - type: node
-      count:
-        min: 4
-        max: 4
-        operator: "+"
-        operand: 1
+      count: 4
       with:
         - type: socket
-          count:
-            min: 2
-            max: 2
-            operator: "+"
-            operand: 1
+          count: 2
           with:
             - type: core
-              count:
-                min: 4
-                max: 4
-                operator: "+"
-                operand: 1
+              count: 4
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.5:: Complex example from OAR
@@ -607,55 +546,32 @@ Jobspec YAML::
 version: 1
 resources:
   - type: cluster
-    count:
-      min: 1
-      max: 1
-      operator: "+"
-      operand: 1
+    count: 1
     with:
       - type: node
-        count:
-          min: 2
-          max: 2
-          operator: "+"
-          operand: 1
+        count: 2
         with:
           - type: memory
-            count:
-              min: 4
-              max: 4
-              operator: "+"
-              operand: 1
+            count: 4
             unit: GB
           - type: ib10g
-            count:
-              min: 1
-              max: 1
-              operator: "+"
-              operand: 1
+            count: 4
       - type: switch
         with:
           type: node
-            count:
-              min: 2
-              max: 2
-              operator: "+"
-              operand: 1
+            count: 2
             with:
                 - type: core
-                  count:
-                    min: 1
-                    max: 1
-                    operator: "+"
-                    operand: 1
-walltime: 4h
+                  count: 1
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 4 hours
 
 '''
 Use Case 1.6:: Request resources across multiple clusters
@@ -673,35 +589,24 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
     - type: cluster
-      count:
-        min: 2
-        max: 2
-        operator: "+"
-        operand: 1
+      count: 2
       with:
           - type: node
-            count:
-              min: 15
-              max: 15
-              operator: "+"
-              operand: 1
+            count: 15
             with:
               - type: core
-                count:
-                  min: 1
-                  max: 1
-                  operator: "+"
-                  operand: 1
+                count: 1
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 1.7:: Request N cores across M switches
@@ -719,35 +624,28 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: switch
-    count:
-      min: 3
-      max: 3
-      operator: "+"
-      operand: 1
+    count: 3
     with:
       - type: core
-        count:
-          min: 1
-          max: 1
-          operator: "+"
-          operand: 1
+        count: 1
 tasks:
   - command: [ "flux", "start" ]
     slot:
-      level: node
+      type: node
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1h
 
 '''
 
 === Section 2: Resource and task jobspec
 
 The following use cases include task specification in addition to resource
-request, demonstrating the use of task slot *labels* and *levels* to relate
+request, demonstrating the use of task slot *labels* and *types* to relate
 tasks to resources.
 
 '''
@@ -766,28 +664,21 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: slot
     label: default
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
     with:
     - type: node
-      count:
-        min: 1
-        max: 1
-        operator: "+"
-        operand: 1
+      count: 1
 tasks:
   - command: hostname
     slot: default
     count:
       per_slot: 5
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 2.2:: Run N tasks across M nodes, unequal distribution
@@ -806,21 +697,18 @@ Jobspec YAML::
 [source,yaml]
 ----
 version: 1
-walltime: 1h
 resources:
   - type: node
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
 tasks:
   - command: hostname
     slot:
-      level: node
+      type: node
     count:
       total: 5
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 ----
 +
 or, with explicit task slots:
@@ -828,29 +716,23 @@ or, with explicit task slots:
 [source,yaml]
 ----
 version: 1
-walltime: 1h
 resources:
   - type: slot
-    count:
-      min: 4
-      max: 4
-      operator: "+"
-      operand: 1
+    count: 4
     label: myslot
     with:
       - type: node
-        count:
-          min: 1
-          max: 1
-          operator: "+"
-          operand: 1
+        count: 1
 tasks:
   - command: hostname
     slot:
       label: myslot
     count:
       total: 5
-attrs:
+attributes:
+  system:
+    duration: 1 hour
+
 ----
 
 '''
@@ -869,28 +751,21 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: slot
     label: default
-    count:
-      min: 10
-      max: 10
-      operator: "+"
-      operand: 1
+    count: 10
     with:
       - type: core
-        count:
-          min: 2
-          max: 2
-          operator: "+"
-          operand: 1
+        count: 2
 tasks:
   - command: myapp
     slot: default
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 2.4:: Run different binaries with differing resource
@@ -905,51 +780,26 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: node
     with:
       - type: slot
         label: read-db
-        count:
-          min: 10
-          max: 10
-          operator: "+"
-          operand: 1
+        count: 10
         with:
           - type: core
-            count:
-              min: 1
-              max: 1
-              operator: "+"
-              operand: 1
+            count: 1
           - type: memory
-            count:
-              min: 4
-              max: 4
-              operator: "+"
-              operand: 1
+            count: 4
             unit: GB
       - type: slot
         label: db
-        count:
-          min: 1
-          max: 1
-          operator: "+"
-          operand: 1
+        count: 1
         with:
           - type: core
-            count:
-              min: 6
-              max: 6
-              operator: "+"
-              operand: 1
+            count: 6
           - type: memory
-            count:
-              min: 24
-              max: 24
-              operator: "+"
-              operand: 1
+            count: 24
             unit: GB
 tasks:
   - command: read-db
@@ -960,7 +810,9 @@ tasks:
     slot: db
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 '''
 Use Case 2.5:: Run command requesting minimum amount of RAM per core
@@ -979,35 +831,24 @@ Jobspec YAML::
 [source,yaml]
 ----
 version: 1
-walltime: 1h
 resources:
   - type: slot
     label: default
-    count:
-      min: 10
-      max: 10
-      operator: "+"
-      operand: 1
+    count: 10
     with:
     - type: memory
-      count:
-        min: 2
-        max: 2
-        operator: "+"
-        operand: 1
+      count: 2
       unit: GB
     - type: core
-      count:
-        min: 1
-        max: 1
-        operator: "+"
-        operand: 1
+      count: 1
 tasks:
   - command: app
     slot: default
     count:
       per_slot: 1
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 ----
 '''
 Use Case 2.6:: Run N copies of a command with minimum amount of RAM per node
@@ -1026,36 +867,25 @@ Jobspec YAML::
 +
 [source,yaml]
 version: 1
-walltime: 1h
 resources:
   - type: slot
     label: 4GB-node
-    count:
-      min: 2
-      max: 2
-      operator: "+"
-      operand: 1
+    count: 2
     with:
     - type: node
-      count:
-        min: 1
-        max: 1
-        operator: "+"
-        operand: 1
+      count: 1
       with:
         - type: memory
-          count:
-            min: 4
-            max: 4
-            operator: "+"
-            operand: 1
+          count: 4
           unit: GB
 tasks:
   - command: app
     slot: 4GB-node
     count:
       total: 10
-attrs:
+attributes:
+  system:
+    duration: 1 hour
 
 [sect2]
 == References
