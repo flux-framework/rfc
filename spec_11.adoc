@@ -43,23 +43,23 @@ level names:
 
 * _ver_, an integer version number
 * _type_, a string type name
-* _val_, a type dependent JSON object
+* _data_, a type dependent JSON object
 
 There are six types:
 
-* _valref_, val is an array of blobrefs comprising opaque data
-* _treeref_, val is an array of blobrefs comprising a tree object
-* _dir_, val is a map of names to tree objects
-* _hdir_, val is a map of integer-hashed names to _treeref_ objects
-* _symlink_, val is a hierarchical key name
-* _value_, val is an arbitrary JSON object, array, or value
+* _valref_, data is an array of blobrefs comprising opaque data
+* _treeref_, data is an array of blobrefs comprising a tree object
+* _dir_, data is a map of names to tree objects
+* _hdir_, data is a map of integer-hashed names to _treeref_ objects
+* _symlink_, data is a hierarchical key name
+* _value_, data is an arbitrary JSON object, array, or value
 
 === Valref ===
 
 ----
 { "ver":1,
   "type":"valref",
-  "val":["sha1-aaa...","sha1-bbb...",...],
+  "data":["sha1-aaa...","sha1-bbb...",...],
 }
 ----
 
@@ -68,7 +68,7 @@ There are six types:
 ----
 { "ver":1,
   "type":"treeref",
-  "val":["sha1-aaa...","sha1-bbb...",...],
+  "data":["sha1-aaa...","sha1-bbb...",...],
 }
 ----
 
@@ -77,11 +77,11 @@ There are six types:
 ----
 { "ver":1,
   "type":"dir",
-  "val":{
-     "a":{"ver":1,"type":"treeref","val":["sha1-aaa"]},
-     "b":{"ver":1,"type":"value","val":42}
-     "c":{"ver":1,"type":"valref","val":["sha1-aaa","sha1-bbb"]},
-     "d":{"ver":1,"type":"dir","val":{...},
+  "data":{
+     "a":{"ver":1,"type":"treeref","data":["sha1-aaa"]},
+     "b":{"ver":1,"type":"value","data":42}
+     "c":{"ver":1,"type":"valref","data":["sha1-aaa","sha1-bbb"]},
+     "d":{"ver":1,"type":"dir","data":{...},
   }
 }
 ----
@@ -97,14 +97,14 @@ Hash buckets MAY be sparsely populated.
 ----
 { "ver":1,
   "type":"hdir",
-  "val":{
+  "data":{
     "size":8,
     "func":"city32",
     "bucket":[
-      {"ver":1,"type":"treeref","val":["sha1-aaa"]},
+      {"ver":1,"type":"treeref","data":["sha1-aaa"]},
       ,,,,,
-      {"ver":1,"type":"treeref","val":["sha1-eee"]},
-      {"ver":1,"type":"treeref","val":["sha1-fff"]},
+      {"ver":1,"type":"treeref","data":["sha1-eee"]},
+      {"ver":1,"type":"treeref","data":["sha1-fff"]},
     ]
   }
 }
@@ -115,7 +115,7 @@ Hash buckets MAY be sparsely populated.
 ----
 { "ver":1,
   "type":"symlink",
-  "val":"a.aa",
+  "data":"a.aa",
 }
 ----
 
@@ -124,7 +124,7 @@ Hash buckets MAY be sparsely populated.
 ----
 { "ver":1,
   "type":"value",
-  "val":42,
+  "data":42,
 }
 ----
 
