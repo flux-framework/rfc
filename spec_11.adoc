@@ -48,11 +48,11 @@ level names:
 There are six types:
 
 * _valref_, data is an array of blobrefs comprising opaque data
+* _val_, data is a base64 string representing opaque data
 * _dirref_, data is an array of blobrefs comprising a _dir_ or _hdir_ object
 * _dir_, data is a map of names to tree objects
 * _hdir_, data is a map of integer-hashed names to _dirref_ objects
 * _symlink_, data is a hierarchical key name
-* _value_, data is an arbitrary JSON object, array, or value
 
 === Valref ===
 
@@ -60,6 +60,15 @@ There are six types:
 { "ver":1,
   "type":"valref",
   "data":["sha1-aaa...","sha1-bbb...",...],
+}
+----
+
+=== Val ===
+
+----
+{ "ver":1,
+  "type":"val",
+  "data":"NDIyCg==",
 }
 ----
 
@@ -79,7 +88,7 @@ There are six types:
   "type":"dir",
   "data":{
      "a":{"ver":1,"type":"dirref","data":["sha1-aaa"]},
-     "b":{"ver":1,"type":"value","data":42}
+     "b":{"ver":1,"type":"val","data":"NDIyCg=="}
      "c":{"ver":1,"type":"valref","data":["sha1-aaa","sha1-bbb"]},
      "d":{"ver":1,"type":"dir","data":{...},
   }
@@ -119,14 +128,4 @@ _dirref_ object.
   "data":"a.aa",
 }
 ----
-
-=== Value ===
-
-----
-{ "ver":1,
-  "type":"value",
-  "data":42,
-}
-----
-
 
