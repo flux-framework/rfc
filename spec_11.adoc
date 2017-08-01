@@ -26,7 +26,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 == Goals
 
 * Facilitate services implementing private KVS namespaces.
-* Users may directly walk a KVS namespace, starting with a blobref/treeref.
+* Users may directly walk a KVS namespace, starting with a dirref.
 * Tree objects can be exchanged between Flux instances.
 * Tree objects can be parsed years after they were written (provenance).
 * Values exceeding the blob size limit (RFC 10) can be represented.
@@ -38,6 +38,9 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == Implementation
 
+In contrast to the original KVS prototype, in this specification, KVS
+values are unstructured, opaque data.
+
 All tree objects SHALL be represented as JSON objects containing three top
 level names:
 
@@ -47,14 +50,19 @@ level names:
 
 There are six types:
 
-* _valref_, data is an array of blobrefs comprising opaque data
-* _val_, data is a base64 string representing opaque data
-* _dirref_, data is an array of blobrefs comprising a _dir_ or _hdir_ object
-* _dir_, data is a map of names to tree objects
-* _hdir_, data is a map of integer-hashed names to _dirref_ objects
-* _symlink_, data is a hierarchical key name
+* _valref_, data is an array of blobrefs.  The concatenated blobs are
+an opaque data value (not a _val_ object).
+* _val_, data is a base64 string representing opaque data.
+* _dirref_, data is an array of blobrefs.  The concatenated blobs are
+interpreted as a _dir_ or _hdir_ object.
+* _dir_, data is a map of names to tree objects.
+* _hdir_, data is a map of integer-hashed names to _dirref_ objects.
+* _symlink_, data is a hierarchical key name.
 
 === Valref ===
+
+A _valref_ refers to opaque data in the content store (the actual data,
+not a _val_ object).
 
 ----
 { "ver":1,
@@ -65,6 +73,8 @@ There are six types:
 
 === Val ===
 
+A _val_ represents opaque data directly, base64-encoded.
+
 ----
 { "ver":1,
   "type":"val",
@@ -74,6 +84,9 @@ There are six types:
 
 === Dirref ===
 
+A _dirref_ refers to a _dir_ or _hdir_ object that was serialized and
+stored in the content store.
+
 ----
 { "ver":1,
   "type":"dirref",
@@ -82,6 +95,8 @@ There are six types:
 ----
 
 === Dir ===
+
+A _dir_ is a dictionary mapping keys to any of the tree object types.
 
 ----
 { "ver":1,
@@ -96,6 +111,10 @@ There are six types:
 ----
 
 === Hdir ===
+
+A _hdir_ is a dictionary mapping keys to any of the tree object types,
+though a level of indirection.  The _hdir_ object is for efficiently
+representing large directories.
 
 A _dir_ SHALL be converted to an _hdir_ once the number of entries exceeds
 a configurable _maxdirent_ value.  The _hdir_ SHALL have a fixed number of
@@ -121,6 +140,9 @@ _dirref_ object.
 ----
 
 === Symlink ===
+
+A _symlink_ is a symbolic pointer to a another KVS key, which may
+or may not be fully qualified.
 
 ----
 { "ver":1,

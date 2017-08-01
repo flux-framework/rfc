@@ -140,7 +140,6 @@ blobrefs
 dir
 namespaces
 symlink
-treeref
 valref
 ver
 Google
@@ -360,3 +359,6 @@ Provos
 alice
 minimumDuration
 truncatable
+dirref
+Dirref
+NDIyCg
