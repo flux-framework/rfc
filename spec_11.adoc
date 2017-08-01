@@ -48,9 +48,9 @@ level names:
 There are six types:
 
 * _valref_, data is an array of blobrefs comprising opaque data
-* _treeref_, data is an array of blobrefs comprising a tree object
+* _dirref_, data is an array of blobrefs comprising a _dir_ or _hdir_ object
 * _dir_, data is a map of names to tree objects
-* _hdir_, data is a map of integer-hashed names to _treeref_ objects
+* _hdir_, data is a map of integer-hashed names to _dirref_ objects
 * _symlink_, data is a hierarchical key name
 * _value_, data is an arbitrary JSON object, array, or value
 
@@ -63,11 +63,11 @@ There are six types:
 }
 ----
 
-=== Treeref ===
+=== Dirref ===
 
 ----
 { "ver":1,
-  "type":"treeref",
+  "type":"dirref",
   "data":["sha1-aaa...","sha1-bbb...",...],
 }
 ----
@@ -78,7 +78,7 @@ There are six types:
 { "ver":1,
   "type":"dir",
   "data":{
-     "a":{"ver":1,"type":"treeref","data":["sha1-aaa"]},
+     "a":{"ver":1,"type":"dirref","data":["sha1-aaa"]},
      "b":{"ver":1,"type":"value","data":42}
      "c":{"ver":1,"type":"valref","data":["sha1-aaa","sha1-bbb"]},
      "d":{"ver":1,"type":"dir","data":{...},
@@ -92,7 +92,8 @@ A _dir_ SHALL be converted to an _hdir_ once the number of entries exceeds
 a configurable _maxdirent_ value.  The _hdir_ SHALL have a fixed number of
 buckets represented by _size_, fixed when the _hdir_ is created.  The hash
 function used to map keys to buckets SHALL be identified with _func_.
-Hash buckets MAY be sparsely populated.
+Hash buckets MAY be sparsely populated.  Each hash bucket contains a single
+_dirref_ object.
 
 ----
 { "ver":1,
@@ -101,10 +102,10 @@ Hash buckets MAY be sparsely populated.
     "size":8,
     "func":"city32",
     "bucket":[
-      {"ver":1,"type":"treeref","data":["sha1-aaa"]},
+      {"ver":1,"type":"dirref","data":["sha1-aaa"]},
       ,,,,,
-      {"ver":1,"type":"treeref","data":["sha1-eee"]},
-      {"ver":1,"type":"treeref","data":["sha1-fff"]},
+      {"ver":1,"type":"dirref","data":["sha1-eee"]},
+      {"ver":1,"type":"dirref","data":["sha1-fff"]},
     ]
   }
 }
