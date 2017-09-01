@@ -38,51 +38,94 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == Implementation
 
-In contrast to the original KVS prototype, in this specification, KVS
-values are unstructured, opaque data.
-
 All tree objects SHALL be represented as JSON objects containing three top
 level names:
 
 * _ver_, an integer version number
-* _type_, a string type name
+* _type_, a string object type name
 * _data_, a type dependent JSON object
 
-There are six types:
+In addition, _val_ and _valref_ objects MAY contain
+
+* _content-encoding_, a string encoding type
+
+=== content-encoding
+
+The _content-encoding_ field provides a hint about how a value
+is encoded in a _val_ or _valref_ object.
+
+If set to _raw_, the value is an opaque sequence of octets.
+A _val_ object represents the value as a base64 string.
+A _valref_ object refers directly to the value in the content store.
+
+If set to _json_, the value is any JSON value.
+A _val_ object represents the value directly.
+A _valref_ object refers to a NULL terminated encoded JSON string
+in the content store.
+
+If omitted, _raw_ encoding is assumed.
+
+The _content-encoding_ field SHALL NOT appear in _dir_, _dirref_, _hdir_,
+or _symlink_ objects.
+
+== Objects
+
+There are six object types:
 
 * _valref_, data is an array of blobrefs.  The concatenated blobs are
-an opaque data value (not a _val_ object).
-* _val_, data is a base64 string representing opaque data.
+the data value (not a _val_ object).
+* _val_, data representation depends on content-encoding
 * _dirref_, data is an array of blobrefs.  The concatenated blobs are
 interpreted as a _dir_ or _hdir_ object.
 * _dir_, data is a map of names to tree objects.
 * _hdir_, data is a map of integer-hashed names to _dirref_ objects.
 * _symlink_, data is a hierarchical key name.
 
-=== Valref ===
+=== Valref
 
-A _valref_ refers to opaque data in the content store (the actual data,
-not a _val_ object).
+A _valref_ refers to a value stored as one or more blobs in the content
+store.
 
 ----
 { "ver":1,
   "type":"valref",
+  "content-encoding":"raw",
   "data":["sha1-aaa...","sha1-bbb...",...],
 }
 ----
 
-=== Val ===
+If the _content-encoding_ is _raw_ or omitted, the content store
+contains the value with no encoding.
 
-A _val_ represents opaque data directly, base64-encoded.
+If the _content-encoding_ is _json_, the content store contains
+a NULL terminated encoded JSON string.
+
+=== Val
+
+A _val_ directly represents a value.
+
+If _content-encoding_ is _raw_ or omitted,
+_data_ is a base64 string representing the encoded value.
 
 ----
 { "ver":1,
   "type":"val",
+  "content-encoding":"raw",
   "data":"NDIyCg==",
 }
 ----
 
-=== Dirref ===
+If _content-encoding_ is "json", _data_ is the JSON value.
+
+----
+{ "ver":1,
+  "type":"val",
+  "content-encoding":"json",
+  "data":42,
+}
+----
+
+=== Dirref
 
 A _dirref_ refers to a _dir_ or _hdir_ object that was serialized and
 stored in the content store.
@@ -94,7 +137,7 @@ stored in the content store.
 }
 ----
 
-=== Dir ===
+=== Dir
 
 A _dir_ is a dictionary mapping keys to any of the tree object types.
 
@@ -139,7 +182,7 @@ _dirref_ object.
 }
 ----
 
-=== Symlink ===
+=== Symlink
 
 A _symlink_ is a symbolic pointer to a another KVS key, which may
 or may not be fully qualified.
