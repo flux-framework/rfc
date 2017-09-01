@@ -85,6 +85,12 @@ submitted to a Flux instance for execution.  This RFC describes the
 canonical form of the jobspec language, which represents a request to
 run exactly one program.
 
+link:spec_15{outfilesuffix}[15/Independent Minister of Privilege for Flux: The Security IMP]::
+This specification describes Flux Security IMP, a privileged service
+used by multi-user Flux instances to launch, monitor, and control
+processes running as users other than the instance owner.
+
+
 == Change Process
 
 The change process is
