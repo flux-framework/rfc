@@ -410,7 +410,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_1.1.yaml[]
+include::data/spec_14/use_case_1.3.yaml[]
 ----
 
 '''
