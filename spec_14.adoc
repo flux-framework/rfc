@@ -182,7 +182,8 @@ provided SHALL be local to the namespace of the current jobspec.
 +
 A task slot SHALL have at least one edge specified using `with:`, and
 the resources associated with a slot SHALL be exclusively allocated
-to the program described in the jobspec.
+to the program described in the jobspec, unless otherwise specified
+in the `exclusive` field of the associated resource.
 
 === Tasks
 
@@ -196,18 +197,11 @@ descriptor SHALL contain the following keys:
  an executable and its arguments.
 
  *slot*::
- The value of the `slot` key SHALL be used to indicate the *task slot*
+ The value of the `slot` key SHALL match a `label` of a resource vertex
+ of type `slot`.  It is used to indicate the *task slot*
  on which this task or tasks shall be contained and executed. The
  number of tasks executed per task slot SHALL be a function of the
  number of resource slots and total number of tasks requested to execute.
-+
-The value of the `slot` key SHALL be a dictionary with supported key
-of either `label` or `type`. The `label` key SHALL reference a `label`
-of a resource vertex of type `slot`, indicating an explicitly created
-and named *task slot*. The `type` key SHALL reference a real resource type,
-such as `core` or `node`, indicating an implicitly created *task slot* on
-which to map the defined tasks.  `type` SHALL NOT be `slot`; slots must
-be referred to by their `label`.
 
  *count*::
  The value of the `count` key SHALL be a dictionary supporting at least
@@ -285,8 +279,7 @@ resources:
             count: 2
 tasks:
   - command: app
-    slot:
-      label: default
+    slot: default
     count:
       per_slot: 1
 attributes:
@@ -294,19 +287,21 @@ attributes:
     duration: 1 hour
 ----
 
-A simpler example using implicit *task slot* definition to run 4 tasks
-across 4 nodes
+Another example, running one task on each of four nodes.
 
 [source,yaml]
 ----
 version: 1
 resources:
-  - type: node
+  - type: slot
     count: 4
+    label: default
+    with:
+      - type: node
+        count: 1
 tasks:
   - command: hostname
-    slot:
-      type: node
+    slot: default
     count:
       per_slot: 1
 attributes:
@@ -330,7 +325,7 @@ draft version 0.6.
    "version" : 1
 }
 
-$label := string
+$slot_label := string
 
 $vertex_common = {
     "count" : ( 1.. | $complex_range),
@@ -340,7 +335,7 @@ $vertex_common = {
 
 slot_vertex = {
     "type"  : "slot",
-    "label" : $label,
+    "label" : $slot_label,
     $vertex_common,
 }
 
@@ -362,7 +357,7 @@ $complex_range = {
 
 $tasks = {
     "command" : [ string + ],
-    "slot" : { "label" : string  | "type": string },
+    "slot" : $slot_label,
     "count" : { "per_slot" : 1.. | "total" : 1.. },
     "distribution" : string,
     ?"attributes" : { /.*/ : any },
@@ -410,12 +405,15 @@ Jobspec YAML::
 [source,yaml]
 version: 1
 resources:
-  - type: node
+  - type: slot
     count: 4
+    label: default
+    with:
+      - type: node
+        count: 1
 tasks:
   - command: [ "flux", "start" ]
-    slot:
-      type: node
+    slot: default
     count:
       per_slot: 1
 attributes:
@@ -438,16 +436,19 @@ Jobspec YAML::
 [source,yaml]
 version: 1
 resources:
-  - type: node
+  - type: slot
     count:
       min: 3
       max: 30
       operator: "+"
       operand: 1
+    label: default
+    with:
+      - type: node
+        count: 1
 tasks:
   - command: [ "flux", "start" ]
-    slot:
-      type: node
+    slot: default
     count:
       per_slot: 1
 attributes:
@@ -467,21 +468,25 @@ Existing Equivalents::
 | Slurm (a)| `srun -N4 --sockets-per-node=2 --cores-per-socket=4`
 | Slurm (b)| `srun -N4 -B '2:4:*'`
 | OAR      | `oarsub -l nodes=4/sockets=2/cores=4`
-|=== 
+|===
 +
 Jobspec YAML::
 +
 [source,yaml]
 version: 1
 resources:
-  - type: node
+  - type: slot
     count: 4
+    label: default
     with:
-      - type: socket
-        count: 2
-        with:
-          - type: core
-            count: 4
+    - type: node
+      count: 1
+      with:
+        - type: socket
+          count: 2
+          with:
+            - type: core
+              count: 4
 tasks:
   - command: [ "flux", "start" ]
     slot:
@@ -548,25 +553,37 @@ resources:
   - type: cluster
     count: 1
     with:
-      - type: node
+      - type: slot
         count: 2
+        label: ib
         with:
-          - type: memory
-            count: 4
-            unit: GB
-          - type: ib10g
-            count: 4
-      - type: switch
-        with:
-          type: node
-            count: 2
+          - type: node
+            count: 1
             with:
-                - type: core
-                  count: 1
+              - type: memory
+                count: 4
+                unit: GB
+              - type: ib10g
+                count: 1
+  - type: switch
+    count: 1
+    with:
+      - type: slot
+        count: 2
+        label: bicore
+        with:
+          - type: node
+            count: 1
+            with:
+              - type: core
+                count: 2
 tasks:
   - command: [ "flux", "start" ]
-    slot:
-      type: node
+    slot: ib
+    count:
+      per_slot: 1
+  - command: [ "flux", "start" ]
+    slot: bicore
     count:
       per_slot: 1
 attributes:
@@ -596,12 +613,15 @@ resources:
           - type: node
             count: 15
             with:
-              - type: core
-                count: 1
+                - type: slot
+                  count: 1
+                  label: default
+                  with:
+                    - type: core
+                      count: 1
 tasks:
   - command: [ "flux", "start" ]
-    slot:
-      type: node
+    slot: default
     count:
       per_slot: 1
 attributes:
@@ -628,12 +648,15 @@ resources:
   - type: switch
     count: 3
     with:
-      - type: core
+      - type: slot
         count: 1
+        label: default
+        with:
+          - type: core
+            count: 1
 tasks:
   - command: [ "flux", "start" ]
-    slot:
-      type: node
+    slot: default
     count:
       per_slot: 1
 attributes:
@@ -669,8 +692,8 @@ resources:
     label: default
     count: 4
     with:
-    - type: node
-      count: 1
+      - type: node
+        count: 1
 tasks:
   - command: hostname
     slot: default
@@ -698,25 +721,6 @@ Jobspec YAML::
 ----
 version: 1
 resources:
-  - type: node
-    count: 4
-tasks:
-  - command: hostname
-    slot:
-      type: node
-    count:
-      total: 5
-attributes:
-  system:
-    duration: 1 hour
-----
-+
-or, with explicit task slots:
-+
-[source,yaml]
-----
-version: 1
-resources:
   - type: slot
     count: 4
     label: myslot
@@ -725,14 +729,12 @@ resources:
         count: 1
 tasks:
   - command: hostname
-    slot:
-      label: myslot
+    slot: myslot
     count:
       total: 5
 attributes:
   system:
     duration: 1 hour
-
 ----
 
 '''
@@ -771,8 +773,8 @@ attributes:
 Use Case 2.4:: Run different binaries with differing resource
 requirements as single program
 +
-Specific Example:: 11 tasks, one node, first 10 using one core and 4G of RAM for
-`read-db`, last using 6 cores and 24G of RAM for `db`
+Specific Example:: 11 tasks, one node, the first 10 tasks each using one core and 4G of RAM for
+`read-db`, the last task using 6 cores and 24G of RAM for `db`
 +
 Existing Equivalents:: None Known
 +
@@ -782,6 +784,7 @@ Jobspec YAML::
 version: 1
 resources:
   - type: node
+    count: 1
     with:
       - type: slot
         label: read-db
