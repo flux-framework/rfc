@@ -182,7 +182,8 @@ provided SHALL be local to the namespace of the current jobspec.
 +
 A task slot SHALL have at least one edge specified using `with:`, and
 the resources associated with a slot SHALL be exclusively allocated
-to the program described in the jobspec.
+to the program described in the jobspec, unless otherwise specified
+in the `exclusive` field of the associated resource.
 
 === Tasks
 
@@ -196,18 +197,11 @@ descriptor SHALL contain the following keys:
  an executable and its arguments.
 
  *slot*::
- The value of the `slot` key SHALL be used to indicate the *task slot*
+ The value of the `slot` key SHALL match a `label` of a resource vertex
+ of type `slot`.  It is used to indicate the *task slot*
  on which this task or tasks shall be contained and executed. The
  number of tasks executed per task slot SHALL be a function of the
  number of resource slots and total number of tasks requested to execute.
-+
-The value of the `slot` key SHALL be a dictionary with supported key
-of either `label` or `type`. The `label` key SHALL reference a `label`
-of a resource vertex of type `slot`, indicating an explicitly created
-and named *task slot*. The `type` key SHALL reference a real resource type,
-such as `core` or `node`, indicating an implicitly created *task slot* on
-which to map the defined tasks.  `type` SHALL NOT be `slot`; slots must
-be referred to by their `label`.
 
  *count*::
  The value of the `count` key SHALL be a dictionary supporting at least
@@ -272,46 +266,14 @@ task slot for a total of 4 tasks.
 
 [source,yaml]
 ----
-version: 1
-resources:
-  - type: node
-    count: 4
-    with:
-      - type: slot
-        count: 1
-        label: default
-        with:
-          - type: core
-            count: 2
-tasks:
-  - command: app
-    slot:
-      label: default
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
+include::data/spec_14/example1.yaml[]
 ----
 
-A simpler example using implicit *task slot* definition to run 4 tasks
-across 4 nodes
+Another example, running one task on each of four nodes.
 
 [source,yaml]
 ----
-version: 1
-resources:
-  - type: node
-    count: 4
-tasks:
-  - command: hostname
-    slot:
-      type: node
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
+include::data/spec_14/example2.yaml[]
 ----
 
 === Content Rules
@@ -330,7 +292,7 @@ draft version 0.6.
    "version" : 1
 }
 
-$label := string
+$slot_label := string
 
 $vertex_common = {
     "count" : ( 1.. | $complex_range),
@@ -340,7 +302,7 @@ $vertex_common = {
 
 slot_vertex = {
     "type"  : "slot",
-    "label" : $label,
+    "label" : $slot_label,
     $vertex_common,
 }
 
@@ -362,7 +324,7 @@ $complex_range = {
 
 $tasks = {
     "command" : [ string + ],
-    "slot" : { "label" : string  | "type": string },
+    "slot" : $slot_label,
     "count" : { "per_slot" : 1.. | "total" : 1.. },
     "distribution" : string,
     ?"attributes" : { /.*/ : any },
@@ -408,20 +370,9 @@ Existing Equivalents::
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: node
-    count: 4
-tasks:
-  - command: [ "flux", "start" ]
-    slot:
-      type: node
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
-
+----
+include::data/spec_14/use_case_1.1.yaml[]
+----
 '''
 Use Case 1.2:: Request a range of a type of resource
 +
@@ -436,23 +387,9 @@ Existing Equivalents::
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: node
-    count:
-      min: 3
-      max: 30
-      operator: "+"
-      operand: 1
-tasks:
-  - command: [ "flux", "start" ]
-    slot:
-      type: node
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
+----
+include::data/spec_14/use_case_1.2.yaml[]
+----
 
 '''
 Use Case 1.3:: Request M nodes with a minimum number of sockets per node
@@ -467,30 +404,14 @@ Existing Equivalents::
 | Slurm (a)| `srun -N4 --sockets-per-node=2 --cores-per-socket=4`
 | Slurm (b)| `srun -N4 -B '2:4:*'`
 | OAR      | `oarsub -l nodes=4/sockets=2/cores=4`
-|=== 
+|===
 +
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: node
-    count: 4
-    with:
-      - type: socket
-        count: 2
-        with:
-          - type: core
-            count: 4
-tasks:
-  - command: [ "flux", "start" ]
-    slot:
-      type: node
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
+----
+include::data/spec_14/use_case_1.1.yaml[]
+----
 
 '''
 Use Case 1.4:: Exclusively allocate nodes, while constraining cores and
@@ -502,27 +423,9 @@ least two sockets and 4 cores per socket:
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: slot
-    with:
-    - type: node
-      count: 4
-      with:
-        - type: socket
-          count: 2
-          with:
-            - type: core
-              count: 4
-tasks:
-  - command: [ "flux", "start" ]
-    slot:
-      type: node
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
+----
+include::data/spec_14/use_case_1.4.yaml[]
+----
 
 '''
 Use Case 1.5:: Complex example from OAR
@@ -543,35 +446,9 @@ Existing Equivalents::
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: cluster
-    count: 1
-    with:
-      - type: node
-        count: 2
-        with:
-          - type: memory
-            count: 4
-            unit: GB
-          - type: ib10g
-            count: 4
-      - type: switch
-        with:
-          type: node
-            count: 2
-            with:
-                - type: core
-                  count: 1
-tasks:
-  - command: [ "flux", "start" ]
-    slot:
-      type: node
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 4 hours
+----
+include::data/spec_14/use_case_1.5.yaml[]
+----
 
 '''
 Use Case 1.6:: Request resources across multiple clusters
@@ -588,25 +465,9 @@ Existing Equivalents::
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-    - type: cluster
-      count: 2
-      with:
-          - type: node
-            count: 15
-            with:
-              - type: core
-                count: 1
-tasks:
-  - command: [ "flux", "start" ]
-    slot:
-      type: node
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
+----
+include::data/spec_14/use_case_1.6.yaml[]
+----
 
 '''
 Use Case 1.7:: Request N cores across M switches
@@ -623,22 +484,9 @@ Existing Equivalents::
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: switch
-    count: 3
-    with:
-      - type: core
-        count: 1
-tasks:
-  - command: [ "flux", "start" ]
-    slot:
-      type: node
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1h
+----
+include::data/spec_14/use_case_1.7.yaml[]
+----
 
 '''
 
@@ -663,22 +511,9 @@ Existing Equivalents::
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: slot
-    label: default
-    count: 4
-    with:
-    - type: node
-      count: 1
-tasks:
-  - command: hostname
-    slot: default
-    count:
-      per_slot: 5
-attributes:
-  system:
-    duration: 1 hour
+----
+include::data/spec_14/use_case_2.1.yaml[]
+----
 
 '''
 Use Case 2.2:: Run N tasks across M nodes, unequal distribution
@@ -696,43 +531,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-version: 1
-resources:
-  - type: node
-    count: 4
-tasks:
-  - command: hostname
-    slot:
-      type: node
-    count:
-      total: 5
-attributes:
-  system:
-    duration: 1 hour
-----
-+
-or, with explicit task slots:
-+
-[source,yaml]
-----
-version: 1
-resources:
-  - type: slot
-    count: 4
-    label: myslot
-    with:
-      - type: node
-        count: 1
-tasks:
-  - command: hostname
-    slot:
-      label: myslot
-    count:
-      total: 5
-attributes:
-  system:
-    duration: 1 hour
-
+include::data/spec_14/use_case_2.2.yaml[]
 ----
 
 '''
@@ -750,69 +549,25 @@ Existing Equivalents::
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: slot
-    label: default
-    count: 10
-    with:
-      - type: core
-        count: 2
-tasks:
-  - command: myapp
-    slot: default
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
+----
+include::data/spec_14/use_case_2.3.yaml[]
+----
 
 '''
 Use Case 2.4:: Run different binaries with differing resource
 requirements as single program
 +
-Specific Example:: 11 tasks, one node, first 10 using one core and 4G of RAM for
-`read-db`, last using 6 cores and 24G of RAM for `db`
+Specific Example:: 11 tasks, one node, the first 10 tasks each using one core and 4G of RAM for
+`read-db`, the last task using 6 cores and 24G of RAM for `db`
 +
 Existing Equivalents:: None Known
 +
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: node
-    with:
-      - type: slot
-        label: read-db
-        count: 10
-        with:
-          - type: core
-            count: 1
-          - type: memory
-            count: 4
-            unit: GB
-      - type: slot
-        label: db
-        count: 1
-        with:
-          - type: core
-            count: 6
-          - type: memory
-            count: 24
-            unit: GB
-tasks:
-  - command: read-db
-    slot: read-db
-    count:
-      per_slot: 1
-  - command: db
-    slot: db
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
+----
+include::data/spec_14/use_case_2.4.yaml[]
+----
 
 '''
 Use Case 2.5:: Run command requesting minimum amount of RAM per core
@@ -830,25 +585,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-version: 1
-resources:
-  - type: slot
-    label: default
-    count: 10
-    with:
-    - type: memory
-      count: 2
-      unit: GB
-    - type: core
-      count: 1
-tasks:
-  - command: app
-    slot: default
-    count:
-      per_slot: 1
-attributes:
-  system:
-    duration: 1 hour
+include::data/spec_14/use_case_2.5.yaml[]
 ----
 '''
 Use Case 2.6:: Run N copies of a command with minimum amount of RAM per node
@@ -866,26 +603,9 @@ Existing Equivalents::
 Jobspec YAML::
 +
 [source,yaml]
-version: 1
-resources:
-  - type: slot
-    label: 4GB-node
-    count: 2
-    with:
-    - type: node
-      count: 1
-      with:
-        - type: memory
-          count: 4
-          unit: GB
-tasks:
-  - command: app
-    slot: 4GB-node
-    count:
-      total: 10
-attributes:
-  system:
-    duration: 1 hour
+----
+include::data/spec_14/use_case_2.6.yaml[]
+----
 
 [sect2]
 == References
