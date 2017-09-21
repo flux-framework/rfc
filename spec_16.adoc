@@ -1,0 +1,226 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+16/KVS Job Schema
+=================
+
+This specification describes the format of data stored in the KVS
+for Flux jobs.
+
+* Name: github.com/flux-framework/rfc/spec_16.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_12{outfilesuffix}[12/Flux Security Architecture]
+
+== Background
+
+=== Components that use the KVS job schema
+
+Instance components have direct, read/write access to the primary KVS
+namespace:
+
+* _Ingest agent_
+* _Job management service_ (list, cancel, etc.)
+* _Exec service_
+* _Scheduler_
+
+Guest components have direct, read/write access to a private KVS namespace:
+
+* _Job shell_
+* _User tasks_
+* `flux-run` command
+* `flux-queue` command
+* `flux-cancel` command
+
+=== Job Life Cycle
+
+Jobs are submitted to the _ingest agent_ which performs a sanity
+check on the request and either adds the job to the KVS or
+refuses to accept it.
+
+The _scheduler_ takes up submitted jobs and considers them against
+the available resources.  It either rejects the job outright,
+or annotates it and eventually assigns resources to it.
+
+The _exec service_ takes up jobs that have assigned resources,
+instantiates containers for those jobs and starts job shells
+within them.  When job shells and their containers start to exit,
+the _exec service_ "reaps" these shells and allows the _scheduler_
+to reclaim resources assigned to each container.
+
+Jobs therefore transition between the following states,
+not necessarily in a linear order:
+
+submitted::
+  accepted by ingest, resources not yet assigned
+
+runnable::
+  resources assigned
+
+starting::
+  first container started
+
+running::
+  all containers instantiated and job shells started
+
+exiting::
+  first container exited
+
+completed::
+  all containers exited
+
+rejected::
+  scheduler won't run job
+
+== Implementation
+
+=== Primary KVS Namespace
+
+The Flux instance has a default, shared namespace that is accessible
+only by the instance owner.
+
+All job data is stored under a `jobs` directory in the primary namespace.
+
+
+=== Active vs Inactive Job Directories
+
+Each active job has a directory under `jobs.active.<jobid>`,
+where `<jobid>` is a unique sequence number assigned by the
+_ingest agent_.
+
+After a job is no longer active, its directory is moved from
+`jobs.active` to `jobs.inactive`.  Inactive means its state
+is read-only.  The purpose of moving inactive jobs to another
+directory is to keep the size of the active directory manageable.
+The `jobs.inactive` directory may need to be periodically archived
+and purged to keep its size manageable in long-running instances.
+
+
+=== Guest KVS Namespace
+
+A guest-writable KVS namespace is created for the use of the
+job shell and the application.  While the job is active,
+this namespace is mounted in the primary namespace, on
+`jobs.active.<jobid>.guest`.  While mounted, it can be changed
+by the guest components without impacting performance of the primary
+namespace, while still being accessible through the primary namespace.
+
+When the job is inactive, the final snapshot of the guest namespace
+is linked into the primary namespace, and the guest namespace is
+destroyed.
+
+
+=== Event Log
+
+Active jobs undergo state transitions that are recorded under
+the key `jobs.active.<jobid>.eventlog`.  A KVS append operation
+is used to add events to this log.
+
+Each append consists of a valid JSON event object, including
+timestamp and format TBD.
+
+
+=== Debug Log
+
+`jobs.active.<jobid>.debuglog` is a similar log available for
+capturing job-specific debug information from instance services.
+
+Each append consists of a valid JSON event object, including
+timestamp and format TBD.
+
+
+=== Access to Primary Namespace by Guest Users
+
+Site policy allowing limited access to job data by guest users
+is implemented by the _job management_ service.
+
+Examples are listing all active jobs with limited detail,
+listing guest inactive/active jobs with full detail, and removing
+jobs owned by the guest.
+
+
+=== Content Produced by Ingest Agent
+
+A user submits _J_ with attached signature.
+
+The _ingest agent_ validates _J_ and if accepted, assigns the jobid
+and creates `jobs.active.<jobid>.J-signed`.
+
+The _ingest agent_ creates `jobs.active.<jobid>.eventlog`
+and logs the initial state of "submitted".
+
+
+=== Content Consumed/Produced by Scheduler
+
+Upon discovery of a new `jobs.active.<jobid>` in the _submitted_ state,
+the _scheduler_ reads `jobs.active.<jobid>.J-signed` and attempts to
+match resources to the request.
+
+The _scheduler_ may declare the job unrunnable, and move it to
+`jobs.inactive`, logging a _rejected_ state transition to the event log.
+
+The _scheduler_ may add annotations to the job (TBD) that are
+of interest for job management, for example to indicate priority
+or estimated wait time.  The scheduler may also add internal
+annotations that are private to the scheduler, but convenient to
+store in the KVS for recovery.  Annotations are stored as
+keys under `jobs.active.<jobid>.scheduler`.
+
+Upon resource allocation to the job, the _scheduler_ creates
+`jobs.active.<jobid>.R-signed` and logs a _runnable_
+state transition to the event log.
+
+The _scheduler_ may later revoke the allocation (TBD).
+
+
+=== Content Consumed/Produced by Exec Service
+
+Upon discovery of a new `jobs.active.<jobid>` in the _runnable_ state,
+the the _exec service_ reads `jobs.active.<jobid>.J-signed`
+and `jobs.active.<jobid>.R-signed` and instantiates
+containers for the allocated resources, starting the job
+shell(s) and creating the guest namespace, mounting it on
+`jobs.active.<jobid>.guest`.
+
+Container creation(s) are logged to the event log (batched),
+and the job state transitions of _starting_, and _running_
+are appended to the event log.
+
+Container destruction(s) are logged to the event log (batched),
+and the job state transitions of _exiting_ and _completed_ are
+are appended to the event log.
+
+
+=== Content Produced/Consumed by Other Instance Services
+
+Other services not mentioned in this RFC MAY store arbitrary data associated
+with jobs under the `jobs.active.<jobid>.data.<service>` directory,
+where `<service>` is a name unique to the service producing the data.
+For example, a job tracing service may store persistent trace data under
+the `jobs.active.<jobid>.data.trace` directory. 
+
+
+=== Content Consumed/Produced by the Job Shell ===
+
+The _job shell_, running as the guest, spawns tasks, handles
+standard I/O, collects task exit codes, and provides PMI
+service.
+
+Any data produced by the _job shell_ is stored under the guest KVS
+namespace `jobs.active.<jobid>.guest` and is preserved when the
+task becomes inactive.
+
+Any data consumed by the _job shell_ must be proxied through instance
+services such as the _exec service_ or _job management service_
+since the _job shell_ does not have direct access to the primary
+KVS namespace.
+
+Format of this data is TBD.
