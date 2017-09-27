@@ -153,8 +153,8 @@ in *_J_*.
 
 In most cases, the IMP will execute a _job shell_ on behalf of the user,
 passing the verified *_J_* as input to the shell. The shell itself is
-provided either by the user or by system configuration, but should not be
-provided or modified by the instance owner. The shell re-verifies
+specified either by the user in *_J_* or by system configuration, but
+should not be provided or modified by the instance owner. The shell re-verifies
 integrity and authenticity of *_J_* before proceeding, then interprets
 the jobspec contained in *_J_* to determine the set of tasks to invoke
 on the current resource set.
@@ -187,6 +187,7 @@ Where *_J_* is the User Request or reference to such a request,
 which SHALL contain
 
  * Jobspec as per link:spec_14{outfilesuffix}[14/Canonical Job Specification]
+ * job shell path
  * UUID
  * Timestamp and TTL
  * Intended recipient (instance owner)
@@ -206,6 +207,8 @@ Where above fields have the following specific meanings and requirements
    used by another arbitrary user.
  * The _user signature_ signs all fields of *_J_*
  * The _owner signature_ signs all fields of *_R_* _including_ *_J_*
+ * The _job shell path_ is an absolute path to a job shell which
+   will act as interpreter of the Jobspec in *_J_*.
 
 
 == IMP Internal Operation
@@ -305,9 +308,9 @@ such things as
 Once privileged setup is complete, the security IMP SHALL generate a log
 message or other audit trail for the individual request.  The IMP then
 SHALL proceed to obtain credentials of the guest user and finally exec(2)
-either explicit command in *J*, or a *job shell* as specified by the
-user or system configuration. After the call to exec(2) the security IMP
-is replaced by the guest user process, and is no longer active.
+the *job shell path* specified in *_J_*, or a system default. After the
+call to exec(2) the security IMP is replaced by the guest user process,
+and is no longer active.
 
 === Other IMP operational requirements
 
