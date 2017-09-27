@@ -224,13 +224,37 @@ footnote:[http://www.citi.umich.edu/u/provos/papers/privsep.pdf[Preventing Privi
 Once the privileged IMP process has obtained the Job Request *_R_*,
 it SHALL perform the following verification steps:
 
- 1. Verify integrity and authenticity of *_R_*
- 2. Verify owner has access to assigned resource set
- 3. Verify integrity and authenticity of *_J_*
- 4. Verify TTL on *_R_* and *_J_*
- 5. Verify recipient field in *_J_* matches resource owner
- 6. Verify, if included, that assigned resource set is a strict subset
-    of the allowed resource set
+ 1. Verify integrity and authenticity of *_J_*
+ 2. Verify recipient field in *_J_* matches current real UID of the IMP
+    (i.e. the resource owner)
+ 3. Verify TTL on *_J_*
+ 4. Verify TTL on *_R_*
+
+The IMP process MAY also perform the following OPTIONAL verification steps:
+
+ * Verify integrity and authenticity of *_R_*
+ * Verify that the current real UID of the IMP process is the "owner"
+   of the current container.
+ * Verify that the intersection of the assigned resource set and the
+   current container is not empty.
+
+The integrity and authenticity of *_R_* is considered optional because
+the source UID of the *_R_* provided to the IMP can be reliably obtained
+by checking the real UID of the process.
+
+Container ownership verification is considered optional because all
+non-system-owner processes in Flux MUST be started by the IMP and
+thus will be placed in inescapable containers. It thus follows that
+a user running the IMP has ownership of the resources on which the
+IMP has been invoked. This strategy is described further in the
+"Resource ownership verification" section below.
+
+Determining the intersection of the assigned resource with the current
+resource set is considered optional because this check will be a side
+effect of sub-container creation. If, after all container creation
+plugins have been run, the container for the job is empty, the IMP
+will abort with an error. Therefore the initial verification check
+may have been redundant.
 
 ==== Resource ownership verification
 
