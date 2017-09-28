@@ -231,11 +231,11 @@ it SHALL perform the following verification steps:
  2. Verify recipient field in *_J_* matches current real UID of the IMP
     (i.e. the resource owner)
  3. Verify TTL on *_J_*
- 4. Verify TTL on *_R_*
 
 The IMP process MAY also perform the following OPTIONAL verification steps:
 
  * Verify integrity and authenticity of *_R_*
+ * Verify TTL on *_R_*
  * Verify that the current real UID of the IMP process is the "owner"
    of the current container.
  * Verify that the intersection of the assigned resource set and the
