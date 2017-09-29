@@ -117,34 +117,33 @@ but disallowing sub-instance jobs access to multi-user capabilities.
 
 === Overall Design
 
-The operation of the Flux Security IMP is based on the use of structured
-request tokens by both the instance owner with control of some resources
-and a guest user requesting use of those resources. Each of these tokens
-have a guarantee of data integrity and authenticity, such that these requests
-cannot be modified in an unauthorized or undetectable manner, and the
-identity of the creators may be absolutely verified.
-
 When a guest makes a request for a job to a multi-user instance of
 Flux, the guest will create a message with information such as the job
-specification, a time-to-live, and authorized resource owner, and then
-uses IMP client API to sign all fields of the message. The signed message
-becomes the user request token *_J_* which authorizes the resource owner to
-execute the request at some point on behalf of the guest.
+specification, a time-to-live, a uid, and an authorized resource owner,
+and then uses IMP client API to sign all fields of the message. The signed
+message becomes the user request token *_J_* which authorizes the resource
+owner to execute the request at some point on behalf of the guest.
 
 This signed request then becomes part of the user's job.  When the job is
-scheduled by the instance, the owner assigns a resource set to the job,
-and signs that data _including_ the user's original request. The resource
-owner's signature and the assigned resources, in addition to an additional
-time-to-live, become a job request token *_R_* which authorizes the guest
-user access to the specific resources in the resource set.
+scheduled by the instance, the owner assigns a resource set *_r_* to the job,
+and writes that information to the job record, marking the job as
+runnable.
 
-This final signed job request token *_R_* becomes the input to the
-Flux IMP executable. This allows the IMP to verify that the
-resource owner has granted certain resources to a guest user, and that
-the guest has authorized the resource owner to execute specific work on
-their behalf.
+The execution system within the instance then determines the set of
+resources on which an invocation of the IMP is required and creates
+a local resource set, which is necessarily disjoint for each IMP, and
+acts as a representation of the local resources to which the IMP should
+grant access to the guest user.
 
-The IMP verifies the integrity and authenticity of both *_R_* and *_J_*
+The local resource set and *_J_*, along with other optional fields,
+are then concatenated and become input to the Flux IMP executable.
+The IMP verifies through local configuration and state that the
+instance owner has authority to grant access to resources in the
+local resource set, and verifies via *_J_* that the guest has
+authorized the resources owner to execute specific work on their
+behalf.
+
+The IMP verifies the integrity and authenticity of *_J_*
 using cryptographic methods provided by plugins.  Once the verification
 step is complete, the privileged IMP will invoke system configured
 plugins for setup and containment, then change credentials to the
@@ -173,21 +172,21 @@ Flux instance.
 .Depiction of multi-user Flux IMP overall design. Here user `bob` is the instance owner, and `alice` is a guest.
 image::data/spec_15/imp.png[width=600,align=center]
 
-== Job Request
+== Input to the IMP
 
-The proposed contents of the owner's Job Request (*_R_*) as follows
+The input to the IMP includes the following fields
 
+ * Local assigned resource set
+ * Options supplied by resource owner
  * User Request (*_J_*) (described below)
- * Assigned resource set
- * Timestamp and TTL
- * UUID
- * Owner Signature (of above fields)
 
 Where *_J_* is the User Request or reference to such a request,
 which SHALL contain
 
  * Jobspec as per link:spec_14{outfilesuffix}[14/Canonical Job Specification]
- * job shell path
+ * Options supplied by guest user
+ * Guest user uid or username
+ * Job shell path
  * UUID
  * Timestamp and TTL
  * Intended recipient (instance owner)
@@ -196,19 +195,20 @@ which SHALL contain
 
 Where above fields have the following specific meanings and requirements
 
- * _Assigned resource set_ is the list of resources assigned to this
-   job by the resource owner
+ * _Local assigned resource set_ is the list of *local* resources assigned
+   to this job by the resource owner. It will be used by IMP plugins to
+   implement containment.
  * _Timestamp and TTL_ signifies that the request in question SHALL
    only be valid between _Timestamp_ and _Timestamp+TTL_. This puts a
-   time horizon on request usage
+   time horizon on usage of *_J_*
  * _UUID_ is a globally unique identifier
  * _Intended recipient_ is set to the instance owner that is the target
    of the request. This ensures that the user's request cannot be
    used by another arbitrary user.
  * The _user signature_ signs all fields of *_J_*
- * The _owner signature_ signs all fields of *_R_* _including_ *_J_*
  * The _job shell path_ is an absolute path to a job shell which
-   will act as interpreter of the Jobspec in *_J_*.
+   will act as interpreter of the Jobspec in *_J_*. If missing, a default
+   will be supplied by IMP configuration.
 
 
 == IMP Internal Operation
@@ -224,7 +224,7 @@ footnote:[http://www.citi.umich.edu/u/provos/papers/privsep.pdf[Preventing Privi
 
 === Request Verification
 
-Once the privileged IMP process has obtained the Job Request *_R_*,
+Once the privileged IMP process has read its input
 it SHALL perform the following verification steps:
 
  1. Verify integrity and authenticity of *_J_*
@@ -234,16 +234,10 @@ it SHALL perform the following verification steps:
 
 The IMP process MAY also perform the following OPTIONAL verification steps:
 
- * Verify integrity and authenticity of *_R_*
- * Verify TTL on *_R_*
  * Verify that the current real UID of the IMP process is the "owner"
    of the current container.
  * Verify that the intersection of the assigned resource set and the
    current container is not empty.
-
-The integrity and authenticity of *_R_* is considered optional because
-the source UID of the *_R_* provided to the IMP can be reliably obtained
-by checking the real UID of the process.
 
 Container ownership verification is considered optional because all
 non-system-owner processes in Flux MUST be started by the IMP and
@@ -256,8 +250,8 @@ Determining the intersection of the assigned resource with the current
 resource set is considered optional because this check will be a side
 effect of sub-container creation. If, after all container creation
 plugins have been run, the container for the job is empty, the IMP
-will abort with an error. Therefore the initial verification check
-may have been redundant.
+will abort with an error. Therefore an initial verification check
+may be redundant.
 
 ==== Resource ownership verification
 
@@ -277,8 +271,6 @@ following requirements should be met:
  * The IMP's container strategy MUST be hierarchical, such that containers
    for jobs within an instance are created as sub-containers of
    container of the parent.
- * The IMP SHALL keep an original copy of the request *_R_* as ancillary
-   data for each container.
 
 With the following requirements met, the IMP may verify resource
 ownership by ensuring that the current container includes the
@@ -295,7 +287,7 @@ data.
 
 === IMP post-verification execution
 
-After verification of *_R_* is complete, the `flux-security-imp`
+After verification of input is complete, the `flux-security-imp`
 invokes required job setup code as the superuser. This setup code SHALL
 be implemented as system-installed and verified plugins, and MAY include
 such things as
@@ -304,6 +296,7 @@ such things as
  * modification of system settings
  * creation of directories
  * state cleanup
+ * optional behavior
 
 Once privileged setup is complete, the security IMP SHALL generate a log
 message or other audit trail for the individual request.  The IMP then
