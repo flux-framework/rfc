@@ -125,17 +125,17 @@ message becomes the user request token *_J_* which authorizes the resource
 owner to execute the request at some point on behalf of the guest.
 
 This signed request then becomes part of the user's job.  When the job is
-scheduled by the instance, the owner assigns a resource set *_r_* to the job,
+scheduled by the instance, the owner assigns a resource set *_R_* to the job,
 and writes that information to the job record, marking the job as
 runnable.
 
 The execution system within the instance then determines the set of
 resources on which an invocation of the IMP is required and creates
-a local resource set, which is necessarily disjoint for each IMP, and
-acts as a representation of the local resources to which the IMP should
-grant access to the guest user.
+a local resource set *_R~local~_*, which is necessarily disjoint for
+each IMP, and acts as a representation of the local resources to which
+the IMP should grant access to the guest user.
 
-The local resource set and *_J_*, along with other optional fields,
+*_R~local~_* and *_J_*, along with other optional fields,
 are then concatenated and become input to the Flux IMP executable.
 The IMP verifies through local configuration and state that the
 instance owner has authority to grant access to resources in the
@@ -176,7 +176,7 @@ image::data/spec_15/imp.png[width=600,align=center]
 
 The input to the IMP includes the following fields
 
- * Local assigned resource set
+ * Local assigned resource set (*_R~local~_*)
  * Options supplied by resource owner
  * User Request (*_J_*) (described below)
 
