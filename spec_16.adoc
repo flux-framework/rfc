@@ -175,7 +175,7 @@ store in the KVS for recovery.  Annotations are stored as
 keys under `jobs.active.<jobid>.scheduler`.
 
 Upon resource allocation to the job, the _scheduler_ creates
-`jobs.active.<jobid>.R-signed` and logs a _runnable_
+`jobs.active.<jobid>.R` and logs a _runnable_
 state transition to the event log.
 
 The _scheduler_ may later revoke the allocation (TBD).
@@ -185,7 +185,7 @@ The _scheduler_ may later revoke the allocation (TBD).
 
 Upon discovery of a new `jobs.active.<jobid>` in the _runnable_ state,
 the the _exec service_ reads `jobs.active.<jobid>.J-signed`
-and `jobs.active.<jobid>.R-signed` and instantiates
+and `jobs.active.<jobid>.R` and instantiates
 containers for the allocated resources, starting the job
 shell(s) and creating the guest namespace, mounting it on
 `jobs.active.<jobid>.guest`.
