@@ -113,6 +113,9 @@ this namespace is mounted in the primary namespace, on
 by the guest components without impacting performance of the primary
 namespace, while still being accessible through the primary namespace.
 
+Access to contents of the primary KVS namespace MAY be granted to
+the guest by copying them to the guest KVS namespace.
+
 When the job is inactive, the final snapshot of the guest namespace
 is linked into the primary namespace, and the guest namespace is
 destroyed.
@@ -175,8 +178,8 @@ store in the KVS for recovery.  Annotations are stored as
 keys under `jobs.active.<jobid>.scheduler`.
 
 Upon resource allocation to the job, the _scheduler_ creates
-`jobs.active.<jobid>.R` and logs a _runnable_
-state transition to the event log.
+`jobs.active.<jobid>.R`, copies this to `jobs.active.<jobid>.guest.R`,
+and then logs a _runnable_ state transition to the event log.
 
 The _scheduler_ may later revoke the allocation (TBD).
 
@@ -218,9 +221,9 @@ Any data produced by the _job shell_ is stored under the guest KVS
 namespace `jobs.active.<jobid>.guest` and is preserved when the
 task becomes inactive.
 
-Any data consumed by the _job shell_ must be proxied through instance
-services such as the _exec service_ or _job management service_
-since the _job shell_ does not have direct access to the primary
-KVS namespace.
+Any data consumed by the _job shell_ but not included in the guest KVS
+namespace must be proxied through instance services such as the _exec
+service_ or _job management service_ since the _job shell_ does not have
+direct access to the primary KVS namespace.
 
 Format of this data is TBD.
