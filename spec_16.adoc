@@ -106,9 +106,9 @@ and purged to keep its size manageable in long-running instances.
 
 === Guest KVS Namespace
 
-A guest-writable KVS namespace is created for the use of the
-job shell and the application.  While the job is active,
-this namespace is mounted in the primary namespace, on
+A guest-writable KVS namespace is created by the _exec service_
+for the use of the job shell and the application.  While the job
+is active, this namespace is mounted in the primary namespace, on
 `jobs.active.<jobid>.guest`.  While mounted, it can be changed
 by the guest components without impacting performance of the primary
 namespace, while still being accessible through the primary namespace.
@@ -116,9 +116,9 @@ namespace, while still being accessible through the primary namespace.
 Access to contents of the primary KVS namespace MAY be granted to
 the guest by copying them to the guest KVS namespace.
 
-When the job is inactive, the final snapshot of the guest namespace
-is linked into the primary namespace, and the guest namespace is
-destroyed.
+When the job transitions to inactive, the final snapshot of the
+guest namespace content is linked by the _exec service_ into the primary
+namespace, and the guest namespace is destroyed.
 
 
 === Event Log
@@ -178,8 +178,8 @@ store in the KVS for recovery.  Annotations are stored as
 keys under `jobs.active.<jobid>.scheduler`.
 
 Upon resource allocation to the job, the _scheduler_ creates
-`jobs.active.<jobid>.R`, copies this to `jobs.active.<jobid>.guest.R`,
-and then logs a _runnable_ state transition to the event log.
+`jobs.active.<jobid>.R`, and then logs a _runnable_ state transition
+to the event log.
 
 The _scheduler_ may later revoke the allocation (TBD).
 
@@ -187,11 +187,16 @@ The _scheduler_ may later revoke the allocation (TBD).
 === Content Consumed/Produced by Exec Service
 
 Upon discovery of a new `jobs.active.<jobid>` in the _runnable_ state,
-the the _exec service_ reads `jobs.active.<jobid>.J-signed`
-and `jobs.active.<jobid>.R` and instantiates
-containers for the allocated resources, starting the job
-shell(s) and creating the guest namespace, mounting it on
-`jobs.active.<jobid>.guest`.
+the _exec service_ reads `jobs.active.<jobid>.J-signed`
+and `jobs.active.<jobid>.R`, initializes the guest namespace, then
+instantiates containers for the allocated resources and starts the job
+shell(s).
+
+Initializing the guest namespace consists of creating it, mounting it
+on `jobs.active.<jobid>.guest`, and populating the initial contents with:
+
+`system.exec.R`::
+  copy of `jobs.active.<jobid>.R`
 
 Container creation(s) are logged to the event log (batched),
 and the job state transitions of _starting_, and _running_
@@ -217,9 +222,9 @@ The _job shell_, running as the guest, spawns tasks, handles
 standard I/O, collects task exit codes, and provides PMI
 service.
 
-Any data produced by the _job shell_ is stored under the guest KVS
-namespace `jobs.active.<jobid>.guest` and is preserved when the
-task becomes inactive.
+Any data produced by the _job shell_ is stored in the guest KVS
+namespace under `system.shell` and is preserved when the task
+becomes inactive.
 
 Any data consumed by the _job shell_ but not included in the guest KVS
 namespace must be proxied through instance services such as the _exec
@@ -227,3 +232,17 @@ service_ or _job management service_ since the _job shell_ does not have
 direct access to the primary KVS namespace.
 
 Format of this data is TBD.
+
+=== Content Consumed/Produced by the Application ===
+
+The application MAY produce and/or consume arbitrary information in the
+guest KVS namespace.  It is RECOMMENDED that applications only store data
+under `user`.
+
+When the application is another Flux instance, `system.exec.R` MAY be used
+to initialize the resource set managed by the instance.
+
+=== Content Consumed/Produced by Other Guest Services ===
+
+Other guest services not mentioned in this RFC MAY store arbitrary data
+in the guest KVS namespace under `system.<service>`.
