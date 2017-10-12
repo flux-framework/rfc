@@ -195,7 +195,7 @@ shell(s).
 Initializing the guest namespace consists of creating it, mounting it
 on `jobs.active.<jobid>.guest`, and populating the initial contents with:
 
-`system.exec.R`::
+`exec.R`::
   copy of `jobs.active.<jobid>.R`
 
 Container creation(s) are logged to the event log (batched),
@@ -223,7 +223,7 @@ standard I/O, collects task exit codes, and provides PMI
 service.
 
 Any data produced by the _job shell_ is stored in the guest KVS
-namespace under `system.shell` and is preserved when the task
+namespace under `shell` and is preserved when the task
 becomes inactive.
 
 Any data consumed by the _job shell_ but not included in the guest KVS
@@ -233,16 +233,22 @@ direct access to the primary KVS namespace.
 
 Format of this data is TBD.
 
-=== Content Consumed/Produced by the Application ===
-
-The application MAY produce and/or consume arbitrary information in the
-guest KVS namespace.  It is RECOMMENDED that applications only store data
-under `user`.
-
-When the application is another Flux instance, `system.exec.R` MAY be used
-to initialize the resource set managed by the instance.
-
 === Content Consumed/Produced by Other Guest Services ===
 
-Other guest services not mentioned in this RFC MAY store arbitrary data
-in the guest KVS namespace under `system.<service>`.
+Other guest services not mentioned in this RFC MAY store service-specific
+data in the guest KVS namespace under `<service>`, where `<service>` is
+a name unique to the service producing the data.
+
+=== Content Consumed/Produced by the Application ===
+
+The application MAY store application-specific data in the guest KVS
+namespace under `application`.
+
+When the application is another Flux instance, `exec.R` MAY be used
+to initialize the resource set managed by the instance.
+
+=== Content Consumed/Produced by Tools
+
+Tools such as parallel debuggers, running as the guest, MAY store data
+in the guest KVS namespace under `tools/<name>`, where `<name>` is
+a name unique to the tool producing the data.
