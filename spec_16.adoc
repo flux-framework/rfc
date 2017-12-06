@@ -250,5 +250,5 @@ to initialize the resource set managed by the instance.
 === Content Consumed/Produced by Tools
 
 Tools such as parallel debuggers, running as the guest, MAY store data
-in the guest KVS namespace under `tools/<name>`, where `<name>` is
+in the guest KVS namespace under `tools.<name>`, where `<name>` is
 a name unique to the tool producing the data.
