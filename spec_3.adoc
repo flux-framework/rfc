@@ -226,6 +226,8 @@ flag-payload	= %x02			; message has payload frame
 flag-route	= %x08			; message has route delimiter frame
 flag-upstream   = %x10                  ; request should be routed upstream
 					;   of nodeid sender
+flag-private	= %x20			; event message is requested to be
+					;   private to sender, instance owner
 
 ; Userid assigned by connector at message ingress
 userid		= 4OCTET / userid-unknown
