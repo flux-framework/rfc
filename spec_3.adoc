@@ -39,7 +39,7 @@ the following specific goals:
 `flux-broker` is a message broker daemon for the Flux resource manager
 framework.  A _comms session_ is a set of interconnected `flux-broker` tasks
 that together provide a shared communications substrate for distributed
-resource manager services within a job .  Services and utilities communicate
+resource manager services within a job.  Services and utilities communicate
 by passing messages through the session brokers.  There are four
 types of messages: events, requests, responses, and keepalives, which
 share a common structure described herein.
