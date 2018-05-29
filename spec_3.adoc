@@ -39,7 +39,7 @@ the following specific goals:
 `flux-broker` is a message broker daemon for the Flux resource manager
 framework.  A _comms session_ is a set of interconnected `flux-broker` tasks
 that together provide a shared communications substrate for distributed
-resource manager services within a job .  Services and utilities communicate
+resource manager services within a job.  Services and utilities communicate
 by passing messages through the session brokers.  There are four
 types of messages: events, requests, responses, and keepalives, which
 share a common structure described herein.
@@ -151,6 +151,18 @@ this determination SHALL respond with error number 113, "No route to host".
 Event messages SHALL only be published by the rank 0 broker.  Other ranks MAY
 cause an event to be sent by first forwarding it to rank 0.
 
+=== Payload Conventions
+
+Request, response, and event messages MAY contain a payload.  Payloads MAY
+consist of any byte sequence.  To maximize interoperability, norms are
+established for common payload types:
+
+. String payloads SHALL include a terminating NULL character.
+. Structured objects are RECOMMENDED to be represented as JSON.
+. JSON payloads SHALL conform to Internet RFC 7159.
+. JSON payloads SHALL be objects, not arrays or bare values.
+. JSON payloads SHALL include a terminating NULL character.
+
 === General Message Format
 
 CMB1 messages are multi-part ZeroMQ messages.
@@ -169,10 +181,7 @@ delimiter, if any.  When the topic string part is first, it is compatible
 with ZeroMQ PUB-SUB sockets.
 
 Finally, CMB1 messages MAY include a payload part, positioned before
-the PROTO part.  Payload parts SHALL use either raw encoding or JSON
-encoding, as indicated by flags.  JSON payloads SHALL conform to
-Internet RFC 7159, and the outermost JSON type SHALL be a JSON object, e.g.
-beginning with the "{" character.
+the PROTO part.  Payloads MAY consist of any byte sequence.
 
 CMB1 messages are specified in detail by the following ABNF grammar.
 
@@ -182,9 +191,9 @@ CMB1		= C:request *S:response
 		/ C:keepalive
 
 ; Multi-part ZeroMQ messages
-C:request	= [routing] topic [payload / json] PROTO
-S:response	= [routing] topic [payload / json] PROTO
-S:event		= [routing] topic [payload / json] PROTO
+C:request	= [routing] topic [payload] PROTO
+S:response	= [routing] topic [payload] PROTO
+S:event		= [routing] topic [payload] PROTO
 C:keepalive	= PROTO
 
 ; Route frame stack, ZeroMQ DEALER-ROUTER format
@@ -197,7 +206,6 @@ topic		= 1*(ALPHA / DIGIT / ".")
 
 ; Payload frame
 payload		= *OCTET		; payload ZeroMQ frame
-json		= JSON			; payload ZeroMQ frame, encoded JSON
 
 ; Protocol frame
 PROTO		= request / response / event / keepalive
@@ -215,10 +223,11 @@ version		= %x01			; version for CMB1
 flags		= OCTET
 flag-topic	= %x01			; message has topic string frame
 flag-payload	= %x02			; message has payload frame
-flag-json	= %x04			;         and payload is JSON
 flag-route	= %x08			; message has route delimiter frame
 flag-upstream   = %x10                  ; request should be routed upstream
 					;   of nodeid sender
+flag-private	= %x20			; event message is requested to be
+					;   private to sender, instance owner
 
 ; Userid assigned by connector at message ingress
 userid		= 4OCTET / userid-unknown
