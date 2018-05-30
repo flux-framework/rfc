@@ -105,7 +105,7 @@ program. The dictionary MUST contain the keys `resources`, `tasks`,
 Each of the listed jobspec keys SHALL meet the form and requirements
 listed in detail in the sections below. For reference, a ruleset for
 compliant canonical jobspec is provided using *JSON Content Rules*
-footnoteref:[contentrules,https://tools.ietf.org/id/draft-newton-json-content-rules-06.txt[JSON Content Rules (jcr-version 0.6)]&#44; A. Newton&#44; P. Cordell&#44; 2016]
+footnoteref:[contentrules,https://tools.ietf.org/id/draft-newton-json-content-rules-06.txt[JSON Content Rules (jcr-version 0.6)]; A. Newton; P. Cordell; 2016]
  in the *Content Rules* at the end of this section.
 
 === Resources
