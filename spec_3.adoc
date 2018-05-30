@@ -159,6 +159,7 @@ established for common payload types:
 
 . String payloads SHALL include a terminating NULL character.
 . Structured objects are RECOMMENDED to be represented as JSON.
+footnote:[http://www.rfc-editor.org/rfc/rfc7159.txt[RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format], T. Bray, Google, Inc, March 2014.]
 . JSON payloads SHALL conform to Internet RFC 7159.
 . JSON payloads SHALL be objects, not arrays or bare values.
 . JSON payloads SHALL include a terminating NULL character.
@@ -261,8 +262,3 @@ sequence	= 4OCTET
 unused		= %x00.00.00.00
 ----
 
-[sect2]
-== References
-
-* http://www.rfc-editor.org/rfc/rfc7159.txt[RFC 7159: The JavaScript Object
-Notation (JSON) Data Interchange Format], T. Bray, Google, Inc, March 2014.
