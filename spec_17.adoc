@@ -1,0 +1,43 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+17/Flux Job Submission and Execution Interface
+==============================================
+
+This specification describes the base interface for the Flux commands
+and APIs for the execution and submission of parallel jobs.
+
+* Name: github.com/flux-framework/rfc/spec_17.adoc
+* Editor: Mark Grondona <mgrondona@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_12{outfilesuffix}[16/KVS Job Schema]
+*  link:spec_14{outfilesuffix}[14/Canonical Job Specification]
+
+== Background
+
+The commands and APIs used to submit and execute parallel jobs are fundamental
+to Flux design and offer the main interface for users to interact with
+the scheduling and resource management aspects of the system. Therefore,
+a standard, base specification of these interfaces is required to prevent
+disruptive changes to these interfaces for users.
+
+== Commands
+
+Commands for submitting, executing, and manipulating Flux jobs SHALL
+be kept under the `flux job` command. The `flux job` subcommands
+described in this RFC are the `flux job run` and `flux job submit` commands.
+
+=== flux job submit
+
+=== flux job run
+
+== APIs
+
