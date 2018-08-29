@@ -1,0 +1,52 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+18/KVS Event Log Format
+=======================
+
+This specification describes the format for Flux job events stored in the KVS
+event log.
+
+* Name: github.com/flux-framework/rfc/spec_18.adoc
+* Editor: Stephen Herbein <sherbein@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_16{outfilesuffix}[16/KVS Job Schema]
+
+== Background
+
+As stated in RFC 16:
+
+__________________________________________________
+Active jobs undergo state transitions that are recorded under
+the key `jobs.active.<jobid>.eventlog`.  A KVS append operation
+is used to add events to this log.
+__________________________________________________
+
+== Event Log Format
+
+The event log SHALL be append-only.  An event appended to the KVS job event log
+MUST take the following format:
+
+----
+timestamp name [context]
+----
+
+Where:
+
+* `timestamp` SHALL be the floating point representation of the number of seconds
+  since the epoch, with at least millisecond resolution
+* `name` SHALL be a non-whitespace string denoting the name or description of
+  the event being appended to the log
+* `context` SHALL be an optional string containing any characters other than the
+  newline character that provides additional information about the event
+
+The elements (i.e., timestamp, name, and context) within a single event are
+spaced-delimited, and events themselves are newline delimited.
