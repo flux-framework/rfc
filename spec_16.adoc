@@ -78,6 +78,9 @@ exiting::
 completed::
   all containers exited
 
+canceled::
+  user requested the job be canceled
+
 rejected::
   scheduler won't run job
 
@@ -165,7 +168,7 @@ and appends the initial _submitted_ event.
 === Content Consumed/Produced by Scheduler
 
 Upon discovery of a new `jobs.active.<jobid>` (with a _submitted_ event and
-without a _cancelled_ event in the event log), the _scheduler_ reads
+without a _canceled_ event in the event log), the _scheduler_ reads
 `jobs.active.<jobid>.J-signed` and attempts to match resources to the request.
 
 The _scheduler_ may declare the job unrunnable, and move it to
