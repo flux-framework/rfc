@@ -41,8 +41,8 @@ timestamp name [context]
 
 Where:
 
-* `timestamp` SHALL be the floating point representation of the number of seconds
-  since the epoch, with at least millisecond resolution
+* `timestamp` SHALL be the number of seconds since the Unix Epoch (1970-01-01
+  UTC), expressed with optional sub-second precision in decimal notation.
 * `name` SHALL be a non-whitespace string denoting the name or description of
   the event being appended to the log
 * `context` SHALL be an optional string containing any characters other than the
