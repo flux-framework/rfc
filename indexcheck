@@ -1,0 +1,26 @@
+#!/bin/bash
+
+indexfile=README.adoc
+
+if test $# == 0; then
+    echo "Usage: checkindex file [file...]" >&2
+    exit 1
+fi
+
+exit_val=0
+echo "1..$#"
+count=1
+for f in $*; do
+    filename="$(basename $f)"
+    linkname="link:$(echo $filename | sed -e 's/.adoc$//'){outfilesuffix}"
+    if grep -q $linkname $indexfile; then
+        echo "ok $count - $filename link is present in $indexfile"
+    else
+        echo "not ok $count - $filename link is missing from $indexfile"
+	echo "---"
+	exit_val=1
+    fi
+    ((count++))
+done
+
+exit $exit_val 
