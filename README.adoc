@@ -94,6 +94,9 @@ link:spec_16{outfilesuffix}[16/KVS Job Schema]::
 This specification describes the format of data stored in the KVS
 for Flux jobs.
 
+link:spec_18{outfilesuffix}[18/KVS Event Log Format]::
+A log format is defined that can be used to log job state transitions
+and other date-stamped events.
 
 == Change Process
 

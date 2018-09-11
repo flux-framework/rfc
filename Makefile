@@ -38,3 +38,4 @@ clean:
 
 check:
 	ASPELL=aspell ./spellcheck *.adoc
+	./indexcheck spec_*.adoc
