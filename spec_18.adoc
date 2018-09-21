@@ -3,8 +3,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 18/KVS Event Log Format
 =======================
 
-This specification describes the format for Flux job events stored in the KVS
-event log.
+This specification describes the format for Flux KVS Event Logs.
 
 * Name: github.com/flux-framework/rfc/spec_18.adoc
 * Editor: Stephen Herbein <sherbein@llnl.gov>
@@ -22,7 +21,8 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == Background
 
-As stated in RFC 16:
+The initial use case for Flux KVS Event Logs is recording Flux job state
+transitions.  As stated in RFC 16:
 
 __________________________________________________
 Active jobs undergo state transitions that are recorded under
@@ -30,9 +30,10 @@ the key `jobs.active.<jobid>.eventlog`.  A KVS append operation
 is used to add events to this log.
 __________________________________________________
 
+
 == Event Log Format
 
-The event log SHALL be append-only.  An event appended to the KVS job event log
+The event log SHALL be append-only.  An event appended to the KVS event log
 MUST take the following format:
 
 ----
