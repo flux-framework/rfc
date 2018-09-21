@@ -33,21 +33,24 @@ __________________________________________________
 
 == Event Log Format
 
-The event log SHALL be append-only.  An event appended to the KVS event log
-MUST take the following format:
+An event log SHALL be append-only.  An event appended to a KVS event log
+MUST take the following form:
 
 ----
-timestamp name [context]
+timestamp name [context ...]\n
 ----
 
 Where:
 
 * `timestamp` SHALL be the number of seconds since the Unix Epoch (1970-01-01
   UTC), expressed with optional sub-second precision in decimal notation.
-* `name` SHALL be a non-whitespace string denoting the name or description of
-  the event being appended to the log
-* `context` SHALL be an optional string containing any characters other than the
-  newline character that provides additional information about the event
+  It MUST be greater than zero.  This field is REQUIRED.
+* `name` SHALL be a string denoting the name of the event.  It MUST NOT contain
+  the space character or the newline character, and SHALL be between one
+  and 64 characters in length.  This field is REQUIRED.
+ `context` SHALL be a string providing additional arguments or description
+  of the event.  It MUST NOT contain the newline character, and SHALL be
+  between one and 256 characters in length.  This field is OPTIONAL.
 
 The elements (i.e., timestamp, name, and context) within a single event are
-spaced-delimited, and events themselves are newline delimited.
+spaced-delimited, and events themselves are newline terminated.
