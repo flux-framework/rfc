@@ -48,7 +48,7 @@ Where:
 * `name` SHALL be a string denoting the name of the event.  It MUST NOT contain
   the space character or the newline character, and SHALL be between one
   and 64 characters in length.  This field is REQUIRED.
- `context` SHALL be a string providing additional arguments or description
+* `context` SHALL be a string providing additional arguments or description
   of the event.  It MUST NOT contain the newline character, and SHALL be
   between one and 256 characters in length.  This field is OPTIONAL.
 
