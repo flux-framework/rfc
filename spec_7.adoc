@@ -76,6 +76,11 @@ For example avoid generic types like `struct a` or typedefs like `ctx_t`. A good
 practice is to include the name of the relevant source file, module or service in
 the typedef (e.g. `fooservice_ctx_t`).
 
+Typedefs SHOULD NOT be used for fixed length character arrays, as this
+obscures the fact that they are merely pointers when used in function
+prototypes, and give different `sizeof` results depending on context.
+
+
 === Structures
 
 Structure tags SHOULD NOT contain the string "struct".
