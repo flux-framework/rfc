@@ -68,7 +68,8 @@ Abstract types SHOULD be publicly defined as incomplete types, for example:
 ----
 typedef struct foo foo_t;
 ----
-Abstract types SHOULD NOT be defined as pointers to incomplete types,
+Abstract types SHOULD NOT be defined as pointers to incomplete types, as
+this obscures the fact that they are pointers when used in declarations.
 
 Typedef names SHOULD be chosen such that they are unique within a framework project.
 For example avoid generic types like `struct a` or typedefs like `ctx_t`. A good
