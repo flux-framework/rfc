@@ -98,10 +98,6 @@ type of error on failure.
 
 A Flux extension module MAY export the following global symbols:
 
-+const char *service_name;+::
-A null-terminated C string defining the service name provided by the
-module, if different from the module name.
-
 A base component MAY call +dlopen()+ with _RTLD_LOCAL_ flag,
 then access these symbols with +dlsym()+.
 
