@@ -53,7 +53,7 @@ Rank 0 SHALL retain all content previously stored by the instance.
 Rank 0 MAY extend its cache with an OPTIONAL backing store, the details
 of which are beyond the scope of this RFC.
 
-Rank 0 SHALL, as a last resort, attempt to satisfy load requests by making
+Rank 0 MAY, as a last resort, attempt to satisfy load requests by making
 a transitive request to the enclosing instance, if any.
 
 === Content
@@ -124,7 +124,7 @@ non-essential entries from its cache.
 === Foreign Content
 
 If a load request cannot be satisfied by the instance's content service,
-a load request SHALL be sent to the enclosing instance, if applicable.
+a load request MAY be sent to the enclosing instance, if applicable.
 
 The enclosing instance MAY have configured a different hash algorithm.
 The content service, therefore, SHALL NOT require that a blobref specified
