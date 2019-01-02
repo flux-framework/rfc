@@ -69,9 +69,34 @@ footnote:[https://dwheeler.com/essays/floss-license-slide.html[The Free-Libre / 
   under the project's base license version, or any later version per
   http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommendations].
 
+=== Copyright
+
+* Copyright for a particular Flux project SHALL be held jointly by
+  the contributors to that project.
+
 * Flux projects SHALL NOT require a legal document such as a
   contributor license agreement or copyright assignment document
   to be signed by contributors.
 
-* Copyright for a particular Flux project SHALL be held jointly by
-  the contributors to that project.
+* Copyright for each source code module MAY be held by its authors.
+
+* All source code contributed to a Flux project SHALL include a copyright
+  notice that declares the copyright holders and the license under which
+  the source code may be copied, for example:
+
+----
+/* Copyright 2014 Lawrence Livermore National Security, LLC
+ * (c.f. AUTHORS, NOTICE.LLNS, COPYING)
+ *
+ * This file is part of the Flux resource manager framework.
+ * For details, see https://github.com/flux-framework.
+ *
+ * SPDX-License-Identifier: LGPL-3.0
+ */
+----
+
+* The SPDX license shorthand is RECOMMENDED.
+footnote:[https://spdx.org/[The Software Package Data Exchange (SPDX)].]
+
+* New contributors MAY add themselves to the project's AUTHORS file,
+  using the pull request process described in RFC 1.
