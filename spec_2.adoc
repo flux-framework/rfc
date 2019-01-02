@@ -23,7 +23,8 @@ manager function, or is otherwise tightly coupled to the resource
 manager or its communications framework.  Flux projects are expected
 to have contributors spanning academic institutions, government
 laboratories, companies, and individuals.
-Our licensing and collaboration guidelines have the following goals:
+
+Our licensing and collaboration guidelines must balance the following goals:
 
 * Encourage participation in the Flux community by all interested parties.
 
@@ -33,6 +34,7 @@ Our licensing and collaboration guidelines have the following goals:
 
 * Allow Flux projects to leverage a large body of open source,
   including from the HPC ecosystem.
+footnote:[https://dwheeler.com/essays/floss-license-slide.html[The Free-Libre / Open Source Software (FLOSS) License Slide], David A. Wheeler.]
 
 * Ensure that end users have full source code to their particular
   Flux system to maximize their ability to self-support and obtain
@@ -41,15 +43,12 @@ Our licensing and collaboration guidelines have the following goals:
 * Ensure that successful Flux systems are fully replicatable
   and redistributable across platforms and sites.
 
-* Promote design and documentation that allows any Flux component to
-  be replaced with minimal impact on other components.
-
-* Provide Flux user interfaces that can be directly linked by
-  applications, application runtimes, and tools distributed under
-  proprietary or incompatible licenses.
+* Facilitate the use of Flux and its programming interfaces by external
+  projects such as applications, application runtimes, and tools, that are
+  distributed under a wide variety of open source and commercial licenses.
 
 == Design
-  
+
 === Collaboration Model for Flux Projects
 
 * Flux projects SHALL adopt the Collective Code Construction Contract
@@ -62,40 +61,42 @@ Our licensing and collaboration guidelines have the following goals:
 * It is RECOMMENDED that Flux projects be discussed on the Flux
   discussion list <flux-discuss@lists.llnl.gov>.
 
-* Interfaces exported by Flux projects to the Flux framework SHOULD
-  be documented as a https://github.com/flux-framework/rfc[Flux RFC].
-
 === License for Flux Projects
 
-* Flux projects SHALL be licensed under the GNU General Public License (GPL).
+* Flux projects SHALL be licensed under the https://www.gnu.org/licenses/lgpl-3.0.en.html[GNU Lesser General Public License (LGPL) version 3].
 
-* Flux projects are RECOMMENDED to be licensed under GPL version 3 or later.
-
-* Flux projects SHALL permit redistribution and/or modification
-  under the project's base GPL version, or any later version per
+* Flux projects are RECOMMENDED to permit redistribution and/or modification
+  under the project's base license version, or any later version per
   http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommendations].
+
+=== Copyright
+
+* Copyright for a particular Flux project SHALL be held jointly by
+  the contributors to that project.
 
 * Flux projects SHALL NOT require a legal document such as a
   contributor license agreement or copyright assignment document
   to be signed by contributors.
 
-* Copyright for a particular Flux project SHALL be held jointly by
-  the contributors to that project.
+* Copyright for each source code module MAY be held by its authors.
 
-=== License for Flux User Interfaces
+* All source code contributed to a Flux project SHALL include a copyright
+  notice that declares the copyright holders and the license under which
+  the source code may be copied, for example:
 
-* Selected Flux programming interfaces, such as those used by applications,
-  application runtimes, and tools, MAY be designated as Flux user interfaces.
+----
+/* Copyright 2014 Lawrence Livermore National Security, LLC
+ * (c.f. AUTHORS, NOTICE.LLNS, COPYING)
+ *
+ * This file is part of the Flux resource manager framework.
+ * For details, see https://github.com/flux-framework.
+ *
+ * SPDX-License-Identifier: LGPL-3.0
+ */
+----
 
-* Flux user interfaces SHALL be documented as such in a
-  https://github.com/flux-framework/rfc[Flux RFC].
+* The SPDX license shorthand is RECOMMENDED.
+footnote:[https://spdx.org/[The Software Package Data Exchange (SPDX)].]
 
-* Flux user interfaces SHALL be licensed under the Lesser GNU General
-  Public License (LGPL).
-
-* Flux user interfaces are RECOMMENDED to be licensed under LGPL
-  version 3 or later.
-
-* Flux user interfaces SHALL permit redistribution and/or modification
-  under the interface's base LGPL version, or any later version per
-  http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommendations].
+* New contributors MAY add themselves to the project's AUTHORS file,
+  using the pull request process described in RFC 1.
