@@ -64,8 +64,8 @@ Our licensing and collaboration guidelines must balance the following goals:
 
 * Flux projects SHALL be licensed under the https://www.gnu.org/licenses/lgpl-3.0.en.html[GNU Lesser General Public License (LGPL) version 3].
 
-* Flux projects SHALL permit redistribution and/or modification
-  under the project's base GPL version, or any later version per
+* Flux projects are RECOMMENDED to permit redistribution and/or modification
+  under the project's base license version, or any later version per
   http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommendations].
 
 * Flux projects SHALL NOT require a legal document such as a
