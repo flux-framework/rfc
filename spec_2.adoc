@@ -42,9 +42,6 @@ Our licensing and collaboration guidelines must balance the following goals:
 * Ensure that successful Flux systems are fully replicatable
   and redistributable across platforms and sites.
 
-* Promote design and documentation that allows any Flux component to
-  be replaced with minimal impact on other components.
-
 * Facilitate the use of Flux and its programming interfaces by external
   projects such as applications, application runtimes, and tools, that are
   distributed under a wide variety of open source and commercial licenses.
@@ -63,9 +60,6 @@ Our licensing and collaboration guidelines must balance the following goals:
 * It is RECOMMENDED that Flux projects be discussed on the Flux
   discussion list <flux-discuss@lists.llnl.gov>.
 
-* Interfaces exported by Flux projects to the Flux framework SHOULD
-  be documented as a https://github.com/flux-framework/rfc[Flux RFC].
-
 === License for Flux Projects
 
 * Flux projects SHALL be licensed under the https://www.gnu.org/licenses/lgpl-3.0.en.html[GNU Lesser General Public License (LGPL) version 3].
@@ -80,7 +74,3 @@ Our licensing and collaboration guidelines must balance the following goals:
 
 * Copyright for a particular Flux project SHALL be held jointly by
   the contributors to that project.
-
-* Flux user interfaces SHALL be documented as such in a
-  https://github.com/flux-framework/rfc[Flux RFC].
-
