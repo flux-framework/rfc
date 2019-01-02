@@ -34,6 +34,7 @@ Our licensing and collaboration guidelines must balance the following goals:
 
 * Allow Flux projects to leverage a large body of open source,
   including from the HPC ecosystem.
+footnote:[https://dwheeler.com/essays/floss-license-slide.html[The Free-Libre / Open Source Software (FLOSS) License Slide], David A. Wheeler.]
 
 * Ensure that end users have full source code to their particular
   Flux system to maximize their ability to self-support and obtain
