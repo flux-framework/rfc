@@ -68,9 +68,7 @@ Our licensing and collaboration guidelines must balance the following goals:
 
 === License for Flux Projects
 
-* Flux projects SHALL be licensed under the GNU General Public License (GPL).
-
-* Flux projects are RECOMMENDED to be licensed under GPL version 3 or later.
+* Flux projects SHALL be licensed under the https://www.gnu.org/licenses/lgpl-3.0.en.html[GNU Lesser General Public License (LGPL) version 3].
 
 * Flux projects SHALL permit redistribution and/or modification
   under the project's base GPL version, or any later version per
@@ -83,20 +81,6 @@ Our licensing and collaboration guidelines must balance the following goals:
 * Copyright for a particular Flux project SHALL be held jointly by
   the contributors to that project.
 
-=== License for Flux User Interfaces
-
-* Selected Flux programming interfaces, such as those used by applications,
-  application runtimes, and tools, MAY be designated as Flux user interfaces.
-
 * Flux user interfaces SHALL be documented as such in a
   https://github.com/flux-framework/rfc[Flux RFC].
 
-* Flux user interfaces SHALL be licensed under the Lesser GNU General
-  Public License (LGPL).
-
-* Flux user interfaces are RECOMMENDED to be licensed under LGPL
-  version 3 or later.
-
-* Flux user interfaces SHALL permit redistribution and/or modification
-  under the interface's base LGPL version, or any later version per
-  http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater[Free Software Foundation recommendations].
