@@ -23,7 +23,8 @@ manager function, or is otherwise tightly coupled to the resource
 manager or its communications framework.  Flux projects are expected
 to have contributors spanning academic institutions, government
 laboratories, companies, and individuals.
-Our licensing and collaboration guidelines have the following goals:
+
+Our licensing and collaboration guidelines must balance the following goals:
 
 * Encourage participation in the Flux community by all interested parties.
 
@@ -44,12 +45,12 @@ Our licensing and collaboration guidelines have the following goals:
 * Promote design and documentation that allows any Flux component to
   be replaced with minimal impact on other components.
 
-* Provide Flux user interfaces that can be directly linked by
-  applications, application runtimes, and tools distributed under
-  proprietary or incompatible licenses.
+* Facilitate the use of Flux and its programming interfaces by external
+  projects such as applications, application runtimes, and tools, that are
+  distributed under a wide variety of open source and commercial licenses.
 
 == Design
-  
+
 === Collaboration Model for Flux Projects
 
 * Flux projects SHALL adopt the Collective Code Construction Contract
