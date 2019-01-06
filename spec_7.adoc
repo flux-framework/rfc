@@ -95,8 +95,7 @@ we also should not write:
 struct foo_struct {};
 ----
 
-Tools That Modify Code to Conform to C Coding Style
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=== Tools for C formatting
 
 "indent -kr" will bring you most of the way towards conforming to the Flux coding style.
 
