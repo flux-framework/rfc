@@ -57,7 +57,8 @@ an opaque data value (not a _val_ object).
 interpreted as a _dir_ or _hdir_ object.
 * _dir_, data is a map of names to tree objects.
 * _hdir_, data is a map of integer-hashed names to _dirref_ objects.
-* _symlink_, data is a hierarchical key name.
+* _symlink_, data is an object containing a target key and optionally
+a namespace.
 
 === Valref ===
 
@@ -141,13 +142,27 @@ _dirref_ object.
 
 === Symlink ===
 
-A _symlink_ is a symbolic pointer to a another KVS key, which may
-or may not be fully qualified.
+A _symlink_ is a symbolic pointer to a another KVS key, which may or
+may not be fully qualified.  Optionally, a namespace can be specified
+for that key.  If a namespace is not specified, the current namespace
+is assumed.
+
+Example without namespace:
 
 ----
 { "ver":1,
   "type":"symlink",
-  "data":"a.aa",
+  "data":{"target":"a.a"},
+}
+----
+
+Example with namespace:
+
+----
+
+{ "ver":1,
+  "type":"symlink",
+  "data":{"namespace":"a","target":"b.b"},
 }
 ----
 
