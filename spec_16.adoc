@@ -29,7 +29,7 @@ Instance components have direct, read/write access to the primary KVS
 namespace:
 
 * _Ingest agent_
-* _Job management service_ (list, cancel, etc.)
+* _Job manager_
 * _Exec service_
 * _Scheduler_
 
@@ -43,19 +43,34 @@ Guest components have direct, read/write access to a private KVS namespace:
 
 === Job Life Cycle
 
-Jobs are submitted to the _ingest agent_ which performs a sanity
-check on the request and either adds the job to the KVS or
-refuses to accept it.
+Jobspec is submitted to the _ingest agent_ which validates it, adds it
+to the KVS, and informs the _job manager_ of the new job.
+Upon success, the jobid is returned to the user.  The _job manager_ then
+takes the active role in moving a job through its life cycle:
 
-The _scheduler_ takes up submitted jobs and considers them against
-the available resources.  It either rejects the job outright,
-or annotates it and eventually assigns resources to it.
+1) If a job has dependencies, interacting with a job dependency
+subsystem to ensure they are met before proceeding.
 
-The _exec service_ takes up jobs that have assigned resources,
-instantiates containers for those jobs and starts job shells
-within them.  When job shells and their containers start to exit,
-the _exec service_ "reaps" these shells and allows the _scheduler_
-to reclaim resources assigned to each container.
+2) Submitting an allocation request to the _scheduler_ to obtain resources.
+
+3) Once resources are allocated, submitting a start request to the
+_exec service_.
+
+4) The _exec service_ starts _job shells_ directly in a single-user instance.
+In a multi-user instance, it directs the IMP to start them with guest
+credentials, with appropriate containment.
+
+5) The _job shell_ examines jobspec and allocated resource set, then
+launches tasks on local resources.  It provides standard I/O, parallel
+bootstrap, signal propagation, and exit code collection services.
+It is a user-replaceable component.
+
+6) Once tasks exit, or an exceptional condition such as cancellation or
+expiration of wall clock allocation occurs, the _job manager_ directs the
+_exec service_ to clean up any lingering tasks and _job shells_, then
+frees resources back to the _scheduler_.
+
+The job is now complete.
 
 == Implementation
 
