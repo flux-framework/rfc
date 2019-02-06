@@ -57,33 +57,6 @@ within them.  When job shells and their containers start to exit,
 the _exec service_ "reaps" these shells and allows the _scheduler_
 to reclaim resources assigned to each container.
 
-Jobs therefore experience the following events,
-not necessarily in a linear order:
-
-submitted::
-  accepted by ingest, resources not yet assigned
-
-runnable::
-  resources assigned
-
-starting::
-  first container started
-
-running::
-  all containers instantiated and job shells started
-
-exiting::
-  first container exited
-
-completed::
-  all containers exited
-
-canceled::
-  user requested the job be canceled
-
-rejected::
-  scheduler won't run job
-
 == Implementation
 
 === Primary KVS Namespace
