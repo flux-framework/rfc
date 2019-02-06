@@ -5,6 +5,7 @@ resources:
     label: nodelevel
     with:
     - type: node
+      exclusive: false
       count: 1
       with:
         - type: socket
