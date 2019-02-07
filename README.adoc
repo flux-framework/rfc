@@ -98,6 +98,14 @@ link:spec_18{outfilesuffix}[18/KVS Event Log Format]::
 A log format is defined that can be used to log job state transitions
 and other date-stamped events.
 
+link:spec_19{outfilesuffix}[19/Flux Locally Unique ID (FLUID)]::
+This specification describes a scheme for a distributed, uncoordinated
+_flux locally unique ID_ service that generates 64 bit k-ordered, unique
+identifiers that are a combination of timestamp since some epoch,
+generator id, and sequence number.  The scheme is used to generate
+Flux job IDs.
+
+
 == Change Process
 
 The change process is
