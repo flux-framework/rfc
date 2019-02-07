@@ -132,16 +132,24 @@ A resource vertex SHALL contain the following keys:
  of two possible values: either a single integer value representing
  a fixed count, or a dictionary which SHALL contain the following keys:
 +
-[horizontal]
+[horizontal width=20%]
    *min*::: The minimum required count or amount of this resource
 
++
+and additionally MAY contain the following keys:
++
+[horizontal width=30%]
    *max*::: The maximum required count or amount of this resource
 
    *operator*::: An operator applied between `min` and `max` which
    returns the next acceptable value
 
    *operand*::: The operand used in conjunction with `operator`
-   to get the next value between `min` and `max`.
+
++
+The default value for `max` SHALL be  _infinite_, therefore a `count`
+which specifies only the `min` key SHALL be considered a request for
+_at least_ that number of a resource.
 
 A resource vertex MAY additionally contain one or more of the
 following keys
