@@ -105,6 +105,10 @@ identifiers that are a combination of timestamp since some epoch,
 generator id, and sequence number.  The scheme is used to generate
 Flux job IDs.
 
+link:spec_20{outfilesuffix}[20/Resource Set Specification]::
+This specification defines the version 1 format of the resource-set
+representation or _R_ in short.
+
 
 == Change Process
 
