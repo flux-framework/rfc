@@ -221,19 +221,28 @@ descriptor SHALL contain the following keys:
  number of tasks executed per task slot SHALL be a function of the
  number of resource slots and total number of tasks requested to execute.
 
- *count*::
- The value of the `count` key SHALL be a dictionary supporting at least
- the keys `per_slot` and `total`, with other keys reserved for future
- or site-specific extensions.
-+
-[horizontal]
+ *count*:: The value of the `count` key SHALL be a dictionary supporting at
+ least the keys `per_slot`, `per_resource`, and `total`, with other keys
+ reserved for future or site-specific extensions.
+
   *per_slot*:::
   The value of `per_slot` SHALL be a number indicating the number
   of tasks to execute per task slot allocated to the program.
 
+  *per_resource*::: The value of `per_resource` SHALL be a dictionary which
+  SHALL contain the following keys:
+
+  * *type* The value of the `type` key SHALL be a resource type explicitly
+   declared in the associated task's slot.
+
+  * *count* The value of the `count` key SHALL be a number indicating the number
+     of tasks to execute per resource of type `type` occurring in the task's
+     slot.
+
   *total*:::
   The value of the `total` field SHALL indicate the total number of
   tasks to be run across all task slots, possibly oversubscribed.
+
 
  *attributes*::
  The `attributes` key SHALL be a free-form dictionary of keys which may
