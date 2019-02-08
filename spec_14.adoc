@@ -133,13 +133,13 @@ A resource vertex SHALL contain the following keys:
  of two possible values: either a single integer value representing
  a fixed count, or a dictionary which SHALL contain the following keys:
 +
-[horizontal width=20%]
+[horizontal]
    *min*::: The minimum required count or amount of this resource
 
 +
 and additionally MAY contain the following keys:
 +
-[horizontal width=30%]
+[horizontal]
    *max*::: The maximum required count or amount of this resource
 
    *operator*::: An operator applied between `min` and `max` which
