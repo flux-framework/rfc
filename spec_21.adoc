@@ -1,0 +1,159 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+21/Job States
+=============
+
+This specification describes Flux job states.
+
+* Name: github.com/flux-framework/rfc/spec_21.adoc
+* Editor: Jim Garlick <garlick@llnl.gov>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_16{outfilesuffix}[16/KVS Job Schema]
+*  link:spec_18{outfilesuffix}[18/KVS Event Log Format]
+
+== Background
+
+The job state machine is intended to be a useful abstraction of job life
+cycle for users.  If a job is not yet running, the job state communicates
+at a high level what it is waiting for.  In addition to being available to
+query, job states may also be used as a basis for synchronization by tools
+such as workflow managers.
+
+A job is said to be _active_ if it has not yet reached the captive end state,
+and _inactive_ once it has.
+
+=== Design Criteria
+
+* Job states SHOULD exist for job phases with the potential for long duration,
+  to provide transparency to users.
+* The instance owner and job owner SHALL be permitted to monitor job state
+  transitions, for synchronization.
+* There SHALL be one initial state and one final state.
+* The job state machine SHALL NOT contain cycles, to avoid ambiguity
+  in synchronization.
+* All job state transitions SHALL be initiated by the job manager.
+* A state SHALL exist for synchronization on job completion, such that
+  job data in the KVS is stable once this state is reached.
+* Events that drive state transitions SHALL be logged to the job eventlog.
+* Replaying the job eventlog SHALL accurately reproduce the current job state.
+
+== Implementation
+
+=== State Diagram
+
+image::data/spec_21/states.svg[width=750]
+
+=== State Descriptions
+
+NEW::
+Initial state for internal use only.
+
+DEPEND::
+The job is blocked waiting for dependencies to be satisfied.  The job manager
+makes a request to the dependency service and receives a response once
+the job's dependencies are satisfied, then logs the `depend` event.
+
+SCHED::
+The job is blocked waiting for resources.  The job manager sends an
+allocation request to the scheduler and receives a response once the
+job has been assigned resources, then logs the `alloc` event.
+
+RUN::
+The job is able to run or is running.  The job manager sends a request
+to the exec service to start the job, then logs a `start` event once the
+job shells have been started.  It then sends a request to the exec service to
+wait for completion, then logs a `finish` event once all job shells have
+exited.
+
+CLEANUP::
+The job has completed or an exception has occurred.  If there has been
+a `start` event, any remnants of execution are cleaned up and a `finish`
+event is logged.  If there has been an `alloc` event, resources are released
+to the scheduler and a `free` event is logged.
+
+INACTIVE::
+Job data in KVS is now read-only (captive state).
+
+=== Exceptions
+
+An exception is an extraordinary occurrence that MAY interrupt the
+"normal" job life cycle.
+
+When an exception occurs, an event named `exception` SHALL be logged to the
+job's eventlog.  The RFC 18 _context_ SHALL be encoded in space-delimited
+`key=value` form, with any trailing non-conforming text interpreted as a
+human readable message.  The following keys are REQUIRED:
+
+type=TYPE::
+Specify the type of exception (see below).
+
+severity=SEVERITY::
+Specify the severity of the exception, an integer in the range of 0 to 7.
+`severity=0` is the most severe.
+
+Example:
+
+----
+timestamp exception type=cancel severity=0 user=5588 Never mind!\n
+----
+
+An exception event with `severity=0` SHALL cause the job state to
+immediately transition to `CLEANUP`.   Exception events with a severity
+other than zero do not affect job state, and are assumed to be meaningful
+to other components managing non-fatal exceptions.
+
+Exception types SHALL include:
+
+cancel::
+The job was canceled.
+
+timelimit::
+The job's wall clock limit was exceeded.
+
+depend::
+A problem occurred during dependency resolution.
+
+alloc::
+A problem occurred during scheduling.
+
+start::
+A problem occurred while starting job shells.
+
+finish::
+A problem occurred while waiting for job shells to finish.
+
+free::
+A problem occurred while releasing resources to the scheduler.
+
+=== Synchronization
+
+Any state but `NEW` is valid for synchronization.
+
+Once a given state has been signaled (with a KVS snapshot reference), the
+following invariants hold with respect to the KVS job schema described in
+RFC 16:
+
+DEPEND::
+TBD
+
+SCHED::
+TBD
+
+RUN::
+TBD
+
+CLEANUP::
+Either an exception has been logged to `jobs.active.<jobid>.eventlog`,
+or a global status code from the application is available (TBD).
+
+INACTIVE::
+`jobs.inactive.<jobid>` contains the final snapshot of the job schema.

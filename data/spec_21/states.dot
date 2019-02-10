@@ -1,0 +1,30 @@
+digraph states {
+    rankdir=LR
+
+    size="8,5"
+
+    node [shape=doublecircle fontsize=10 fixsize=shape width=0.75]; INACTIVE
+
+    node [shape=circle fontsize=10 fixedsize=shape width=0.75];
+
+    subgraph cluster_main {
+        label = "active";
+        DEPEND;
+        SCHED;
+        RUN;
+        CLEANUP;
+    }
+
+    NEW -> DEPEND;
+    DEPEND -> SCHED [label="depend"];
+    SCHED -> RUN [label="alloc"];
+    RUN -> CLEANUP [label="finish"];
+    CLEANUP -> INACTIVE;
+
+    edge [weight=0 color="red"];
+
+    DEPEND -> CLEANUP [label="exception"];
+    SCHED -> CLEANUP;
+    RUN -> CLEANUP;
+}
+
