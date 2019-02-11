@@ -20,6 +20,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 *  link:spec_12{outfilesuffix}[12/Flux Security Architecture]
 *  link:spec_18{outfilesuffix}[18/KVS Event Log Format]
+*  link:spec_21{outfilesuffix}[21/Job States]
 
 == Background
 
@@ -157,34 +158,10 @@ job was submitted
 === Content Consumed/Produced by Job Manager
 
 Upon notification of a new `jobs.active.<jobid>`, the _job manager_ takes
-the active role in moving a job through its life cycle, and logs the
-following events the the eventlog as appropriate:
+the active role in moving a job through its life cycle, and logs events
+to the eventlog as described in RFC 21.
 
-`cancel`::
-job was canceled
-
-`alloc`::
-resources were allocated
-
-`start`::
-execution was started
-
-`finish`::
-execution completed
-
-`kill`::
-signal was sent
-
-`free`::
-resources were freed
-
-`priority`::
-priority was changed
-
-`timelimit`::
-wall clock limit reached
-
-When a job reaches the inactive state, the _job manager_ moves it to
+When a job becomes inactive, the _job manager_ moves it to
 `jobs.inactive`.
 
 When the _job manager_ is restarted, it recovers its state by scanning
