@@ -24,6 +24,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 * link:spec_4{outfilesuffix}[4/Flux Resource Model]
 * link:spec_8{outfilesuffix}[8/Flux Task and Program Execution Services]
+* link:spec_20{outfilesuffix}[20/Resource Set Specification Version 1]
 
 == Goals
 
@@ -149,7 +150,13 @@ and additionally MAY contain the following keys:
 +
 The default value for `max` SHALL be  _infinite_, therefore a `count`
 which specifies only the `min` key SHALL be considered a request for
-_at least_ that number of a resource.
+_at least_ that number of a resource, and the scheduler SHALL generate
+the _R_ that contains the maximum number of the resource that is
+available and subject to the operator and operand. By contrast,
+if a fixed count is given to the `count` key, the scheduler SHALL
+match any resource that contains _at least_ `count` of the resource,
+but its _R_ SHALL contain exactly `count` of the resource
+(potentially leaving excess resources unutilized).
 
 A resource vertex MAY additionally contain one or more of the
 following keys
