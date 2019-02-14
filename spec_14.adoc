@@ -133,13 +133,13 @@ A resource vertex SHALL contain the following keys:
  of two possible values: either a single integer value representing
  a fixed count, or a dictionary which SHALL contain the following keys:
 +
-[horizontal width=20%]
+[horizontal]
    *min*::: The minimum required count or amount of this resource
 
 +
 and additionally MAY contain the following keys:
 +
-[horizontal width=30%]
+[horizontal]
    *max*::: The maximum required count or amount of this resource
 
    *operator*::: An operator applied between `min` and `max` which
@@ -221,19 +221,29 @@ descriptor SHALL contain the following keys:
  number of tasks executed per task slot SHALL be a function of the
  number of resource slots and total number of tasks requested to execute.
 
- *count*::
- The value of the `count` key SHALL be a dictionary supporting at least
- the keys `per_slot` and `total`, with other keys reserved for future
- or site-specific extensions.
-+
+ *count*:: The value of the `count` key SHALL be a dictionary supporting at
+ least the keys `per_slot`, `per_resource`, and `total`, with other keys
+ reserved for future or site-specific extensions.
+
 [horizontal]
   *per_slot*:::
   The value of `per_slot` SHALL be a number indicating the number
   of tasks to execute per task slot allocated to the program.
 
+  *per_resource*::: The value of `per_resource` SHALL be a dictionary which
+  SHALL contain the following keys:
+
+  * *type* The value of the `type` key SHALL be a resource type explicitly
+   declared in the associated task's slot.
+
+  * *count* The value of the `count` key SHALL be a number indicating the number
+     of tasks to execute per resource of type `type` occurring in the task's
+     slot.
+
   *total*:::
   The value of the `total` field SHALL indicate the total number of
   tasks to be run across all task slots, possibly oversubscribed.
+
 
  *attributes*::
  The `attributes` key SHALL be a free-form dictionary of keys which may
@@ -365,14 +375,12 @@ $user_attributes = { /.*/ : string }
 To implement basic resource manager functionality, the following use
 cases SHALL be supported by the jobspec:
 
-=== Section 1: Resource only requests
+=== Section 1: Node-level Requests
 
-The following "resource only" requests are assumed to be the equivalent
-of existing resource manager batch job submission or allocation
-requests, i.e. equivalent to `oarsub`, `qsub`, and `salloc`. In terms
-of a canonical jobspec, these requests are assumed to be requests
-to start an instance, i.e. run a single copy of `flux start` per
-allocated node.
+The following "node-level" requests are all requests to start an instance,
+i.e. run a single copy of `flux start` per allocated node. Many of these
+requests are similar to existing resource manager batch job submission or
+allocation requests, i.e. equivalent to `oarsub`, `qsub`, and `salloc`.
 
 '''
 Use Case 1.1:: Request Single Resource with Count
@@ -473,13 +481,7 @@ include::data/spec_14/use_case_1.5.yaml[]
 Use Case 1.6:: Request resources across multiple clusters
 +
 Specific Example::
-Ask for 1 core on 15 nodes across 2 clusters (total = 30 cores)
-+
-Existing Equivalents::
-+
-|===
-| OAR |  `oarsub -I -l /cluster=2/nodes=15/core=1`
-|===
+Ask for 30 cores on 2 clusters (total = 60 cores), with 1 flux broker launched per node
 +
 Jobspec YAML::
 +
@@ -488,11 +490,12 @@ Jobspec YAML::
 include::data/spec_14/use_case_1.6.yaml[]
 ----
 
+
 '''
 Use Case 1.7:: Request N cores across M switches
 +
 Specific Example::
-Request 3 cores across 3 switches
+Request 3 cores across 3 switches, with 1 flux broker launched per node
 +
 Existing Equivalents::
 +
@@ -509,11 +512,11 @@ include::data/spec_14/use_case_1.7.yaml[]
 
 '''
 
-=== Section 2: Resource and task jobspec
 
-The following use cases include task specification in addition to resource
-request, demonstrating the use of task slot *labels* and *types* to relate
-tasks to resources.
+=== Section 2: General Requests
+
+The following use cases are more general and include more complex slot placement
+and task counts.
 
 '''
 Use Case 2.1:: Run N tasks across M nodes
@@ -625,6 +628,7 @@ Jobspec YAML::
 ----
 include::data/spec_14/use_case_2.6.yaml[]
 ----
+
 
 [sect2]
 == References

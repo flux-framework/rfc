@@ -7,13 +7,19 @@ resources:
         count: 1
         label: default
         with:
-          - type: core
-            count: 1
+          - type: node
+            count: {min: 1}
+            exclusive: false
+            with:
+              - type: core
+                count: 1
 tasks:
   - command: [ "flux", "start" ]
     slot: default
     count:
-      per_slot: 1
+      per_resource:
+        type: node
+        count: 1
 attributes:
   system:
-    duration: 1h
+    duration: 1 hour
