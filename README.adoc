@@ -112,6 +112,10 @@ representation or _R_ in short.
 link:spec_21{outfilesuffix}[21/Job States]::
 This specification describes Flux job states.
 
+link:spec_22{outfilesuffix}[22/Idset String Representation]::
+This specification describes a compact form for expressing a set of
+non-negative, integer ids.
+
 == Change Process
 
 The change process is
