@@ -90,10 +90,8 @@ the format version.
 The value of the `execution` key SHALL contain exactly three keys
 with other keys reserved for future extensions: `R_lite`, `starttime`,
 and `expiration`. `R_lite`
-is a strict list of dictionaries each of which SHALL contain three keys:
-
-  *node*:: The value of the `node` key SHALL be the string hostname
-   of the target compute node.
+is a strict list of dictionaries each of which SHALL contain at least
+the following two keys:
 
   *rank*:: The value of the `rank` key SHALL be the integer broker rank that
   manages the target compute node. This SHALL disambiguate the case where multiple
@@ -111,6 +109,12 @@ is a strict list of dictionaries each of which SHALL contain three keys:
     *gpu*::: This OPTIONAL key contains a logical GPU IDs string.
      It SHALL be a comma-separated list of gpu IDs or hyphenated ranges
      for consecutive integer IDs.
+
+An `R_lite` dictionary entry MAY also contain any of the following optional
+keys:
+
+  *node*:: The value of the `node` key, if present, SHALL be the string
+   hostname of the target compute node.
 
 `starttime` and `expiration` SHALL encode the start and end times
 of the resource set. The values of `starttime` and `expiration` SHALL
