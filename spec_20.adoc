@@ -23,6 +23,7 @@ in this document are to be interpreted as described in RFC 2119.
 * link:spec_14{outfilesuffix}[14/Canonical Job Specification]
 * link:spec_15{outfilesuffix}[15/Independent Minister of Privilege for Flux]
 * link:spec_16{outfilesuffix}[16/KVS Job Schema]
+* link:spec_22{outfilesuffix}[22/Idset String Representation]
 
 == Overview
 
@@ -103,12 +104,10 @@ the following two keys:
    extensions.
 
 [horizontal]
-    *core*::: The `core` key contains a logical compute core IDs string.
-     It SHALL be a comma-separated list of core IDs (e.g., 1,3,4,5) or
-     hyphenated ranges for consecutive integer IDs (e.g., 1,3-5).
-    *gpu*::: This OPTIONAL key contains a logical GPU IDs string.
-     It SHALL be a comma-separated list of gpu IDs or hyphenated ranges
-     for consecutive integer IDs.
+    *core*::: The `core` key SHALL contain a logical compute core IDs string
+     in RFC 22 *idset format*.
+    *gpu*::: The OPTIONAL `gpu` key SHALL contain a logical GPU IDs string
+     in RFC 22 *idset format*.
 
 An `R_lite` dictionary entry MAY also contain any of the following optional
 keys:
