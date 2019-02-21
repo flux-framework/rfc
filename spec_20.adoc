@@ -94,9 +94,10 @@ and `expiration`. `R_lite`
 is a strict list of dictionaries each of which SHALL contain at least
 the following two keys:
 
-  *rank*:: The value of the `rank` key SHALL be the integer broker rank that
-  manages the target compute node. This SHALL disambiguate the case where multiple
-  brokers manage a same node.
+  *rank*:: The value of the `rank` key SHALL be a string list of
+   broker rank identifiers in *idset format* (See RFC 22). This list
+   SHALL indicate the broker ranks to which other information in
+   the current entry applies.
 
   *children*:: The `children` key encodes the information about certain compute resources
    contained within this compute node. The value of this key SHALL contain a dictionary
