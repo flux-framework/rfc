@@ -87,8 +87,9 @@ the format version.
 
 === Execution
 
-The value of the `execution` key SHALL contain exactly one key
-with other keys reserved for future extensions: `R_lite`. `R_lite`
+The value of the `execution` key SHALL contain exactly three keys
+with other keys reserved for future extensions: `R_lite`, `starttime`,
+and `expiration`. `R_lite`
 is a strict list of dictionaries each of which SHALL contain three keys:
 
   *node*:: The value of the `node` key SHALL be the string hostname
@@ -110,6 +111,12 @@ is a strict list of dictionaries each of which SHALL contain three keys:
     *gpu*::: This OPTIONAL key contains a logical GPU IDs string.
      It SHALL be a comma-separated list of gpu IDs or hyphenated ranges
      for consecutive integer IDs.
+
+`starttime` and `expiration` SHALL encode the start and end times
+of the resource set. The values of `starttime` and `expiration` SHALL
+be the number of seconds elapsed since the Unix Epoch (1970-01-01 UTC).
+They MUST be greater than zero and the value for `expiration` MUST
+be greater than `starttime`.
 
 === Scheduling
 
