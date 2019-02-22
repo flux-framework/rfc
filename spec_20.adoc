@@ -88,11 +88,12 @@ the format version.
 
 === Execution
 
-The value of the `execution` key SHALL contain exactly three keys
-with other keys reserved for future extensions: `R_lite`, `starttime`,
-and `expiration`. `R_lite`
-is a strict list of dictionaries each of which SHALL contain at least
-the following two keys:
+The value of the `execution` key SHALL contain at least the single key
+`R_lite`, with optional keys `starttime` and `expiration` and other keys
+reserved for future extensions.
+
+`R_lite` is a strict list of dictionaries each of which SHALL contain
+at least the following two keys:
 
   *rank*:: The value of the `rank` key SHALL be a string list of
    broker rank identifiers in *idset format* (See RFC 22). This list
@@ -116,11 +117,22 @@ keys:
   *node*:: The value of the `node` key, if present, SHALL be the string
    hostname of the target compute node.
 
-`starttime` and `expiration` SHALL encode the start and end times
-of the resource set. The values of `starttime` and `expiration` SHALL
-be the number of seconds elapsed since the Unix Epoch (1970-01-01 UTC).
-They MUST be greater than zero and the value for `expiration` MUST
-be greater than `starttime`.
+The `execution` key MAY contain any of the following optional keys:
+
+  *starttime*:: The value of the `starttime` key, if present, SHALL
+   encode the start time at which the resource set is valid. The
+   value SHALL be the number of seconds elapsed since the Unix Epoch
+   (1970-01-01 00:00:00 UTC) with optional microsecond precision.
+   If `starttime` is unset, then the resource set has no specified
+   start time and is valid beginning at any time up to `expiration`.
+
+  *expiration:: The value of the `expiration` key, if present, SHALL
+   encode the end or expiration time of the resource set in seconds
+   since the Unix Epoch, with optional microsecond precision. If
+   `starttime` is also set, `expiration` MUST be greater than
+   `starttime`. If `expiration` is unset, the resource set has no
+   specified end time and is valid beginning at `starttime` without
+   expiration.
 
 === Scheduling
 
