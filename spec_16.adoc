@@ -134,8 +134,8 @@ A user submits _J_ with attached signature.
 
 The _ingest agent_ validates _J_ and if accepted, populates the KVS with:
 
-`jobs.active.<jobid>.J-signed`::
-signed J for passing to IMP in a multi-user instance.
+`jobs.active.<jobid>.J`::
+signed user request token for passing to IMP in a multi-user instance.
 
 `jobs.active.<jobid>.jobspec`::
 jobspec in JSON form
