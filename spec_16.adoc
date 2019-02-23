@@ -19,7 +19,10 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 == Related Standards
 
 *  link:spec_12{outfilesuffix}[12/Flux Security Architecture]
+*  link:spec_14{outfilesuffix}[14/Canonical Job Specification]
+*  link:spec_15{outfilesuffix}[15/Independent Minister of Privilege for Flux: The Security IMP]
 *  link:spec_18{outfilesuffix}[18/KVS Event Log Format]
+*  link:spec_20{outfilesuffix}[20/Resource Set Specification]
 *  link:spec_21{outfilesuffix}[21/Job States]
 
 == Background
@@ -120,52 +123,47 @@ to the guest namespace.
 
 === Event Log
 
-Active jobs undergo events that are recorded under
+Active jobs undergo change represented as events that are recorded under
 the key `jobs.active.<jobid>.eventlog`.  A KVS append operation
 is used to add events to this log.
 
 Each append consists of a string matching the format described in
-link:spec_18{outfilesuffix}[RFC 18/KVS Event Log Format].
+link:spec_18{outfilesuffix}[RFC 18].
 
 
 === Content Produced by Ingest Agent
 
-A user submits _J_ with attached signature.
+A user submits _J_ with attached signature, as described in
+link:spec_15{outfilesuffix}[RFC 15].
 
 The _ingest agent_ validates _J_ and if accepted, populates the KVS with:
 
-`jobs.active.<jobid>.J-signed`::
-signed J for passing to IMP in a multi-user instance.
+`jobs.active.<jobid>.J`::
+signed user request token for passing to IMP in a multi-user instance.
 
 `jobs.active.<jobid>.jobspec`::
-jobspec in JSON form
-
-`jobs.active.<jobid>.priority`::
-integer priority (0-31)
-
-`jobs.active.<jobid>.userid`::
-authenticated userid (must match signature)
+jobspec in JSON form, as described in link:spec_14{outfilesuffix}[RFC 14]
 
 `jobs.active.<jobid>.eventlog`::
 eventlog described above
 
 The _ingest agent_ logs one event to the eventlog:
 
-`submit`::
-job was submitted
+`submit` `userid=UID priority=N`::
+job was submitted, with authenticated userid and priority (0-31)
 
 
 === Content Consumed/Produced by Job Manager
 
 Upon notification of a new `jobs.active.<jobid>`, the _job manager_ takes
 the active role in moving a job through its life cycle, and logs events
-to the eventlog as described in RFC 21.
+to the eventlog as described in link:spec_21{outfilesuffix}[RFC 21].
 
 When a job becomes inactive, the _job manager_ moves it to
 `jobs.inactive`.
 
 When the _job manager_ is restarted, it recovers its state by scanning
-`jobs.active`.
+`jobs.active` and replaying the eventlog for each job found there.
 
 
 === Content Consumed/Produced by Scheduler
@@ -174,6 +172,7 @@ When the _scheduler_ receives an allocation request containing a jobid,
 it reads the jobspec from `jobs.active.<jobid>.jobspec`.
 
 The scheduler allocates resources by writing a resource set
+as described in link:spec_20{outfilesuffix}[RFC 20]
 to `jobs.active.<jobid>.R` and answering the allocation request.
 
 The scheduler frees resources by answering the free request,
