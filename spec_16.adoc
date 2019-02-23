@@ -140,19 +140,13 @@ signed J for passing to IMP in a multi-user instance.
 `jobs.active.<jobid>.jobspec`::
 jobspec in JSON form
 
-`jobs.active.<jobid>.priority`::
-integer priority (0-31)
-
-`jobs.active.<jobid>.userid`::
-authenticated userid (must match signature)
-
 `jobs.active.<jobid>.eventlog`::
 eventlog described above
 
 The _ingest agent_ logs one event to the eventlog:
 
-`submit`::
-job was submitted
+`submit` `userid=UID priority=N`::
+job was submitted, with authenticated userid and priority (0-31)
 
 
 === Content Consumed/Produced by Job Manager
