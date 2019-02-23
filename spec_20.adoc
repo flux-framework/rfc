@@ -126,7 +126,7 @@ The `execution` key MAY contain any of the following optional keys:
    If `starttime` is unset, then the resource set has no specified
    start time and is valid beginning at any time up to `expiration`.
 
-  *expiration:: The value of the `expiration` key, if present, SHALL
+  *expiration*:: The value of the `expiration` key, if present, SHALL
    encode the end or expiration time of the resource set in seconds
    since the Unix Epoch, with optional microsecond precision. If
    `starttime` is also set, `expiration` MUST be greater than
