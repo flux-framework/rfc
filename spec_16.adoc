@@ -159,7 +159,7 @@ When a job becomes inactive, the _job manager_ moves it to
 `jobs.inactive`.
 
 When the _job manager_ is restarted, it recovers its state by scanning
-`jobs.active`.
+`jobs.active` and replaying the eventlog for each job found there.
 
 
 === Content Consumed/Produced by Scheduler
