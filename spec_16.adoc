@@ -68,8 +68,8 @@ bootstrap, signal propagation, and exit code collection services.
 It is a user-replaceable component.
 
 6) Once tasks exit, or an exceptional condition such as cancellation or
-expiration of wall clock allocation occurs, the _job manager_ directs the
-_exec service_ to clean up any lingering tasks and _job shells_, then
+expiration of wall clock allocation occurs, the _exec service_ cleans up
+any lingering tasks and _job shells_, and notifies the _job manager_ which
 frees resources back to the _scheduler_.
 
 The job is now complete.
@@ -119,6 +119,9 @@ namespace, and the guest namespace is destroyed.
 Guests may access data in the primary KVS namespace only through instance
 services that allow selective guest access, by proxy or by staging copies
 to the guest namespace.
+
+Guest access for primary namespace contents `R`, `J`, `jobspec`, and
+`eventlog` is provided via a proxy service in the instance.
 
 
 === Event Log
@@ -190,14 +193,13 @@ and uses this information to launch _job shells_ and subsequently tasks.
 The _exec system_ creates the job's guest namespace and links it to
 `jobs.active.<jobid>.guest`.  Its initial contents are populated with
 
-`exec.R`::
-copy of `jobs.active.<jobid>.R`
-
-`exec.jobspec`::
-copy of `jobs.active.<jobid>.jobspec`
-
 `exec.eventlog`::
 An eventlog for the use of _job shells_, TBD.
+
+Once all _job shells_ have exited and all outstanding writes to
+the guest namespace have stopped, the _exec system_ links the guest
+namespace into the primary KVS namespace before notifying the _job
+manager_ that the job is finished.
 
 
 === Content Produced/Consumed by Other Instance Services
@@ -219,9 +221,6 @@ a name unique to the service producing the data.
 
 The application MAY store application-specific data in the guest KVS
 namespace under `application`.
-
-When the application is another Flux instance, `exec.R` MAY be used
-to initialize the resource set managed by the instance.
 
 === Content Consumed/Produced by Tools
 
