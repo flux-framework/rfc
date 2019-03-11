@@ -68,8 +68,8 @@ bootstrap, signal propagation, and exit code collection services.
 It is a user-replaceable component.
 
 6) Once tasks exit, or an exceptional condition such as cancellation or
-expiration of wall clock allocation occurs, the _job manager_ directs the
-_exec service_ to clean up any lingering tasks and _job shells_, then
+expiration of wall clock allocation occurs, the _exec service_ cleans up
+any lingering tasks and _job shells_, and notifies the _job manager_ which
 frees resources back to the _scheduler_.
 
 The job is now complete.
