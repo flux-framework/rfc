@@ -120,6 +120,9 @@ Guests may access data in the primary KVS namespace only through instance
 services that allow selective guest access, by proxy or by staging copies
 to the guest namespace.
 
+Guest access for primary namespace contents `R`, `J`, `jobspec`, and
+`eventlog` is provided via a proxy service in the instance.
+
 
 === Event Log
 
