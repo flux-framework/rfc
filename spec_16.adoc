@@ -193,12 +193,6 @@ and uses this information to launch _job shells_ and subsequently tasks.
 The _exec system_ creates the job's guest namespace and links it to
 `jobs.active.<jobid>.guest`.  Its initial contents are populated with
 
-`exec.R`::
-copy of `jobs.active.<jobid>.R`
-
-`exec.jobspec`::
-copy of `jobs.active.<jobid>.jobspec`
-
 `exec.eventlog`::
 An eventlog for the use of _job shells_, TBD.
 
@@ -222,9 +216,6 @@ a name unique to the service producing the data.
 
 The application MAY store application-specific data in the guest KVS
 namespace under `application`.
-
-When the application is another Flux instance, `exec.R` MAY be used
-to initialize the resource set managed by the instance.
 
 === Content Consumed/Produced by Tools
 
