@@ -196,6 +196,11 @@ The _exec system_ creates the job's guest namespace and links it to
 `exec.eventlog`::
 An eventlog for the use of _job shells_, TBD.
 
+Once all _job shells_ have exited and all outstanding writes to
+the guest namespace have stopped, the _exec system_ links the guest
+namespace into the primary KVS namespace before notifying the _job
+manager_ that the job is finished.
+
 
 === Content Produced/Consumed by Other Instance Services
 
