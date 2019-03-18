@@ -257,8 +257,8 @@ descriptor SHALL contain the following keys:
 === Attributes
 
 The value of the `attributes` key SHALL be a dictionary of dictionaries.
-The `attributes` dictionary MAY contain one or more of the following keys
-which, if present, must have dictionary values:
+The `attributes` dictionary MAY contain one or both of the following keys
+which, if present, must have values.  Values MAY have any valid YAML type.
 
  *user*::
  Attributes in the `user` dictionary are unrestricted, and may be used
