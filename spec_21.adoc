@@ -85,7 +85,8 @@ the job manager waits for notification from the exec service that job
 resources can be released, logging `release` events, then returns resources
 to the scheduler and logs a `free` event.  Under exceptional termination,
 one or more steps may be unnecessary, depending on prior events.
-Once cleanup is complete, the state transitions to INACTIVE.
+Once cleanup is complete, the job manager logs a `clean` event.
+The state transitions to INACTIVE.
 
 INACTIVE::
 Job data in KVS is now read-only (captive state).
@@ -221,6 +222,18 @@ Example:
 
 ----
 1552593348.090927 finish
+----
+
+==== Clean Event
+
+Cleanup has completed.
+
+The context SHALL be empty.
+
+Example:
+
+----
+1552593348.104432 clean
 ----
 
 ==== Exception Event
