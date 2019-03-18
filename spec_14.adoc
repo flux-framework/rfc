@@ -105,9 +105,9 @@ program. The dictionary MUST contain the keys `resources`, `tasks`,
 
 Each of the listed jobspec keys SHALL meet the form and requirements
 listed in detail in the sections below. For reference, a ruleset for
-compliant canonical jobspec is provided using *JSON Content Rules*
-footnoteref:[contentrules,https://tools.ietf.org/id/draft-newton-json-content-rules-06.txt[JSON Content Rules (jcr-version 0.6)]; A. Newton; P. Cordell; 2016]
- in the *Content Rules* at the end of this section.
+compliant canonical jobspec is provided using *JSON Schema*
+footnoteref:[jsonschema,https://json-schema.org/latest/json-schema-core.html[JSON Schema: A Media Type for Describing JSON Documents]; H. Andrews; 2018]
+ in the *Schema* at the end of this section.
 
 === Resources
 
@@ -304,71 +304,16 @@ Another example, running one task on each of four nodes.
 include::data/spec_14/example2.yaml[]
 ----
 
-=== Content Rules
+=== Schema
 
 A jobspec conforming to version 1 of the language definition SHALL
-adhere to the following ruleset, described using JSON Content Rules
-footnoteref:[contentrules]
- draft version 0.6.
+adhere to the following ruleset, described using JSON Schema
+footnoteref:[jsonschema]
 
+[source,json]
 ----
-# jcr-version 0.6
-
-{
-   "resources" : [ $vertex + ],
-   "tasks" : tasks,
-   "attributes" : { $system_attributes, $user_attributes },
-   "version" : 1
-}
-
-$slot_label := string
-
-$vertex_common = {
-    "count" : ( 1.. | $complex_range),
-    ?"exclusive" : boolean,
-    ?"with" : [ $vertex + ]
-}
-
-slot_vertex = {
-    "type"  : "slot",
-    "label" : $slot_label,
-    $vertex_common,
-}
-
-resource_vertex = {
-    "type" : ( :string, + @{reject} ("slot")),
-    $vertex_common
-    ?"id" : string,
-    ?"unit" : string,
-}
-
-vertex = ( $slot_vertex | $resource_vertex )
-
-$complex_range = {
-    "min" : 1..,
-    "max" : 1..,
-    "operator" : ( :"+" | :"*" | : "^" ),
-    "operand" : 1..,
-}
-
-$tasks = {
-    "command" : [ string + ],
-    "slot" : $slot_label,
-    "count" : { "per_slot" : 1.. | "total" : 1.. },
-    "distribution" : string,
-    ?"attributes" : { /.*/ : any },
-}
-
-$system_attributes = {
-    "duration" : string,
-    /.*/ : string
-}
-
-$user_attributes = { /.*/ : string }
-
+include::data/spec_14/schema.json[]
 ----
-
-
 
 == Basic Use Cases
 
