@@ -1,9 +1,10 @@
 ifdef::env-github[:outfilesuffix: .adoc]
 
-21/Job States
-=============
+21/Job States and Events
+========================
 
-This specification describes Flux job states.
+This specification describes Flux job states and the events that trigger
+job state transitions.
 
 * Name: github.com/flux-framework/rfc/spec_21.adoc
 * Editor: Jim Garlick <garlick@llnl.gov>
@@ -44,12 +45,11 @@ and _inactive_ once it has.
 * All job state transitions SHALL be initiated by the job manager.
 * A state SHALL exist for synchronization on job completion, such that
   job data in the KVS is stable once this state is reached.
-* Events that drive state transitions SHALL be logged to the job eventlog.
+* All job state transitions SHALL be driven by events.
+* Events SHALL be logged to the job eventlog.
 * Replaying the job eventlog SHALL accurately reproduce the current job state.
 
 == Implementation
-
-Job state transitions are driven by events.
 
 === State Diagram
 
