@@ -1,9 +1,10 @@
 ifdef::env-github[:outfilesuffix: .adoc]
 
-21/Job States
-=============
+21/Job States and Events
+========================
 
-This specification describes Flux job states.
+This specification describes Flux job states and the events that trigger
+job state transitions.
 
 * Name: github.com/flux-framework/rfc/spec_21.adoc
 * Editor: Jim Garlick <garlick@llnl.gov>
@@ -44,12 +45,11 @@ and _inactive_ once it has.
 * All job state transitions SHALL be initiated by the job manager.
 * A state SHALL exist for synchronization on job completion, such that
   job data in the KVS is stable once this state is reached.
-* Events that drive state transitions SHALL be logged to the job eventlog.
+* All job state transitions SHALL be driven by events.
+* Events SHALL be logged to the job eventlog.
 * Replaying the job eventlog SHALL accurately reproduce the current job state.
 
 == Implementation
-
-Job state transitions are driven by events.
 
 === State Diagram
 
@@ -85,7 +85,8 @@ the job manager waits for notification from the exec service that job
 resources can be released, logging `release` events, then returns resources
 to the scheduler and logs a `free` event.  Under exceptional termination,
 one or more steps may be unnecessary, depending on prior events.
-Once cleanup is complete, the state transitions to INACTIVE.
+Once cleanup is complete, the job manager logs a `clean` event.
+The state transitions to INACTIVE.
 
 INACTIVE::
 Job data in KVS is now read-only (captive state).
@@ -102,6 +103,8 @@ An exception event with severity of zero SHALL cause the job state to
 immediately transition to `CLEANUP`.   Exception events with a severity
 other than zero do not affect job state, and are assumed to be meaningful
 to other components managing non-fatal exceptions.
+
+More than one exception MAY occur per job.
 
 The exception event format is described below.
 
@@ -221,6 +224,18 @@ Example:
 
 ----
 1552593348.090927 finish
+----
+
+==== Clean Event
+
+Cleanup has completed.
+
+The context SHALL be empty.
+
+Example:
+
+----
+1552593348.104432 clean
 ----
 
 ==== Exception Event

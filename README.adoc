@@ -109,8 +109,9 @@ link:spec_20{outfilesuffix}[20/Resource Set Specification]::
 This specification defines the version 1 format of the resource-set
 representation or _R_ in short.
 
-link:spec_21{outfilesuffix}[21/Job States]::
-This specification describes Flux job states.
+link:spec_21{outfilesuffix}[21/Job States and Events]::
+This specification describes Flux job states and the events that trigger
+job state transitions.
 
 link:spec_22{outfilesuffix}[22/Idset String Representation]::
 This specification describes a compact form for expressing a set of
