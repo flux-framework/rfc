@@ -105,9 +105,7 @@ program. The dictionary MUST contain the keys `resources`, `tasks`,
 
 Each of the listed jobspec keys SHALL meet the form and requirements
 listed in detail in the sections below. For reference, a ruleset for
-compliant canonical jobspec is provided using *JSON Schema*
-footnoteref:[jsonschema,https://json-schema.org/latest/json-schema-core.html[JSON Schema: A Media Type for Describing JSON Documents]; H. Andrews; 2018]
- in the *Schema* at the end of this section.
+compliant canonical jobspec is provided in the *Schema* section below.
 
 === Resources
 
@@ -308,7 +306,7 @@ include::data/spec_14/example2.yaml[]
 
 A jobspec conforming to version 1 of the language definition SHALL
 adhere to the following ruleset, described using JSON Schema
-footnoteref:[jsonschema]
+footnote:[https://json-schema.org/latest/json-schema-core.html[JSON Schema: A Media Type for Describing JSON Documents]; H. Andrews; 2018].
 
 [source,json]
 ----
