@@ -216,14 +216,17 @@ Example:
 
 Job shells have terminated.
 
-The context SHALL be empty.
+The following keys are REQUIRED in the event context object:
 
-Future: context will contain or refer to global exit status.
+status::
+(integer) The largest of the job shell wait status codes, as
+defined by POSIX wait(2)
+footnote:[http://pubs.opengroup.org/onlinepubs/009604499/functions/wait.html[wait, waitpid - wait for a child process to stop or terminate]; The Open Group Base Specifications Issue 6; IEEE Std 1003.1, 2004 Edition]
 
 Example:
 
 ----
-1552593348.090927 finish
+1552593348.090927 finish {"status":0}
 ----
 
 ==== Clean Event
