@@ -197,8 +197,6 @@ Example:
 
 Resources have been released.
 
-Example:
-
 The following keys are REQUIRED in the event context object:
 
 ranks::
@@ -207,6 +205,8 @@ of resources that are being released.
 
 final::
 (boolean) True if all resources allocated to the job have been released.
+
+Example:
 
 ----
 1552593348.092830 release {"ranks":"all","final":true}
