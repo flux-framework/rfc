@@ -571,9 +571,3 @@ Jobspec YAML::
 ----
 include::data/spec_14/use_case_2.6.yaml[]
 ----
-
-
-[sect2]
-== References
-
-* https://www.ogf.org/documents/GFD.56.pdf[Job Submission Description Language (JSDL) Specification, Version 1.0, Ali Anjomshoaa, et al., 2005]
