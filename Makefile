@@ -23,22 +23,19 @@ SOURCES = \
 	spec_22.adoc
 
 HTML = $(SOURCES:.adoc=.html)
-PDF = $(SOURCES:.adoc=.pdf)
+
+# N.B. 'apt-get install codray' to enable inline source highlighting
+ADOC_FLAGS = --attribute=source-highlighter=coderay
 
 all: html
 
 html: $(HTML)
 
-pdf: $(PDF)
-
 %.html: %.adoc
-	asciidoc -o $@ $^
-
-%.pdf: %.adoc
-	a2x -f pdf $^
+	asciidoctor $(ADOC_FLAGS) -o $@ $^
 
 clean:
-	rm -f $(HTML) $(PDF)
+	rm -f $(HTML)
 
 check:
 	ASPELL=aspell ./spellcheck *.adoc
