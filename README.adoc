@@ -117,6 +117,9 @@ link:spec_22{outfilesuffix}[22/Idset String Representation]::
 This specification describes a compact form for expressing a set of
 non-negative, integer ids.
 
+link:spec_23{outfilesuffix}[23/Flux Standard Duration]::
+This specification describes a standard form for time duration.
+
 == Change Process
 
 The change process is
