@@ -278,9 +278,11 @@ at all possible.
 Some common system attributes are:
 
  *duration*::
- The value of the `duration` attribute is a number representing time span
- in seconds. The scheduler will make an effort to allocate the requested
- resources for the number of seconds specified in `duration`.
+ The value of the `duration` attribute is a number greater than or equal
+ to zero representing time span in seconds. A `duration` of 0 SHALL be
+ interpreted as "unlimited" or "not set" by the system. The scheduler
+ will make an effort to allocate the requested resources for the number
+ of seconds specified in `duration`.
 
 === Example Jobspec
 
