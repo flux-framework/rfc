@@ -17,19 +17,18 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == Related Standards
 
-*  link:spec_16{outfilesuffix}[16/KVS Job Schema]
+*  link:spec_21{outfilesuffix}[21/Job States and Events]
 
 == Background
 
-The initial use case for Flux KVS Event Logs is recording Flux job state
-transitions.  As stated in RFC 16:
+The initial use case for Flux KVS Event Logs is recording events
+that cause Flux job state transitions, for historical and
+synchronization purposes.  These events are defined in detail
+in RFC 21.
 
-__________________________________________________
-Active jobs undergo state transitions that are recorded under
-the key `jobs.active.<jobid>.eventlog`.  A KVS append operation
-is used to add events to this log.
-__________________________________________________
-
+KVS atomic append capability enables multiple writers to add events to
+a single Flux Event Log in a race-free manner.  KVS watch capability
+enables a Flux Event Log to be used for synchronization.
 
 == Event Log Format
 
