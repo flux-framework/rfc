@@ -17,40 +17,52 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 
 == Related Standards
 
-*  link:spec_16{outfilesuffix}[16/KVS Job Schema]
+*  link:spec_21{outfilesuffix}[21/Job States and Events]
 
 == Background
 
-The initial use case for Flux KVS Event Logs is recording Flux job state
-transitions.  As stated in RFC 16:
+The initial use case for Flux KVS Event Logs is recording events
+that cause Flux job state transitions, for historical and
+synchronization purposes.  These events are defined in detail
+in RFC 21.
 
-__________________________________________________
-Active jobs undergo state transitions that are recorded under
-the key `jobs.active.<jobid>.eventlog`.  A KVS append operation
-is used to add events to this log.
-__________________________________________________
-
+KVS atomic append capability enables multiple writers to add events to
+a single Flux Event Log in a race-free manner.  KVS watch capability
+enables a Flux Event Log to be used for synchronization.
 
 == Event Log Format
 
-An event log SHALL be append-only.  An event appended to a KVS event log
-MUST take the following form:
+A Flux KVS Event Log SHALL consist of events separated by newlines.
+Each event SHALL be an independent JSON object, serialized without
+embedded newlines.  The Event Log as a whole is not valid JSON.
 
+The following keys are REQUIRED in an event object:
+
+timestamp::
+(number) The time stamp indicating when the event was created,
+represented as seconds since the Unix Epoch (1970-01-01 UTC).
+It MUST be greater than zero, and MAY include sub-second precision.
+
+name::
+(string) The name of the event.
+
+The following keys are OPTIONAL in an event object:
+
+context::
+(object) Application-specific event data.
+
+== Example
+
+An example Flux Event Log:
+
+[source]
 ----
-timestamp name [context ...]\n
+{"timestamp":1552593348.073045,"name":"submit","context":{"priority":16,"userid":5588,"flags":0}}
+{"timestamp":1552593547.411336,"name":"priority","context":{"priority":0,"userid":5588}}
+{"timestamp":1552593348.088391,"name":"alloc",context:{"note":"rank0/core[0-1]"}}
+{"timestamp":1552593348.093541,"name":"free"}
+{"timestamp":1552593348.089787,"name":"start"}
+{"timestamp":1552593348.092830,"name":"release","context":{"ranks":"all","final":true}}
+{"timestamp":1552593348.090927,"name":"finish","context":{"status":0}}
+{"timestamp":1552593348.104432,"name":"clean"}
 ----
-
-Where:
-
-* `timestamp` SHALL be the number of seconds since the Unix Epoch (1970-01-01
-  UTC), expressed with optional sub-second precision in decimal notation.
-  It MUST be greater than zero.  This field is REQUIRED.
-* `name` SHALL be a string denoting the name of the event.  It MUST NOT contain
-  the space character or the newline character, and SHALL be between one
-  and 64 characters in length.  This field is REQUIRED.
-* `context` SHALL be a string providing additional arguments or description
-  of the event.  It MUST NOT contain the newline character, and SHALL be
-  between one and 256 characters in length.  This field is OPTIONAL.
-
-The elements (i.e., timestamp, name, and context) within a single event are
-spaced-delimited, and events themselves are newline terminated.
