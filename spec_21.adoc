@@ -113,9 +113,8 @@ The exception event format is described below.
 Job state transitions are driven by events that are logged to
 `jobs.active.<jobid>.eventlog` as required by RFC 16.
 
-The event _context_ (described in RFC 18) SHALL consist of a JSON object,
-encoded without newline characters.  Specific requirements for each event
-are described below:
+Events are formatted as described in RFC 18, with additional requirements
+described below:
 
 ==== Submit Event
 
@@ -134,8 +133,9 @@ flags::
 
 Example:
 
+[source,json]
 ----
-1552593348.073045 submit {"priority":16,"userid":5588,"flags":0}
+{"timestamp":1552593348.073045,"name":"submit","context":{"priority":16,"userid":5588,"flags":0}}
 ----
 
 ==== Priority Event
@@ -150,8 +150,9 @@ priority::
 userid::
 (integer) Authenticated user ID of requester.
 
+[source,json]
 ----
-1552593547.411336 priority {"priority":0,"userid":5588}
+{"timestamp":1552593547.411336,"name":"priority","context":{"priority":0,"userid":5588}}
 ----
 
 ==== Alloc Event
@@ -165,8 +166,9 @@ note::
 
 Example:
 
+[source,json]
 ----
-1552593348.088391 alloc {"note":"rank0/core[0-1]"}
+{"timestamp":1552593348.088391,"name":"alloc","context":{"note":"rank0/core[0-1]"}}
 ----
 
 ==== Free Event
@@ -177,8 +179,9 @@ The context SHALL be empty.
 
 Example:
 
+[source,json]
 ----
-1552593348.093541 free
+{"timestamp":1552593348.093541,"name":"free"}
 ----
 
 ==== Start Event
@@ -189,8 +192,9 @@ The context SHALL be empty.
 
 Example:
 
+[source,json]
 ----
-1552593348.089787 start
+{"timestamp":1552593348.089787,"name":"start"}
 ----
 
 ==== Release Event
@@ -208,8 +212,9 @@ final::
 
 Example:
 
+[source,json]
 ----
-1552593348.092830 release {"ranks":"all","final":true}
+{"timestamp":1552593348.092830,"name":"release","context":{"ranks":"all","final":true}}
 ----
 
 ==== Finish Event
@@ -225,8 +230,9 @@ footnote:[http://pubs.opengroup.org/onlinepubs/009604499/functions/wait.html[wai
 
 Example:
 
+[source,json]
 ----
-1552593348.090927 finish {"status":0}
+{"timestamp":1552593348.090927,"name":"finish","context":{"status":0}}
 ----
 
 ==== Clean Event
@@ -237,8 +243,9 @@ The context SHALL be empty.
 
 Example:
 
+[source,json]
 ----
-1552593348.104432 clean
+{"timestamp":1552593348.104432,"name":"clean"}
 ----
 
 ==== Exception Event
@@ -264,8 +271,9 @@ userid::
 
 Example:
 
+[source,json]
 ----
-1552593986.335602 exception {"type":"oom","severity":0,"userid":5588,"note":"out of memory on foo42"}
+{"timestamp":1552593986.335602,"name":"exception","context":{"type":"oom","severity":0,"userid":5588,"note":"out of memory on foo42"}}
 ----
 
 Exception types include but are not limited to:
@@ -297,8 +305,9 @@ There are no specific requirements for the event context.
 
 Example:
 
+[source,json]
 ----
-1552594649.848032 debug.free-request
+{"timestamp":1552594649.848032,"name":"debug.free-request"}
 ----
 
 === Synchronization
