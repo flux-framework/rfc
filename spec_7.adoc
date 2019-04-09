@@ -31,10 +31,10 @@ Flux projects written in C SHOULD conform to the C99 version of the language.
 
 In general, Flux follows the "Kernighan & Ritchie coding style" with the following exceptions or examples:
 
-1. Indenting SHOULD be with spaces, and not tabs.
-2. One level of indentation SHOULD be 4 spaces.
-3. One space SHOULD separate function names and the opening parenthesis (enhances readability).
-4. There SHOULD be no trailing spaces (or tabs) after the last non-space character in a line.
+1. Indenting SHALL be with spaces, and not tabs.
+2. One level of indentation SHALL be 4 spaces.
+3. One space SHALL separate function names and the opening parenthesis (enhances readability).
+4. There SHALL be no trailing spaces (or tabs) after the last non-space character in a line.
 5. Lines SHOULD be limited to 80 characters.
 6. Comments SHOULD be indented to the depth of the code they are describing.
 7. The return type SHOULD be on the same line as the function declaration.
