@@ -53,6 +53,8 @@ Ritchie
 shiftwidth
 stroustrup
 struct
+enum
+enums
 tabstop
 typedefs
 whitespace
