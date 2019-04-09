@@ -56,19 +56,23 @@ For example `FLUX_FOO_MAGIC` is OK but `flux_foo_magic` and `FluxFooMagic` do no
 C typedef names SHOULD NOT include upper case letters.
 
 C typedef names for functions SHOULD end in `_f` and SHOULD be defined as function pointers, for example:
+
 ----
 typedef int (*flux_foo_f)(int arg1, int arg2);
 ----
 
 C typedef names for non-functions SHOULD end in `_t`, for example:
+
 ----
 typedef int my_type_t;
 ----
 
 Abstract types SHOULD be publicly defined as incomplete types, for example:
+
 ----
 typedef struct foo foo_t;
 ----
+
 Abstract types SHOULD NOT be defined as pointers to incomplete types, as
 this obscures the fact that they are pointers when used in declarations.
 
@@ -87,18 +91,22 @@ prototypes, and give different `sizeof` results depending on context.
 Structure tags SHOULD NOT contain the string "struct".
 
 In the same way that we would not write:
+
 ----
 int count_int;
 float val_float;
 ----
+
 we also should not write:
+
 ----
 struct foo_struct {};
 ----
 
 === Tools for C formatting
 
-"indent -kr" will bring you most of the way towards conforming to the Flux coding style.
+The flux-core repository includes a `.clang-format` file for use with
+clang-format, and SHOULD be used for automated formatting if possible.
 
 Those using vi will automatically follow some of the Flux style based on the presence of the following at the end of each file:
 
@@ -120,11 +128,6 @@ In emacs, add this to your custom-set-variables defs to highlight whitespace err
 '(show-trailing-whitespace t)
 ----
 
-For astyle, the pertinent options would be:
-----
---indent-coll-comments --style=stroustrup --indent-spaces=4
- --align-pointer=name --max-code-length=80 --convert-tabs
-----
 
 == Python coding style
 
