@@ -6,7 +6,8 @@ ifdef::env-github[:outfilesuffix: .adoc]
 This specification presents the recommended standards when contributing code to the Flux code base.
 
 * Name: github.com/flux-framework/rfc/spec_7.adoc
-* Editor: Don Lipari <lipari@llnl.gov>
+* Editor: Tom Scogland <scogland1@llnl.gov>
+* Original author: Don Lipari <lipari@llnl.gov>
 * State: draft
 
 == Language
