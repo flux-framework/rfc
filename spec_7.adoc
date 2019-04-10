@@ -91,6 +91,7 @@ Structure tags SHOULD NOT contain the string "struct".
 
 In the same way that we would not write:
 
+[source,c]
 ----
 int count_int;
 float val_float;
@@ -98,6 +99,7 @@ float val_float;
 
 we also should not write:
 
+[source,c]
 ----
 struct foo_struct {};
 ----
@@ -110,6 +112,30 @@ casts in stronger typed contexts, for example `enum flux_<name> {};` rather than
 `enum {};`.  If possible, the name should be derived from the function or
 structure it is meant to apply to.  Further, the name SHOULD have a suffix of
 `_b` if it is a bitmask enum.
+
+Examples:
+
+[source, c]
+----
+// Good, named, none is not a valid state
+enum flux_msg_type {
+    FLUX_MSGTYPE_REQUEST    = 0x01,
+    FLUX_MSGTYPE_RESPONSE   = 0x02,
+    FLUX_MSGTYPE_EVENT      = 0x04,
+    FLUX_MSGTYPE_KEEPALIVE  = 0x08,
+    FLUX_MSGTYPE_ANY        = 0x0f,
+    FLUX_MSGTYPE_MASK       = 0x0f,
+};
+
+// Good, named with suffix, bitmap with none valid
+enum flux_flag_b {
+    FLUX_O_NONE = 0,
+    FLUX_O_TRACE = 1,
+    FLUX_O_CLONE = 2,
+    FLUX_O_NONBLOCK = 4,
+    FLUX_O_MATCHDEBUG = 8,
+};
+----
 
 In order to represent the full range of values, enums that use a zero for none
 or similar SHOULD include an item with the value zero to represent that state.
