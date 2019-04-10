@@ -1,7 +1,6 @@
-ifdef::env-github[:outfilesuffix: .adoc]
-
 7/Flux Coding Style Guide
 =========================
+ifdef::env-github[:outfilesuffix: .adoc]
 
 This specification presents the recommended standards when contributing code to the Flux code base.
 
