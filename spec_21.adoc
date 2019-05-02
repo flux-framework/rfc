@@ -111,7 +111,7 @@ The exception event format is described below.
 === Event Descriptions
 
 Job state transitions are driven by events that are logged to
-`jobs.active.<jobid>.eventlog` as required by RFC 16.
+`jobs.<jobid>.eventlog` as required by RFC 16.
 
 Events are formatted as described in RFC 18, with additional requirements
 described below:
@@ -328,8 +328,8 @@ RUN::
 TBD
 
 CLEANUP::
-Either an exception has been logged to `jobs.active.<jobid>.eventlog`,
+Either an exception has been logged to `jobs.<jobid>.eventlog`,
 or a global status code from the application is available (TBD).
 
 INACTIVE::
-`jobs.inactive.<jobid>` contains the final snapshot of the job schema.
+`jobs.<jobid>` contains the final snapshot of the job schema.
