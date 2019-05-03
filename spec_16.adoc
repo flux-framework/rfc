@@ -82,7 +82,7 @@ The Flux instance has a default, shared namespace that is accessible
 only by the instance owner.
 
 All job data is stored under a `jobs` directory in the primary
-namespace.  Each job has a directory under `jobs.<jobid>`, where
+namespace.  Each job has a directory under `job.<jobid>`, where
 `<jobid>` is a unique sequence number assigned by the _ingest agent_.
 Jobs listed in the `jobs` directory may need to be periodically
 archived and purged to keep its size manageable in long-running
@@ -92,7 +92,7 @@ instances.
 
 A guest-writable KVS namespace is created by the _exec service_
 for the use of the _job shell_ and the application.  While the job
-is active, this namespace is linked from `jobs.<jobid>.guest`
+is active, this namespace is linked from `job.<jobid>.guest`
 in the primary KVS namespace.  While linked, it can be changed
 by the guest components without impacting performance of the primary
 namespace, while still being accessible through the link in the
@@ -116,7 +116,7 @@ Guest access for primary namespace contents `R`, `J`, `jobspec`, and
 === Event Log
 
 Active jobs undergo change represented as events that are recorded under
-the key `jobs.<jobid>.eventlog`.  A KVS append operation
+the key `job.<jobid>.eventlog`.  A KVS append operation
 is used to add events to this log.
 
 Each append consists of a string matching the format described in
@@ -130,13 +130,13 @@ link:spec_15{outfilesuffix}[RFC 15].
 
 The _ingest agent_ validates _J_ and if accepted, populates the KVS with:
 
-`jobs.<jobid>.J`::
+`job.<jobid>.J`::
 signed user request token for passing to IMP in a multi-user instance.
 
-`jobs.<jobid>.jobspec`::
+`job.<jobid>.jobspec`::
 jobspec in JSON form, as described in link:spec_14{outfilesuffix}[RFC 14]
 
-`jobs.<jobid>.eventlog`::
+`job.<jobid>.eventlog`::
 eventlog described above
 
 The _ingest agent_ logs one event to the eventlog:
@@ -147,7 +147,7 @@ job was submitted, with authenticated userid and priority (0-31)
 
 === Content Consumed/Produced by Job Manager
 
-Upon notification of a new `jobs.<jobid>`, the _job manager_ takes
+Upon notification of a new `job.<jobid>`, the _job manager_ takes
 the active role in moving a job through its life cycle, and logs events
 to the eventlog as described in link:spec_21{outfilesuffix}[RFC 21].
 
@@ -158,11 +158,11 @@ When the _job manager_ is restarted, it recovers its state by scanning
 === Content Consumed/Produced by Scheduler
 
 When the _scheduler_ receives an allocation request containing a jobid,
-it reads the jobspec from `jobs.<jobid>.jobspec`.
+it reads the jobspec from `job.<jobid>.jobspec`.
 
 The scheduler allocates resources by writing a resource set
 as described in link:spec_20{outfilesuffix}[RFC 20]
-to `jobs.<jobid>.R` and answering the allocation request.
+to `job.<jobid>.R` and answering the allocation request.
 
 The scheduler frees resources by answering the free request,
 leaving `R` in place for job provenance.  During a restart, the
@@ -173,11 +173,11 @@ allocated.
 === Content Consumed/Produced by Exec Service
 
 When the _exec system_ receives a start request containing a jobid,
-it reads the `jobs.<jobid>.R` and `jobs.<jobid>.jobspec`
+it reads the `job.<jobid>.R` and `job.<jobid>.jobspec`
 and uses this information to launch _job shells_ and subsequently tasks.
 
 The _exec system_ creates the job's guest namespace and links it to
-`jobs.<jobid>.guest`.  Its initial contents are populated with
+`job.<jobid>.guest`.  Its initial contents are populated with
 
 `exec.eventlog`::
 An eventlog for the use of _job shells_, TBD.
@@ -191,10 +191,10 @@ manager_ that the job is finished.
 === Content Produced/Consumed by Other Instance Services
 
 Other services not mentioned in this RFC MAY store arbitrary data associated
-with jobs under the `jobs.<jobid>.data.<service>` directory,
+with jobs under the `job.<jobid>.data.<service>` directory,
 where `<service>` is a name unique to the service producing the data.
 For example, a job tracing service may store persistent trace data under
-the `jobs.<jobid>.data.trace` directory.
+the `job.<jobid>.data.trace` directory.
 
 
 === Content Consumed/Produced by Other Guest Services ===
