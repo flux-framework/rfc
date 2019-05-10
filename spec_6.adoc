@@ -58,6 +58,9 @@ to the client.
 
 The request message MAY include a service-defined payload.
 
+Requests to services that send multiple responses SHALL set the
+FLUX_MSGFLAG_STREAMING message flag.
+
 === Response Messages
 
 The server SHALL send zero or more responses to each request, as
@@ -82,13 +85,18 @@ The server MAY respond to requests in any order.
 
 === Streaming Responses
 
-Protocols which allow multiple responses to a request SHALL define a way
-for the client to determine that all responses have been received,
-so that the RPC matchtag can be safely retired and reused.
+Services that send multiple responses to a request SHALL immediately reject
+requests that do not have the FLUX_MSGFLAG_STREAMING flag set by sending
+an EPROTO (error number 71) error response.
 
-Protocols MAY send a response with errnum set to ENODATA (61) to signify
-"end of response stream".  Servers SHALL stop sending responses to a
-given request after a response with errnum set to a nonzero value has been sent.
+The response stream SHALL consist of zero or more non-error responses,
+terminated by exactly one error response.
+
+The service MAY signify a successful "end of response stream" with an ENODATA
+(error number 61) error response.
+
+The FLUX_MSGFLAG_STREAMING flag SHALL be set in all non-error responses in
+the response stream.  The flag MAY be set in the final error response.
 
 === Matchtag Field
 
@@ -103,6 +111,12 @@ use matchtags to track client state unless paired with the client UUID.
 
 The client MAY set matchtag to FLUX_MATCHTAG_NONE (0) if it has no need
 to correlate responses in this way, or a response is not expected.
+
+The client SHALL NOT reuse matchtags in a new RPC unless it is certain
+that all responses from the original RPC have been received.  A matchtag
+MAY be reused if a response containing the matchtag arrives with the
+FLUX_MSGFLAG_STREAMING message flag clear, or if the response contains
+a non-zero error number.
 
 === Group RPC
 
