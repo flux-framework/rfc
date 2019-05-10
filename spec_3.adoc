@@ -236,6 +236,7 @@ flag-upstream   = %x10                  ; request should be routed upstream
 					;   of nodeid sender
 flag-private	= %x20			; event message is requested to be
 					;   private to sender, instance owner
+flag-streaming  = %x40			; request/response is part of streaming RPC
 
 ; Userid assigned by connector at message ingress
 userid		= 4OCTET / userid-unknown
