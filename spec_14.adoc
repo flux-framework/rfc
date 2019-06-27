@@ -287,7 +287,7 @@ Some common system attributes are:
 === Example Jobspec
 
 Under the description above, the following is an example of a fully compliant
-version 1 jobspec. The example below declares a request for 4 "nodes"
+canonical jobspec. The example below declares a request for 4 "nodes"
 each of which with 1 task slot consisting of 2 cores each, for a total
 of 4 task slots. A single copy of the command `app` will be run on each
 task slot for a total of 4 tasks.
@@ -306,7 +306,7 @@ include::data/spec_14/example2.yaml[]
 
 === Schema
 
-A jobspec conforming to version 1 of the language definition SHALL
+A jobspec conforming to the canonical language definition SHALL
 adhere to the following ruleset, described using JSON Schema
 footnote:[https://json-schema.org/latest/json-schema-core.html[JSON Schema: A Media Type for Describing JSON Documents]; H. Andrews; 2018].
 
