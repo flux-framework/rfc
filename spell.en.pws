@@ -420,3 +420,5 @@ rusage
 getrusage
 cwd
 unsetting
+CPUs
+GPUs

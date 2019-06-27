@@ -123,6 +123,9 @@ link:spec_24{outfilesuffix}[24/Flux Job Standard I/O Version 1]::
 This specification describes the format used to represent standard
 I/O streams in the Flux KVS.
 
+link:spec_25{outfilesuffix}[25/Job Specification Version 1]:: Version 1 of the
+domain specific job specification language canonically defined in RFC14.
+
 == Change Process
 
 The change process is
