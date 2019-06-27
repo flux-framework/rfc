@@ -284,6 +284,20 @@ Some common system attributes are:
  will make an effort to allocate the requested resources for the number
  of seconds specified in `duration`.
 
+ *environment*::
+ The value of the `environment` attribute is a dictionary containing the names
+ and values of environment variables that should be set (or unset) when spawning
+ tasks.  For each entry in the `environment` dictionary, the `key` is a string
+ representing the environment variable name and the `value` is a string
+ representing the environment variable value to set.  A `null` `value`
+ represents unsetting the environment variable given by `key`.  The values
+ provided here can be overriden per-rak by providing the
+ `attributes.environment` dictionary under the target task.
+
+ *cwd*::
+ The value of the `cwd` attribute is a string containing the absolute
+ path to the current working directory to use when spawning the task.
+
 === Example Jobspec
 
 Under the description above, the following is an example of a fully compliant
@@ -572,4 +586,18 @@ Jobspec YAML::
 [source,yaml]
 ----
 include::data/spec_14/use_case_2.6.yaml[]
+----
+
+'''
+Use Case 2.7:: Override the global environment
++
+Specific Example::
+Run two different tasks, one with the global environment and one with an
+overridden environment (i.e., unset FOO and set BAR=2).
++
+Jobspec YAML::
++
+[source,yaml]
+----
+include::data/spec_14/use_case_2.7.yaml[]
 ----

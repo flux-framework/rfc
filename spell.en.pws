@@ -418,3 +418,5 @@ bWVlcAo
 EMERG
 rusage
 getrusage
+cwd
+unsetting

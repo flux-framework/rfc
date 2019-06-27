@@ -98,7 +98,9 @@
         "system": {
           "type": "object",
           "properties": {
-            "duration": { "type": "string" }
+            "duration": { "type": "number", "minimum": 0 },
+            "cwd": { "type": "string" },
+            "environment": { "type": "object" }
           }
         },
         "user": {
