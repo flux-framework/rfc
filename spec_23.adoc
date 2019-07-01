@@ -29,10 +29,10 @@ said to support "Flux Standard Duration."
 
 == Implementation
 
-A duration in Flux Standard Duration SHALL be of the form `N[SUFFIX]`
-where `SUFFIX` SHALL be optional and, if provided, MUST be a single character
-from the set `s,m,h,d`. The value `N` MUST be a positive, floating-point number,
-and SHALL be interpreted as:
+A duration in Flux Standard Duration SHALL be of the form `N[SUFFIX]` where
+`SUFFIX` SHALL be optional and, if provided, MUST be a single character from the
+set `s,m,h,d`. The value `N` MUST be a positive, non-infinite, floating-point
+number excluding `NaN`, and SHALL be interpreted as:
 
   * _seconds_ if `SUFFIX` is not provided, or is `s`.
   * _minutes_ if `SUFFIX` is `m`.
