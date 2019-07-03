@@ -404,3 +404,8 @@ starttime
 oom
 waitpid
 IEEE
+NaN
+IEC
+strtod
+strtof
+strtold
