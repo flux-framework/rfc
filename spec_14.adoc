@@ -291,7 +291,7 @@ Some common system attributes are:
  representing the environment variable name and the `value` is a string
  representing the environment variable value to set.  A `null` `value`
  represents unsetting the environment variable given by `key`.  The values
- provided here can be overriden per-rak by providing the
+ provided here can be overridden per-rank by providing the
  `attributes.environment` dictionary under the target task.
 
  *cwd*::
