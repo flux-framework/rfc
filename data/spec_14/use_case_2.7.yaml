@@ -7,11 +7,11 @@ resources:
       - type: node
         count: 1
 tasks:
-  - command: [ "flux" "start" ]
+  - command: [ "flux", "start" ]
     slot: default
     count:
       per_slot: 1
-  - command: [ "flux" "start" ]
+  - command: [ "flux", "start" ]
     slot: default
     count:
       per_slot: 1

@@ -82,8 +82,7 @@
   "properties": {
     "version": {
       "description": "the jobspec version",
-      "type": "integer",
-      "enum": [1]
+      "type": "integer"
     },
     "resources": {
       "description": "requested resources",
@@ -132,7 +131,10 @@
           "distribution": { "type": "string" },
           "attributes": {
             "type": "object",
-	    "additionalProperties": { "type": "string" }
+            "properties": {
+              "environment": { "type" : "object"}
+            },
+	        "additionalProperties": { "type": "string" }
           }
         },
 	"additionalProperties": false
