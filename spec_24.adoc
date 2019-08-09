@@ -1,0 +1,159 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+24/Flux Job Standard I/O Version 1
+==================================
+
+This specification describes the format used to represent
+standard I/O streams in the Flux KVS.
+
+* Name: github.com/flux-framework/rfc/spec_24.adoc
+* Editor: Jim Garlick <garlick.jim@gmail.com>
+* State: raw
+
+== Language
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
+be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+
+== Related Standards
+
+*  link:spec_16{outfilesuffix}[16/KVS Job Schema]
+*  link:spec_18{outfilesuffix}[18/KVS Event Log Format]
+*  link:spec_22{outfilesuffix}[22/Idset String Representation]
+
+== Goals
+
+* Incorporate task I/O streams into KVS job record.
+* Provide Flux front end tools with read access to output, write access to
+  input streams.
+* Provide the Flux shell with write access to output, read access to input
+  streams.
+* Use standard encoding(s) where possible, suitable for long-term archival.
+* KVS data should remain valid while the job is active (as data is appended).
+* Support textual or binary data.
+* Output should be labeled with the task rank that produced it.
+* Input and output should be labeled with a timestamp.
+* Each stream may independently indicate end-of-stream.
+* Support standard UNIX I/O streams: `stdin`, `stdout`, `stderr`.
+* Support an additional output stream called `stdlog`.
+
+== Implementation
+
+Standard I/O streams SHALL be stored under two keys in the
+KVS job schema: `job.<jobid>.guest.output` and `job.<jobid>.guest.input`.
+The values SHALL be formatted as a KVS event log (RFC 18), with events as
+described below.
+
+=== Header Event
+
+The header event describes the input or output events that follow.
+There SHALL be exactly one header event in each log, appearing first.
+
+The following keys are REQUIRED in the event context object:
+
+version::
+(integer) Version of this format.  This RFC describes version 1.
+
+encoding::
+(object) A dictionary mapping stream names (e.g. `stdin`, `stdout`, `stderr`,
+`stdlog`) to encoding type (e.g. `base64`, `UTF-8`).
+
+options::
+(object) A dictionary mapping option names to values.
+See Header Options section below for the available options.
+
+Example:
+
+[source,json]
+----
+{
+  "timestamp":1552593348.073045,
+  "name":"header",
+  "context":{
+    "version":1,
+    "encoding":{
+      "stdout":"base64",
+      "stderr":"UTF-8",
+      "stdlog":"UTF-8",
+    },
+    "options":{
+    }
+  }
+}
+----
+
+==== Header Options
+
+TBD: input distribution options.
+
+=== Data Event
+
+The output event encapsulates a blob of input or output data.
+
+The following keys are REQUIRED in the event context object:
+
+stream::
+(string) The stream name (e.g. `stdout`, `stderr`, `stdin`).
+All valid stream names MUST appear as keys in the header `encoding` object.
+
+rank::
+(string) An idset string (RFC 22) representing the rank(s) that produced
+the output, or which will read the input.
+
+The following keys are OPTIONAL in the event context object:
+
+data::
+(string) The output data, encoded as described by the header.
+
+eof::
+(boolean) End of stream indicator.
+
+The context object SHOULD contain either a `data` or `eof` key, or both.
+
+Example:
+
+[source,json]
+----
+{
+  "timestamp":1552593349.1,
+  "name":"data",
+  "context":{
+    "stream":"stdout",
+    "rank":"31",
+    "data":"bWVlcAo=",
+    "eof":"true"
+  }
+}
+----
+
+=== Footer Event
+
+The footer event summarizes the input or output events that follow.
+There SHALL be exactly one header event in each log, appearing last.
+
+Once the footer event appears, consumers MAY assume that no further
+I/O is pending for the job.
+
+The following keys are REQUIRED in the event context object:
+
+bytes::
+(object) A dictionary mapping stream names (e.g. `stdin`, `stdout`, `stderr`,
+`stdlog`) to the total number of bytes stored in the event log for that stream.
+All valid stream names MUST appear as keys in the header `encoding` object.
+
+Example:
+
+[source,json]
+----
+{
+  "timestamp":1552593349.6,
+  "name":"footer",
+  "context":{
+    "bytes":{
+      "stdout":1034,
+      "stderr":0,
+      "stdlog":0
+    }
+}
+----

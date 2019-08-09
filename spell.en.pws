@@ -33,6 +33,7 @@ scriptable
 stderr
 stdin
 stdout
+stdlog
 subprocesses
 errno
 errnum
@@ -410,3 +411,7 @@ strtod
 strtof
 strtold
 EPROTO
+UTF
+bcast
+eof
+bWVlcAo
