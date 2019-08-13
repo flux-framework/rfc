@@ -120,6 +120,10 @@ non-negative, integer ids.
 link:spec_23{outfilesuffix}[23/Flux Standard Duration]::
 This specification describes a standard form for time duration.
 
+link:spec_24{outfilesuffix}[24/Flux Job Standard I/O Version 1]::
+This specification describes the format used to represent standard
+I/O streams in the Flux KVS.
+
 == Change Process
 
 The change process is
