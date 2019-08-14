@@ -94,7 +94,7 @@ The output event encapsulates a blob of input or output data.
 The following keys are REQUIRED in the event context object:
 
 stream::
-(string) The stream name (e.g. `stdout`, `stderr`, `stdin`).
+(string) The stream name (e.g. `stdin`, `stdout`, `stderr`, `stdlog`).
 All valid stream names MUST appear as keys in the header `encoding` object.
 
 rank::
@@ -124,36 +124,5 @@ Example:
     "data":"bWVlcAo=",
     "eof":"true"
   }
-}
-----
-
-=== Footer Event
-
-The footer event summarizes the input or output events that follow.
-There SHALL be exactly one header event in each log, appearing last.
-
-Once the footer event appears, consumers MAY assume that no further
-I/O is pending for the job.
-
-The following keys are REQUIRED in the event context object:
-
-bytes::
-(object) A dictionary mapping stream names (e.g. `stdin`, `stdout`, `stderr`,
-`stdlog`) to the total number of bytes stored in the event log for that stream.
-All valid stream names MUST appear as keys in the header `encoding` object.
-
-Example:
-
-[source,json]
-----
-{
-  "timestamp":1552593349.6,
-  "name":"footer",
-  "context":{
-    "bytes":{
-      "stdout":1034,
-      "stderr":0,
-      "stdlog":0
-    }
 }
 ----
