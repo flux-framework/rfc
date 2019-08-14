@@ -36,7 +36,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 * Input and output should be labeled with a timestamp.
 * Each stream may independently indicate end-of-stream.
 * Support standard UNIX I/O streams: `stdin`, `stdout`, `stderr`.
-* Support an additional output stream called `stdlog`.
+* Support shell debug logging.
 
 == Implementation
 
@@ -56,8 +56,8 @@ version::
 (integer) Version of this format.  This RFC describes version 1.
 
 encoding::
-(object) A dictionary mapping stream names (e.g. `stdin`, `stdout`, `stderr`,
-`stdlog`) to encoding type (e.g. `base64`, `UTF-8`).
+(object) A dictionary mapping stream names (e.g. `stdin`, `stdout`, `stderr`)
+to encoding type (e.g. `base64`, `UTF-8`).
 
 options::
 (object) A dictionary mapping option names to values.
@@ -75,7 +75,6 @@ Example:
     "encoding":{
       "stdout":"base64",
       "stderr":"UTF-8",
-      "stdlog":"UTF-8",
     },
     "options":{
     }
@@ -94,7 +93,7 @@ The output event encapsulates a blob of input or output data.
 The following keys are REQUIRED in the event context object:
 
 stream::
-(string) The stream name (e.g. `stdin`, `stdout`, `stderr`, `stdlog`).
+(string) The stream name (e.g. `stdin`, `stdout`, `stderr`).
 All valid stream names MUST appear as keys in the header `encoding` object.
 
 rank::
@@ -126,3 +125,13 @@ Example:
   }
 }
 ----
+
+=== Log Event
+
+The log event supports debug logging from the Flux shells.
+
+rank::
+(integer) The shell rank.
+
+message::
+(string) Textual log message, encoded with UTF-8.
