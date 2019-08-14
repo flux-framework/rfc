@@ -94,7 +94,7 @@ The output event encapsulates a blob of input or output data.
 The following keys are REQUIRED in the event context object:
 
 stream::
-(string) The stream name (e.g. `stdout`, `stderr`, `stdin`).
+(string) The stream name (e.g. `stdin`, `stdout`, `stderr`, `stdlog`).
 All valid stream names MUST appear as keys in the header `encoding` object.
 
 rank::
