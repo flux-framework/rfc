@@ -36,7 +36,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 * Input and output should be labeled with a timestamp.
 * Each stream may independently indicate end-of-stream.
 * Support standard UNIX I/O streams: `stdin`, `stdout`, `stderr`.
-* Support shell debug logging.
+* Support shell error and debug logging.
 
 == Implementation
 
@@ -128,10 +128,14 @@ Example:
 
 === Log Event
 
-The log event supports debug logging from the Flux shells.
+The log event supports error and debug logging from the Flux shells.
 
 rank::
 (integer) The shell rank.
+
+severity::
+(integer) An Internet RFC 5424 severity level in the range of 0 (LOG_EMERG)
+to 7 (LOG_DEBUG).
 
 message::
 (string) Textual log message, encoded with UTF-8.
