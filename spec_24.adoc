@@ -59,6 +59,10 @@ encoding::
 (object) A dictionary mapping stream names (e.g. `stdin`, `stdout`, `stderr`)
 to encoding type (e.g. `base64`, `UTF-8`).
 
+count::
+(object) A dictionary mapping stream names (e.g. `stdout`, `stderr`)
+to the number of expected open streams with that name.
+
 options::
 (object) A dictionary mapping option names to values.
 See Header Options section below for the available options.
@@ -75,6 +79,10 @@ Example:
     "encoding":{
       "stdout":"base64",
       "stderr":"UTF-8",
+    },
+    "count":{
+      "stdout":2,
+      "stderr":2,
     },
     "options":{
     }
