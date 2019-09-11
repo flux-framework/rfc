@@ -416,3 +416,5 @@ bcast
 eof
 bWVlcAo
 EMERG
+rusage
+getrusage

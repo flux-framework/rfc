@@ -29,10 +29,9 @@ link:spec_4{outfilesuffix}[4/Flux Resource Model]::
 The Flux Resource Model describes the conceptual model used for
 resources within the Flux framework.
 
-link:spec_5{outfilesuffix}[5/Flux Module Extension Protocol]::
-This specification describes the format of messages used to
-load Flux dynamic shared object modules, and the symbols that
-such modules must define.
+link:spec_5{outfilesuffix}[5/Flux Comms Modules]::
+This specification describes the broker extension modules
+used to implement Flux services.
 
 link:spec_6{outfilesuffix}[6/Flux Remote Procedure Call Protocol]::
 This specification describes how Flux Remote Procedure Call (RPC) is
