@@ -134,6 +134,42 @@ Example:
 }
 ----
 
+=== Redirect Event
+
+The redirect event indicates that a stream's data has been redirected
+away from the log.  The caller should not expect any additional data
+events in the log for that stream.
+
+The following keys are REQUIRED in the event context object:
+
+stream::
+(string) The stream name (e.g. `stdout`, `stderr`).  All valid stream
+names MUST appear as keys in the header `encoding` object.
+
+rank::
+(string) An idset string (RFC 22) representing the rank(s) that are
+redirecting output.
+
+The following keys are OPTIONAL in the event context object:
+
+path::
+(string) Indicates the path data has been redirected to, if the data
+has been redirected to a file.
+
+Example:
+
+[source,json]
+----
+{
+  "timestamp":1552593350.4,
+  "name":"redirect",
+  "context":{
+    "stream":"stdout",
+    "path":"job.output",
+  }
+}
+----
+
 === Log Event
 
 The log event supports error and debug logging from the Flux shells.
