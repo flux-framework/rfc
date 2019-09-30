@@ -418,3 +418,8 @@ bWVlcAo
 EMERG
 rusage
 getrusage
+cwd
+unsetting
+CPUs
+GPUs
+gpus
