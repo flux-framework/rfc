@@ -625,6 +625,23 @@ overridden environment (i.e., unset FOO and set BAR=2).
 Jobspec YAML::
 +
 [source,yaml]
+
 ----
 include::data/spec_14/use_case_2.7.yaml[]
+----
+
+'''
+Use Case 2.8:: Specify dependencies
++
+Specific Example:: Depend on two previously submitted jobs.  The first job's
+Flux ID (fluid) is known (`hungry-hippo-white-elephant`).  The second job's
+fluid is not known but its `out` dependency (`foo`) is known.  Also provide an
+`out` dependency (`bar`) that other jobs can depend on.
++
+Jobspec YAML::
++
+[source,yaml]
+
+----
+include::data/spec_14/use_case_2.8.yaml[]
 ----
