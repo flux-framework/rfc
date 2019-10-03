@@ -25,6 +25,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 * link:spec_4{outfilesuffix}[4/Flux Resource Model]
 * link:spec_8{outfilesuffix}[8/Flux Task and Program Execution Services]
 * link:spec_20{outfilesuffix}[20/Resource Set Specification Version 1]
+* link:spec_26{outfilesuffix}[26/Job Dependency Specification]
 
 == Goals
 
@@ -297,6 +298,9 @@ Some common system attributes are:
  *cwd*::
  The value of the `cwd` attribute is a string containing the absolute
  path to the current working directory to use when spawning the task.
+
+ *dependencies*:: The value of the `dependencies` attribute SHALL be a
+ list of dictionaries following the format specified in RFC 26.
 
  *job*::
  The `job` attribute is an optional dictionary containing job

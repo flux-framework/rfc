@@ -1,0 +1,4 @@
+- type: in
+  scope: user
+  scheme: string
+  value: B

@@ -126,6 +126,10 @@ I/O streams in the Flux KVS.
 link:spec_25{outfilesuffix}[25/Job Specification Version 1]:: Version 1 of the
 domain specific job specification language canonically defined in RFC14.
 
+link:spec_26{outfilesuffix}[26/Job Dependency Specification]:: An extension to
+the canonical jobspec designed to express the dependencies between one or more
+programs submitted to a Flux instance for execution.
+
 == Change Process
 
 The change process is

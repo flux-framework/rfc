@@ -23,7 +23,8 @@ SOURCES = \
 	spec_22.adoc \
 	spec_23.adoc \
 	spec_24.adoc \
-	spec_25.adoc
+	spec_25.adoc \
+	spec_26.adoc
 
 
 HTML = $(SOURCES:.adoc=.html)

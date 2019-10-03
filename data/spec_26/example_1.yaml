@@ -1,0 +1,4 @@
+- type: inout
+  scope: user
+  scheme: string
+  value: foo
