@@ -174,12 +174,25 @@ Example:
 
 The log event supports error and debug logging from the Flux shells.
 
+The following keys are REQUIRED in the log event context object:
+
 rank::
 (integer) The shell rank.
 
-severity::
+level::
 (integer) An Internet RFC 5424 severity level in the range of 0 (LOG_EMERG)
 to 7 (LOG_DEBUG).
 
 message::
 (string) Textual log message, encoded with UTF-8.
+
+The following keys are OPTIONAL in the event context object:
+
+file::
+(string) Source file from which the log message was generated.
+
+line::
+(integer) Source line from which the log message was generated.
+
+component::
+(string) A shell component or plugin name which generated the log message.
