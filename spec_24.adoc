@@ -105,8 +105,9 @@ stream::
 All valid stream names MUST appear as keys in the header `encoding` object.
 
 rank::
-(string) An idset string (RFC 22) representing the rank(s) that produced
-the output, or which will read the input.
+(string) A string representing the rank(s) that produced the output,
+or which will read the input.  The string may be an idset string (RFC
+22) or the string "all" to indicate all ranks in a job.
 
 The following keys are OPTIONAL in the event context object:
 
