@@ -4,6 +4,8 @@ addons:
   apt:
     packages:
       - aspell-en
+      - python-jsonschema
+      - python-yaml
 
 script:
   - make check

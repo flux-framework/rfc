@@ -32,6 +32,8 @@ HTML = $(SOURCES:.adoc=.html)
 # N.B. 'apt-get install codray' to enable inline source highlighting
 ADOC_FLAGS = --attribute=source-highlighter=coderay
 
+SCHEMA_DIRS=data/spec_26 data/spec_14
+
 all: html
 
 html: $(HTML)
@@ -42,6 +44,11 @@ html: $(HTML)
 clean:
 	rm -f $(HTML)
 
-check:
+check: $(SCHEMA_DIRS)
 	ASPELL=aspell ./spellcheck *.adoc
 	./indexcheck spec_*.adoc
+
+$(SCHEMA_DIRS):
+	python ./validate.py --schema=$@/schema.json $@/*.yaml
+
+.PHONY: all html clean check $(SCHEMA_DIRS)
