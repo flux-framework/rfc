@@ -189,6 +189,10 @@ The following keys are OPTIONAL in the event context object:
 rank::
 (integer) The shell rank. If not present then the shell rank is unknown.
 
+program::
+(string) Program name that generated the log message. If not present,
+the program default is `flux-shell`.
+
 file::
 (string) Source file from which the log message was generated.
 
