@@ -209,8 +209,8 @@ representing a task or tasks to run as part of the program. A task
 descriptor SHALL contain the following keys:
 
  *command*::
- The value of the `command` key SHALL be a string OR list representing
- an executable and its arguments.
+ The value of the `command` key SHALL be a list representing an
+ executable and its arguments.
 
  *slot*::
  The value of the `slot` key SHALL match a `label` of a resource vertex
