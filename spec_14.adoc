@@ -298,6 +298,18 @@ Some common system attributes are:
  The value of the `cwd` attribute is a string containing the absolute
  path to the current working directory to use when spawning the task.
 
+ *job*::
+ The `job` attribute is an optional dictionary containing job
+ metadata.  This metadata may be used for searching and filtering of
+ jobs.  Every `value` in the dictionary must be a string.  The
+ application is free to create keys of any name, however the following
+ are reserved for special use:
+
+   *name*:::
+   The `name` key contains the name of the job.  The default name of a
+   job is the first argument of the command run by the user, or it can be
+   set by the user to an arbitrary value.
+
 === Example Jobspec
 
 Under the description above, the following is an example of a fully compliant
