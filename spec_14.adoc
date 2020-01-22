@@ -335,14 +335,14 @@ task slot for a total of 4 tasks.
 
 [source,yaml]
 ----
-include::data/spec_14/example1.yaml[]
+\include::data/spec_14/example1.yaml[]
 ----
 
 Another example, running one task on each of four nodes.
 
 [source,yaml]
 ----
-include::data/spec_14/example2.yaml[]
+\include::data/spec_14/example2.yaml[]
 ----
 
 === Schema
@@ -353,7 +353,7 @@ footnote:[https://json-schema.org/latest/json-schema-core.html[JSON Schema: A Me
 
 [source,json]
 ----
-include::data/spec_14/schema.json[]
+\include::data/spec_14/schema.json[]
 ----
 
 == Basic Use Cases
@@ -384,7 +384,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_1.1.yaml[]
+\include::data/spec_14/use_case_1.1.yaml[]
 ----
 '''
 Use Case 1.2:: Request a range of a type of resource
@@ -401,7 +401,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_1.2.yaml[]
+\include::data/spec_14/use_case_1.2.yaml[]
 ----
 
 '''
@@ -423,7 +423,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_1.3.yaml[]
+\include::data/spec_14/use_case_1.3.yaml[]
 ----
 
 '''
@@ -437,7 +437,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_1.4.yaml[]
+\include::data/spec_14/use_case_1.4.yaml[]
 ----
 
 '''
@@ -460,7 +460,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_1.5.yaml[]
+\include::data/spec_14/use_case_1.5.yaml[]
 ----
 
 '''
@@ -473,7 +473,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_1.6.yaml[]
+\include::data/spec_14/use_case_1.6.yaml[]
 ----
 
 
@@ -493,7 +493,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_1.7.yaml[]
+\include::data/spec_14/use_case_1.7.yaml[]
 ----
 
 '''
@@ -520,7 +520,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_2.1.yaml[]
+\include::data/spec_14/use_case_2.1.yaml[]
 ----
 
 '''
@@ -539,7 +539,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_2.2.yaml[]
+\include::data/spec_14/use_case_2.2.yaml[]
 ----
 
 '''
@@ -558,7 +558,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_2.3.yaml[]
+\include::data/spec_14/use_case_2.3.yaml[]
 ----
 
 '''
@@ -574,7 +574,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_2.4.yaml[]
+\include::data/spec_14/use_case_2.4.yaml[]
 ----
 
 '''
@@ -593,7 +593,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_2.5.yaml[]
+\include::data/spec_14/use_case_2.5.yaml[]
 ----
 '''
 Use Case 2.6:: Run N copies of a command with minimum amount of RAM per node
@@ -612,7 +612,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_14/use_case_2.6.yaml[]
+\include::data/spec_14/use_case_2.6.yaml[]
 ----
 
 '''
@@ -627,7 +627,7 @@ Jobspec YAML::
 [source,yaml]
 
 ----
-include::data/spec_14/use_case_2.7.yaml[]
+\include::data/spec_14/use_case_2.7.yaml[]
 ----
 
 '''

@@ -147,7 +147,7 @@ task slot for a total of 4 tasks.
 
 [source,yaml]
 ----
-include::data/spec_25/example1.yaml[]
+\include::data/spec_25/example1.yaml[]
 ----
 
 == Basic Use Cases
@@ -178,7 +178,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_25/use_case_1.1.yaml[]
+\include::data/spec_25/use_case_1.1.yaml[]
 ----
 
 === Section 2: General Requests
@@ -202,7 +202,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_25/use_case_2.1.yaml[]
+\include::data/spec_25/use_case_2.1.yaml[]
 ----
 
 '''
@@ -221,7 +221,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_25/use_case_2.2.yaml[]
+\include::data/spec_25/use_case_2.2.yaml[]
 ----
 
 '''
@@ -234,7 +234,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_25/use_case_2.3.yaml[]
+\include::data/spec_25/use_case_2.3.yaml[]
 ----
 
 '''
@@ -253,7 +253,7 @@ Jobspec YAML::
 +
 [source,yaml]
 ----
-include::data/spec_25/use_case_2.4.yaml[]
+\include::data/spec_25/use_case_2.4.yaml[]
 ----
 
 === Schema
@@ -264,5 +264,5 @@ footnote:[https://json-schema.org/latest/json-schema-core.html[JSON Schema: A Me
 
 [source,json]
 ----
-include::data/spec_25/schema.json[]
+\include::data/spec_25/schema.json[]
 ----
