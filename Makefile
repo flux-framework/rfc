@@ -1,54 +1,32 @@
-SOURCES = \
-	README.adoc \
-	spec_1.adoc \
-	spec_2.adoc \
-	spec_3.adoc \
-	spec_4.adoc \
-	spec_5.adoc \
-	spec_6.adoc \
-	spec_7.adoc \
-	spec_8.adoc \
-	spec_9.adoc \
-	spec_10.adoc \
-	spec_11.adoc \
-	spec_12.adoc \
-	spec_13.adoc \
-	spec_14.adoc \
-	spec_15.adoc \
-	spec_16.adoc \
-	spec_18.adoc \
-	spec_19.adoc \
-	spec_20.adoc \
-	spec_21.adoc \
-	spec_22.adoc \
-	spec_23.adoc \
-	spec_24.adoc \
-	spec_25.adoc \
-	spec_26.adoc
+# Minimal makefile for Sphinx documentation
+#
 
+# You can set these variables from the command line, and also
+# from the environment for the first two.
+SPHINXOPTS    ?=
+SPHINXBUILD   ?= sphinx-build
+SOURCEDIR     = .
+BUILDDIR      = _build
 
-HTML = $(SOURCES:.adoc=.html)
-
-# N.B. 'apt-get install codray' to enable inline source highlighting
-ADOC_FLAGS = --attribute=source-highlighter=coderay
-
+# YAML Validation on these directories
 SCHEMA_DIRS=data/spec_26 data/spec_14
 
-all: html
+# Put it first so that "make" without argument is like "make help".
+help:
+	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-html: $(HTML)
+.PHONY: help Makefile check spelling $(SCHEMA_DIRS)
 
-%.html: %.adoc
-	asciidoctor $(ADOC_FLAGS) -o $@ $^
+# Catch-all target: route all unknown targets to Sphinx using the new
+# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
+%: Makefile
+	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-clean:
-	rm -f $(HTML)
-
-check: $(SCHEMA_DIRS)
-	ASPELL=aspell ./spellcheck *.adoc
-	./indexcheck spec_*.adoc
+check: $(SCHEMA_DIRS) spelling
+	./indexcheck spec_*.rst
 
 $(SCHEMA_DIRS):
 	python ./validate.py --schema=$@/schema.json $@/*.yaml
 
-.PHONY: all html clean check $(SCHEMA_DIRS)
+spelling:
+	@$(SPHINXBUILD) -b spelling "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
