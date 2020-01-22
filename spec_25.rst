@@ -178,9 +178,8 @@ each of which with 1 task slot consisting of 2 cores each, for a total
 of 4 task slots. A single copy of the command ``app`` will be run on each
 task slot for a total of 4 tasks.
 
-.. code:: yaml
-
 .. literalinclude:: data/spec_25/example1.yaml
+   :language: yaml
 
 
 Basic Use Cases
@@ -212,9 +211,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_25/use_case_1.1.yaml
+      :language: yaml
 
 
 Section 2: General Requests
@@ -236,9 +234,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_25/use_case_2.1.yaml
+      :language: yaml
 
 Use Case 2.2
    Run N tasks, Require M cores per task
@@ -253,9 +250,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_25/use_case_2.2.yaml
+      :language: yaml
 
 Use Case 2.3
    Run N tasks, Require M cores and J gpus per task
@@ -265,9 +261,8 @@ Specific Example
    for a total of 20 cores and 10 gpus
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_25/use_case_2.3.yaml
+      :language: yaml
 
 Use Case 2.4
    Run N tasks across M nodes, each task with 1 core and 1 gpu
@@ -283,9 +278,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_25/use_case_2.4.yaml
+      :language: yaml
 
 
 Schema
@@ -294,9 +288,8 @@ Schema
 A jobspec conforming to version 1 of the language definition SHALL
 adhere to the following ruleset, described using JSON Schema [#f2]_.
 
-.. code:: json
-
 .. literalinclude:: data/spec_25/schema.json
+   :language: json
 
 .. [#f1] `YAML Ain’t Markup Language (YAML) Version 1.1 <http://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
 

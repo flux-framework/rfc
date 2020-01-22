@@ -370,15 +370,13 @@ each of which with 1 task slot consisting of 2 cores each, for a total
 of 4 task slots. A single copy of the command ``app`` will be run on each
 task slot for a total of 4 tasks.
 
-.. code:: yaml
-
 .. literalinclude:: data/spec_14/example1.yaml
+   :language: yaml
 
 Another example, running one task on each of four nodes.
 
-.. code:: yaml
-
 .. literalinclude:: data/spec_14/example2.yaml
+   :language: yaml
 
 
 Schema
@@ -387,9 +385,9 @@ Schema
 A jobspec conforming to the canonical language definition SHALL
 adhere to the following ruleset, described using JSON Schema  [#f2]_.
 
-.. code:: json
-
 .. literalinclude:: data/spec_14/schema.json
+   :language: json
+
 
 
 Basic Use Cases
@@ -421,9 +419,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_1.1.yaml
+      :language: yaml
 
 Use Case 1.2
    Request a range of a type of resource
@@ -437,9 +434,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_1.2.yaml
+      :language: yaml
 
 Use Case 1.3
    Request M nodes with a minimum number of sockets per node
@@ -461,9 +457,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_1.3.yaml
+      :language: yaml
 
 Use Case 1.4
    Exclusively allocate nodes, while constraining cores and
@@ -474,9 +469,8 @@ Specific Example
    least two sockets and 4 cores per socket:
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_1.4.yaml
+      :language: yaml
 
 Use Case 1.5
    Complex example from OAR
@@ -498,9 +492,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_1.5.yaml
+      :language: yaml
 
 Use Case 1.6
    Request resources across multiple clusters
@@ -509,9 +502,8 @@ Specific Example
    Ask for 30 cores on 2 clusters (total = 60 cores), with 1 flux broker launched per node
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_1.6.yaml
+      :language: yaml
 
 Use Case 1.7
    Request N cores across M switches
@@ -525,10 +517,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_1.7.yaml
-
+      :language: yaml
 
 Section 2: General Requests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -552,9 +542,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_2.1.yaml
+      :language: yaml
 
 Use Case 2.2
    Run N tasks across M nodes, unequal distribution
@@ -569,9 +558,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_2.2.yaml
+      :language: yaml
 
 Use Case 2.3
    Run N tasks, Require M cores per task
@@ -586,9 +574,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_2.3.yaml
+      :language: yaml
 
 Use Case 2.4
    Run different binaries with differing resource
@@ -602,9 +589,8 @@ Existing Equivalents
    None Known
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_2.4.yaml
+      :language: yaml
 
 Use Case 2.5
    Run command requesting minimum amount of RAM per core
@@ -619,9 +605,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_2.5.yaml
+      :language: yaml
 
 Use Case 2.6
    Run N copies of a command with minimum amount of RAM per node
@@ -639,9 +624,8 @@ Existing Equivalents
    +-----------------------------------+-----------------------------------+
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_2.6.yaml
+      :language: yaml
 
 Use Case 2.7
    Override the global environment
@@ -651,9 +635,8 @@ Specific Example
    overridden environment (i.e., unset FOO and set BAR=2).
 
 Jobspec YAML
-   .. code:: yaml
-
    .. literalinclude:: data/spec_14/use_case_2.7.yaml
+      :language: yaml
 
 Use Case 2.8
    Specify dependencies
