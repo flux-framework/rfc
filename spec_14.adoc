@@ -132,13 +132,13 @@ A resource vertex SHALL contain the following keys:
  of two possible values: either a single integer value representing
  a fixed count, or a dictionary which SHALL contain the following keys:
 +
-[horizontal]
+
    *min*::: The minimum required count or amount of this resource
 
 +
 and additionally MAY contain the following keys:
 +
-[horizontal]
+
    *max*::: The maximum required count or amount of this resource
 
    *operator*::: An operator applied between `min` and `max` which
@@ -224,7 +224,6 @@ descriptor SHALL contain the following keys:
  least the keys `per_slot`, `per_resource`, and `total`, with other keys
  reserved for future or site-specific extensions.
 
-[horizontal]
   *per_slot*:::
   The value of `per_slot` SHALL be a number indicating the number
   of tasks to execute per task slot allocated to the program.

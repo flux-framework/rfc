@@ -105,7 +105,6 @@ at least the following two keys:
    with two keys: `core` and `gpu`. Other keys are reserved for future
    extensions.
 
-[horizontal]
     *core*::: The `core` key SHALL contain a logical compute core IDs string
      in RFC 22 *idset format*.
     *gpu*::: The OPTIONAL `gpu` key SHALL contain a logical GPU IDs string
