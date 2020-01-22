@@ -377,4 +377,3 @@ INACTIVE
 .. [#f1] `wait, waitpid - wait for a child process to stop or terminate <http://pubs.opengroup.org/onlinepubs/009604499/functions/wait.html>`__; The Open Group Base Specifications Issue 6; IEEE Std 1003.1, 2004 Edition
 
 .. |states| image:: data/spec_21/states.svg
-

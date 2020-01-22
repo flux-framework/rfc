@@ -180,7 +180,7 @@ integrity and authenticity of **J** before proceeding, then interprets
 the jobspec contained in **J** to determine the set of tasks to invoke
 on the current resource set.
 
-.. note:: 
+.. note::
 
    It may be noted that the user’s request **J** is verified twice when a job
    shell is invoked, and this is by design. The IMP verifies **J** to avoid

@@ -478,7 +478,7 @@ Specific Example
       and Infiniband 10G + 1 cpu on 2 nodes on the same switch with bicore
       processors for a walltime of 4 hours
 
-      — 
+      —
       http://oar.imag.fr/docs/2.5/user/usecases.html#mixing-every-together
 
 Existing Equivalents
