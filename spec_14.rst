@@ -60,9 +60,7 @@ Overview
 --------
 
 This RFC describes the canonical form of "jobspec", a domain specific
-language based on YAML
- [1]_
-. The canonical jobspec SHALL consist of
+language based on YAML  [#f1]_. The canonical jobspec SHALL consist of
 a single YAML document representing a reusable request to run
 exactly one program. Hereafter, "jobspec" refers to the canonical
 form, and "non-canonical jobspec" refers to the non-canonical form.
@@ -387,8 +385,7 @@ Schema
 ~~~~~~
 
 A jobspec conforming to the canonical language definition SHALL
-adhere to the following ruleset, described using JSON Schema
- [2]_.
+adhere to the following ruleset, described using JSON Schema  [#f2]_.
 
 .. code:: json
 
@@ -701,8 +698,6 @@ Jobspec YAML
               scheme: string
               value: bar
 
-.. [1]
-   `YAML Ain’t Markup Language (YAML) Version 1.1 <http://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
+.. [#f1] `YAML Ain’t Markup Language (YAML) Version 1.1 <http://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
 
-.. [2]
-   `JSON Schema: A Media Type for Describing JSON Documents <https://json-schema.org/latest/json-schema-core.html>`__; H. Andrews; 2018
+.. [#f2] `JSON Schema: A Media Type for Describing JSON Documents <https://json-schema.org/latest/json-schema-core.html>`__; H. Andrews; 2018

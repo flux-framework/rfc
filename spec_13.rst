@@ -122,7 +122,7 @@ group or a program.
 Caveats
 -------
 
-Some deficiencies of PMI 1 are noted in the PMI-2 paper[6]:
+Some deficiencies of PMI 1 are noted in the PMI-2 paper [#f6]_:
 
 -  There is no mechanism to scope a key locally for a subset of processes.
 
@@ -275,13 +275,13 @@ Errors:
 
 Notes:
 
--  Process Management in MPICH[1] recommends minimum lengths for
+-  Process Management in MPICH [#f1]_ recommends minimum lengths for
    name, key, and value of 16, 32, and 64, respectively.
 
 -  'PMI_Get_id_length_max()' SHALL be considered an alias for
    'PMI_Get_name_length_max()'.
 
--  'PMI_Get_id_length_max()' was dropped from pmi.h[3] on 2011-01-28 in
+-  'PMI_Get_id_length_max()' was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
 .. code:: c
@@ -349,7 +349,7 @@ Errors:
 
 Notes:
 
--  See MPI-2[2] section `5.5.1. Universe Size <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node111.htm>`__.
+-  See MPI-2 [#f2]_ section `5.5.1. Universe Size <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node111.htm>`__.
 
 .. code:: c
 
@@ -366,7 +366,7 @@ Errors:
 
 Notes
 
--  See MPI-2[2] section `5.5.3. MPI_APPNUM <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node113.htm>`__.
+-  See MPI-2 [#f2]_ section `5.5.3. MPI_APPNUM <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node113.htm>`__.
 
 
 Local Process Group Information
@@ -399,7 +399,7 @@ Notes:
 -  The array must be at least as large as the size returned by
    'PMI_Get_clique_size()'.
 
--  This function was dropped from pmi.h[3] on 2011-01-28 in
+-  This function was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
 
 -  The implementation should fetch the "PMI_process_mapping" value from the KVS
@@ -420,7 +420,7 @@ Errors:
 
 Notes:
 
--  This function was dropped from pmi.h[3] on 2011-01-28 in
+-  This function was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
 
 -  The implementation should fetch the "PMI_process_mapping" value from the KVS
@@ -538,7 +538,7 @@ Notes:
 -  'PMI_Get_kvs_domain_id()' and 'PMI_Get_id()' SHALL be considered
    an alias for 'PMI_KVS_Get_my_name()'.
 
--  'PMI_Get_kvs_domain_id()' and 'PMI_Get_id()' were dropped from pmi.h[3]
+-  'PMI_Get_kvs_domain_id()' and 'PMI_Get_id()' were dropped from pmi.h [#f3]_
    on 2011-01-28 in `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
 .. code:: c
@@ -575,7 +575,7 @@ Notes:
 
 -  These functions are OPTIONAL.
 
--  Dropped from pmi.h[3] on 2011-01-28 in
+-  Dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__,
 
 
@@ -630,7 +630,7 @@ Notes:
 
 -  The \``soft'' option is specified by mpiexec in the MPI-2 standard.
 
--  See MPI-2[2] section `5.3.5.1. Manager-worker Example, Using MPI_SPAWN. <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node98.htm>`__
+-  See MPI-2 [#f2]_ section `5.3.5.1. Manager-worker Example, Using MPI_SPAWN. <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node98.htm>`__
 
 .. code:: c
 
@@ -651,7 +651,7 @@ Notes:
 -  These functions are OPTIONAL in process managers that do not support
    dynamic process management.
 
--  See MPI-2[2] section `5.4.4. Name Publishing <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node104.htm>`__.
+-  See MPI-2 [#f2]_ section `5.4.4. Name Publishing <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node104.htm>`__.
 
 .. code:: c
 
@@ -664,7 +664,7 @@ Notes:
 
 -  These functions are OPTIONAL.
 
--  These functions were dropped from pmi.h[3] on 2009-05-01 in
+-  These functions were dropped from pmi.h [#f3]_ on 2009-05-01 in
    `commit 52c462d <http://git.mpich.org/mpich.git/commit/52c462d2be6a8d0720788d36e1e096e991dcff38>`__
 
 
@@ -672,7 +672,7 @@ Wire Protocol
 -------------
 
 The reference implementation of the PMI-1.1 wire protocol is the MPICH
-Hydra[4] process manager.
+Hydra [#f4]_ process manager.
 
 The protocol is comprised of request and response messages.
 All messages SHALL be terminated with a newline.
@@ -906,14 +906,14 @@ the mapping is unknown.
 References
 ----------
 
--  [1] `Process Management in MPICH Draft 2.1 <https://drive.google.com/file/d/0B273EWJxZUxsbS15SEkzZGtXU2c/view?usp=sharing>`__
+.. [#f1] `Process Management in MPICH Draft 2.1 <https://drive.google.com/file/d/0B273EWJxZUxsbS15SEkzZGtXU2c/view?usp=sharing>`__
 
--  [2] `MPI-2: Extensions to the Message-Passing Interface <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/mpi2-report.html>`__
+.. [#f2] `MPI-2: Extensions to the Message-Passing Interface <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/mpi2-report.html>`__
 
--  [3] `MPICH canonical pmi.h header <http://git.mpich.org/mpich.git/blob/HEAD:/src/include/pmi.h>`__
+.. [#f3] `MPICH canonical pmi.h header <http://git.mpich.org/mpich.git/blob/HEAD:/src/include/pmi.h>`__
 
--  [4] `MPICH simple PMI implementation <http://git.mpich.org/mpich.git/tree/HEAD:/src/pmi/simple>`__
+.. [#f4] `MPICH simple PMI implementation <http://git.mpich.org/mpich.git/tree/HEAD:/src/pmi/simple>`__
 
--  [5] `SLURM PMI-1 implementation <https://github.com/SchedMD/slurm/blob/master/src/api/pmi.c>`__
+.. [#f5] `SLURM PMI-1 implementation <https://github.com/SchedMD/slurm/blob/master/src/api/pmi.c>`__
 
--  [6] `PMI: A Scalable Parallel Process-Management Interface for Extreme-Scale Systems <http://www.mcs.anl.gov/papers/P1760.pdf>`__, P. Balaji et al, EuroMPI Proceedings, 2010.
+.. [#f6] `PMI: A Scalable Parallel Process-Management Interface for Extreme-Scale Systems <http://www.mcs.anl.gov/papers/P1760.pdf>`__, P. Balaji et al, EuroMPI Proceedings, 2010.

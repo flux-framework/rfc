@@ -40,8 +40,7 @@ Our licensing and collaboration guidelines must balance the following goals:
    collectivizing ownership, and distributing responsibility.
 
 -  Allow Flux projects to leverage a large body of open source,
-   including from the HPC ecosystem.
-    [1]_
+   including from the HPC ecosystem [#f1]_.
 
 -  Ensure that end users have full source code to their particular
    Flux system to maximize their ability to self-support and obtain
@@ -110,14 +109,11 @@ Copyright
     * SPDX-License-Identifier: LGPL-3.0
     */
 
--  The SPDX license shorthand is RECOMMENDED.
-    [2]_
+-  The SPDX license shorthand is RECOMMENDED [#f2]_.
 
 -  New contributors MAY add themselves to the project’s AUTHORS file,
    using the pull request process described in RFC 1.
 
-.. [1]
-   `The Free-Libre / Open Source Software (FLOSS) License Slide <https://dwheeler.com/essays/floss-license-slide.html>`__, David A. Wheeler.
+.. [#f1] `The Free-Libre / Open Source Software (FLOSS) License Slide <https://dwheeler.com/essays/floss-license-slide.html>`__, David A. Wheeler.
 
-.. [2]
-   `The Software Package Data Exchange (SPDX) <https://spdx.org/>`__.
+.. [#f2] `The Software Package Data Exchange (SPDX) <https://spdx.org/>`__.

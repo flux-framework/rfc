@@ -264,8 +264,7 @@ When the IMP is invoked *and* has setuid privileges, the process MAY
 use privilege separation to limit the impact of programming errors or
 bugs in libraries. For more information on privilege separation, see
 the paper on privilege separated OpenSSH: "Preventing Privilege
-Escalation".
- [1]_
+Escalation"  [#f1]_.
 
 
 Request Verification
@@ -414,5 +413,4 @@ is still a work in progress.
    being used indefinitely. Finally, the ``flux-security-imp`` logs all
    invocations, thereby allowing replays to be detected and audited.
 
-.. [1]
-   `Preventing Privilege Escalation <http://www.citi.umich.edu/u/provos/papers/privsep.pdf>`__, Niels Provos, Markus Friedl, Peter Honeyman.
+.. [#f1] `Preventing Privilege Escalation <http://www.citi.umich.edu/u/provos/papers/privsep.pdf>`__, Niels Provos, Markus Friedl, Peter Honeyman.

@@ -262,8 +262,7 @@ The following keys are REQUIRED in the event context object:
 
 status
    (integer) The largest of the job shell wait status codes, as
-   defined by POSIX wait(2)
-    [1]_
+   defined by POSIX wait(2) [#f1]_
 
 Example:
 
@@ -375,8 +374,7 @@ CLEANUP
 INACTIVE
    ``job.<jobid>`` contains the final snapshot of the job schema.
 
-.. [1]
-   `wait, waitpid - wait for a child process to stop or terminate <http://pubs.opengroup.org/onlinepubs/009604499/functions/wait.html>`__; The Open Group Base Specifications Issue 6; IEEE Std 1003.1, 2004 Edition
+.. [#f1] `wait, waitpid - wait for a child process to stop or terminate <http://pubs.opengroup.org/onlinepubs/009604499/functions/wait.html>`__; The Open Group Base Specifications Issue 6; IEEE Std 1003.1, 2004 Edition
 
 .. |states| image:: data/spec_21/states.svg
 

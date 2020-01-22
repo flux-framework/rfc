@@ -192,8 +192,7 @@ established for common payload types:
 
 1. String payloads SHALL include a terminating NULL character.
 
-2. Structured objects are RECOMMENDED to be represented as JSON.
-    [1]_
+2. Structured objects are RECOMMENDED to be represented as JSON [#f1]_.
 
 3. JSON payloads SHALL conform to Internet RFC 7159.
 
@@ -224,8 +223,7 @@ Finally, CMB1 messages MAY include a payload part, positioned before
 the PROTO part. Payloads MAY consist of any byte sequence.
 
 CMB1 messages are specified in terms of ZeroMQ messages by the following
-ABNF grammar
- [2]_
+ABNF grammar [#f2]_
 
 ::
 
@@ -297,8 +295,6 @@ ABNF grammar
    ; unused 4-byte field
    unused      = %x00.00.00.00
 
-.. [1]
-   `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <http://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
+.. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <http://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
 
-.. [2]
-   For convenience: the ``C:request``, ``S:response``, ``S:event``, and ``C:keepalive`` ABNF non-terminals refer to ZeroMQ messages, sent by client or server, and built from ordered ZeroMQ message parts (frames). Other non-terminals are built from concatenated ABNF terminals per usual. Thus it is meaningful for ``delimiter``, a message frame, to have zero length, since a zero-length message frame is valid ZMTP.
+.. [#f2] For convenience: the ``C:request``, ``S:response``, ``S:event``, and ``C:keepalive`` ABNF non-terminals refer to ZeroMQ messages, sent by client or server, and built from ordered ZeroMQ message parts (frames). Other non-terminals are built from concatenated ABNF terminals per usual. Thus it is meaningful for ``delimiter``, a message frame, to have zero length, since a zero-length message frame is valid ZMTP.

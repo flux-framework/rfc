@@ -40,7 +40,7 @@ A duration in Flux Standard Duration SHALL be of the form ``N[SUFFIX]`` where
 ``SUFFIX`` SHALL be optional and, if provided, MUST be a single character from the
 set ``s,m,h,d``. The value ``N`` MUST be a non-negative, non-infinite,
 floating-point number excluding ``NaN``. The value ``N`` SHALL be in one of the
-forms allowed by C99  [1]_ ``strtof`` or ``strtod`` and SHALL be interpreted as:
+forms allowed by C99  [#f1]_ ``strtof`` or ``strtod`` and SHALL be interpreted as:
 
 -  *seconds* if ``SUFFIX`` is not provided, or is ``s``.
 
@@ -50,5 +50,4 @@ forms allowed by C99  [1]_ ``strtof`` or ``strtod`` and SHALL be interpreted as:
 
 -  *days* if ``SUFFIX`` is ``d``.
 
-.. [1]
-   `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.20.1.3: The strtod, strtof, and strtold functions
+.. [#f1] `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.20.1.3: The strtod, strtof, and strtold functions
