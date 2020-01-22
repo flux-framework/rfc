@@ -14,7 +14,7 @@
             },
             "scope" : {
                 "type": "string",
-                "enum": ["user", "system"]
+                "enum": ["user", "global"]
             },
             "scheme" : { "type": "string" },
             "value" : { "type": "string" }

@@ -67,10 +67,10 @@ The value of the `scope` key SHALL be one of the following:
  * *user* All jobs previously submitted by the user are contained within
     this scope.  A user can create a dependency of any type within this scope.
 
- * *system* All jobs previously submitted by the instance owner are contained
-    within this scope.  The instance owner can create a dependency of any type
-    within this scope. A non-instance owner can only create a dependency with
-    the type `in` within this scope.
+ * *global* All jobs previously submitted are contained within this scope,
+    subject to policy constraints.  The instance owner can create a dependency
+    of any type within this scope. A non-instance owner can only create a
+    dependency with the type `in` within this scope.
 
 === Scheme
 

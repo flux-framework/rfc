@@ -1,4 +1,4 @@
 - type: in
-  scope: system
+  scope: global
   scheme: fluid
   value: hungry-hippo-white-elephant
