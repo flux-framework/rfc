@@ -42,7 +42,7 @@ services required to execute a Flux workload.
   executed. For example, arguments, environment, working directory.
 
 * **program specification** The language and/or API used to communicate
-  program parameters to a Flux instance. 
+  program parameters to a Flux instance.
 
 * **program context** a per-program datastore in the enclosing instance
   where a program MAY store persistent state.
@@ -102,7 +102,7 @@ at a minimum the following properties
 * ability to map tasks to task slots with arbitrary complexity
 * ability to describe dynamic program properties
 * optionally include binary data (e.g. include a tarball or other
-   package format of executables, input data, etc.) 
+   package format of executables, input data, etc.)
 
 == Scheduling Program Execution
 
@@ -114,7 +114,7 @@ Programs SHALL be executed as scheduled by a Scheduler from the enclosing
 instance, unless an _immediate_ or _unscheduled_ execution is requested.
 It is RECOMMENDED that unscheduled program execution be restricted to
 the instance owner.
- 
+
 When requesting _immediate_ program execution, an explicit list of resources
 on which to target the program MUST be supplied by the caller.
 
@@ -190,7 +190,7 @@ Control Module.
 
 * **empty**
 * **pending**
-* **starting** 
+* **starting**
 * **running**
 * **complete**
 * **growing**
@@ -212,7 +212,7 @@ A Flux instance SHALL support at least the following program initiation
 and control methods:
 
  * **new** Reserve a new program handle P. The handle P SHALL be
-   considered to be an empty or reserved program. _new() -> P_ 
+   considered to be an empty or reserved program. _new() -> P_
 
  * **current_program** Get a program handle P for the program of the caller.
 
@@ -225,7 +225,7 @@ and control methods:
 
  * **map** Map a task or tasks description T onto program P. _map(T,P)_
 
- * **exec** Execute all pending tasks in program P. 
+ * **exec** Execute all pending tasks in program P.
    _exec(P)_
 
  * **shrink** Remove resource set R' from program _P_.
@@ -239,7 +239,7 @@ and control methods:
  * **wait** Wait on status changes in program P.
 
  * **signal** Send signals to all executing tasks in program P.
-  
+
  * **terminate** Terminate program P and _wait_ for completion.
 
  * **reap** Post-processing of the _program context_ of a completed
@@ -266,4 +266,3 @@ calls based on security policy and ownership of the instance.
 
 As a program, a Flux instance MAY utilize any of the methods above
 as needed to make requests of its enclosing instance.
-

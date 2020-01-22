@@ -1,4 +1,5 @@
 ifdef::env-github[:outfilesuffix: .adoc]
+
 25/Job Specification Version 1
 ==============================
 

@@ -262,4 +262,3 @@ sequence	= 4OCTET
 ; unused 4-byte field
 unused		= %x00.00.00.00
 ----
-

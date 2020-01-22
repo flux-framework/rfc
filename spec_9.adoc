@@ -66,5 +66,3 @@ are identified.
   used, `kvs_get_version()` SHOULD be used to retrieve the KVS version in
   which the data is ready, and `kvs_wait_version()` SHOULD be used by the
   client to wait for consistency.
-
-
