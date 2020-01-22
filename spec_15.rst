@@ -24,7 +24,7 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  `12/Flux Security Architecture <spec_12.rst>`__
+-  :doc:`12/Flux Security Architecture <spec_12>`
 
 
 Introduction
@@ -212,7 +212,7 @@ The input to the IMP includes the following fields
 Where **J** is the User Request or reference to such a request,
 which SHALL contain
 
--  Jobspec as per `14/Canonical Job Specification <spec_14.rst>`__
+-  Jobspec as per :doc:`14/Canonical Job Specification <spec_14>`
 
 -  Options supplied by guest user
 

@@ -26,11 +26,11 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  `4/Flux Resource Model <spec_4.rst>`__
+-  :doc:`4/Flux Resource Model <spec_4>`
 
--  `8/Flux Task and Program Execution Services <spec_8.rst>`__
+-  :doc:`8/Flux Task and Program Execution Services <spec_8>`
 
--  `20/Resource Set Specification Version 1 <spec_20.rst>`__
+-  :doc:`20/Resource Set Specification Version 1 <spec_20>`
 
 -  `26/Job Dependency Specification <spec_26.rst>`__
 

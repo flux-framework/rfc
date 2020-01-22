@@ -23,7 +23,7 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  `3/CMB1 - Flux Comms Message Broker Protocol <spec_3.rst>`__
+-  :doc:`3/CMB1 - Flux Comms Message Broker Protocol <spec_3>`
 
 
 Goals

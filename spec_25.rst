@@ -7,7 +7,7 @@ requirements and other attributes of one or more programs submitted to a Flux
 instance for execution. This RFC describes the version 1 of jobspec, which
 represents a request to run exactly one program. This version is a simplified
 version of the canonical jobspec format described in
-`RFC 14 <spec_14.rst>`__.
+:doc:`RFC 14 <spec_14>`.
 
 -  Name: github.com/flux-framework/rfc/spec_25.adoc
 
@@ -27,13 +27,13 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  `4/Flux Resource Model <spec_4.rst>`__
+-  :doc:`4/Flux Resource Model <spec_4>`
 
--  `8/Flux Task and Program Execution Services <spec_8.rst>`__
+-  :doc:`8/Flux Task and Program Execution Services <spec_8>`
 
--  `14/Canonical Job Specification <spec_14.rst>`__
+-  :doc:`14/Canonical Job Specification <spec_14>`
 
--  `20/Resource Set Specification Version 1 <spec_20.rst>`__
+-  :doc:`20/Resource Set Specification Version 1 <spec_20>`
 
 
 Goals

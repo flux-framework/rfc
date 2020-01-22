@@ -23,17 +23,17 @@ in this document are to be interpreted as described in RFC 2119.
 Related Standards
 -----------------
 
--  `4/Flux Resource Model <spec_4.rst>`__
+-  :doc:`4/Flux Resource Model <spec_4>`
 
--  `8/Flux Task and Program Execution Services <spec_8.rst>`__
+-  :doc:`8/Flux Task and Program Execution Services <spec_8>`
 
--  `14/Canonical Job Specification <spec_14.rst>`__
+-  :doc:`14/Canonical Job Specification <spec_14>`
 
--  `15/Independent Minister of Privilege for Flux <spec_15.rst>`__
+-  :doc:`15/Independent Minister of Privilege for Flux <spec_15>`
 
--  `16/KVS Job Schema <spec_16.rst>`__
+-  :doc:`16/KVS Job Schema <spec_16>`
 
--  `22/Idset String Representation <spec_22.rst>`__
+-  :doc:`22/Idset String Representation <spec_22>`
 
 
 Overview

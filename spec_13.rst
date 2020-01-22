@@ -28,7 +28,7 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  `12/Flux Security Architecture <spec_12.rst>`__
+-  :doc:`12/Flux Security Architecture <spec_12>`
 
 
 Goals

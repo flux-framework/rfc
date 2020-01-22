@@ -26,7 +26,7 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  `10/Content Storage Service <spec_10.rst>`__
+-  :doc:`10/Content Storage Service <spec_10>`
 
 
 Goals

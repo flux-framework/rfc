@@ -23,11 +23,11 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  `16/KVS Job Schema <spec_16.rst>`__
+-  :doc:`16/KVS Job Schema <spec_16>`
 
--  `18/KVS Event Log Format <spec_18.rst>`__
+-  :doc:`18/KVS Event Log Format <spec_18>`
 
--  `22/Idset String Representation <spec_22.rst>`__
+-  :doc:`22/Idset String Representation <spec_22>`
 
 
 Background

@@ -23,7 +23,7 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
-`14/Canonical Job Specification <spec_14.rst>`__
+:doc:`14/Canonical Job Specification <spec_14>`
 
 
 Goals

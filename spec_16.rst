@@ -23,17 +23,17 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  `12/Flux Security Architecture <spec_12.rst>`__
+-  :doc:`12/Flux Security Architecture <spec_12>`
 
--  `14/Canonical Job Specification <spec_14.rst>`__
+-  :doc:`14/Canonical Job Specification <spec_14>`
 
--  `15/Independent Minister of Privilege for Flux: The Security IMP <spec_15.rst>`__
+-  :doc:`15/Independent Minister of Privilege for Flux: The Security IMP <spec_15>`
 
--  `18/KVS Event Log Format <spec_18.rst>`__
+-  :doc:`18/KVS Event Log Format <spec_18>`
 
--  `20/Resource Set Specification <spec_20.rst>`__
+-  :doc:`20/Resource Set Specification <spec_20>`
 
--  `21/Job States <spec_21.rst>`__
+-  :doc:`21/Job States <spec_21>`
 
 
 Background
@@ -149,14 +149,14 @@ the key ``job.<jobid>.eventlog``. A KVS append operation
 is used to add events to this log.
 
 Each append consists of a string matching the format described in
-`RFC 18 <spec_18.rst>`__.
+:doc:`RFC 18 <spec_18>`.
 
 
 Content Produced by Ingest Agent
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A user submits *J* with attached signature, as described in
-`RFC 15 <spec_15.rst>`__.
+:doc:`RFC 15 <spec_15>`.
 
 The *ingest agent* validates *J* and if accepted, populates the KVS with:
 
@@ -164,7 +164,7 @@ The *ingest agent* validates *J* and if accepted, populates the KVS with:
    signed user request token for passing to IMP in a multi-user instance.
 
 ``job.<jobid>.jobspec``
-   jobspec in JSON form, as described in `RFC 14 <spec_14.rst>`__
+   jobspec in JSON form, as described in :doc:`RFC 14 <spec_14>`
 
 ``job.<jobid>.eventlog``
    eventlog described above
@@ -180,7 +180,7 @@ Content Consumed/Produced by Job Manager
 
 Upon notification of a new ``job.<jobid>``, the *job manager* takes
 the active role in moving a job through its life cycle, and logs events
-to the eventlog as described in `RFC 21 <spec_21.rst>`__.
+to the eventlog as described in :doc:`RFC 21 <spec_21>`.
 
 When the *job manager* is restarted, it recovers its state by scanning
 ``jobs`` and replaying the eventlog for each job found there.
@@ -193,7 +193,7 @@ When the *scheduler* receives an allocation request containing a jobid,
 it reads the jobspec from ``job.<jobid>.jobspec``.
 
 The scheduler allocates resources by writing a resource set
-as described in `RFC 20 <spec_20.rst>`__
+as described in :doc:`RFC 20 <spec_20>`
 to ``job.<jobid>.R`` and answering the allocation request.
 
 The scheduler frees resources by answering the free request,

@@ -22,7 +22,7 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  `21/Job States and Events <spec_21.rst>`__
+-  :doc:`21/Job States and Events <spec_21>`
 
 
 Background
