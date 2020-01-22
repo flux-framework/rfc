@@ -1,4 +1,3 @@
-ifdef::env-github[:outfilesuffix: .adoc]
 
 6/Flux Remote Procedure Call Protocol
 =====================================
@@ -6,48 +5,63 @@ ifdef::env-github[:outfilesuffix: .adoc]
 This specification describes how Flux Remote Procedure Call (RPC) is
 built on top of request and response messages defined in RFC 3.
 
-* Name: github.com/flux-framework/rfc/spec_6.adoc
-* Editor: Jim Garlick <garlick@llnl.gov>
-* State: raw
+-  Name: github.com/flux-framework/rfc/spec_6.adoc
 
-== Language
+-  Editor: Jim Garlick <garlick@llnl.gov>
+
+-  State: raw
+
+
+Language
+--------
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
+be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__.
 
-== Related Standards
 
-*  link:spec_3{outfilesuffix}[3/CMB1 - Flux Comms Message Broker Protocol]
+Related Standards
+-----------------
 
-== Goals
+-  `3/CMB1 - Flux Comms Message Broker Protocol <spec_3.rst>`__
+
+
+Goals
+-----
 
 Flux RPC protocol enables comms modules, utilities, or other software
 communicating with a Flux comms session to call the methods implemented
-by comms modules.  Flux RPC has the following goals:
+by comms modules. Flux RPC has the following goals:
 
-* Support location-neutral service addressing, without a location broker.
-* Support a high degree of concurrency in both clients and servers
-* Avoid over-engineered mitigations for timeouts, congestion avoidance, etc.
-  that can be a liability in high performance computing environments.
-* Provide a mechanism to abort in-progress RPC calls.
+-  Support location-neutral service addressing, without a location broker.
 
-== Implementation
+-  Support a high degree of concurrency in both clients and servers
+
+-  Avoid over-engineered mitigations for timeouts, congestion avoidance, etc.
+   that can be a liability in high performance computing environments.
+
+-  Provide a mechanism to abort in-progress RPC calls.
+
+
+Implementation
+--------------
 
 A remote procedure call SHALL consist of one request message
 sent from a client to a server, and zero or more response messages sent
-from a server to a client.  The client and server roles are not
-mutually-exclusive--comms modules often act in both roles.
+from a server to a client. The client and server roles are not
+mutually-exclusive—​comms modules often act in both roles.
 
-----
-+--------+    Request      +--------+
-|        | --------------> |        |
-| Client |                 | Server |
-|        | <-------------- |        |
-+--------+    Response     +--------+
-----
+::
 
-=== Request Message
+   +--------+    Request      +--------+
+   |        | --------------> |        |
+   | Client |                 | Server |
+   |        | <-------------- |        |
+   +--------+    Response     +--------+
+
+
+Request Message
+~~~~~~~~~~~~~~~
 
 Per RFC 3, the request message SHALL include a nodeid and topic string
 used to aid the broker in selecting appropriate routes to the server.
@@ -61,7 +75,9 @@ The request message MAY include a service-defined payload.
 Requests to services that send multiple responses SHALL set the
 FLUX_MSGFLAG_STREAMING message flag.
 
-=== Response Messages
+
+Response Messages
+~~~~~~~~~~~~~~~~~
 
 The server SHALL send zero or more responses to each request, as
 established by prior agreement between client and server (e.g. defined
@@ -75,15 +91,17 @@ to zero and MAY include a service-defined payload.
 
 If the request fails, the server SHALL set errnum in the response to
 a nonzero value conforming to
-link:http://man7.org/linux/man-pages/man3/errno.3.html[POSIX.1 errno encoding]
-and MAY include an error string payload.  The error string, if included
-SHALL consist of a brief, human readable message.  It is RECOMMENDED that
+`POSIX.1 errno encoding <http://man7.org/linux/man-pages/man3/errno.3.html>`__
+and MAY include an error string payload. The error string, if included
+SHALL consist of a brief, human readable message. It is RECOMMENDED that
 the error string be less than 80 characters and not include line
 terminators.
 
 The server MAY respond to requests in any order.
 
-=== Streaming Responses
+
+Streaming Responses
+~~~~~~~~~~~~~~~~~~~
 
 Services that send multiple responses to a request SHALL immediately reject
 requests that do not have the FLUX_MSGFLAG_STREAMING flag set by sending
@@ -96,46 +114,52 @@ The service MAY signify a successful "end of response stream" with an ENODATA
 (error number 61) error response.
 
 The FLUX_MSGFLAG_STREAMING flag SHALL be set in all non-error responses in
-the response stream.  The flag MAY be set in the final error response.
+the response stream. The flag MAY be set in the final error response.
 
-=== Matchtag Field
+
+Matchtag Field
+~~~~~~~~~~~~~~
 
 RFC 3 provisions request and response messages with a 32-bit matchtag field.
 The client MAY assign a unique (to the client) value to this field,
-which SHALL be echoed back by the server in responses.  The client MAY
+which SHALL be echoed back by the server in responses. The client MAY
 use this matchtag value to correlate responses to its concurrently
 outstanding requests.
 
-Note that matchtags are only unique to the client.  Servers SHALL NOT
+Note that matchtags are only unique to the client. Servers SHALL NOT
 use matchtags to track client state unless paired with the client UUID.
 
 The client MAY set matchtag to FLUX_MATCHTAG_NONE (0) if it has no need
 to correlate responses in this way, or a response is not expected.
 
 The client SHALL NOT reuse matchtags in a new RPC unless it is certain
-that all responses from the original RPC have been received.  A matchtag
+that all responses from the original RPC have been received. A matchtag
 MAY be reused if a response containing the matchtag arrives with the
 FLUX_MSGFLAG_STREAMING message flag clear, or if the response contains
 a non-zero error number.
 
-=== Exceptional Conditions
+
+Exceptional Conditions
+~~~~~~~~~~~~~~~~~~~~~~
 
 If a request cannot be delivered to the server, the broker MAY respond to
-the sender with an error.  For example, per RFC 3, a broker SHALL respond
+the sender with an error. For example, per RFC 3, a broker SHALL respond
 with error number 38 "Function not implemented" if the topic string cannot
 be matched to a service, or error number 113, "No route to host" if the
 requested nodeid cannot be reached.
 
 Although overlay networks use reliable transports between brokers,
 exceptional conditions at the endpoints or at intervening broker instances
-MAY cause messages to be lost.  It is the client's responsibility to
+MAY cause messages to be lost. It is the client’s responsibility to
 implement any timeouts or other mitigation to handle missing or delayed
 responses.
 
-=== Cancellation
+
+Cancellation
+~~~~~~~~~~~~
 
 If a client wishes to give up on an in-progress RPC, it MAY send a request
-to the server with a topic string of "_service_.disconnect".
+to the server with a topic string of "*service*.disconnect".
 
 It is optional for the server to implement the disconnect method.
 As usual, if the method is unimplemented, the server SHALL respond with
@@ -149,6 +173,6 @@ MAY reuse the canceled messages' matchtags, if any.
 
 The server MAY determine the sender identity for any request
 by reading the first source-address routing identity frame (closest to
-routing delimiter frame) from the request message.  Servers which
+routing delimiter frame) from the request message. Servers which
 respond to requests out of order SHOULD retain state for pending
 requests, allowing them to be canceled by sender id as described above.
