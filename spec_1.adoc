@@ -1,3 +1,5 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
 1/C4.1 - Collective Code Construction Contract
 ==============================================
 
