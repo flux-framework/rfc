@@ -1,6 +1,6 @@
 #!/bin/bash
 
-indexfile=README.adoc
+indexfile=README.rst
 
 if test $# == 0; then
     echo "Usage: checkindex file [file...]" >&2
@@ -12,8 +12,8 @@ echo "1..$#"
 count=1
 for f in $*; do
     filename="$(basename $f)"
-    linkname="link:$(echo $filename | sed -e 's/.adoc$//'){outfilesuffix}"
-    if grep -q $linkname $indexfile; then
+    linkname="<$(echo $filename | sed -e 's/.rst$//')>"
+    if grep -q ":doc:.*$linkname" $indexfile; then
         echo "ok $count - $filename link is present in $indexfile"
     else
         echo "not ok $count - $filename link is missing from $indexfile"
@@ -23,4 +23,4 @@ for f in $*; do
     ((count++))
 done
 
-exit $exit_val 
+exit $exit_val
