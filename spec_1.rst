@@ -227,7 +227,7 @@ Project Administration
 Further Reading
 ---------------
 
--  `ZeromMQ - The Guide, Chapter 6: The ZeroMQ Community <http://zguide.zeromq.org/page:all#Chapter-The-MQ-Community>`__
+-  `ZeroMQ - The Guide, Chapter 6: The ZeroMQ Community <http://zguide.zeromq.org/page:all#Chapter-The-MQ-Community>`__
 
 -  `Argyris' Models 1 and 2 <http://en.wikipedia.org/wiki/Chris_Argyris>`__ - the goals of C4.1 are consistent with Argyris' Model 2.
 
