@@ -25,6 +25,7 @@ be interpreted as described in http://tools.ietf.org/html/rfc2119[RFC 2119].
 * link:spec_4{outfilesuffix}[4/Flux Resource Model]
 * link:spec_8{outfilesuffix}[8/Flux Task and Program Execution Services]
 * link:spec_20{outfilesuffix}[20/Resource Set Specification Version 1]
+* link:spec_26{outfilesuffix}[26/Job Dependency Specification]
 
 == Goals
 
@@ -297,6 +298,9 @@ Some common system attributes are:
  *cwd*::
  The value of the `cwd` attribute is a string containing the absolute
  path to the current working directory to use when spawning the task.
+
+ *dependencies*:: The value of the `dependencies` attribute SHALL be a
+ list of dictionaries following the format specified in RFC 26.
 
  *job*::
  The `job` attribute is an optional dictionary containing job
@@ -621,6 +625,23 @@ overridden environment (i.e., unset FOO and set BAR=2).
 Jobspec YAML::
 +
 [source,yaml]
+
 ----
 include::data/spec_14/use_case_2.7.yaml[]
+----
+
+'''
+Use Case 2.8:: Specify dependencies
++
+Specific Example:: Depend on two previously submitted jobs.  The first job's
+Flux ID (fluid) is known (`hungry-hippo-white-elephant`).  The second job's
+fluid is not known but its `out` dependency (`foo`) is known.  Also provide an
+`out` dependency (`bar`) that other jobs can depend on.
++
+Jobspec YAML::
++
+[source,yaml]
+
+----
+include::data/spec_14/use_case_2.8.yaml[]
 ----

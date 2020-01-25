@@ -1,0 +1,8 @@
+- type: in
+  scope: user
+  scheme: string
+  value: A
+- type: out
+  scope: user
+  scheme: string
+  value: B

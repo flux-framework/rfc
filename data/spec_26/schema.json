@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "job-dependency",
+    "description":"Flux Job Dependency Definition",
+    "type": "array",
+    "minItems": 1,
+    "uniqueItems": true,
+    "items" : {
+        "type": "object",
+        "properties": {
+            "type" : {
+                "type": "string",
+                "enum": ["in", "out", "inout"]
+            },
+            "scope" : {
+                "type": "string",
+                "enum": ["user", "global"]
+            },
+            "scheme" : { "type": "string" },
+            "value" : { "type": "string" }
+        },
+        "required": ["type", "scope", "scheme", "value"],
+        "additionalProperties": false
+    }
+}

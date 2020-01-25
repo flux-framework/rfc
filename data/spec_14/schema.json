@@ -99,7 +99,10 @@
           "properties": {
             "duration": { "type": "number", "minimum": 0 },
             "cwd": { "type": "string" },
-            "environment": { "type": "object" }
+            "environment": { "type": "object" },
+            "dependencies" : {
+                "$ref": "file:data/spec_26/schema.json"
+            }
           }
         },
         "user": {

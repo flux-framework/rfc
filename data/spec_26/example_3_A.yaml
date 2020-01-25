@@ -1,0 +1,4 @@
+- type: out
+  scope: user
+  scheme: string
+  value: A
