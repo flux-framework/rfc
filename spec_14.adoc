@@ -310,6 +310,17 @@ Some common system attributes are:
    job is the first argument of the command run by the user, or it can be
    set by the user to an arbitrary value.
 
+ *shell*::
+ The `shell` attribute is an optional dictionary containing job shell
+ metadata, such as configuration options.  The application is free to
+ create keys of any name, however the following are reserved for
+ special use:
+
+   *options*:::
+   The `options` key is a dictionary containing configuration options
+   for the job shell.  A job shell and its plugins are free to define
+   what keys and values should go into `options`.
+
 === Example Jobspec
 
 Under the description above, the following is an example of a fully compliant
