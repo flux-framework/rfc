@@ -118,7 +118,7 @@ Examples:
 [source, c]
 ----
 // Good, named, none is not a valid state
-enum flux_msg_type {
+enum flux_msg_type_b {
     FLUX_MSGTYPE_REQUEST    = 0x01,
     FLUX_MSGTYPE_RESPONSE   = 0x02,
     FLUX_MSGTYPE_EVENT      = 0x04,
@@ -134,6 +134,13 @@ enum flux_flag_b {
     FLUX_O_CLONE = 2,
     FLUX_O_NONBLOCK = 4,
     FLUX_O_MATCHDEBUG = 8,
+};
+
+// Good, non-bitmap, and none is not a valid state, 0 isn't an option
+enum flux_requeue_mode {
+    FLUX_REQUEUE_HEAD = 1,   /* requeue message at head of queue */
+    FLUX_REQUEUE_TAIL = 2,   /* requeue message at tail of queue */
+    FLUX_REQUEUE_RAND = 3,   /* requeue message at somewhere*/
 };
 ----
 
