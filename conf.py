@@ -85,3 +85,14 @@ html_static_path = [
 
 man_pages = [
 ]
+
+
+# -- Options for recommonmark -----------------------------------------------
+def on_missing_reference(app, env, node, contnode):
+        if node['reftype'] == 'any':
+                return contnode
+        else:
+                return None
+
+def setup(app):
+        app.connect('missing-reference', on_missing_reference)
