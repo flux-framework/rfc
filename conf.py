@@ -44,7 +44,8 @@ release = '0.13.0'
 # ones.
 extensions = [
     'sphinx.ext.intersphinx',
-    'sphinxcontrib.spelling'
+    'sphinxcontrib.spelling',
+    'recommonmark',
 ]
 
 # sphinxcontrib.spelling settings
@@ -61,7 +62,10 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 master_doc = 'index'
-source_suffix = '.rst'
+source_suffix = {
+    '.rst' : 'restructuredtext',
+    '.md' : 'markdown',
+} 
 
 
 # -- Options for HTML output -------------------------------------------------
