@@ -53,6 +53,8 @@ Ritchie
 shiftwidth
 stroustrup
 struct
+enum
+enums
 tabstop
 typedefs
 whitespace
@@ -428,3 +430,8 @@ URIs
 inout
 inoutset
 asciidoc
+MATCHDEBUG
+MSGTYPE
+NONBLOCK
+requeue
+REQUEUE
