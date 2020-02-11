@@ -2,7 +2,7 @@
 9/Distributed Communication and Synchronization Best Practices
 ==============================================================
 
--  Name: github.com/flux-framework/rfc/spec_9.adoc
+-  Name: github.com/flux-framework/rfc/spec_9.rst
 
 -  Editor: Tom Scogland <scogland1@llnl.gov>
 

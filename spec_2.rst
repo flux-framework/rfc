@@ -7,7 +7,7 @@ resource management systems for High Performance Computing (HPC) data
 centers. This document specifies licensing and collaboration guidelines
 for Flux projects.
 
--  Name: github.com/flux-framework/rfc/spec_2.adoc
+-  Name: github.com/flux-framework/rfc/spec_2.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
 

@@ -5,7 +5,7 @@
 This specification describes the format of data stored in the KVS
 for Flux jobs.
 
--  Name: github.com/flux-framework/rfc/spec_16.adoc
+-  Name: github.com/flux-framework/rfc/spec_16.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
 

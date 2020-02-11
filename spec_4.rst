@@ -5,7 +5,7 @@
 The Flux Resource Model describes the conceptual model used for
 resources within the Flux framework.
 
--  Name: github.com/flux-framework/rfc/spec_4.adoc
+-  Name: github.com/flux-framework/rfc/spec_4.rst
 
 -  Editor: Mark Grondona <mgrondona@llnl.gov>
 

@@ -7,7 +7,7 @@ against unauthorized access and prevent privilege escalation and other
 attacks, while ensuring programs run with appropriate user credentials
 and are contained within their set of allocated resources.
 
--  Name: github.com/flux-framework/rfc/spec_12.adoc
+-  Name: github.com/flux-framework/rfc/spec_12.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
 

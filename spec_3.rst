@@ -8,7 +8,7 @@ messages, Version 1, also referred to as CMB1.
 CMB1 is encapsulated in the
 `ZeroMQ Message Transfer Protocol (ZMTP) <http://rfc.zeromq.org/spec:23/ZMTP>`__.
 
--  Name: github.com/flux-framework/rfc/spec_3.adoc
+-  Name: github.com/flux-framework/rfc/spec_3.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
 

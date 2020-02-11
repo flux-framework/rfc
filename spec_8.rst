@@ -2,7 +2,7 @@
 8/Flux Task and Program Execution Services
 ==========================================
 
--  Name: github.com/flux-framework/rfc/spec_8.adoc
+-  Name: github.com/flux-framework/rfc/spec_8.rst
 
 -  Editor: Mark grondona <mgrondona@llnl.gov>
 

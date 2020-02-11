@@ -8,7 +8,7 @@ identifiers that are a combination of timestamp since some epoch,
 generator id, and sequence number. The scheme is used to generate
 Flux job IDs.
 
--  Name: github.com/flux-framework/rfc/spec_19.adoc
+-  Name: github.com/flux-framework/rfc/spec_19.rst
 
 -  Editor: Mark Grondona <mgrondona@llnl.gov>
 

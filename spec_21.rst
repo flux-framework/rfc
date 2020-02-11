@@ -5,7 +5,7 @@
 This specification describes Flux job states and the events that trigger
 job state transitions.
 
--  Name: github.com/flux-framework/rfc/spec_21.adoc
+-  Name: github.com/flux-framework/rfc/spec_21.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
 

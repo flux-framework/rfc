@@ -5,7 +5,7 @@
 This specification describes a compact form for
 expressing a set of non-negative, integer ids.
 
--  Name: github.com/flux-framework/rfc/spec_22.adoc
+-  Name: github.com/flux-framework/rfc/spec_22.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
 

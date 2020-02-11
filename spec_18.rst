@@ -4,7 +4,7 @@
 
 This specification describes the format for Flux KVS Event Logs.
 
--  Name: github.com/flux-framework/rfc/spec_18.adoc
+-  Name: github.com/flux-framework/rfc/spec_18.rst
 
 -  Editor: Stephen Herbein <sherbein@llnl.gov>
 

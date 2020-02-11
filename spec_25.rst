@@ -9,7 +9,7 @@ represents a request to run exactly one program. This version is a simplified
 version of the canonical jobspec format described in
 :doc:`RFC 14 <spec_14>`.
 
--  Name: github.com/flux-framework/rfc/spec_25.adoc
+-  Name: github.com/flux-framework/rfc/spec_25.rst
 
 -  Editor: Stephen Herbein <herbein1@llnl.gov>
 

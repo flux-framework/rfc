@@ -7,7 +7,7 @@ github.com `Fork + Pull Model <http://help.github.com/send-pull-requests/>`__,
 aimed at providing an optimal collaboration model for free software
 projects.
 
--  Name: github.com/flux-framework/rfc/spec_1.adoc
+-  Name: github.com/flux-framework/rfc/spec_1.rst
 
 -  Forked from: rfc.zeromq.org/spec:22/C4.1
 

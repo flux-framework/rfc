@@ -5,7 +5,7 @@
 This specification defines the version 1 format of the resource-set
 representation or *R* in short.
 
--  Name: github.com/flux-framework/rfc/spec_20.adoc
+-  Name: github.com/flux-framework/rfc/spec_20.rst
 
 -  Editor: Dong H. Ahn <ahn1@llnl.gov>
 

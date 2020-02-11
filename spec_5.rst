@@ -5,7 +5,7 @@
 This specification describes the broker extension modules
 used to implement Flux services.
 
--  Name: github.com/flux-framework/rfc/spec_5.adoc
+-  Name: github.com/flux-framework/rfc/spec_5.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
 

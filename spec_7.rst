@@ -1,6 +1,6 @@
 This specification presents the recommended standards when contributing code to the Flux code base.
 
--  Name: github.com/flux-framework/rfc/spec_7.adoc
+-  Name: github.com/flux-framework/rfc/spec_7.rst
 
 -  Editor: Tom Scogland <scogland1@llnl.gov>
 

@@ -10,7 +10,7 @@ standardized by the MPI Forum and has been only lightly documented.
 This RFC is an attempt to document PMI-1 to guide developers of resource
 managers that must support current and legacy MPI implementations.
 
--  Name: github.com/flux-framework/rfc/spec_13.adoc
+-  Name: github.com/flux-framework/rfc/spec_13.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
 

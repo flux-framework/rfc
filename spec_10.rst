@@ -5,7 +5,7 @@
 This specification describes the Flux content storage service
 and the messages used to access it.
 
--  Name: github.com/flux-framework/rfc/spec_10.adoc
+-  Name: github.com/flux-framework/rfc/spec_10.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
 
