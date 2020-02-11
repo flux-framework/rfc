@@ -89,7 +89,7 @@ a resource can be described.
 Although this is identical to describing the resource as a scalar, we
 SHALL still call it a resource pool to avoid introducing a new concept.
 When a distinction is needed, a pool with size 1 SHALL be called
-a \``degenerate resource pool''.
+a "degenerate resource pool".
 
 The second concept borrows from graph theory to describe relationships
 among such individual resource pools. A graph consists of
@@ -178,20 +178,20 @@ vertices, and the name SHALL identify a subsystem this edge
 belongs to.
 
 .. figure:: data/spec_4/basics_contains.png
-   :alt: An edge capturing a \``has-a'' relationship
+   :alt: An edge capturing a "has-a" relationship
 
-   An edge capturing a \``has-a'' relationship
+   An edge capturing a "has-a" relationship
 
-As shown in Figure 1, for example, the edge of the ``CONTAINS''
-type represents the``\ has-a'' relationship: i.e., Cluster A has a rack
+As shown in Figure 1, for example, the edge of the "CONTAINS"
+type represents the "has-a" relationship: i.e., Cluster A has a rack
 called Rack1.
 
 .. figure:: data/spec_4/basics_channel.png
-   :alt: Edges representing \``conduit-of'' relationships
+   :alt: Edges representing "conduit-of" relationships
 
-   Edges representing \``conduit-of'' relationships
+   Edges representing "conduit-of" relationships
 
-Similarly, as shown in Figure 2, each edge of \``CONDUIT_OF''
+Similarly, as shown in Figure 2, each edge of "CONDUIT_OF"
 type represents a directional flow relationship: i.e.,
 EdgeSwitch3 is a conduit of CoreSwitch1 through which
 data flows. A bidirectional relationship MAY be represented
@@ -206,8 +206,8 @@ or two opposite directional edges.
 A directional relationship MAY be accompanied
 not only by the same type but also by the opposite type
 in the opposite direction.
-For example, a directional ``CONTAINS'' edge MAY be accompanied
-by an``\ IN'' edge in the other direction, as shown in Figure 3.
+For example, a directional "CONTAINS" edge MAY be accompanied
+by an "IN" edge in the other direction, as shown in Figure 3.
 
 Finally, the subsystem name of an edge SHALL be given such that the union of the
 set of all edges annotated with a same name and the set of
@@ -243,13 +243,13 @@ The Composite Resource Pool
 The dominant form of the Flux Resource Model is called
 *composite resource pool*, the combination of a *composite type*
 (i.e., resources with 0 or more children and at most one parent,
-arranged in a hierarchical \``has-a'' graph relationship),
+arranged in a hierarchical "has-a" graph relationship),
 and a *resource pool*.
 
 Borrowing from an object-oriented design pattern,
 the composite resource pool leads to the natural representation of
 resources as a hierarchy of individual or pooled resources
-bound to a *root* which will typically be a ``cluster'' or``\ center''
+bound to a *root* which will typically be a "cluster" or "center"
 resource.
 
 .. figure:: data/spec_4/in.png
@@ -266,7 +266,7 @@ Use of the composite resource pool in Flux has the following properties:
 
 -  A subset of a composite resource pool is a valid composite resource pool
 
--  Composite resource naturally describes resources in a \``has-a'' relationship
+-  Composite resource naturally describes resources in a "has-a" relationship
 
 -  High level resources can be created piece-wise from base resource types.
 
@@ -343,9 +343,9 @@ Getters
 
 Setters
    Update certain base and extended data, which
-   includes ``Tag (K, [V])'', a method for tagging a resource pool
+   includes "Tag (K, [V])", a method for tagging a resource pool
    object with arbitrary key (K) and OPTIONAL value (V) pairs, if
-   the extended data includes Tags, and``\ State'', a method for setting
+   the extended data includes Tags, and "State", a method for setting
    the state of the resource, if state is included in the extended data.
 
 Matching support
@@ -370,12 +370,12 @@ Walker
    or an I/O bandwidth hierarchy) from which to walk.
    In particular, on a tree hierarchy, preorder and postorder
    visiting patterns SHALL be supported, and a user MAY be able to
-   register with it pre- and/or post-order callbacks, or ``filters'',
+   register with it pre- and/or post-order callbacks, or "filters",
    which are invoked by the walker on each visit event.
    The filters MAY be passed in either from within the same
    service space or from a remote service space.
    The implementation that supports the remote filter passing
-   facilitates providing the the Flux Resource Model as a standalone``\ Resource'' service.
+   facilitates providing the the Flux Resource Model as a standalone "Resource" service.
 
 Pruning Filter
    Allow a user of the walker to continue

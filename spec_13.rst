@@ -611,7 +611,7 @@ are started.
 The 'maxprocs' array specifies the desired number of processes
 to create for each 'cmd' string. The actual number of processes
 may be less than the numbers specified in maxprocs. The acceptable
-number of processes spawned may be controlled by \``soft'' keyvals in
+number of processes spawned may be controlled by "soft" keyvals in
 the info arrays.
 
 Environment variables may be passed to the spawned processes through PMI
@@ -628,7 +628,7 @@ Notes:
 -  This function is OPTIONAL in process managers that do not support
    dynamic process management.
 
--  The \``soft'' option is specified by mpiexec in the MPI-2 standard.
+-  The "soft" option is specified by mpiexec in the MPI-2 standard.
 
 -  See MPI-2 [#f2]_ section `5.3.5.1. Manager-worker Example, Using MPI_SPAWN. <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node98.htm>`__
 
