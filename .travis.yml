@@ -3,9 +3,17 @@ sudo: false
 addons:
   apt:
     packages:
-      - aspell-en
+      - enchant
       - python-jsonschema
       - python-yaml
+
+language: python
+
+python:
+  - 3.6
+
+install:
+  - pip install sphinx sphinx-rtd-theme sphinxcontrib-spelling recommonmark pyyaml jsonschema
 
 script:
   - make check
