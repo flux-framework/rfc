@@ -77,10 +77,10 @@ Well known Symbols
 
 A comms module SHALL export the following global symbols:
 
-const char \*mod_name;
+``const char \*mod_name;``
    A null-terminated C string defining the module name.
 
-int mod_main (void \*context, int argc, char \**argv);
+``int mod_main (void \*context, int argc, char \**argv);``
    A C function that SHALL serve as the entry point for a thread of control.
    This function SHALL return zero to indicate success or -1 to indicate failure.
    The POSIX ``errno`` thread-specific variable SHOULD be set to indicate the
