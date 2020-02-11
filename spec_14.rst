@@ -639,38 +639,8 @@ Specific Example
    ``out`` dependency (``bar``) that other jobs can depend on.
 
 Jobspec YAML
-   .. code:: yaml
-
-      version: 999
-      resources:
-        - type: slot
-          count: 1
-          label: default
-          with:
-            - type: node
-              count: 1
-      tasks:
-        - command: [ "flux", "start" ]
-          slot: default
-          count:
-            per_slot: 1
-      attributes:
-        system:
-          duration: 3600.
-          cwd: "/home/flux"
-          dependencies:
-            - type: in
-              scope: user
-              scheme: fluid
-              value: hungry-hippo-white-elephant
-            - type: in
-              scope: user
-              scheme: string
-              value: foo
-            - type: out
-              scope: user
-              scheme: string
-              value: bar
+   .. literalinclude:: data/spec_14/use_case_2.8.yaml
+      :language: yaml
 
 .. [#f1] `YAML Ain’t Markup Language (YAML) Version 1.1 <http://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
 
