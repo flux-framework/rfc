@@ -1,5 +1,5 @@
-rfc
-===
+RFC Index
+=========
 
 This is the Flux RFC project.
 
