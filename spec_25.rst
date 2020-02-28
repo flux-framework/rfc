@@ -58,7 +58,7 @@ This RFC describes the version 1 form of "jobspec", a domain specific language
 based on YAML  [#f1]_. The version 1 of jobspec SHALL consist of
 a single YAML document representing a reusable request to run
 exactly one program. Hereafter, "jobspec" refers to the version 1
-form, and "non-canonical jobspec" refers to the non-canonical form.
+form, and "canonical jobspec" refers to the canonical form.
 
 
 Jobspec Language Definition
