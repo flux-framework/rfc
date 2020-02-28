@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Usage: validate.py --schema=jobspec.json data.json [data.json ...]
 # Usage: cat data.json | validate.py --schema=jobspec.json
