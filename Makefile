@@ -9,7 +9,7 @@ SOURCEDIR     = .
 BUILDDIR      = _build
 
 # YAML Validation on these directories
-SCHEMA_DIRS=data/spec_26 data/spec_14
+SCHEMA_DIRS=data/spec_31 data/spec_26 data/spec_14
 
 # Put it first so that "make" without argument is like "make help".
 help:

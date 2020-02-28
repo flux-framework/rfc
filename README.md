@@ -40,6 +40,7 @@ Table of Contents
 - [27/Flux Resource Allocation Protocol Version 1](spec_27.rst)
 - [29/Hostlist Format](spec_29.rst)
 - [30/Job Urgency](spec_30.rst)
+- [31/Job Specification Version 2](spec_31.rst)
 
 Build Instructions
 ------------------

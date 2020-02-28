@@ -209,6 +209,13 @@ This specification describes the Flux implementation of the Hostlist Format
 
 This specification describes the Flux job urgency parameter.
 
+:doc:`31/Job Specification Version 2 <spec_31>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Version 2 of the domain specific job specification language canonically defined
+in RFC14.
+
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -241,3 +248,4 @@ This specification describes the Flux job urgency parameter.
    spec_27
    spec_29
    spec_30
+   spec_31
