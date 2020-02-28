@@ -128,7 +128,17 @@
             "type": "object",
             "properties": {
               "per_slot": { "type": "integer", "minimum" : 1 },
-              "total": { "type": "integer", "minimum" : 1 }
+              "total": { "type": "integer", "minimum" : 1 },
+                "per_resource": { "type": "object",
+                                  "required": ["type", "count"],
+                                  "properties": {
+                                      "type": {"type": "string"},
+                                      "count": {
+                                          "type": "integer",
+                                          "mininum" : 1
+                                      }
+                                  }
+                                }
             }
           },
           "distribution": { "type": "string" },
