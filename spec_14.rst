@@ -409,7 +409,8 @@ requests are similar to existing resource manager batch job submission or
 allocation requests, i.e. equivalent to ``oarsub``, ``qsub``, and ``salloc``.
 
 Use Case 1.1
-   Request Single Resource with Count
+^^^^^^^^^^^^
+Request Single Resource with Count
 
 Specific Example
    Request 4 nodes
@@ -426,7 +427,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 1.2
-   Request a range of a type of resource
+^^^^^^^^^^^^
+Request a range of a type of resource
 
 Specific Example
    Request between 3 and 30 nodes
@@ -441,7 +443,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 1.3
-   Request M nodes with a minimum number of sockets per node
+^^^^^^^^^^^^
+Request M nodes with a minimum number of sockets per node
    and cores per socket
 
 Specific Example
@@ -462,7 +465,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 1.4
-   Exclusively allocate nodes, while constraining cores and
+^^^^^^^^^^^^
+Exclusively allocate nodes, while constraining cores and
    sockets.
 
 Specific Example
@@ -474,7 +478,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 1.5
-   Complex example from OAR
+^^^^^^^^^^^^
+Complex example from OAR
 
 Specific Example
       ask for 1 core on 2 nodes on the same cluster with 4096 GB of memory
@@ -494,7 +499,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 1.6
-   Request resources across multiple clusters
+^^^^^^^^^^^^
+Request resources across multiple clusters
 
 Specific Example
    Ask for 30 cores on 2 clusters (total = 60 cores), with 1 flux broker launched per node
@@ -504,7 +510,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 1.7
-   Request N cores across M switches
+^^^^^^^^^^^^
+Request N cores across M switches
 
 Specific Example
    Request 3 cores across 3 switches, with 1 flux broker launched per node
@@ -525,7 +532,8 @@ The following use cases are more general and include more complex slot placement
 and task counts.
 
 Use Case 2.1
-   Run N tasks across M nodes
+^^^^^^^^^^^^
+Run N tasks across M nodes
 
 Specific Example
    Run ``hostname`` 20 times on 4 nodes, 5 per node
@@ -543,7 +551,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.2
-   Run N tasks across M nodes, unequal distribution
+^^^^^^^^^^^^
+Run N tasks across M nodes, unequal distribution
 
 Specific Example
    Run 5 copies of ``hostname`` across 4 nodes,
@@ -559,7 +568,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.3
-   Run N tasks, Require M cores per task
+^^^^^^^^^^^^
+Run N tasks, Require M cores per task
 
 Specific Example
    Run 10 copies of ``myapp``, require 2 cores per copy,
@@ -575,7 +585,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.4
-   Run different binaries with differing resource
+^^^^^^^^^^^^
+Run different binaries with differing resource
    requirements as single program
 
 Specific Example
@@ -590,7 +601,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.5
-   Run command requesting minimum amount of RAM per core
+^^^^^^^^^^^^
+Run command requesting minimum amount of RAM per core
 
 Specific Example
    Run 10 copies of ``app`` across 10 cores with at least 2GB per core
@@ -605,7 +617,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.6
-   Run N copies of a command with minimum amount of RAM per node
+^^^^^^^^^^^^
+Run N copies of a command with minimum amount of RAM per node
 
 Specific Example
    Run 10 copies of ``app`` across 2 nodes with at least 4GB per node
@@ -622,7 +635,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.7
-   Override the global environment
+^^^^^^^^^^^^
+Override the global environment
 
 Specific Example
    Run two different tasks, one with the global environment and one with an
@@ -633,7 +647,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.8
-   Specify dependencies
+^^^^^^^^^^^^
+Specify dependencies
 
 Specific Example
    Depend on two previously submitted jobs. The first job’s
