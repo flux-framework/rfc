@@ -7,8 +7,7 @@ Flux RFC Index
 ==============
 
 .. toctree::
-   :maxdepth: 1
-   :caption: RFC Listing
+   :hidden:
 
    README
    spec_1
