@@ -153,6 +153,12 @@ I/O streams in the Flux KVS.
 Version 1 of the domain specific job specification language
 canonically defined in RFC14.
 
+#### [26/Job Dependency Specification](spec_26.rst)
+
+An extension to the canonical jobspec designed to express the
+dependencies between one or more programs submitted to a Flux instance
+for execution.
+
 Change Process
 --------------
 

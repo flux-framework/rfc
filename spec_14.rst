@@ -32,7 +32,7 @@ Related Standards
 
 -  :doc:`20/Resource Set Specification Version 1 <spec_20>`
 
--  `26/Job Dependency Specification <spec_26.rst>`__
+-  :doc:`26/Job Dependency Specification <spec_26>`
 
 
 Goals
