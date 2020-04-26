@@ -175,3 +175,20 @@ the disconnect request, by reading the first source-address routing identity
 frame (closest to routing delimiter frame) from the request message.
 Servers which maintain per-request state SHOULD index it by sender identity
 so that it can be removed upon receipt of the disconnect request.
+
+
+Cancellation
+~~~~~~~~~~~~
+
+A service MAY implement a method which allows pending requests on its
+other methods to be canceled.  If implemented, the cancellation method
+SHOULD accept a JSON object payload containing a "matchtag" key with integer
+value.  The sender of the cancellation request and the matchtag from its
+payload MAY be used by the service to uniquely idenitfy a single request
+to be canceled.
+
+The client SHALL set the FLUX_MSGFLAG_NORESPONSE message flag in the
+cancellation request and the server SHALL NOT respond to it.
+
+If the canceled request did not set the FLUX_MSGFLAG_NORESPONSE message flag,
+the server SHOULD respond to it with error number 125 (operation canceled).
