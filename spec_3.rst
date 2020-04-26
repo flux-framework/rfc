@@ -142,11 +142,12 @@ first match in the following sequence:
 
 If the message is received by a comms module, but the remaining words of the
 topic string do not match a method it implements, the comms module SHALL
-respond with error number 38, "Function not implemented".
+respond with error number 38, "Function not implemented", unless suppressed
+as described below.
 
 If the message reaches the root node, but none of the above conditions
 are met, the root broker SHALL respond with error number 38,
-"Function not implemented".
+"Function not implemented", unless suppressed as described below.
 
 A service may send a request *upstream* on the tree based overlay network
 by placing the sending nodeid in the message and setting the
@@ -166,14 +167,23 @@ Such messages SHALL be routed to the target broker rank, then as follows:
 
 If the message is received by a comms module, but the remaining words of the
 topic string do not match a method it implements, the comms module SHALL
-respond with error number 38, "Function not implemented".
+respond with error number 38, "Function not implemented", unless suppressed
+as described below.
 
 If the message reaches the target node, but none of the above conditions
 are met, the broker SHALL respond with error number 38,
-"Function not implemented".
+"Function not implemented", unless suppressed as described below.
 
 If the message cannot be routed to the target node, the broker making
-this determination SHALL respond with error number 113, "No route to host".
+this determination SHALL respond with error number 113, "No route to host",
+unless suppressed as described below.
+
+
+Suppression of Responses
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+If a request message includes the FLUX_MSGFLAG_NORESPONSE (4) flag,
+the broker or other responding entity SHALL NOT send a response message.
 
 
 Event Routing
@@ -264,6 +274,7 @@ ABNF grammar [#f2]_
    flags           = OCTET
    flag-topic      = %x01          ; message has topic string frame
    flag-payload    = %x02          ; message has payload frame
+   flag-noresponse = %x04          ; request message should receive no response
    flag-route      = %x08          ; message has route delimiter frame
    flag-upstream   = %x10          ; request should be routed upstream
                                    ;   of nodeid sender
