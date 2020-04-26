@@ -227,73 +227,73 @@ ABNF grammar [#f2]_
 
 ::
 
-   CMB1        = C:request *S:response
-           / S:event
-           / C:keepalive
+   CMB1            = C:request *S:response
+                   / S:event
+                   / C:keepalive
 
    ; Multi-part ZeroMQ messages
-   C:request   = [routing] topic [payload] PROTO
-   S:response  = [routing] topic [payload] PROTO
-   S:event     = [routing] topic [payload] PROTO
-   C:keepalive = PROTO
+   C:request       = [routing] topic [payload] PROTO
+   S:response      = [routing] topic [payload] PROTO
+   S:event         = [routing] topic [payload] PROTO
+   C:keepalive     = PROTO
 
    ; Route frame stack, ZeroMQ DEALER-ROUTER format
-   routing     = *identity delimiter
-   identity    = 1*OCTET       ; socket identity ZeroMQ frame
-   delimiter   = 0OCTET        ; empty delimiter ZeroMQ frame
+   routing         = *identity delimiter
+   identity        = 1*OCTET       ; socket identity ZeroMQ frame
+   delimiter       = 0OCTET        ; empty delimiter ZeroMQ frame
 
    ; Topic string frame, ZeroMQ PUB-SUB format
-   topic       = 1*(ALPHA / DIGIT / ".")
+   topic           = 1*(ALPHA / DIGIT / ".")
 
    ; Payload frame
-   payload     = *OCTET        ; payload ZeroMQ frame
+   payload         = *OCTET        ; payload ZeroMQ frame
 
    ; Protocol frame
-   PROTO       = request / response / event / keepalive
+   PROTO           = request / response / event / keepalive
 
-   request     = magic version %x01 flags userid rolemask nodeid   matchtag
-   response    = magic version %x02 flags userid rolemask errnum   matchtag
-   event       = magic version %x04 flags userid rolemask sequence unused
-   keepalive   = magic version %x08 flags userid rolemask errnum   status
+   request         = magic version %x01 flags userid rolemask nodeid   matchtag
+   response        = magic version %x02 flags userid rolemask errnum   matchtag
+   event           = magic version %x04 flags userid rolemask sequence unused
+   keepalive       = magic version %x08 flags userid rolemask errnum   status
 
    ; Constants
-   magic       = %x8E          ; magic cookie
-   version     = %x01          ; version for CMB1
+   magic           = %x8E          ; magic cookie
+   version         = %x01          ; version for CMB1
 
    ; Flags: a bitmask of flag- values below
-   flags       = OCTET
-   flag-topic  = %x01          ; message has topic string frame
+   flags           = OCTET
+   flag-topic      = %x01          ; message has topic string frame
    flag-payload    = %x02          ; message has payload frame
-   flag-route  = %x08          ; message has route delimiter frame
-   flag-upstream   = %x10                  ; request should be routed upstream
-                       ;   of nodeid sender
+   flag-route      = %x08          ; message has route delimiter frame
+   flag-upstream   = %x10          ; request should be routed upstream
+                                   ;   of nodeid sender
    flag-private    = %x20          ; event message is requested to be
-                       ;   private to sender, instance owner
+                                   ;   private to sender, instance owner
    flag-streaming  = %x40          ; request/response is part of streaming RPC
 
    ; Userid assigned by connector at message ingress
-   userid      = 4OCTET / userid-unknown
+   userid          = 4OCTET / userid-unknown
    userid-unknown  = 0xFF.FF.FF.FF
 
    ; Role bitmask assigned by connector at message ingress
-   rolemask    = 4OCTET
+   rolemask        = 4OCTET
 
    ; Matchtag to correlate request/response
-   matchtag    = 4OCTET / matchtag-none
+   matchtag        = 4OCTET / matchtag-none
    matchtag-none   = %x00.00.00.00
 
    ; Target node ID in network byte order
-   nodeid      = 4OCTET / nodeid-any
-   nodeid-any  = %xFF.FF.FF.FF
+   nodeid          = 4OCTET / nodeid-any
+   nodeid-any      = %xFF.FF.FF.FF
 
    ; UNIX errno in network byte order
-   errnum      = 4OCTET
+   errnum          = 4OCTET
 
    ; Monotonic sequence number in network byte order
-   sequence    = 4OCTET
+   sequence        = 4OCTET
 
    ; unused 4-byte field
-   unused      = %x00.00.00.00
+   unused          = %x00.00.00.00
 
 .. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <http://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
 
