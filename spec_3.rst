@@ -251,13 +251,13 @@ ABNF grammar [#f2]_
    ; Protocol frame
    PROTO       = request / response / event / keepalive
 
-   request     = signature version %x01 flags userid rolemask nodeid   matchtag
-   response    = signature version %x02 flags userid rolemask errnum   matchtag
-   event       = signature version %x04 flags userid rolemask sequence unused
-   keepalive   = signature version %x08 flags userid rolemask errnum   status
+   request     = magic version %x01 flags userid rolemask nodeid   matchtag
+   response    = magic version %x02 flags userid rolemask errnum   matchtag
+   event       = magic version %x04 flags userid rolemask sequence unused
+   keepalive   = magic version %x08 flags userid rolemask errnum   status
 
    ; Constants
-   signature   = %x8E          ; magic cookie
+   magic       = %x8E          ; magic cookie
    version     = %x01          ; version for CMB1
 
    ; Flags: a bitmask of flag- values below
