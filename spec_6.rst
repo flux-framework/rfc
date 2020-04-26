@@ -158,11 +158,11 @@ implement any timeouts or other mitigation to handle missing or delayed
 responses.
 
 
-Cancellation
-~~~~~~~~~~~~
+Disconnection
+~~~~~~~~~~~~~
 
-If a client wishes to give up on an in-progress RPC, it MAY send a request
-to the server with a topic string of "*service*.disconnect".
+If a client aborts with an RPC in progress, it or its proxy SHOULD send a
+request to the server with a topic string of "*service*.disconnect".
 The FLUX_MSGFLAG_NORESPONSE message flag SHOULD be set in this request.
 
 It is optional for the server to implement the disconnect method.
@@ -170,8 +170,8 @@ It is optional for the server to implement the disconnect method.
 If the server implements the disconnect method, it SHALL cancel any
 pending RPC requests from the sender, without responding to them.
 
-The server MAY determine the sender identity for any request
-by reading the first source-address routing identity frame (closest to
-routing delimiter frame) from the request message. Servers which
-respond to requests out of order SHOULD retain state for pending
-requests, allowing them to be canceled by sender id as described above.
+The server MAY determine the sender identity for any request, including
+the disconnect request, by reading the first source-address routing identity
+frame (closest to routing delimiter frame) from the request message.
+Servers which maintain per-request state SHOULD index it by sender identity
+so that it can be removed upon receipt of the disconnect request.
