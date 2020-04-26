@@ -75,22 +75,25 @@ The request message MAY include a service-defined payload.
 Requests to services that send multiple responses SHALL set the
 FLUX_MSGFLAG_STREAMING message flag.
 
+A request MAY indicate that the response should be suppressed by
+setting the FLUX_MSGFLAG_NORESPONSE message flag.
+
 
 Response Messages
 ~~~~~~~~~~~~~~~~~
 
 The server SHALL send zero or more responses to each request, as
 established by prior agreement between client and server (e.g. defined
-in their protocol specification).
+in their protocol specification) and determined by message flags.
 
 Responses SHALL contain topic string and matchtag values copied from
 the request, to facilitate client response matching.
 
-If the request succeeds, the server SHALL set errnum in the response
-to zero and MAY include a service-defined payload.
+If the request succeeds and a response is to be sent, the server SHALL
+set errnum in the response to zero and MAY include a service-defined payload.
 
-If the request fails, the server SHALL set errnum in the response to
-a nonzero value conforming to
+If the request fails and a response is to be sent, the server SHALL set
+errnum in the response to a nonzero value conforming to
 `POSIX.1 errno encoding <http://man7.org/linux/man-pages/man3/errno.3.html>`__
 and MAY include an error string payload. The error string, if included
 SHALL consist of a brief, human readable message. It is RECOMMENDED that
@@ -160,16 +163,12 @@ Cancellation
 
 If a client wishes to give up on an in-progress RPC, it MAY send a request
 to the server with a topic string of "*service*.disconnect".
+The FLUX_MSGFLAG_NORESPONSE message flag SHOULD be set in this request.
 
 It is optional for the server to implement the disconnect method.
-As usual, if the method is unimplemented, the server SHALL respond with
-error number 38, "Function not implemented".
 
 If the server implements the disconnect method, it SHALL cancel any
-pending RPC requests from the sender, without responding to them,
-and respond to the disconnect request with success, no payload.
-Upon receipt of a successful disconnect response, the client
-MAY reuse the canceled messages' matchtags, if any.
+pending RPC requests from the sender, without responding to them.
 
 The server MAY determine the sender identity for any request
 by reading the first source-address routing identity frame (closest to
