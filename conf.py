@@ -45,7 +45,6 @@ release = '0.13.0'
 extensions = [
     'sphinx.ext.intersphinx',
     'sphinxcontrib.spelling',
-    'recommonmark',
 ]
 
 # sphinxcontrib.spelling settings
@@ -59,13 +58,10 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'README.md']
 
 master_doc = 'index'
-source_suffix = {
-    '.rst' : 'restructuredtext',
-    '.md' : 'markdown',
-} 
+source_suffix = '.rst'
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -85,14 +81,3 @@ html_static_path = [
 
 man_pages = [
 ]
-
-
-# -- Options for recommonmark -----------------------------------------------
-def on_missing_reference(app, env, node, contnode):
-        if node['reftype'] == 'any':
-                return contnode
-        else:
-                return None
-
-def setup(app):
-        app.connect('missing-reference', on_missing_reference)
