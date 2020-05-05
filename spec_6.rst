@@ -184,7 +184,7 @@ A service MAY implement a method which allows pending requests on its
 other methods to be canceled.  If implemented, the cancellation method
 SHOULD accept a JSON object payload containing a "matchtag" key with integer
 value.  The sender of the cancellation request and the matchtag from its
-payload MAY be used by the service to uniquely idenitfy a single request
+payload MAY be used by the service to uniquely identify a single request
 to be canceled.
 
 The client SHALL set the FLUX_MSGFLAG_NORESPONSE message flag in the
