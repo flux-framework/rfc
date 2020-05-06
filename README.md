@@ -6,6 +6,7 @@ This is the Flux RFC project.
 We collect specifications for APIs, file formats, wire protocols, and
 processes.
 
+The full RFC specs can be found on [readthedocs](https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest).
 Details about each of the active RFC documents can be found [in the index](index.rst)
 
 Table of Contents
