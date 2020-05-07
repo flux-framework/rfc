@@ -1,22 +1,127 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="196.61891174316406" height="185.32167053222656" viewBox="-60.7599983215332 14.247604370117188 196.61891174316406 185.32167053222656">
-   <title>Neo4j Graph Visualization</title>
-   <desc>Created using Neo4j (http://www.neo4j.com/)</desc>
-   <g class="layer relationships">
-      <g class="relationship" transform="translate(-31.759998321533203 43.24760409502014) rotate(402.5130069345641)">
-         <path class="outline" fill="#A5ABB6" stroke="none" d="M 25 0.5 L 31.99008558816122 0.5 L 31.99008558816122 -0.5 L 25 -0.5 Z M 99.10922621316122 0.5 L 106.09931180132244 0.5 L 106.09931180132244 3.5 L 113.09931180132244 0 L 106.09931180132244 -3.5 L 106.09931180132244 -0.5 L 99.10922621316122 -0.5 Z" />
-         <text text-anchor="middle" pointer-events="none" font-size="8px" fill="#000000" x="65.54965590066122" y="3" font-family="sans-serif">CONTAINS</text>
-      </g>
-   </g>
-   <g class="layer nodes">
-      <g class="node" transform="translate(-31.759998321533203,43.24760409502014)">
-         <circle class="outline" cx="0" cy="0" r="25" fill="#FB95AF" stroke="#E0849B" stroke-width="2px" />
-         <text text-anchor="middle" pointer-events="none" y="0" font-size="10px" fill="#FFFFFF" font-family="sans-serif">Cluster</text>
-         <text text-anchor="middle" pointer-events="none" y="10" font-size="10px" fill="#FFFFFF" font-family="sans-serif">A</text>
-      </g>
-      <g class="node selected" transform="translate(70.0363118153748,136.56925840155992)">
-         <circle class="outline" cx="0" cy="0" r="25" fill="#FB95AF" stroke="#E0849B" stroke-width="2px" />
-         <text text-anchor="middle" pointer-events="none" y="5" font-size="10px" fill="#FFFFFF" font-family="sans-serif">Rack1</text>
-      </g>
-   </g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="153.79631"
+   height="145.32166"
+   viewBox="-60.759998 14.247604 153.79631 145.32166"
+   version="1.1"
+   id="svg3770"
+   sodipodi:docname="basics_contains.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   inkscape:export-filename="/data/hd1/Repositories/flux-framework/rfc/data/spec_4/basics_contains.png"
+   inkscape:export-xdpi="300.24127"
+   inkscape:export-ydpi="300.24127">
+  <metadata
+     id="metadata3776">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3774" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1276"
+     inkscape:window-height="2108"
+     id="namedview3772"
+     showgrid="false"
+     inkscape:zoom="1.2734614"
+     inkscape:cx="-4.3559877"
+     inkscape:cy="55.660819"
+     inkscape:window-x="2560"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg3770" />
+  <title
+     id="title3742">Neo4j Graph Visualization</title>
+  <desc
+     id="desc3744">Created using Neo4j (http://www.neo4j.com/)</desc>
+  <g
+     class="layer relationships"
+     id="g3752"
+     transform="translate(-3,-2.9999997)">
+    <g
+       class="relationship"
+       transform="rotate(42.513007,-71.466835,-19.19783)"
+       id="g3750">
+      <path
+         class="outline"
+         d="m 25,0.5 h 6.990086 v -1 H 25 Z m 74.109226,0 h 6.990084 v 3 l 7,-3.5 -7,-3.5 v 3 h -6.990084 z"
+         id="path3746"
+         inkscape:connector-curvature="0"
+         style="fill:#a5abb6;stroke:none" />
+      <text
+         pointer-events="none"
+         font-size="8px"
+         x="65.549652"
+         y="3"
+         id="text3748"
+         style="font-size:8px;font-family:sans-serif;text-anchor:middle;fill:#000000">CONTAINS</text>
+    </g>
+  </g>
+  <g
+     class="layer nodes"
+     id="g3768"
+     transform="translate(-3,-2.9999997)">
+    <g
+       class="node"
+       transform="translate(-31.759998,43.247604)"
+       id="g3760">
+      <circle
+         class="outline"
+         cx="0"
+         cy="0"
+         r="25"
+         id="circle3754"
+         style="fill:#fb95af;stroke:#e0849b;stroke-width:2px" />
+      <text
+         pointer-events="none"
+         y="0"
+         font-size="10px"
+         id="text3756"
+         style="font-size:10px;font-family:sans-serif;text-anchor:middle;fill:#ffffff">Cluster</text>
+      <text
+         pointer-events="none"
+         y="10"
+         font-size="10px"
+         id="text3758"
+         style="font-size:10px;font-family:sans-serif;text-anchor:middle;fill:#ffffff">A</text>
+    </g>
+    <g
+       class="node selected"
+       transform="translate(70.036312,136.56926)"
+       id="g3766">
+      <circle
+         class="outline"
+         cx="0"
+         cy="0"
+         r="25"
+         id="circle3762"
+         style="fill:#fb95af;stroke:#e0849b;stroke-width:2px" />
+      <text
+         pointer-events="none"
+         y="5"
+         font-size="10px"
+         id="text3764"
+         style="font-size:10px;font-family:sans-serif;text-anchor:middle;fill:#ffffff">Rack1</text>
+    </g>
+  </g>
 </svg>
