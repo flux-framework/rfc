@@ -99,13 +99,17 @@ Resource Set Format Definition
 
 The JSON documents that conform to the *R* format SHALL be referred
 to as *R* JSON documents or in short *R* documents.
-An *R* JSON document SHALL consist of a dictionary with three
-keys: ``version``, ``execution`` and ``scheduling``. It SHALL be valid if and only
+An *R* JSON document SHALL consist of a dictionary with four
+keys: ``version``, ``execution``, ``scheduling`` and ``attributes``.
+It SHALL be valid if and only
 if it contains the ``version`` key and either or both the ``execution``
 and ``scheduling`` keys. The value of the ``execution`` key SHALL contain
 sufficient data for the execution system to perform its
 core tasks. The value of ``scheduling`` SHALL contain sufficient data
-for schedulers.
+for schedulers. Finally, the value of ``attributes`` SHALL provide
+optional information including but not being limited
+to data specific to the scheduler used to create
+this JSON document.
 
 
 Version
@@ -237,6 +241,29 @@ as described in RFC 4. It SHALL contain two keys:
    a relationship between the source and target resource vertices.
    The relationship SHALL only be defined within the subsystem defined
    above. (e.g., "contains" relationship within the "containment" subsystem).
+
+
+Attributes
+~~~~~~~~~~
+The purpose of the ``attributes`` key is to provide optional
+information on this *R* document. The ``attributes`` key SHALL
+be a dictionary of one key: ``system``.
+Other keys are reserved for future extensions.
+
+**system**
+Attributes in the ``system`` dictionary provide additional system
+information that have affected the creation of this *R* document.
+All of the system attributes are optional.
+
+A common system attribute is:
+
+**scheduler**
+The value of the ``scheduler`` is a free-from dictionary that
+may provide the information specific to the scheduler used
+to produce this document. For example, a scheduler that
+manages multiple job queues may add ``queue=batch``
+to indicate that this resource set was allocated from within
+its ``batch`` queue. 
 
 
 References
