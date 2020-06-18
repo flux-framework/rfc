@@ -3,6 +3,10 @@
 
    SPDX-License-Identifier: (LGPL-3.0)
 
+.. github display
+   GitHub is NOT the preferred viewer for this file. Please visit
+   https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/index.html
+
 Flux RFC Index
 ==============
 

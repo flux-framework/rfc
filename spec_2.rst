@@ -1,3 +1,6 @@
+.. github display
+   GitHub is NOT the preferred viewer for this file. Please visit
+   https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_2.html
 
 2/Flux Licensing and Collaboration Guidelines
 =============================================
