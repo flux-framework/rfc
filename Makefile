@@ -29,4 +29,4 @@ $(SCHEMA_DIRS):
 	python ./validate.py --schema=$@/schema.json $@/*.yaml
 
 spelling:
-	@$(SPHINXBUILD) -b spelling "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@$(SPHINXBUILD) -W -b spelling "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
