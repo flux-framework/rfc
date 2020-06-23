@@ -120,6 +120,22 @@ INACTIVE
    Job data in KVS is now read-only (captive state).
 
 
+Virtual States
+~~~~~~~~~~~~~~
+
+In the interest of encouraging consistent language, we define the following
+"virtual states" as shorthand for the union of two or more actual job states:
+
+PENDING
+  The job is in DEPEND or SCHED states.
+
+RUNNING
+  The job is in RUN or CLEANUP states.
+
+ACTIVE
+  The job is in DEPEND, SCHED, RUN, or CLEANUP states.
+
+
 Exceptions
 ~~~~~~~~~~
 
