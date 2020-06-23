@@ -214,7 +214,7 @@ Resources have been allocated by the scheduler.
 The following keys are OPTIONAL in the event context object:
 
 note
-   (string) Scheduler annotation for resource allocation.
+   (string) A scheduler-dependent message that describes the allocation.
 
 Example:
 
