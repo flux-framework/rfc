@@ -37,6 +37,7 @@ Table of Contents
 - [24/Flux Job Standard I/O Version 1](spec_24.rst)
 - [25/Job Specification Version 1](spec_25.rst)
 - [26/Job Dependency Specification](spec_26.rst)
+- [27/Flux Resource Allocation Protocol Version 1](spec_27.rst)
 
 Build Instructions
 ------------------
