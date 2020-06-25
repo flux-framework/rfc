@@ -32,6 +32,8 @@ Related Standards
 
 -  :doc:`22/Idset String Representation <spec_22>`
 
+-  :doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
+
 
 Background
 ----------
@@ -120,6 +122,22 @@ INACTIVE
    Job data in KVS is now read-only (captive state).
 
 
+Virtual States
+~~~~~~~~~~~~~~
+
+In the interest of encouraging consistent language, we define the following
+"virtual states" as shorthand for the union of two or more actual job states:
+
+PENDING
+  The job is in DEPEND or SCHED states.
+
+RUNNING
+  The job is in RUN or CLEANUP states.
+
+ACTIVE
+  The job is in DEPEND, SCHED, RUN, or CLEANUP states.
+
+
 Exceptions
 ~~~~~~~~~~
 
@@ -197,14 +215,14 @@ Resources have been allocated by the scheduler.
 
 The following keys are OPTIONAL in the event context object:
 
-note
-   (string) Scheduler annotation for resource allocation.
+annotations
+   (object) A dictionary of scheduler-dependent key-value pairs as described in RFC 27
 
 Example:
 
 .. code:: json
 
-   {"timestamp":1552593348.088391,"name":"alloc","context":{"note":"rank0/core[0-1]"}}
+   {"timestamp":1552593348.088391,"name":"alloc","context":{"annotations":{"sched.resource_summary:"rank0/core[0-1]"}}}
 
 
 Free Event

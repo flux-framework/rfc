@@ -193,6 +193,12 @@ An extension to the canonical jobspec designed to express the
 dependencies between one or more programs submitted to a Flux instance
 for execution.
 
+:doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification describes Version 1 of the Flux Resource Allocation
+Protocol implemented by the job manager and a compliant Flux scheduler.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -222,3 +228,4 @@ for execution.
    spec_24
    spec_25
    spec_26
+   spec_27

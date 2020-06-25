@@ -379,6 +379,7 @@ unrunnable
 runnable
 username
 ENODATA
+ENOSYS
 contentrules
 jsonschema
 footnoteref
@@ -442,3 +443,4 @@ MSGTYPE
 NONBLOCK
 requeue
 REQUEUE
+RTT
