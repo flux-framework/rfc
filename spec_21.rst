@@ -32,6 +32,8 @@ Related Standards
 
 -  :doc:`22/Idset String Representation <spec_22>`
 
+-  :doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
+
 
 Background
 ----------
@@ -213,14 +215,14 @@ Resources have been allocated by the scheduler.
 
 The following keys are OPTIONAL in the event context object:
 
-note
-   (string) A scheduler-dependent message that describes the allocation.
+annotations
+   (object) A dictionary of scheduler-dependent key-value pairs as described in RFC 27
 
 Example:
 
 .. code:: json
 
-   {"timestamp":1552593348.088391,"name":"alloc","context":{"note":"rank0/core[0-1]"}}
+   {"timestamp":1552593348.088391,"name":"alloc","context":{"annotations":{"sched.resource_summary:"rank0/core[0-1]"}}}
 
 
 Free Event
