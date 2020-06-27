@@ -198,6 +198,13 @@ for execution.
 This specification describes Version 1 of the Flux Resource Allocation
 Protocol implemented by the job manager and a compliant Flux scheduler.
 
+:doc:`28/Flux Resource Acquisition Protocol Version 1 <spec_28>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification describes the Flux service that schedulers use to
+acquire exclusive access to resources and monitor their ongoing
+availability.
+
 :doc:`29/Hostlist Format <spec_29>`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -239,5 +246,6 @@ This specification describes the Flux job urgency parameter.
    spec_25
    spec_26
    spec_27
+   spec_28
    spec_29
    spec_30
