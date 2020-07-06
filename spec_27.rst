@@ -377,7 +377,7 @@ Example:
 
 Annotations SHALL be considered *volatile* until a SUCCESS response is received
 to the ``sched.alloc`` request, as described in Alloc Success above.
-Annotations MAY be discarded by the job manager if the allocation fails.
+Annotations SHALL be discarded by the job manager if the allocation fails.
 
 Alloc Deny
 ^^^^^^^^^^
