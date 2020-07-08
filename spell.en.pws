@@ -444,3 +444,5 @@ NONBLOCK
 requeue
 REQUEUE
 RTT
+dothex
+dec
