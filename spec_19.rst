@@ -90,12 +90,84 @@ equal to zero, so no collision detection is required.
 Representation
 ~~~~~~~~~~~~~~
 
-A FLUID is a 64-bit integer, e.g. ``4208082371413712``.
+A FLUID is a 64-bit integer, e.g. ``6731191091817518``.
 
-Encoding as a 16-character hexadecimal string is a fairly compact string
-representation, e.g. the above example encodes to ``"749de79000800"``.
+Representations other than decimal MAY be used where appropriate,
+for instance for compactness or ease of transcription over the phone.
 
-Schemes like `mnemonicode <https://github.com/singpolyma/mnemonicode>`__ can
-convert integers to strings of pronounceable words and back again, e.g. the
-above example encodes to ``"memo-felix-virus—​warning-france-academy"``.
-A larger dictionary decreases the number of words required.
+The following sections describe the set of supported alternate
+representations for FLUIDs.
+
+
+FLUID base58 (F58) Encoding
++++++++++++++++++++++++++++
+
+In order to create a compact, human readable representation
+of a FLUID, the main alternate encoding of a FLUID SHALL be `Base58
+<https://en.bitcoinwiki.org/wiki/Base58>`__, using the alphabet
+
+ ``123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz``
+
+To disambiguate this Base58 representation from decimal or other
+representations, FLUIDs with this encoding SHALL be prefixed with the
+Unicode character U+0192 ``ƒ``, and the final result SHALL be termed
+"FLUID base58 Encoding" or F58 for short. For example, the FLUID
+``6731191091817518`` from above SHALL be represented in F58 as
+``ƒuZZybuNNy``. As a fallback mechanism, a FLUID prefixed with an
+ASCII lowercase f ``f`` will also be decoded as F58.
+
+Examples: ``ƒZemgA8Bzf``, ``ƒ278oEf7zGf``
+
+FLUID Hexadecimal (hex) Encoding
+++++++++++++++++++++++++++++++++
+
+A hexadecimal encoding SHALL represent a FLUID in base16, including
+a ``0x`` prefix to unambiguously differentiate the representation from
+other FLUID standard encodings.
+
+Examples: ``0x17e9fb8df16c2e``, ``0xedaf97d000000``
+
+
+FLUID Dotted-Hexadecimal (dothex) Encoding
+++++++++++++++++++++++++++++++++++++++++++
+
+In order to support indexing of FLUIDs in a hierarchical KVS namespace,
+a dotted-hexadecimal encoding SHALL represent a FLUID in base16,
+with each 4 hexadecimal digits separated by dots (``.``).
+
+Examples: ``0017.e9fb.8df1.6c2e``, ``000e.daf9.7d00.0000``
+
+
+FLUID Mnemonic (words) Encoding
++++++++++++++++++++++++++++++++
+
+In order to ease transferring of FLUIDs via human interaction, a
+mnemonic representation of FLUIDS SHALL be supported by a conformant
+implementation.
+
+The `mnemonicode <https://github.com/singpolyma/mnemonicode>`__
+implementation converts integers to strings of pronounceable words and
+back again. This encoding MAY be used when a FLUID must be conveyed
+by speaking, e.g. over the phone.
+
+Examples: ``reform-remote-galileo--heart-package-academy``, ``random-idea-yoyo--sugar-printer-academy``
+
+
+Decoding Alternate FLUID Representations
+++++++++++++++++++++++++++++++++++++++++
+
+The standard FLUID representations described in this RFC are
+unambiguous by design. That is, the type of FLUID encoding can
+be definitively determined by the string representation.
+
+Implementations that take an encoded FLUID as a string argument
+SHALL use the following rules to decode the argument:
+
+ * If a string contains ``.``, then decode as "dothex"
+ * Else if the string contains ``-``, then decode as "words"
+ * Else if the string starts with ``ƒ`` or ``f``, decode as F58
+ * Else if the string starts with ``0x`` decode as "hex"
+ * Otherwise, decode as decimal
+
+An implementation decoding FLUID string representations SHALL
+ignore leading and trailing whitespace.
