@@ -89,14 +89,13 @@ A user interacts with a Flux instance (for example via a job submission
 command) by connecting to a broker, then sending and receiving messages
 as described in RFC 3. Connections are established using broker plugins
 called "connectors". The connector is responsible for authenticating
-the user, looking the user up in an instance user database to obtain a
-numeric userid and set of "roles" granted to the user, and accepting
+the user, assigning the user one or more "roles", and accepting
 or denying the connection.
 
 If a connection is accepted, the userid and role set are saved with
 connection state in the connector and subsequent messages originating
 from the connection are stamped with this information. The instance
-owner controls the user database and assignment of roles, thus controls
+owner controls the configuration for assignment of roles, thus controls
 what other users will be allowed do within the instance.
 
 Services that have arranged to receive requests by users other than the
@@ -115,31 +114,16 @@ could extend job cancellation to anyone with the "user" role.
 Implementation
 --------------
 
+Flux Credentials
+~~~~~~~~~~~~~~~~
 
-Assumptions
-~~~~~~~~~~~
+Flux credentials SHALL consist of a 32-bit *userid* and a 32-bit *rolemask*.
+A users's Flux user ID SHALL be the same as the user's POSIX UID.
 
-Users of a Flux instance MUST be assigned the same POSIX UID on all systems
-spanned by the instance.
+FLUX_USERID_UNKNOWN (2:sup:`32` - 1) SHALL be a reserved userid to indicate
+"invalid user".
 
-
-User Database
-~~~~~~~~~~~~~
-
-The optional Flux user database contains entries for each user of a
-a Flux instance. A valid entry SHALL contain, at minimum, a 32-bit *userid*
-key, corresponding to the user’s POSIX UID; and a 32-bit *rolemask*, which
-assigns one or more privileges to the user. A userid with no assigned roles
-SHALL be considered invalid.
-
-A single-user Flux instance MAY load the user database. If the user database
-is not loaded, then only the instance owner SHALL be allowed to access the
-instance.
-
-A multi-user Flux instance SHALL load the user database. Only users in
-the database SHALL be allowed to access the instance.
-
-FLUX_USERID_UNKNOWN (2:sup:`32` - 1) SHALL be reserved to indicate "invalid user".
+The Flux rolemask MAY be assigned the following roles:
 
 FLUX_ROLE_NONE (0) SHALL indicate "invalid rolemask".
 
@@ -152,20 +136,30 @@ upon the user.
 Other role bit definitions are TBD.
 
 
+Configuration
+~~~~~~~~~~~~~
+
+The security policy of a Flux instance SHALL be configurable.
+
+An instance SHALL restrict access to the instance owner, unless explicitly
+configured to allow guest users.
+
+Additional configuration MAY include:
+
+- Allowed types of user authentication
+
+- Configuration for each allowed authentication method
+
+- Allow/deny list gating access to specific users
+
+- Assignment of special privileges to lists of users
+
+
 Connector Security
 ~~~~~~~~~~~~~~~~~~
 
 Flux connectors SHALL authenticate each connection, mapping it to a valid
 Flux userid and rolemask, or rejecting it.
-
-If the authenticated userid can be proven to be the instance owner without
-accessing the user database, the connection SHALL be allowed, and assigned
-a rolemask of FLUX_ROLE_OWNER.
-
-If the user database is loaded, and the authenticated userid has a valid
-entry, the connection SHALL be allowed, and assigned the looked up rolemask.
-
-Other connections SHALL be denied.
 
 As indicated in RFC 3, Flux messages have a userid and rolemask field.
 In messages received en route to the broker, the connector SHALL rewrite
