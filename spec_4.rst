@@ -181,6 +181,7 @@ vertices, and the name SHALL identify a subsystem this edge
 belongs to.
 
 .. figure:: data/spec_4/basics_contains.png
+   :width: 35%
    :alt: An edge capturing a "has-a" relationship
 
    An edge capturing a "has-a" relationship
@@ -190,6 +191,7 @@ type represents the "has-a" relationship: i.e., Cluster A has a rack
 called Rack1.
 
 .. figure:: data/spec_4/basics_channel.png
+   :width: 35%
    :alt: Edges representing "conduit-of" relationships
 
    Edges representing "conduit-of" relationships
@@ -202,6 +204,7 @@ either as a single edge with arrows in the both ends
 or two opposite directional edges.
 
 .. figure:: data/spec_4/basics_in.png
+   :width: 35%
    :alt: Opposite relationship
 
    Opposite relationship
@@ -256,6 +259,7 @@ bound to a *root* which will typically be a "cluster" or "center"
 resource.
 
 .. figure:: data/spec_4/in.png
+   :width: 45%
    :alt: Modeling a containment hierarchy using the composite resource pool
 
    Modeling a containment hierarchy using the composite resource pool
@@ -287,6 +291,7 @@ two resource pool instances, each representing a distribution capacity
 of a flow, are related under a *channel-of* or *conduit-of* relationship.
 
 .. figure:: data/spec_4/channel_of.png
+   :width: 35%
    :alt: Modeling a file I/O bandwidth hierarchy using the channeled resource pool
 
    Modeling a file I/O bandwidth hierarchy using the channeled resource pool
@@ -310,6 +315,7 @@ itself built out of the same basic concepts, the Flux Resource Model
 SHALL be capable of easily combining different patterns into a unified form.
 
 .. figure:: data/spec_4/combined.png
+   :width: 80%
    :alt: Unified graph
 
    Unified graph

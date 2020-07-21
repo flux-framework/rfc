@@ -1,27 +1,152 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="188.93695068359375" height="211.03810119628906" viewBox="-40.394344329833984 19.514312744140625 188.93695068359375 211.03810119628906">
-   <title>Neo4j Graph Visualization</title>
-   <desc>Created using Neo4j (http://www.neo4j.com/)</desc>
-   <g class="layer relationships">
-      <g class="relationship" transform="translate(82.71999430656433 167.55239895673952) rotate(231.66926607960443)">
-         <path class="outline" fill="#A5ABB6" stroke="none" d="M 24.018736134675446,6.953439040707552 L 24.277555179777966,5.987513214418485 A 194.2745955403395 194.2745955403395 0 0 0 30.824999071903314,7.620566691586674 L 30.599882034384002,8.59489842124475 A 195.2745955403395 195.2745955403395 0 0 1 24.018736134675446,6.953439040707552 Z M 114.15893104126522,9.549960140505306 L 113.95614270391656,8.570737545670312 A 194.2745955403395 194.2745955403395 0 0 0 120.53920211883907,7.087762859635235 L 119.82918110699632,4.1729952595096655 L 127.4586633544392,5.916841765356375 L 121.4858968012961,10.97411965980266 L 120.77587578945334,8.05935205967709 A 195.2745955403395 195.2745955403395 0 0 1 114.15893104126522,9.549960140505306" />
-         <text text-anchor="middle" pointer-events="none" font-size="8px" fill="#000000" x="72.33343471050667" y="16.09453810832335" transform="rotate(180 72.33343471050667 13.094538108323349)" font-family="sans-serif">CONDUIT_OF</text>
-      </g>
-      <g class="relationship" transform="translate(-11.394344534957511 48.51431215090082) rotate(411.6692660796044)">
-         <path class="outline" fill="#A5ABB6" stroke="none" d="M 24.018736134675446,6.953439040707552 L 24.277555179777966,5.987513214418485 A 194.2745955403395 194.2745955403395 0 0 0 30.824999071903314,7.620566691586674 L 30.599882034384002,8.59489842124475 A 195.2745955403395 195.2745955403395 0 0 1 24.018736134675446,6.953439040707552 Z M 114.15893104126522,9.549960140505306 L 113.95614270391656,8.570737545670312 A 194.2745955403395 194.2745955403395 0 0 0 120.53920211883907,7.087762859635235 L 119.82918110699632,4.1729952595096655 L 127.4586633544392,5.916841765356375 L 121.4858968012961,10.97411965980266 L 120.77587578945334,8.05935205967709 A 195.2745955403395 195.2745955403395 0 0 1 114.15893104126522,9.549960140505306" />
-         <text text-anchor="middle" pointer-events="none" font-size="8px" fill="#000000" x="72.33343471050667" y="16.09453810832335" font-family="sans-serif">CONDUIT_OF</text>
-      </g>
-   </g>
-   <g class="layer nodes">
-      <g class="node" transform="translate(-11.394344534957511,48.51431215090082)">
-         <circle class="outline" cx="0" cy="0" r="25" fill="#FFD86E" stroke="#EDBA39" stroke-width="2px" />
-         <text text-anchor="middle" pointer-events="none" y="0" font-size="10px" fill="#604A0E" font-family="sans-serif">Core</text>
-         <text text-anchor="middle" pointer-events="none" y="10" font-size="10px" fill="#604A0E" font-family="sans-serif">Switch1</text>
-      </g>
-      <g class="node selected" transform="translate(82.71999430656433,167.55239895673952)">
-         <circle class="outline" cx="0" cy="0" r="25" fill="#FFD86E" stroke="#EDBA39" stroke-width="2px" />
-         <text text-anchor="middle" pointer-events="none" y="0" font-size="10px" fill="#604A0E" font-family="sans-serif">Edge</text>
-         <text text-anchor="middle" pointer-events="none" y="10" font-size="10px" fill="#604A0E" font-family="sans-serif">Switch3</text>
-      </g>
-   </g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="146.11433"
+   height="171.03809"
+   viewBox="-40.394344 19.514313 146.11433 171.03809"
+   version="1.1"
+   id="svg38"
+   sodipodi:docname="basics_channel.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   inkscape:export-filename="/data/hd1/Repositories/flux-framework/rfc/data/spec_4/basics_channel.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <metadata
+     id="metadata44">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs42" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1276"
+     inkscape:window-height="2108"
+     id="namedview40"
+     showgrid="false"
+     inkscape:zoom="1.1182815"
+     inkscape:cx="-118.6754"
+     inkscape:cy="68.519036"
+     inkscape:window-x="2560"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg38" />
+  <title
+     id="title2">Neo4j Graph Visualization</title>
+  <desc
+     id="desc4">Created using Neo4j (http://www.neo4j.com/)</desc>
+  <g
+     class="layer relationships"
+     id="g18"
+     transform="translate(-2.9999998,-2.9999994)">
+    <g
+       class="relationship"
+       transform="rotate(-128.33073,81.921486,63.751144)"
+       id="g10">
+      <path
+         class="outline"
+         d="m 24.018736,6.953439 0.258819,-0.9659258 a 194.2746,194.2746 0 0 0 6.547444,1.6330535 L 30.599882,8.5948984 A 195.2746,195.2746 0 0 1 24.018736,6.953439 Z m 90.140194,2.5965211 -0.20279,-0.9792226 a 194.2746,194.2746 0 0 0 6.58306,-1.4829746 l -0.71002,-2.9147676 7.62948,1.7438465 -5.97276,5.0572782 -0.71002,-2.9147679 a 195.2746,195.2746 0 0 1 -6.61695,1.490608"
+         id="path6"
+         inkscape:connector-curvature="0"
+         style="fill:#a5abb6;stroke:none" />
+      <text
+         pointer-events="none"
+         font-size="8px"
+         x="72.333435"
+         y="16.094538"
+         transform="rotate(180,72.333435,13.094538)"
+         id="text8"
+         style="font-size:8px;font-family:sans-serif;text-anchor:middle;fill:#000000">CONDUIT_OF</text>
+    </g>
+    <g
+       class="relationship"
+       transform="rotate(51.669266,-55.798202,12.490146)"
+       id="g16">
+      <path
+         class="outline"
+         d="m 24.018736,6.953439 0.258819,-0.9659258 a 194.2746,194.2746 0 0 0 6.547444,1.6330535 L 30.599882,8.5948984 A 195.2746,195.2746 0 0 1 24.018736,6.953439 Z m 90.140194,2.5965211 -0.20279,-0.9792226 a 194.2746,194.2746 0 0 0 6.58306,-1.4829746 l -0.71002,-2.9147676 7.62948,1.7438465 -5.97276,5.0572782 -0.71002,-2.9147679 a 195.2746,195.2746 0 0 1 -6.61695,1.490608"
+         id="path12"
+         inkscape:connector-curvature="0"
+         style="fill:#a5abb6;stroke:none" />
+      <text
+         pointer-events="none"
+         font-size="8px"
+         x="72.333435"
+         y="16.094538"
+         id="text14"
+         style="font-size:8px;font-family:sans-serif;text-anchor:middle;fill:#000000">CONDUIT_OF</text>
+    </g>
+  </g>
+  <g
+     class="layer nodes"
+     id="g36"
+     transform="translate(-2.9999998,-2.9999994)">
+    <g
+       class="node"
+       transform="translate(-11.394345,48.514312)"
+       id="g26">
+      <circle
+         class="outline"
+         cx="0"
+         cy="0"
+         r="25"
+         id="circle20"
+         style="fill:#ffd86e;stroke:#edba39;stroke-width:2px" />
+      <text
+         pointer-events="none"
+         y="0"
+         font-size="10px"
+         id="text22"
+         style="font-size:10px;font-family:sans-serif;text-anchor:middle;fill:#604a0e">Core</text>
+      <text
+         pointer-events="none"
+         y="10"
+         font-size="10px"
+         id="text24"
+         style="font-size:10px;font-family:sans-serif;text-anchor:middle;fill:#604a0e">Switch1</text>
+    </g>
+    <g
+       class="node selected"
+       transform="translate(82.719994,167.5524)"
+       id="g34">
+      <circle
+         class="outline"
+         cx="0"
+         cy="0"
+         r="25"
+         id="circle28"
+         style="fill:#ffd86e;stroke:#edba39;stroke-width:2px" />
+      <text
+         pointer-events="none"
+         y="0"
+         font-size="10px"
+         id="text30"
+         style="font-size:10px;font-family:sans-serif;text-anchor:middle;fill:#604a0e">Edge</text>
+      <text
+         pointer-events="none"
+         y="10"
+         font-size="10px"
+         id="text32"
+         style="font-size:10px;font-family:sans-serif;text-anchor:middle;fill:#604a0e">Switch3</text>
+    </g>
+  </g>
 </svg>
