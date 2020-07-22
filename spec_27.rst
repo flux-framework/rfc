@@ -379,7 +379,7 @@ Example:
      "type": 1,
      "annotations": {
        "sched": {
-         "list_estimate": 593016000.0,
+         "t_estimate": 593016000.0,
          "reason_pending": "requested GPUs are unavailable"
        }
      }
