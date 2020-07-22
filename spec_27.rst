@@ -306,7 +306,9 @@ Example:
      "id": 1552593348,
      "type": 0,
      "annotations": {
-       "sched.resource_summary":"rank[0-1]/core0"
+       "sched": {
+         "resource_summary":"rank[0-1]/core0"
+       }
      }
    }
 
@@ -349,6 +351,9 @@ SHALL update the dictionary according to the following rules:
 
 The key MAY be one of the following:
 
+sched
+  (dictionary) dictionary object containing scheduler specific annotations
+
 sched.t_estimate
   (double) estimated absolute start time in seconds since UNIX epoch
 
@@ -358,7 +363,7 @@ sched.reason_pending
 sched.resource_summary
   (string) human readable overview of assigned resources
 
-A scheduler MAY define additional ``sched.`` prefixed keys as needed.
+A scheduler MAY define additional ``sched`` keys as needed.
 
 A value MAY be any valid JSON value.
 
@@ -370,8 +375,10 @@ Example:
      "id": 1552593348,
      "type": 1,
      "annotations": {
-       "sched.t_estimate": 593016000.0,
-       "sched.reason_pending": "requested GPUs are unavailable"
+       "sched": {
+         "list_estimate": 593016000.0,
+         "reason_pending": "requested GPUs are unavailable"
+       }
      }
    }
 
