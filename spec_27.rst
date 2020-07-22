@@ -363,6 +363,9 @@ sched.reason_pending
 sched.resource_summary
   (string) human readable overview of assigned resources
 
+user
+  (dictionary) dictionary object containing user specific annotations
+
 A scheduler MAY define additional ``sched`` keys as needed.
 
 A value MAY be any valid JSON value.
