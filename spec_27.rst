@@ -343,6 +343,10 @@ The job manager SHALL maintain a dictionary of annotations for each job.
 Each ANNOTATE response and the SUCCESS response (if it contains annotations)
 SHALL update the dictionary according to the following rules:
 
+- If a key exists and is a dictionary, and the new value is a
+  dictionary, the rules below SHALL be applied to the dictionary
+  recursively.
+
 - If a key exists, its value SHALL be replaced with the new value.
 
 - If a key exists and the new value is JSON null, the key SHALL be removed.
@@ -379,7 +383,7 @@ Example:
      "type": 1,
      "annotations": {
        "sched": {
-         "list_estimate": 593016000.0,
+         "t_estimate": 593016000.0,
          "reason_pending": "requested GPUs are unavailable"
        }
      }
