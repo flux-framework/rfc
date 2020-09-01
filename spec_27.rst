@@ -367,6 +367,9 @@ sched.reason_pending
 sched.resource_summary
   (string) human readable overview of assigned resources
 
+sched.queue
+  (string) human readable identification of job queue
+
 user
   (dictionary) dictionary object containing user specific annotations
 
