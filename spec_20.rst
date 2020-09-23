@@ -125,9 +125,9 @@ the format version.
 Execution
 ~~~~~~~~~
 
-The value of the ``execution`` key SHALL contain at least the single key
-``R_lite``, with optional keys ``starttime`` and ``expiration`` and other keys
-reserved for future extensions.
+The value of the ``execution`` key SHALL contain at least the keys
+``R_lite``, and ``nodelist``, with optional keys ``starttime`` and
+``expiration``. Other keys are reserved for future extensions.
 
 ``R_lite`` is a strict list of dictionaries each of which SHALL contain
 at least the following two keys:
@@ -152,14 +152,14 @@ at least the following two keys:
       The OPTIONAL ``gpu`` key SHALL contain a logical GPU IDs string
       in RFC 22 **idset format**.
 
-An ``R_lite`` dictionary entry MAY also contain any of the following optional
-keys:
 
-**node**
-   The value of the ``node`` key, if present, SHALL be the string
-   hostname of the target compute node.
+The ``nodelist`` key SHALL be an array of hostnames which correspond to
+the ``rank`` entries of the ``R_lite`` dictionary, and serves as a mapping
+of ``R_lite`` ``rank`` entries to hostname. Each hostname entry in ``nodelist`` MAY contain an embedded idset, expandable by ``idset_format_map(3)``, e.g.
+``"host[0-16]``.
 
-The ``execution`` key MAY contain any of the following optional keys:
+
+The ``execution`` key MAY also contain any of the following optional keys:
 
 **starttime**
    The value of the ``starttime`` key, if present, SHALL
