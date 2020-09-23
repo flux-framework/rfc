@@ -303,6 +303,7 @@ ruleset
 yaml
 vertices
 hostname
+hostnames
 InfiniBand
 Infiniband
 bicore
