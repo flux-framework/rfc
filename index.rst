@@ -199,6 +199,12 @@ for execution.
 This specification describes Version 1 of the Flux Resource Allocation
 Protocol implemented by the job manager and a compliant Flux scheduler.
 
+:doc:`29/Hostlist Format <spec_29>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification describes the Flux implementation of the Hostlist Format
+-- a compressed representation of lists of hostnames.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -229,3 +235,4 @@ Protocol implemented by the job manager and a compliant Flux scheduler.
    spec_25
    spec_26
    spec_27
+   spec_29
