@@ -450,3 +450,6 @@ Hostlists
 afterany
 afterok
 afternotok
+login
+satisfiability
+satisfiable
