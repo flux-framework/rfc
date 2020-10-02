@@ -191,7 +191,7 @@ If subtracted resources are already allocated to a job, the scheduler should
 raise a fatal exception on the job.  The scheduler SHALL then be prepared
 to process ``sched.free`` request(s) involving these resources.
 
-Once the subtracted resources are free, the scheduler SHALL send a
+As the subtracted resources become free, the scheduler SHALL send a
 ``resource.release`` request to the flux-core resource module (see below).
 
 The scheduler SHOULD re-evaluate the satisfiability of all jobs in its
@@ -265,8 +265,9 @@ conform to this protocol.
 Release Request
 ^^^^^^^^^^^^^^^
 
-The scheduler SHALL send a ``resource.release`` request to the resource
-module to acknowledge *shrink* above, once the subtracted resources are free.
+The scheduler SHALL send one or more ``resource.release`` requests to the
+resource module to acknowledge *shrink* above, as the subtracted resources
+become free.
 
 The ``resource.release`` request is a JSON object with the following
 REQUIRED keys:
@@ -286,13 +287,11 @@ Example:
       "targets": "1-3,5"
    }
 
-There SHALL be exactly one ``resource.release`` request for a given *shrink*.
-
 The *group* SHALL match the group used in the ``resource.acquire`` request.
-The *targets* SHALL match the *shrink* targets exactly.
+The *targets* SHALL match, or be a proper subset of, the *shrink* targets.
 
-The scheduler SHALL NOT send a ``resource.release`` request that was not
-solicited by *shrink*.
+The scheduler SHALL NOT send a ``resource.release`` request for execution
+targets that were not previously included in *shrink*.
 
 The release response SHALL have an empty payload.
 
