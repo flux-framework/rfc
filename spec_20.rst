@@ -38,6 +38,8 @@ Related Standards
 
 -  :doc:`22/Idset String Representation <spec_22>`
 
+-  :doc:`29/Hostlist Format <spec_29>`
+
 
 Overview
 --------
@@ -155,9 +157,8 @@ at least the following two keys:
 
 The ``nodelist`` key SHALL be an array of hostnames which correspond to
 the ``rank`` entries of the ``R_lite`` dictionary, and serves as a mapping
-of ``R_lite`` ``rank`` entries to hostname. Each hostname entry in ``nodelist`` MAY contain an embedded idset, expandable by ``idset_format_map(3)``, e.g.
-``"host[0-16]``.
-
+of ``R_lite`` ``rank`` entries to hostname. Each entry in ``nodelist`` MAY
+contain a string in RFC 29 *Hostlist Format*, e.g. ``host[0-16]``.
 
 The ``execution`` key MAY also contain any of the following optional keys:
 
