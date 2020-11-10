@@ -95,7 +95,12 @@ DEPEND
    The job is blocked waiting for dependencies to be satisfied. The job manager
    makes a request to the dependency service and receives a response once
    the job’s dependencies are satisfied, then logs the ``depend`` event.
-   The state transitions to SCHED.
+   The state transitions to PRIORITY.
+
+PRIORITY
+   The job is waiting for a priority to be assigned by the job manager
+   priority plugin.  Upon priority assignment, the job manager posts a
+   ``priority`` event.  The state transitions to SCHED.
 
 SCHED
    The job is blocked waiting for resources. The job manager sends an
@@ -129,13 +134,13 @@ In the interest of encouraging consistent language, we define the following
 "virtual states" as shorthand for the union of two or more actual job states:
 
 PENDING
-  The job is in DEPEND or SCHED states.
+  The job is in DEPEND, PRIORITY, or SCHED states.
 
 RUNNING
   The job is in RUN or CLEANUP states.
 
 ACTIVE
-  The job is in DEPEND, SCHED, RUN, or CLEANUP states.
+  The job is in DEPEND, PRIORITY, SCHED, RUN, or CLEANUP states.
 
 
 Exceptions
@@ -175,7 +180,7 @@ Job was submitted.
 The following keys are REQUIRED in the event context object:
 
 priority
-   (integer) Initial priority in the range of 0-31.
+   (integer) Initial administrative priority in the range of 0-31.
 
 userid
    (integer) Authenticated user ID of submitter.
@@ -190,6 +195,28 @@ Example:
    {"timestamp":1552593348.073045,"name":"submit","context":{"priority":16,"userid":5588,"flags":0}}
 
 
+Priority Event
+^^^^^^^^^^^^^^^^
+
+Job's priority has been assigned or changed.
+
+The following keys are REQUIRED in the event context object:
+
+priority
+   (integer) New priority in the range of 0-4294967295.
+
+.. code:: json
+
+   {"timestamp":1552593547.411336,"name":"priority","context":{"priority":42}}
+
+.. note::
+    The ``priority`` event is not posted to the job eventlog, since an
+    updated priority can be easily recalculated and some priority plugins
+    may frequently re-prioritize pending jobs, leading to eventlog noise.
+    As a consequence, a job may regress from SCHED to PRIORITY when Flux
+    restarts and the job manager replays the eventlog.
+
+
 Admin-Priority Event
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -198,7 +225,7 @@ Job's administrative priority has changed.
 The following keys are REQUIRED in the event context object:
 
 priority
-   (integer) New priority in the range of 0-31.
+   (integer) New administrative priority in the range of 0-31.
 
 userid
    (integer) Authenticated user ID of requester.
