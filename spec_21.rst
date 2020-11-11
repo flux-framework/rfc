@@ -195,6 +195,20 @@ Example:
    {"timestamp":1552593348.073045,"name":"submit","context":{"priority":16,"userid":5588,"flags":0}}
 
 
+Depend Event
+^^^^^^^^^^^^
+
+All job dependencies have been met.
+
+No context is defined for this event.
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1605115080.0358412,"name":"depend"}
+
+
 Priority Event
 ^^^^^^^^^^^^^^^^
 
