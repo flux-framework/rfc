@@ -283,7 +283,7 @@ The following keys are REQUIRED in the event context object:
 
 status
    (integer) The largest of the job shell wait status codes, as
-   defined by POSIX wait(2) [#f1]_
+   defined by POSIX wait(2) [#f1]_.
 
 Example:
 
@@ -378,15 +378,6 @@ Any state but ``NEW`` is valid for synchronization.
 Once a given state has been signaled (with a KVS snapshot reference), the
 following invariants hold with respect to the KVS job schema described in
 RFC 16:
-
-DEPEND
-   TBD
-
-SCHED
-   TBD
-
-RUN
-   TBD
 
 CLEANUP
    Either an exception has been logged to ``job.<jobid>.eventlog``,
