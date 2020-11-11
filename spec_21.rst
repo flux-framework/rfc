@@ -222,7 +222,7 @@ Example:
 
 .. code:: json
 
-   {"timestamp":1552593348.088391,"name":"alloc","context":{"annotations":{"sched.resource_summary:"rank0/core[0-1]"}}}
+   {"timestamp":1552593348.088391,"name":"alloc","context":{"annotations":{"sched.resource_summary":"rank0/core[0-1]"}}}
 
 
 Free Event
