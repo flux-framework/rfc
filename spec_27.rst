@@ -151,13 +151,10 @@ id
   (integer) job ID
 
 priority
-  (integer) job priority in the range of 0 through 31
+  (integer) queue priority in the range of 0 through 4294967295
 
 userid
   (integer) job owner
-
-t_submit
-  (double) job submit time in seconds since the UNIX epoch
 
 Example:
 
@@ -167,15 +164,13 @@ Example:
      "alloc": [
        {
          "id": 1552593348,
-         "priority": 20,
+         "priority": 43444,
          "userid": 5588,
-         "t_submit": 593011542.2359374
        },
        {
          "id": 1552599944,
-         "priority": 20,
+         "priority": 222,
          "userid": 5588,
-         "t_submit": 593069342.2334354
        }
      ]
    }
@@ -239,13 +234,10 @@ id
   (integer) job ID
 
 priority
-  (integer) job priority in the range of 0 through 31
+  (integer) queue priority in the range of 0 through 4294967295
 
 userid
   (integer) job owner
-
-t_submit
-  (double) job submit time in seconds since the UNIX epoch
 
 Example:
 
@@ -253,9 +245,8 @@ Example:
 
    {
      "id": 1552593348,
-     "priority": 20,
+     "priority": 53444,
      "userid": 5588,
-     "t_submit": 593011542.2359374
    }
 
 Upon receipt of the ``alloc`` request, the scheduler SHALL look up *jobspec*
