@@ -190,10 +190,10 @@ Example:
    {"timestamp":1552593348.073045,"name":"submit","context":{"priority":16,"userid":5588,"flags":0}}
 
 
-Priority Event
-^^^^^^^^^^^^^^
+Admin-Priority Event
+^^^^^^^^^^^^^^^^^^^^
 
-Job is to be re-prioritized.
+Job's administrative priority has changed.
 
 The following keys are REQUIRED in the event context object:
 
@@ -205,7 +205,7 @@ userid
 
 .. code:: json
 
-   {"timestamp":1552593547.411336,"name":"priority","context":{"priority":0,"userid":5588}}
+   {"timestamp":1552593547.411336,"name":"admin-priority","context":{"priority":0,"userid":5588}}
 
 
 Alloc Event
