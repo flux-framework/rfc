@@ -462,7 +462,52 @@ as described above.  If the specified job does not have a pending
 Note that receipt of a ``sched.cancel`` does not necessarily indicate
 that the *job* is canceled. For example, the job manager may cancel all
 outstanding ``sched.alloc`` requests in response to the queue being
-administratively disabled.
+administratively disabled, or to make room for higher priority jobs
+in ``single`` mode.
+
+
+Prioritize
+~~~~~~~~~~
+
+When jobs with outstanding ``sched.alloc`` requests are re-prioritized,
+the job manager notifies the scheduler by sending a ``sched.prioritize``
+request.  The request payload consists of a JSON object with the following
+REQUIRED key:
+
+jobs
+  (array) list of [id, priority] tuples
+
+Each tuple SHALL consist of a two element array, containing:
+
+[0]
+  (integer) job ID
+
+[1]
+  (integer) queue priority in the range of 0 through 4294967295
+
+Example:
+
+.. code:: json
+
+   {
+     "jobs":[
+       [49056579584, 444],
+       [57428410368, 298],
+       [63988301824, 343205],
+       [69675778048, 99]
+     ]
+   }
+
+
+Job IDs which cannot be correlated to a pending ``sched.alloc`` request
+may be safely ignored.
+
+No response is sent to the ``sched.prioritize`` request.
+
+.. note::
+    A job manager priority plugin MAY initiate a priority update of many
+    jobs at once.  The job manager captures these updates in a single
+    ``sched.prioritize`` request.
 
 
 Free
