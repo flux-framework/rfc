@@ -95,7 +95,12 @@ DEPEND
    The job is blocked waiting for dependencies to be satisfied. The job manager
    makes a request to the dependency service and receives a response once
    the job’s dependencies are satisfied, then logs the ``depend`` event.
-   The state transitions to SCHED.
+   The state transitions to PRIORITY.
+
+PRIORITY
+   The job is waiting for a priority to be assigned by the job manager
+   priority plugin.  Upon priority assignment, the job manager posts a
+   ``priority`` event.  The state transitions to SCHED.
 
 SCHED
    The job is blocked waiting for resources. The job manager sends an
@@ -129,13 +134,13 @@ In the interest of encouraging consistent language, we define the following
 "virtual states" as shorthand for the union of two or more actual job states:
 
 PENDING
-  The job is in DEPEND or SCHED states.
+  The job is in DEPEND, PRIORITY, or SCHED states.
 
 RUNNING
   The job is in RUN or CLEANUP states.
 
 ACTIVE
-  The job is in DEPEND, SCHED, RUN, or CLEANUP states.
+  The job is in DEPEND, PRIORITY, SCHED, RUN, or CLEANUP states.
 
 
 Exceptions
@@ -175,7 +180,7 @@ Job was submitted.
 The following keys are REQUIRED in the event context object:
 
 priority
-   (integer) Initial priority in the range of 0-31.
+   (integer) Initial administrative priority in the range of 0-31.
 
 userid
    (integer) Authenticated user ID of submitter.
@@ -190,22 +195,58 @@ Example:
    {"timestamp":1552593348.073045,"name":"submit","context":{"priority":16,"userid":5588,"flags":0}}
 
 
-Priority Event
-^^^^^^^^^^^^^^
+Depend Event
+^^^^^^^^^^^^
 
-Job is to be re-prioritized.
+All job dependencies have been met.
+
+No context is defined for this event.
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1605115080.0358412,"name":"depend"}
+
+
+Priority Event
+^^^^^^^^^^^^^^^^
+
+Job's priority has been assigned or changed.
 
 The following keys are REQUIRED in the event context object:
 
 priority
-   (integer) New priority in the range of 0-31.
+   (integer) New priority in the range of 0-4294967295.
+
+.. code:: json
+
+   {"timestamp":1552593547.411336,"name":"priority","context":{"priority":42}}
+
+.. note::
+    The ``priority`` event is not posted to the job eventlog, since an
+    updated priority can be easily recalculated and some priority plugins
+    may frequently re-prioritize pending jobs, leading to eventlog noise.
+    As a consequence, a job may regress from SCHED to PRIORITY when Flux
+    restarts and the job manager replays the eventlog.
+
+
+Admin-Priority Event
+^^^^^^^^^^^^^^^^^^^^
+
+Job's administrative priority has changed.
+
+The following keys are REQUIRED in the event context object:
+
+priority
+   (integer) New administrative priority in the range of 0-31.
 
 userid
    (integer) Authenticated user ID of requester.
 
 .. code:: json
 
-   {"timestamp":1552593547.411336,"name":"priority","context":{"priority":0,"userid":5588}}
+   {"timestamp":1552593547.411336,"name":"admin-priority","context":{"priority":0,"userid":5588}}
 
 
 Alloc Event
@@ -222,7 +263,7 @@ Example:
 
 .. code:: json
 
-   {"timestamp":1552593348.088391,"name":"alloc","context":{"annotations":{"sched.resource_summary:"rank0/core[0-1]"}}}
+   {"timestamp":1552593348.088391,"name":"alloc","context":{"annotations":{"sched.resource_summary":"rank0/core[0-1]"}}}
 
 
 Free Event
@@ -283,7 +324,7 @@ The following keys are REQUIRED in the event context object:
 
 status
    (integer) The largest of the job shell wait status codes, as
-   defined by POSIX wait(2) [#f1]_
+   defined by POSIX wait(2) [#f1]_.
 
 Example:
 
@@ -378,15 +419,6 @@ Any state but ``NEW`` is valid for synchronization.
 Once a given state has been signaled (with a KVS snapshot reference), the
 following invariants hold with respect to the KVS job schema described in
 RFC 16:
-
-DEPEND
-   TBD
-
-SCHED
-   TBD
-
-RUN
-   TBD
 
 CLEANUP
    Either an exception has been logged to ``job.<jobid>.eventlog``,

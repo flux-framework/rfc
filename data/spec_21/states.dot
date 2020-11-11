@@ -1,25 +1,29 @@
 digraph states {
     rankdir=LR
 
-    size="8,5"
+#size="8,5"
 
-    node [shape=doublecircle fontsize=10 fixsize=shape width=0.75]; INACTIVE
+    node [shape=doublecircle fontsize=8 fixsize=shape width=0.75]; INACTIVE
 
-    node [shape=circle fontsize=10 fixedsize=shape width=0.75];
+    node [shape=circle fontsize=8 fixedsize=shape width=0.75];
 
     subgraph cluster_main {
         label = "active";
         DEPEND;
+        PRIORITY;
         SCHED;
         RUN;
         CLEANUP;
     }
 
     NEW -> DEPEND;
-    DEPEND -> SCHED [label="depend"];
+    DEPEND -> PRIORITY [label="depend"];
+    PRIORITY -> SCHED [label="priority"];
     SCHED -> RUN [label="alloc"];
     RUN -> CLEANUP [label="finish"];
     CLEANUP -> INACTIVE;
+
+    SCHED -> PRIORITY [label="flux restart"]
 
     edge [weight=0 color="red"];
 
