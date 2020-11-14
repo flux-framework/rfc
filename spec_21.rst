@@ -98,8 +98,8 @@ DEPEND
    The state transitions to PRIORITY.
 
 PRIORITY
-   The job is waiting for a priority to be assigned by the job manager
-   priority plugin.  Upon priority assignment, the job manager posts a
+   The job is blocked waiting for a queue priority to be assigned by the job
+   manager priority plugin.  Upon priority assignment, the job manager logs the
    ``priority`` event.  The state transitions to SCHED.
 
 SCHED
@@ -212,12 +212,12 @@ Example:
 Priority Event
 ^^^^^^^^^^^^^^^^
 
-Job's priority has been assigned or changed.
+Job's queue priority has been assigned or changed.
 
 The following keys are REQUIRED in the event context object:
 
 priority
-   (integer) New priority in the range of 0-4294967295.
+   (integer) Queue priority in the range of 0-4294967295.
 
 .. code:: json
 
