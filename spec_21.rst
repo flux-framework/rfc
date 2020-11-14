@@ -207,9 +207,9 @@ Example:
 
 
 Priority Event
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 
-Job's queue priority has been assigned or changed.
+Job's queue priority has been assigned.
 
 The following keys are REQUIRED in the event context object:
 
@@ -220,12 +220,19 @@ priority
 
    {"timestamp":1552593547.411336,"name":"priority","context":{"priority":42}}
 
-.. note::
-    The ``priority`` event is not posted to the job eventlog, since an
-    updated priority can be easily recalculated and some priority plugins
-    may frequently re-prioritize pending jobs, leading to eventlog noise.
-    As a consequence, a job may regress from SCHED to PRIORITY when Flux
-    restarts and the job manager replays the eventlog.
+
+Flux-Restart Event
+^^^^^^^^^^^^^^^^^^
+
+The job manager has restarted.
+
+No context is defined for this event.
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1605115080.0358412,"name":"flux-restart"}
 
 
 Admin-Priority Event
