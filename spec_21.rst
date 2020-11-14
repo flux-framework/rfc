@@ -59,9 +59,6 @@ Design Criteria
 
 -  There SHALL be one initial state and one final state.
 
--  The job state machine SHALL NOT contain cycles, to avoid ambiguity
-   in synchronization.
-
 -  All job state transitions SHALL be initiated by the job manager.
 
 -  A state SHALL exist for synchronization on job completion, such that
