@@ -59,9 +59,6 @@ Design Criteria
 
 -  There SHALL be one initial state and one final state.
 
--  The job state machine SHALL NOT contain cycles, to avoid ambiguity
-   in synchronization.
-
 -  All job state transitions SHALL be initiated by the job manager.
 
 -  A state SHALL exist for synchronization on job completion, such that
@@ -98,8 +95,8 @@ DEPEND
    The state transitions to PRIORITY.
 
 PRIORITY
-   The job is waiting for a priority to be assigned by the job manager
-   priority plugin.  Upon priority assignment, the job manager posts a
+   The job is blocked waiting for a queue priority to be assigned by the job
+   manager priority plugin.  Upon priority assignment, the job manager logs the
    ``priority`` event.  The state transitions to SCHED.
 
 SCHED
@@ -210,25 +207,32 @@ Example:
 
 
 Priority Event
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 
-Job's priority has been assigned or changed.
+Job's queue priority has been assigned.
 
 The following keys are REQUIRED in the event context object:
 
 priority
-   (integer) New priority in the range of 0-4294967295.
+   (integer) Queue priority in the range of 0-4294967295.
 
 .. code:: json
 
    {"timestamp":1552593547.411336,"name":"priority","context":{"priority":42}}
 
-.. note::
-    The ``priority`` event is not posted to the job eventlog, since an
-    updated priority can be easily recalculated and some priority plugins
-    may frequently re-prioritize pending jobs, leading to eventlog noise.
-    As a consequence, a job may regress from SCHED to PRIORITY when Flux
-    restarts and the job manager replays the eventlog.
+
+Flux-Restart Event
+^^^^^^^^^^^^^^^^^^
+
+The job manager has restarted.
+
+No context is defined for this event.
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1605115080.0358412,"name":"flux-restart"}
 
 
 Admin-Priority Event
