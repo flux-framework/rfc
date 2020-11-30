@@ -174,8 +174,8 @@ The *ingest agent* validates *J* and if accepted, populates the KVS with:
 
 The *ingest agent* logs one event to the eventlog:
 
-``submit`` ``userid=UID priority=N``
-   job was submitted, with authenticated userid and priority (0-31)
+``submit`` ``userid=UID urgency=N``
+   job was submitted, with authenticated userid and urgency (0-31)
 
 
 Content Consumed/Produced by Job Manager

@@ -95,7 +95,7 @@ DEPEND
    The state transitions to PRIORITY.
 
 PRIORITY
-   The job is blocked waiting for a queue priority to be assigned by the job
+   The job is blocked waiting for a priority to be assigned by the job
    manager priority plugin.  Upon priority assignment, the job manager logs the
    ``priority`` event.  The state transitions to SCHED.
 
@@ -176,8 +176,8 @@ Job was submitted.
 
 The following keys are REQUIRED in the event context object:
 
-priority
-   (integer) Initial administrative priority in the range of 0-31.
+urgency
+   (integer) Initial urgency in the range of 0-31.
 
 userid
    (integer) Authenticated user ID of submitter.
@@ -189,7 +189,7 @@ Example:
 
 .. code:: json
 
-   {"timestamp":1552593348.073045,"name":"submit","context":{"priority":16,"userid":5588,"flags":0}}
+   {"timestamp":1552593348.073045,"name":"submit","context":{"urgency":16,"userid":5588,"flags":0}}
 
 
 Depend Event
@@ -209,12 +209,12 @@ Example:
 Priority Event
 ^^^^^^^^^^^^^^
 
-Job's queue priority has been assigned.
+Job's priority has been assigned.
 
 The following keys are REQUIRED in the event context object:
 
 priority
-   (integer) Queue priority in the range of 0-4294967295.
+   (integer) Priority in the range of 0-4294967295.
 
 .. code:: json
 
@@ -235,22 +235,22 @@ Example:
     {"timestamp":1605115080.0358412,"name":"flux-restart"}
 
 
-Admin-Priority Event
-^^^^^^^^^^^^^^^^^^^^
+Urgency Event
+^^^^^^^^^^^^^
 
-Job's administrative priority has changed.
+Job's urgency has changed.
 
 The following keys are REQUIRED in the event context object:
 
-priority
-   (integer) New administrative priority in the range of 0-31.
+urgency
+   (integer) New urgency in the range of 0-31.
 
 userid
    (integer) Authenticated user ID of requester.
 
 .. code:: json
 
-   {"timestamp":1552593547.411336,"name":"admin-priority","context":{"priority":0,"userid":5588}}
+   {"timestamp":1552593547.411336,"name":"urgency","context":{"urgency":0,"userid":5588}}
 
 
 Alloc Event
