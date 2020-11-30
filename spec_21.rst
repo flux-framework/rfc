@@ -253,6 +253,21 @@ userid
    {"timestamp":1552593547.411336,"name":"urgency","context":{"urgency":0,"userid":5588}}
 
 
+Priority-Update Event
+^^^^^^^^^^^^^^^^^^^^^
+
+Job's priority has changed.
+
+The following keys are REQUIRED in the event context object:
+
+priority
+   (integer) Priority in the range of 0-4294967295.
+
+.. code:: json
+
+   {"timestamp":1552593547.411336,"name":"priority-update","context":{"priority":1001}}
+
+
 Alloc Event
 ^^^^^^^^^^^
 
