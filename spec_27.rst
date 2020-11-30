@@ -151,7 +151,7 @@ id
   (integer) job ID
 
 priority
-  (integer) queue priority in the range of 0 through 4294967295
+  (integer) priority in the range of 0 through 4294967295
 
 userid
   (integer) job owner
@@ -234,7 +234,7 @@ id
   (integer) job ID
 
 priority
-  (integer) queue priority in the range of 0 through 4294967295
+  (integer) priority in the range of 0 through 4294967295
 
 userid
   (integer) job owner
@@ -483,7 +483,7 @@ Each tuple SHALL consist of a two element array, containing:
   (integer) job ID
 
 [1]
-  (integer) queue priority in the range of 0 through 4294967295
+  (integer) priority in the range of 0 through 4294967295
 
 Example:
 

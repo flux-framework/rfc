@@ -205,6 +205,11 @@ Protocol implemented by the job manager and a compliant Flux scheduler.
 This specification describes the Flux implementation of the Hostlist Format
 -- a compressed representation of lists of hostnames.
 
+:doc:`30/Job Urgency <spec_30>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification describes the Flux job urgency parameter.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -236,3 +241,4 @@ This specification describes the Flux implementation of the Hostlist Format
    spec_26
    spec_27
    spec_29
+   spec_30

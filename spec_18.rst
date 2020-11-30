@@ -75,8 +75,8 @@ An example Flux Event Log:
 
 ::
 
-   {"timestamp":1552593348.073045,"name":"submit","context":{"priority":16,"userid":5588,"flags":0}}
-   {"timestamp":1552593547.411336,"name":"priority","context":{"priority":0,"userid":5588}}
+   {"timestamp":1552593348.073045,"name":"submit","context":{"urgency":16,"userid":5588,"flags":0}}
+   {"timestamp":1552593547.411336,"name":"urgency","context":{"urgency":0,"userid":5588}}
    {"timestamp":1552593348.088391,"name":"alloc",context:{"note":"rank0/core[0-1]"}}
    {"timestamp":1552593348.093541,"name":"free"}
    {"timestamp":1552593348.089787,"name":"start"}
