@@ -8,7 +8,7 @@
 This specification describes a compact form for expressing a list of
 hostnames which contain an optional numerical part.
 
--  Name: github.com/flux-framework/rfc/spec_22.rst
+-  Name: github.com/flux-framework/rfc/spec_29.rst
 
 -  Editor: Mark A. Grondona <mgrondona@llnl.gov>
 
