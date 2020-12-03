@@ -1,0 +1,29 @@
+on: [ pull_request ]
+jobs:
+  check-pr:
+    name: validate commits
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0
+    - run: git fetch origin master
+    - uses: flux-framework/pr-validator@master
+
+  make-check:
+    name: make check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.6
+    - name: install dependencies
+      run: |
+        pip3 install --upgrade -r ./requirements.txt
+    - name: make check
+      run: |
+        make check
