@@ -62,9 +62,6 @@ such as resource utilization or fairness.
 Abstract resource allocation requests are expressed as a *jobspec* object
 (RFC 14).  Concrete resources assignments are expressed a an *R* object
 (RFC 20).  These objects are stored in the KVS per the job schema (RFC 16).
-The ``sched.alloc`` request implicitly refers to *jobspec* in the KVS by job ID,
-while the ``sched.alloc`` response and ``sched.free`` request implicitly refer
-to *R* in the KVS by job ID.
 
 This RFC describes the RPC messages outlined above.  It also describes the
 initialization messages used to establish parameters for scheduler operation
@@ -239,6 +236,9 @@ priority
 userid
   (integer) job owner
 
+jobspec
+  (object) *jobspec* object (RFC 14)
+
 Example:
 
 .. code:: json
@@ -247,10 +247,35 @@ Example:
      "id": 1552593348,
      "priority": 53444,
      "userid": 5588,
+     "jobspec": {
+       "resources": [
+         {
+           "type": "slot",
+           "count": 1,
+           "with": [{"type": "core", "count": 1}], "label": "task"
+         }
+       ],
+       "tasks": [
+         {
+           "command": ["/bin//true"],
+           "slot": "task",
+           "count": {"per_slot": 1}
+         }
+       ],
+       "attributes": {
+         "system": {
+           "duration": 0,
+           "cwd": "/home/user/project",
+         }
+       },
+       "version": 1
+     }
    }
 
-Upon receipt of the ``alloc`` request, the scheduler SHALL look up *jobspec*
-in the KVS by job ID according to the job schema (RFC 16).
+The jobspec sent with ``sched.alloc`` MAY have its environment section
+redacted to reduce its size, since the environment is not needed by the
+scheduler.  Should it be needed, the full jobspec SHALL be stable in the
+KVS per the job schema (RFC 16) when the ``sched.alloc`` request is received.
 
 The response payload is a JSON object with the following REQUIRED keys:
 
