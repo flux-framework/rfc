@@ -153,6 +153,9 @@ priority
 userid
   (integer) job owner
 
+t_submit
+  (double) job submission time
+
 Example:
 
 .. code:: json
@@ -163,11 +166,13 @@ Example:
          "id": 1552593348,
          "priority": 43444,
          "userid": 5588,
+         "t_submit": 1552593348.073045,
        },
        {
          "id": 1552599944,
          "priority": 222,
          "userid": 5588,
+         "t_submit": 1552593322.455343,
        }
      ]
    }
