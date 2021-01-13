@@ -138,11 +138,11 @@ Hello
 ~~~~~
 
 Before any other RPCs are sent to the job manager, the scheduler SHALL
-send an empty request to ``job-manager.sched-hello`` and wait for a response.
-
-The response payload SHALL consist of a JSON object with one key: ``alloc``,
-whose value is an array of zero or more jobs with allocated resources.
-Each array entry SHALL be a JSON object with the following REQUIRED keys:
+send an empty request to ``job-manager.sched-hello`` with the
+FLUX_MSGFLAG_STREAMING flag set.  The job manager SHALL send one
+response message for each job with allocated resources.  Each response
+payload SHALL consist of a JSON object with the following REQUIRED
+keys:
 
 id
   (integer) job ID
@@ -153,31 +153,30 @@ priority
 userid
   (integer) job owner
 
+t_submit
+  (double) job submission time
+
 Example:
 
 .. code:: json
 
    {
-     "alloc": [
-       {
-         "id": 1552593348,
-         "priority": 43444,
-         "userid": 5588,
-       },
-       {
-         "id": 1552599944,
-         "priority": 222,
-         "userid": 5588,
-       }
-     ]
+     "id": 1552593348,
+     "priority": 43444,
+     "userid": 5588,
+     "t_submit": 1552593348.073045,
    }
 
-For each job in the response, the scheduler SHALL mark its assigned resources
+For each job response, the scheduler SHALL mark its assigned resources
 *allocated* internally.  It MAY look up *R* in the KVS by job ID according
 to the job schema (RFC 16).
 
-If an error response is returned to the ``job-manager.sched-hello`` request,
-the scheduler SHALL log the error and exit its module thread.
+The scheduler SHALL wait for an error response with ENODATA set,
+indicating the stream of responses has completed (RFC 6).
+
+If an error response other than ENODATA is returned to the
+``job-manager.sched-hello`` request, the scheduler SHALL log the error
+and exit its module thread.
 
 
 Ready
