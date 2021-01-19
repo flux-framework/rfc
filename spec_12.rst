@@ -230,7 +230,9 @@ within an instance.
 Users other than the instance owner SHALL NOT be permitted to connect
 to an instance’s overlay networks. Since overlay networks are implemented
 using the ZeroMQ messaging library, these connections SHALL be secured
-using a configurable ZeroMQ security plugin other than "NONE".
+using a configurable ZeroMQ security plugin that implements message privacy,
+authenticity, and integrity such as "CURVE" or "GSSAPI".
+
 ZeroMQ security is documented in:
 
 -  `ZeroMQ RFC 23 ZMTP ZeroMQ Message Transport Protocol <http://rfc.zeromq.org/spec:23>`__
@@ -245,31 +247,30 @@ ZeroMQ security is documented in:
 
 -  `ZeroMQ RFC 38 ZMTP GSSAPI <http://rfc.zeromq.org/spec:38>`__
 
-The default ZeroMQ security plugin SHALL be "CURVE", which provides
-message privacy, authenticity, and integrity with low overhead.
-The long-term CURVE keys of the instance owner are loaded from the
-file system at instance startup (by default, from their home directory).
-Long term CURVE keys SHALL be encoded in ZeroMQ certificate format that
-is documented in:
+The default ZeroMQ security plugin SHALL be "CURVE", which requires
+minimal security infrastructure to operate.
+
+When a CURVE public, secret key pair is stored on a file system,
+the key pair SHALL be encoded using the ZeroMQ certificate format
+documented in:
 
 -  `Securing ZeroMQ: Soul of a New Certificate <http://hintjens.com/blog:53>`__, P. Hintjens, October 2013.
 
 -  `ZeroMQ Certificates, Design Iteration 1 <http://hintjens.com/blog:62>`__, P. Hintjens, October 2013.
 
 A long-term CURVE certificate SHALL NOT be used if it is damaged, or if
-file system permissions allow the private key portion to be read by other
-users. If certificates are stored in a network file system, it is strongly
-RECOMMENDED that network file system traffic be protected from eavesdropping.
+file system permissions allow the private key to be disclosed to
+users other than the Flux instance owner.  If certificates are stored in
+a network file system, it is RECOMMENDED that network file system traffic
+be protected from eavesdropping.
 
-The optional EPGM multicast overlay for Flux events cannot at present be
-secured using ZeroMQ security plugins; therefore, it SHALL be secured by
-encapsulating each message in a MUNGE credential encoded as the instance
-owner with the MUNGE_OPT_UID_RESTRICTION flag set to prevent unauthorized
-access. MUNGE comes with the presumption of pre-shared MUNGE keys and
-numerical user id synchronization over participating hosts. If MUNGE is
-unavailable within these constraints, the optional EPGM overlay network
-SHALL NOT be enabled.
+A Flux system instance using CURVE security is configured with access to
+a single, shared CURVE certificate for the system.
 
+A Flux instance that is launched with PMI self-generates a unique CURVE
+key pair within the memory of each broker.  Public keys are shared via the
+PMI KVS.  After PMI synchronization, each broker reads the public keys of
+its immediate peers, and authorizes them to communicate.
 
 Process Management Interface (PMI)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
