@@ -214,7 +214,10 @@ Example:
 
    {"mode":"limited","limit":42}
 
-The response payload SHALL be empty.
+The response payload is a JSON object with the following REQUIRED keys:
+
+count
+  (integer) current queue depth
 
 After responding to the ``job-manager.sched-ready`` request, the job manager
 MAY immediately begin sending ``sched.alloc`` and ``sched.free`` requests.
