@@ -194,22 +194,30 @@ mode
 
 The mode string SHALL be one of the following:
 
-single
-  The job manager SHALL send a ``sched.alloc`` request only when there are
-  no outstanding ``sched.alloc`` requests.  This mode is only useful for simple
-  schedulers that run jobs strictly in the job manager queue order.
-
 unlimited
   The job manager SHALL send a ``sched.alloc`` request for all jobs in SCHED
   state, with no limit on concurrency.
+
+limited
+  The job manager SHALL limit the number of concurrent ``sched.alloc``
+  requests to value specified by the ``limit`` key (described below).
+
+The following key is REQUIRED for ``limited`` mode only:
+
+limit
+  (integer) The number of concurrent ``sched.alloc`` requests that can
+  be sent.  ``limit`` can be in the range of 1 to 2147483647.
 
 Example:
 
 .. code:: json
 
-   {"mode":"unlimited"}
+   {"mode":"limited","limit":42}
 
-The response payload SHALL be empty.
+The response payload is a JSON object with the following REQUIRED keys:
+
+count
+  (integer) current queue depth
 
 After responding to the ``job-manager.sched-ready`` request, the job manager
 MAY immediately begin sending ``sched.alloc`` and ``sched.free`` requests.
