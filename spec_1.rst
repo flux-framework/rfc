@@ -26,6 +26,13 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
 be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__.
 
+Related Standards
+-----------------
+
+-  :doc:`2/Flux Licensing and Collaboration Guidelines <spec_2>`
+
+-  :doc:`7/Flux Coding Style Guide <spec_7>`
+
 
 Goals
 -----
@@ -74,7 +81,7 @@ Preliminaries
 Licensing and Ownership
 ~~~~~~~~~~~~~~~~~~~~~~~
 
--  The project SHALL use a share-alike license, such as the GPLv3 or a variant thereof (LGPL, AGPL), or the MPLv2.
+-  The project SHALL use a share-alike license, such as the GPLv3 or a variant thereof (LGPL, AGPL), or the MPLv2 for reasons outlined in :doc:`RFC 2 <spec_2>`.
 
 -  All contributions to the project source code ("patches") SHALL use the same license as the project.
 
@@ -92,7 +99,7 @@ Patch Requirements
 
 -  A patch SHOULD be a minimal and accurate answer to exactly one identified and agreed problem.
 
--  A patch MUST adhere to the code style guidelines of the project if these are defined.
+-  A patch MUST adhere to the code style guidelines of the project defined in :doc:`RFC 7 <spec_7>`.
 
 -  A patch MUST adhere to the "Evolution of Public Contracts" guidelines defined below.
 
