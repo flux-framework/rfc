@@ -82,7 +82,7 @@ Licensing and Ownership
 
 -  The copyrights in the project SHALL be owned collectively by all its Contributors.
 
--  Each Contributor SHALL be responsible for identifying themselves in the project Contributor list.
+-  The git commit history SHALL be considered the primary source of contributor identities.
 
 
 Patch Requirements
