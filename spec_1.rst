@@ -123,6 +123,8 @@ Patch Requirements
 
 -  Where applicable, a commit message body SHOULD reference an Issue by number (e.g. Fixes #33").
 
+-  A commit message body SHOULD begin with ``Problem:`` and a short paragraph describing the problem solved by the commit.  Even commits that add features MAY include such a problem statement.
+
 -  A "Correct Patch" is one that satisfies the above requirements.
 
 
