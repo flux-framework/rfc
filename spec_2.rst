@@ -114,9 +114,6 @@ Copyright
 
 -  The SPDX license shorthand is RECOMMENDED [#f2]_.
 
--  New contributors MAY add themselves to the project’s AUTHORS file,
-   using the pull request process described in RFC 1.
-
 .. [#f1] `The Free-Libre / Open Source Software (FLOSS) License Slide <https://dwheeler.com/essays/floss-license-slide.html>`__, David A. Wheeler.
 
 .. [#f2] `The Software Package Data Exchange (SPDX) <https://spdx.org/>`__.
