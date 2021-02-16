@@ -14,9 +14,9 @@ Table of Contents
 
 - [1/C4.1 - Collective Code Construction Contract](spec_1.rst)
 - [2/Flux Licensing and Collaboration Guidelines](spec_2.rst)
-- [3/CMB1 - Flux Comms Message Broker Protocol](spec_3.rst)
+- [3/Flux Message Protocol](spec_3.rst)
 - [4/Flux Resource Model](spec_4.rst)
-- [5/Flux Comms Modules](spec_5.rst)
+- [5/Flux Broker Modules](spec_5.rst)
 - [6/Flux Remote Procedure Call Protocol](spec_6.rst)
 - [7/Flux Coding Style Guide](spec_7.rst)
 - [8/Flux Task and Program Execution Services](spec_8.rst)

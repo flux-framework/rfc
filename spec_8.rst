@@ -57,7 +57,7 @@ Terminology
    where a program MAY store persistent state.
 
 -  **instance** A set of Flux framework services running within a single
-   Flux *comms session* [RFC 3], that includes a capability to launch
+   communication domain  [RFC 3], that includes a capability to launch
    programs. A Flux instance is such a *program*.
 
 -  **enclosing instance** The instance in which a program is running.

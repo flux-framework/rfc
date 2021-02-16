@@ -2,13 +2,13 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_3.html
 
-3/CMB1 - Flux Comms Message Broker Protocol
-===========================================
+3/Flux Message Protocol
+=======================
 
-This specification describes the format of communications message broker
-messages, Version 1, also referred to as CMB1.
+This specification describes the format of Flux message broker
+messages, Version 1.
 
-CMB1 is encapsulated in the
+The Flux message protocol is encapsulated in the
 `ZeroMQ Message Transfer Protocol (ZMTP) <http://rfc.zeromq.org/spec:23/ZMTP>`__.
 
 -  Name: github.com/flux-framework/rfc/spec_3.rst
@@ -29,8 +29,8 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Goals
 -----
 
-The CMB1 protocol provides a way for Flux utilities and services to
-communicate with one another within the context of a job. CMB1 has
+The Flux message protocol v1 provides a way for Flux utilities and services to
+communicate with one another within the context of a job. It has
 the following specific goals:
 
 -  Endpoint-count scalability (e.g. to 100K nodes) through multi-hop
@@ -56,7 +56,7 @@ Background
 ----------
 
 ``flux-broker`` is a message broker daemon for the Flux resource manager
-framework. A *comms session* is a set of interconnected ``flux-broker`` tasks
+framework. A Flux *instance* is a set of interconnected ``flux-broker`` tasks
 that together provide a shared communications substrate for distributed
 resource manager services within a job. Services and utilities communicate
 by passing messages through the session brokers. There are four
@@ -64,7 +64,7 @@ types of messages: events, requests, responses, and keepalives, which
 share a common structure described herein.
 
 Event messages are published such that they are available to subscribers
-throughout the comms session. Events are published with a *topic string*
+throughout the instance. Events are published with a *topic string*
 attached. Subscribers register a list of topic string prefixes
 to filter the set of messages they receive.
 
@@ -88,8 +88,8 @@ Implementation
 Rank Assignment
 ~~~~~~~~~~~~~~~
 
-A *node* is defined as a ``flux-broker`` task. Each node in a comms
-session of size N SHALL be assigned a rank in the range of 0 to N - 1.
+A *node* is defined as a ``flux-broker`` task. Each node in a Flux
+instance of size N SHALL be assigned a rank in the range of 0 to N - 1.
 Ranks SHALL be represented by a 32 bit unsigned integer, with the highest
 value of (2:sup:`32` - 3).
 
@@ -99,23 +99,23 @@ The rank FLUX_NODEID_ANY (2:sup:`32` - 1) SHALL be reserved to indicate
 The rank FLUX_NODEID_UPSTREAM (2:sup:`32` - 2) SHALL be reserved to indicate
 *any rank* that is upstream of the sender in request addressing.
 This value is reserved for the convenience of API implementations
-and SHALL NOT appear in the nodeid slot of an encoded CMB1 message.
+and SHALL NOT appear in the nodeid slot of an encoded message.
 
 A node’s rank SHALL be assigned at broker startup and SHALL NOT change
 for the node’s lifetime.
 
-The size of the comms session SHALL be determined at startup and SHALL
-not change for the life of the comms session. [Dynamic resize will
+The size of the Flux instance SHALL be determined at startup and SHALL
+not change for the life of the Flux instance. [Dynamic resize will
 be covered in a future version of this specification.]
 
 
 Overlay Networks
 ~~~~~~~~~~~~~~~~
 
-The nodes of a comms session SHALL at minimum be interconnected in
+The nodes of a Flux instance SHALL at minimum be interconnected in
 tree based overlay network with rank 0 at the root of the tree.
 
-The nodes of a comms session MAY be interconnected in additional
+The nodes of a Flux instance MAY be interconnected in additional
 overlay networks to improve efficiency or fault tolerance.
 
 
@@ -135,16 +135,16 @@ Request messages MAY be addressed to *any rank* (FLUX_NODEID_ANY).
 Such messages SHALL be routed to the local broker, then to the
 first match in the following sequence:
 
-1. If topic string begins with a word matching a local comms module
-   and the sender is not the same comms module attached to the same rank
-   broker, the message SHALL be routed to the comms module.
+1. If topic string begins with a word matching a local broker module
+   and the sender is not the same module attached to the same rank
+   broker, the message SHALL be routed to the broker module.
 
 2. If the broker is not the root node of the tree based overlay network,
    the message SHALL be routed to a parent node in the tree based overlay
    network, which SHALL re-apply this routing algorithm.
 
-If the message is received by a comms module, but the remaining words of the
-topic string do not match a method it implements, the comms module SHALL
+If the message is received by a broker module, but the remaining words of the
+topic string do not match a method it implements, the module SHALL
 respond with error number 38, "Function not implemented", unless suppressed
 as described below.
 
@@ -165,11 +165,11 @@ Rank Request Routing
 Request messages MAY be addressed to a specific rank.
 Such messages SHALL be routed to the target broker rank, then as follows:
 
-1. If topic string begins with a word matching a local comms module,
-   the message SHALL be routed to the comms module.
+1. If topic string begins with a word matching a local broker module,
+   the message SHALL be routed to the module.
 
-If the message is received by a comms module, but the remaining words of the
-topic string do not match a method it implements, the comms module SHALL
+If the message is received by a broker module, but the remaining words of the
+topic string do not match a method it implements, the module SHALL
 respond with error number 38, "Function not implemented", unless suppressed
 as described below.
 
@@ -217,30 +217,30 @@ established for common payload types:
 General Message Format
 ~~~~~~~~~~~~~~~~~~~~~~
 
-CMB1 messages are multi-part ZeroMQ messages.
+Flux messages are multi-part ZeroMQ messages.
 
-CMB1 messages MUST include a PROTO message part, positioned last for fast
+Flux messages MUST include a PROTO message part, positioned last for fast
 access. The PROTO part includes flags that indicate the presence of
 additional message parts.
 
-CMB1 messages MAY include a stack of message identity parts comprising
+Flux messages MAY include a stack of message identity parts comprising
 a source address route, positioned first for compatibility with ZeroMQ
 DEALER-ROUTER sockets. If message identity parts are present, a zero-size
 route delimiter frame MUST be present and positioned next.
 
-CMB1 messages MAY include a topic string part, positioned after route
+Flux messages MAY include a topic string part, positioned after route
 delimiter, if any. When the topic string part is first, it is compatible
 with ZeroMQ PUB-SUB sockets.
 
-Finally, CMB1 messages MAY include a payload part, positioned before
+Finally, Flux messages MAY include a payload part, positioned before
 the PROTO part. Payloads MAY consist of any byte sequence.
 
-CMB1 messages are specified in terms of ZeroMQ messages by the following
+Flux messages are specified in terms of ZeroMQ messages by the following
 ABNF grammar [#f2]_
 
 ::
 
-   CMB1            = C:request *S:response
+   message       = C:request *S:response
                    / S:event
                    / C:keepalive
 
@@ -271,7 +271,7 @@ ABNF grammar [#f2]_
 
    ; Constants
    magic           = %x8E          ; magic cookie
-   version         = %x01          ; version for CMB1
+   version         = %x01          ; Flux message version
 
    ; Flags: a bitmask of flag- values below
    flags           = OCTET

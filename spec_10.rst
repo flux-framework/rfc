@@ -26,7 +26,7 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  :doc:`3/CMB1 - Flux Comms Message Broker Protocol <spec_3>`
+-  :doc:`3/Flux Message Protocol <spec_3>`
 
 
 Goals
@@ -107,10 +107,10 @@ Note: "blobref" was shamelessly borrowed from Camlistore
 Store
 ~~~~~
 
-A store request SHALL be encoded as a CMB1 request message with the blob
+A store request SHALL be encoded as a Flux request message with the blob
 as raw payload (blob length > 0), or no payload (blob length = 0).
 
-A store response SHALL be encoded as a CMB1 response message with
+A store response SHALL be encoded as a Flux response message with
 NULL-terminated blobref string as raw payload, or an error response.
 
 A request to store content that exceeds the maximum size SHALL
@@ -123,10 +123,10 @@ accessible from any rank in the instance.
 Load
 ~~~~
 
-A load request SHALL be encoded as a CMB1 request message with
+A load request SHALL be encoded as a Flux request message with
 NULL-terminated blobref string as raw payload.
 
-A load response SHALL be encoded as a CMB1 response message with blob
+A load response SHALL be encoded as a Flux response message with blob
 as raw payload (blob length > 0), no payload (blob length = 0),
 or an error response.
 
@@ -181,7 +181,7 @@ content SHALL be destroyed when the instance terminates.
 Message Definitions
 ~~~~~~~~~~~~~~~~~~~
 
-Content service messages SHALL follow the CMB1 rules described
+Content service messages SHALL follow the Flux rules described
 in RFC 3 for requests and responses, and are described in detail by
 the following ABNF grammar:
 

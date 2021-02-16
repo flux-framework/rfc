@@ -28,7 +28,7 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  :doc:`3/CMB1 - Flux Comms Message Broker Protocol <spec_3>`
+-  :doc:`3/Flux Message Protocol <spec_3>`
 
 
 Goals

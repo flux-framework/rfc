@@ -2,8 +2,8 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_5.html
 
-5/Flux Comms Modules
-====================
+5/Flux Broker Modules
+=====================
 
 This specification describes the broker extension modules
 used to implement Flux services.
@@ -26,49 +26,50 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  :doc:`3/CMB1 - Flux Comms Message Broker Protocol <spec_3>`
+-  :doc:`3/Flux Message Protocol <spec_3>`
 
 
 Background
 ----------
 
-Flux services are implemented as dynamically loaded plugins called
-"comms modules". They are "actors" in the sense that they have
+Flux services are implemented as dynamically loaded broker plugins called
+"broker modules". They are "actors" in the sense that they have
 their own thread of control, and interact with the broker and the rest
 of Flux exclusively via messages.
 
-The ``flux-module`` front-end utility loads, unloads, and lists comms modules
+The ``flux-module`` front-end utility loads, unloads, and lists broker modules
 by exchanging RPC messages with a module management component of the broker.
 
-A comms module exports two symbols: a ``mod_main()`` function, and
+A broker module exports two symbols: a ``mod_main()`` function, and
 a ``mod_name`` NULL-terminated string.
 
-The broker starts a comms module by calling its ``mod_main()`` function in
+The broker starts a module by calling its ``mod_main()`` function in
 a new thread. The broker provides a broker handle and argv vector
 style arguments to the via ``mod_main()`` arguments. The arguments originate
 on the ``flux-module load`` command line.
 
 Prior to calling ``mod_main()``, the broker registers a service for the
-comms module based on the value of ``mod_name``. Request messages with
+module based on the value of ``mod_name``. Request messages with
 topic strings starting with this service name are diverted by the broker
-to the comms module as described in RFC 3. The portion of the topic string
-following the service name is called a "service method". A comms module
+to the module as described in RFC 3. The portion of the topic string
+following the service name is called a "service method". A module
 may register many service methods.
 
-The broker also pre-registers handlers for service methods that all comms
+The broker also pre-registers handlers for service methods that all
 modules are expected to provide, such as "ping" and "shutdown". These
-handlers may be overridden by the comms module if desired.
+handlers may be overridden by the module if desired.
 
-The comms module implementing a new service is expected to register
+The broker module implementing a new service is expected to register
 message handlers for its methods, then run the flux reactor. It should
 use event driven (reactive) programming techniques to remain responsive
 while juggling work from multiple clients.
 
-Keepalive messages are sent by pre-registered reactor watchers to the broker,
-to indicate when the comms module is initializing, waiting for reactor events,
-busy doing work, finalizing, or exited. This provides synchronization to
-the comms module loader, as well as useful runtime debug information that
-can be reported by ``flux module list``.
+Keepalive messages are sent to the broker via pre-registered reactor
+watchers to indicate when the module is initializing, running, finalizing,
+or exited. At initialization, a module MAY also manually send a keepalive
+message to indicate to the broker when initialization is complete. This
+provides synchronization to the broker module loader as well as useful
+runtime debug information that can be reported by ``flux module list``.
 
 
 Implementation
@@ -78,7 +79,7 @@ Implementation
 Well known Symbols
 ~~~~~~~~~~~~~~~~~~
 
-A comms module SHALL export the following global symbols:
+A broker module SHALL export the following global symbols:
 
 ``const char \*mod_name;``
    A null-terminated C string defining the module name.
@@ -93,7 +94,7 @@ A comms module SHALL export the following global symbols:
 Keepalive Values
 ~~~~~~~~~~~~~~~~
 
-A comms module SHALL send RFC 3 keepalive messages containing status
+A broker module SHALL send RFC 3 keepalive messages containing status
 integers to the broker over its broker handle. Status integers are
 enumerated as follows:
 
@@ -107,23 +108,27 @@ enumerated as follows:
 
 -  FLUX_MODSTATE_EXITED (4) - ``mod_main()`` exited
 
-Keepalive messages SHALL be sent to the broker on each state transition.
-In addition, keepalive message MAY be sent to the broker at regular
-intervals. The keepalive ``errnum`` field SHALL be zero except
-when ``mod_main()`` returns a value of -1 indicating failure and state
-transitions to FLUX_MODSTATE_EXITED. In this case ``errnum`` SHALL be set
-to the value of POSIX ``errno`` set by ``mod_main()`` before returning.
+Modules SHALL send a keepalive message of either ``FLUX_MODSTATE_SLEEPING``
+or ``FLUX_MODSTATE_RUNNING`` after initialization to notify the broker that
+the module has started successfully. In order to ensure this happens for
+all modules, A keepalive message SHALL be sent via a pre-registered reactor
+watcher upon a module's first entry to the reactor. In addition, keepalive
+messages MAY be sent to the broker at regular intervals. The keepalive
+``errnum`` field SHALL be zero except when ``mod_main()`` returns a value
+of -1 indicating failure and state transitions to FLUX_MODSTATE_EXITED. In
+this case ``errnum`` SHALL be set to the value of POSIX ``errno`` set by
+``mod_main()`` before returning.
 
-The broker MAY track the number of session heartbeats since an
-comms module last sent a message and report this as "idle time"
-for the comms module.
+The broker MAY track the number of session heartbeats since a
+module last sent a message and report this as "idle time"
+for the module.
 
 
 Load Sequence
 ~~~~~~~~~~~~~
 
-The broker module loader SHALL launch the comms module’s ``mod_main()`` in a
-new thread. The ``cmb.insmod`` response is deferred until the comms module
+The broker module loader SHALL launch the module’s ``mod_main()`` in a
+new thread. The ``broker.insmod`` response is deferred until the module
 state transitions out of FLUX_MODSTATE_INIT. If it transitions immediately to
 FLUX_MODSTATE_EXITED, and the ``errnum`` value is nonzero, an error response
 SHALL be returned as described in RFC 3.
@@ -133,9 +138,9 @@ Unload Sequence
 ~~~~~~~~~~~~~~~
 
 The broker module loader SHALL send a ``<service>.shutdown`` request to the
-comms module when the module loader receives a ``cmb.rmmod`` request for the
-module. In response, the comms module SHALL exit ``mod_main()``, send a
-keepalive transition to FLUX_MODSTATE_EXITED state, and exit the comms
+module when the module loader receives a ``broker.rmmod`` request for the
+module. In response, the broker module SHALL exit ``mod_main()``, send a
+keepalive transition to FLUX_MODSTATE_EXITED state, and exit the
 module’s thread or process. This final state transition indicates to
 the broker that it MAY clean up the module thread.
 
@@ -143,11 +148,11 @@ the broker that it MAY clean up the module thread.
 Built-in Request Handlers
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-All comms modules receive default handlers for the following methods:
+All broker modules receive default handlers for the following methods:
 
 ``<service>.shutdown``
    The default handler immediately stops the reactor. This handler may
-   be overridden if a comms module requires a more complex shutdown sequence.
+   be overridden if a broker module requires a more complex shutdown sequence.
 
 ``<service>.stats.get``
    The default handler returns a JSON object containing message counts.
@@ -176,7 +181,7 @@ All comms modules receive default handlers for the following methods:
 Built-in Event Handlers
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-In addition, all comms modules subscribe to and register a handler for
+In addition, all broker modules subscribe to and register a handler for
 the following events:
 
 ``<service>.stats.clear``
@@ -188,11 +193,11 @@ the following events:
 Module Management Message Definitions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Module management messages SHALL follow the CMB1 rules described
+Module management messages SHALL follow the Flux message rules described
 in RFC 3 for requests and responses with JSON payloads.
 
-The broker comms module loader SHALL implement the ``cmb.insmod``,
-``cmb.rmmod``, and ``cmb.lsmod`` methods.
+The broker module loader SHALL implement the ``broker.insmod``,
+``broker.rmmod``, and ``broker.lsmod`` methods.
 
 Module management messages are described in detail by the following
 ABNF grammar:
@@ -214,9 +219,9 @@ ABNF grammar:
    S:lsmod-rep     = [routing] lsmod-topic lsmod-json PROTO   ; see below for JSON
 
    ; topic strings are optional service + module operation
-   insmod-topic    = "cmb.insmod"
-   rmmod-topic     = "cmb.rmmod"
-   lsmod-topic     = "cmb.lsmod"
+   insmod-topic    = "broker.insmod"
+   rmmod-topic     = "broker.rmmod"
+   lsmod-topic     = "broker.lsmod"
 
    ; PROTO and [routing] are as defined in RFC 3.
 
@@ -239,7 +244,7 @@ Content Rules <https://tools.ietf.org/html/draft-newton-json-content-rules-05>`_
        "name"     : string           ; module name
        "size"     : integer 0..      ; module file size
        "digest"   : string           ; SHA1 digest of module file
-       "idle"     : integer 0..      ; comms idle time in heartbeats
+       "idle"     : integer 0..      ; idle time in heartbeats
        "status"   : integer 0..      ; module state (enumerated above)
    }
 
