@@ -2,10 +2,10 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_3.html
 
-3/CMB1 - Flux Comms Message Broker Protocol
-===========================================
+3/CMB1 - Flux Message Broker Protocol
+=====================================
 
-This specification describes the format of communications message broker
+This specification describes the format of Flux message broker
 messages, Version 1, also referred to as CMB1.
 
 CMB1 is encapsulated in the
@@ -56,7 +56,7 @@ Background
 ----------
 
 ``flux-broker`` is a message broker daemon for the Flux resource manager
-framework. A *comms session* is a set of interconnected ``flux-broker`` tasks
+framework. A Flux *instance* is a set of interconnected ``flux-broker`` tasks
 that together provide a shared communications substrate for distributed
 resource manager services within a job. Services and utilities communicate
 by passing messages through the session brokers. There are four
@@ -64,7 +64,7 @@ types of messages: events, requests, responses, and keepalives, which
 share a common structure described herein.
 
 Event messages are published such that they are available to subscribers
-throughout the comms session. Events are published with a *topic string*
+throughout the instance. Events are published with a *topic string*
 attached. Subscribers register a list of topic string prefixes
 to filter the set of messages they receive.
 
@@ -88,8 +88,8 @@ Implementation
 Rank Assignment
 ~~~~~~~~~~~~~~~
 
-A *node* is defined as a ``flux-broker`` task. Each node in a comms
-session of size N SHALL be assigned a rank in the range of 0 to N - 1.
+A *node* is defined as a ``flux-broker`` task. Each node in a Flux
+instance of size N SHALL be assigned a rank in the range of 0 to N - 1.
 Ranks SHALL be represented by a 32 bit unsigned integer, with the highest
 value of (2:sup:`32` - 3).
 
@@ -104,18 +104,18 @@ and SHALL NOT appear in the nodeid slot of an encoded CMB1 message.
 A node’s rank SHALL be assigned at broker startup and SHALL NOT change
 for the node’s lifetime.
 
-The size of the comms session SHALL be determined at startup and SHALL
-not change for the life of the comms session. [Dynamic resize will
+The size of the Flux instance SHALL be determined at startup and SHALL
+not change for the life of the Flux instance. [Dynamic resize will
 be covered in a future version of this specification.]
 
 
 Overlay Networks
 ~~~~~~~~~~~~~~~~
 
-The nodes of a comms session SHALL at minimum be interconnected in
+The nodes of a Flux instance SHALL at minimum be interconnected in
 tree based overlay network with rank 0 at the root of the tree.
 
-The nodes of a comms session MAY be interconnected in additional
+The nodes of a Flux instance MAY be interconnected in additional
 overlay networks to improve efficiency or fault tolerance.
 
 
@@ -135,16 +135,16 @@ Request messages MAY be addressed to *any rank* (FLUX_NODEID_ANY).
 Such messages SHALL be routed to the local broker, then to the
 first match in the following sequence:
 
-1. If topic string begins with a word matching a local comms module
-   and the sender is not the same comms module attached to the same rank
-   broker, the message SHALL be routed to the comms module.
+1. If topic string begins with a word matching a local broker module
+   and the sender is not the same module attached to the same rank
+   broker, the message SHALL be routed to the broker module.
 
 2. If the broker is not the root node of the tree based overlay network,
    the message SHALL be routed to a parent node in the tree based overlay
    network, which SHALL re-apply this routing algorithm.
 
-If the message is received by a comms module, but the remaining words of the
-topic string do not match a method it implements, the comms module SHALL
+If the message is received by a broker module, but the remaining words of the
+topic string do not match a method it implements, the module SHALL
 respond with error number 38, "Function not implemented", unless suppressed
 as described below.
 
@@ -165,11 +165,11 @@ Rank Request Routing
 Request messages MAY be addressed to a specific rank.
 Such messages SHALL be routed to the target broker rank, then as follows:
 
-1. If topic string begins with a word matching a local comms module,
-   the message SHALL be routed to the comms module.
+1. If topic string begins with a word matching a local broker module,
+   the message SHALL be routed to the module.
 
-If the message is received by a comms module, but the remaining words of the
-topic string do not match a method it implements, the comms module SHALL
+If the message is received by a broker module, but the remaining words of the
+topic string do not match a method it implements, the module SHALL
 respond with error number 38, "Function not implemented", unless suppressed
 as described below.
 

@@ -25,7 +25,7 @@ Goals
 
 To establish best practices, preferred patterns and anti-patterns for
 distributed services in the flux framework. Several of the core services of
-flux, including comms, RPCs, and the KVS, provide services for distributed
+Flux, including messages, RPCs, and the KVS, provide services for distributed
 notification and synchronization, but not all of them are suitable for all
 cases. For now, this is a listing of some common patterns and anti-patterns,
 but may shape into a more comprehensive guide as the most effective patterns

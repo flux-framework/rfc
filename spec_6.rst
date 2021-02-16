@@ -26,15 +26,15 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Related Standards
 -----------------
 
--  :doc:`3/CMB1 - Flux Comms Message Broker Protocol <spec_3>`
+-  :doc:`3/CMB1 - Flux Message Broker Protocol <spec_3>`
 
 
 Goals
 -----
 
-Flux RPC protocol enables comms modules, utilities, or other software
-communicating with a Flux comms session to call the methods implemented
-by comms modules. Flux RPC has the following goals:
+Flux RPC protocol enables broker modules, utilities, or other software
+communicating with a Flux instance to call the methods implemented
+by broker modules. Flux RPC has the following goals:
 
 -  Support location-neutral service addressing, without a location broker.
 
@@ -52,7 +52,7 @@ Implementation
 A remote procedure call SHALL consist of one request message
 sent from a client to a server, and zero or more response messages sent
 from a server to a client. The client and server roles are not
-mutually-exclusive—​comms modules often act in both roles.
+mutually-exclusive—​ broker modules often act in both roles.
 
 ::
 
