@@ -64,11 +64,12 @@ message handlers for its methods, then run the flux reactor. It should
 use event driven (reactive) programming techniques to remain responsive
 while juggling work from multiple clients.
 
-Keepalive messages are sent by pre-registered reactor watchers to the broker,
-to indicate when the module is initializing, waiting for reactor events,
-busy doing work, finalizing, or exited. This provides synchronization to
-the broker module loader, as well as useful runtime debug information that
-can be reported by ``flux module list``.
+Keepalive messages are sent to the broker via pre-registered reactor
+watchers to indicate when the module is initializing, running, finalizing,
+or exited. At initialization, a module MAY also manually send a keepalive
+message to indicate to the broker when initialization is complete. This
+provides synchronization to the broker module loader as well as useful
+runtime debug information that can be reported by ``flux module list``.
 
 
 Implementation
@@ -107,12 +108,16 @@ enumerated as follows:
 
 -  FLUX_MODSTATE_EXITED (4) - ``mod_main()`` exited
 
-Keepalive messages SHALL be sent to the broker on each state transition.
-In addition, keepalive message MAY be sent to the broker at regular
-intervals. The keepalive ``errnum`` field SHALL be zero except
-when ``mod_main()`` returns a value of -1 indicating failure and state
-transitions to FLUX_MODSTATE_EXITED. In this case ``errnum`` SHALL be set
-to the value of POSIX ``errno`` set by ``mod_main()`` before returning.
+Modules SHALL send a keepalive message of either ``FLUX_MODSTATE_SLEEPING``
+or ``FLUX_MODSTATE_RUNNING`` after initialization to notify the broker that
+the module has started successfully. In order to ensure this happens for
+all modules, A keepalive message SHALL be sent via a pre-registered reactor
+watcher upon a module's first entry to the reactor. In addition, keepalive
+messages MAY be sent to the broker at regular intervals. The keepalive
+``errnum`` field SHALL be zero except when ``mod_main()`` returns a value
+of -1 indicating failure and state transitions to FLUX_MODSTATE_EXITED. In
+this case ``errnum`` SHALL be set to the value of POSIX ``errno`` set by
+``mod_main()`` before returning.
 
 The broker MAY track the number of session heartbeats since a
 module last sent a message and report this as "idle time"
