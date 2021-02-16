@@ -2,13 +2,13 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_3.html
 
-3/CMB1 - Flux Message Broker Protocol
-=====================================
+3/Flux Message Protocol
+=======================
 
 This specification describes the format of Flux message broker
-messages, Version 1, also referred to as CMB1.
+messages, Version 1.
 
-CMB1 is encapsulated in the
+The Flux message protocol is encapsulated in the
 `ZeroMQ Message Transfer Protocol (ZMTP) <http://rfc.zeromq.org/spec:23/ZMTP>`__.
 
 -  Name: github.com/flux-framework/rfc/spec_3.rst
@@ -29,8 +29,8 @@ be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__
 Goals
 -----
 
-The CMB1 protocol provides a way for Flux utilities and services to
-communicate with one another within the context of a job. CMB1 has
+The Flux message protocol v1 provides a way for Flux utilities and services to
+communicate with one another within the context of a job. It has
 the following specific goals:
 
 -  Endpoint-count scalability (e.g. to 100K nodes) through multi-hop
@@ -99,7 +99,7 @@ The rank FLUX_NODEID_ANY (2:sup:`32` - 1) SHALL be reserved to indicate
 The rank FLUX_NODEID_UPSTREAM (2:sup:`32` - 2) SHALL be reserved to indicate
 *any rank* that is upstream of the sender in request addressing.
 This value is reserved for the convenience of API implementations
-and SHALL NOT appear in the nodeid slot of an encoded CMB1 message.
+and SHALL NOT appear in the nodeid slot of an encoded message.
 
 A node’s rank SHALL be assigned at broker startup and SHALL NOT change
 for the node’s lifetime.
@@ -217,30 +217,30 @@ established for common payload types:
 General Message Format
 ~~~~~~~~~~~~~~~~~~~~~~
 
-CMB1 messages are multi-part ZeroMQ messages.
+Flux messages are multi-part ZeroMQ messages.
 
-CMB1 messages MUST include a PROTO message part, positioned last for fast
+Flux messages MUST include a PROTO message part, positioned last for fast
 access. The PROTO part includes flags that indicate the presence of
 additional message parts.
 
-CMB1 messages MAY include a stack of message identity parts comprising
+Flux messages MAY include a stack of message identity parts comprising
 a source address route, positioned first for compatibility with ZeroMQ
 DEALER-ROUTER sockets. If message identity parts are present, a zero-size
 route delimiter frame MUST be present and positioned next.
 
-CMB1 messages MAY include a topic string part, positioned after route
+Flux messages MAY include a topic string part, positioned after route
 delimiter, if any. When the topic string part is first, it is compatible
 with ZeroMQ PUB-SUB sockets.
 
-Finally, CMB1 messages MAY include a payload part, positioned before
+Finally, Flux messages MAY include a payload part, positioned before
 the PROTO part. Payloads MAY consist of any byte sequence.
 
-CMB1 messages are specified in terms of ZeroMQ messages by the following
+Flux messages are specified in terms of ZeroMQ messages by the following
 ABNF grammar [#f2]_
 
 ::
 
-   CMB1            = C:request *S:response
+   message       = C:request *S:response
                    / S:event
                    / C:keepalive
 
@@ -271,7 +271,7 @@ ABNF grammar [#f2]_
 
    ; Constants
    magic           = %x8E          ; magic cookie
-   version         = %x01          ; version for CMB1
+   version         = %x01          ; Flux message version
 
    ; Flags: a bitmask of flag- values below
    flags           = OCTET

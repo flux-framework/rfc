@@ -33,11 +33,10 @@ site-customized resource management systems for High Performance
 Computing (HPC) data centers. This document specifies licensing and
 collaboration guidelines for Flux projects.
 
-:doc:`3/CMB1 - Flux Message Broker Protocol <spec_3>`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:doc:`3/Flux Message Protocol <spec_3>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This specification describes the format of communications message
-broker messages, Version 1, also referred to as CMB1.
+This specification describes the format of Flux messages, Version 1.
 
 :doc:`4/Flux Resource Model <spec_4>`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,7 +54,7 @@ implement Flux services.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This specification describes how Flux Remote Procedure Call (RPC) is
-built on top of CMB1 request and response messages.
+built on top of Flux request and response messages.
 
 :doc:`7/Flux Coding Style Guide <spec_7>`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
