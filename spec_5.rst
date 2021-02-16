@@ -100,24 +100,22 @@ enumerated as follows:
 
 -  FLUX_MODSTATE_INIT (0) - initializing
 
--  FLUX_MODSTATE_SLEEPING (1) - sleeping
+-  FLUX_MODSTATE_RUNNING (1) - running
 
--  FLUX_MODSTATE_RUNNING (2) - running
+-  FLUX_MODSTATE_FINALIZING (2) - finalizing
 
--  FLUX_MODSTATE_FINALIZING (3) - finalizing
+-  FLUX_MODSTATE_EXITED (3) - ``mod_main()`` exited
 
--  FLUX_MODSTATE_EXITED (4) - ``mod_main()`` exited
-
-Modules SHALL send a keepalive message of either ``FLUX_MODSTATE_SLEEPING``
-or ``FLUX_MODSTATE_RUNNING`` after initialization to notify the broker that
-the module has started successfully. In order to ensure this happens for
-all modules, A keepalive message SHALL be sent via a pre-registered reactor
-watcher upon a module's first entry to the reactor. In addition, keepalive
-messages MAY be sent to the broker at regular intervals. The keepalive
-``errnum`` field SHALL be zero except when ``mod_main()`` returns a value
-of -1 indicating failure and state transitions to FLUX_MODSTATE_EXITED. In
-this case ``errnum`` SHALL be set to the value of POSIX ``errno`` set by
-``mod_main()`` before returning.
+Modules SHALL send a keepalive message of ``FLUX_MODSTATE_RUNNING``
+after initialization to notify the broker that the module has started
+successfully. In order to ensure this happens for all modules, A keepalive
+message SHALL be sent via a pre-registered reactor watcher upon a module's
+first entry to the reactor if the module has not otherwise entered the
+RUNNING state. In addition, keepalive messages MAY be sent to the broker
+at regular intervals. The keepalive ``errnum`` field SHALL be zero except
+when ``mod_main()`` returns a value of -1 indicating failure and state
+transitions to FLUX_MODSTATE_EXITED. In this case ``errnum`` SHALL be
+set to the value of POSIX ``errno`` set by ``mod_main()`` before returning.
 
 The broker MAY track the number of session heartbeats since a
 module last sent a message and report this as "idle time"
