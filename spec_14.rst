@@ -220,6 +220,8 @@ following keys
    matching resource identifiers.
 
 
+.. _rfc14-reserved-resource-types:
+
 Reserved Resource Types
 ^^^^^^^^^^^^^^^^^^^^^^^
 

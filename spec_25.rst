@@ -100,8 +100,7 @@ following:
 **type**
    The ``type`` key for a resource SHALL indicate the type of resource to be
    matched. In V1, only four resource types are valid: [``node``, ``slot``, ``core``,
-   and ``gpu``]. ``slot`` types are described in the **Reserved Resource Types** section
-   below.
+   and ``gpu``]. ``slot`` types are described in the :ref:`rfc14-reserved-resource-types`.
 
 **count**
    The ``count`` key SHALL indicate the desired number of
