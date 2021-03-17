@@ -9,7 +9,7 @@ SOURCEDIR     = .
 BUILDDIR      = _build
 
 # YAML Validation on these directories
-SCHEMA_DIRS=data/spec_26 data/spec_14
+SCHEMA_DIRS=data/spec_31 data/spec_26 data/spec_14
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -26,7 +26,7 @@ check: $(SCHEMA_DIRS) spelling
 	./indexcheck spec_*.rst
 
 $(SCHEMA_DIRS):
-	python ./validate.py --schema=$@/schema.json $@/*.yaml
+	python3 ./validate.py --schema=$@/schema.json $@/*.yaml
 
 spelling:
 	@$(SPHINXBUILD) -W -b spelling "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

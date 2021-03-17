@@ -58,7 +58,7 @@ This RFC describes the version 1 form of "jobspec", a domain specific language
 based on YAML  [#f1]_. The version 1 of jobspec SHALL consist of
 a single YAML document representing a reusable request to run
 exactly one program. Hereafter, "jobspec" refers to the version 1
-form, and "non-canonical jobspec" refers to the non-canonical form.
+form, and "canonical jobspec" refers to the canonical form.
 
 
 Jobspec Language Definition
@@ -100,8 +100,7 @@ following:
 **type**
    The ``type`` key for a resource SHALL indicate the type of resource to be
    matched. In V1, only four resource types are valid: [``node``, ``slot``, ``core``,
-   and ``gpu``]. ``slot`` types are described in the **Reserved Resource Types** section
-   below.
+   and ``gpu``]. ``slot`` types are described in the :ref:`rfc14-reserved-resource-types`.
 
 **count**
    The ``count`` key SHALL indicate the desired number of
@@ -201,7 +200,8 @@ requests are similar to existing resource manager batch job submission or
 allocation requests, i.e. equivalent to ``oarsub``, ``qsub``, and ``salloc``.
 
 Use Case 1.1
-   Request nodes outside of a slot
+^^^^^^^^^^^^
+Request nodes outside of a slot
 
 Specific Example
    Request 4 nodes, each with 1 slot
@@ -225,7 +225,8 @@ The following use cases are more general and include more complex slot placement
 and task counts.
 
 Use Case 2.1
-   Run N tasks across M nodes, unequal distribution
+^^^^^^^^^^^^
+Run N tasks across M nodes, unequal distribution
 
 Specific Example
    Run 5 copies of ``hostname`` across 4 nodes,
@@ -241,7 +242,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.2
-   Run N tasks, Require M cores per task
+^^^^^^^^^^^^
+Run N tasks, Require M cores per task
 
 Specific Example
    Run 10 copies of ``myapp``, require 2 cores per copy,
@@ -257,7 +259,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.3
-   Run N tasks, Require M cores and J gpus per task
+^^^^^^^^^^^^
+Run N tasks, Require M cores and J gpus per task
 
 Specific Example
    Run 10 copies of ``myapp``, require 2 cores and 1 gpu per copy,
@@ -268,7 +271,8 @@ Jobspec YAML
       :language: yaml
 
 Use Case 2.4
-   Run N tasks across M nodes, each task with 1 core and 1 gpu
+^^^^^^^^^^^^
+Run N tasks across M nodes, each task with 1 core and 1 gpu
 
 Specific Example
    Run 16 copies of ``myapp`` across 4 nodes, each copy with
