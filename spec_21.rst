@@ -89,10 +89,9 @@ NEW
    transitions the state to DEPEND.
 
 DEPEND
-   The job is blocked waiting for dependencies to be satisfied. The job manager
-   makes a request to the dependency service and receives a response once
-   the job’s dependencies are satisfied, then logs the ``depend`` event.
-   The state transitions to PRIORITY.
+   The job is blocked waiting for dependencies to be satisfied. Once all
+   dependencies have been satisfied the ``depend`` event is logged and
+   the state transitions to PRIORITY.
 
 PRIORITY
    The job is blocked waiting for a priority to be assigned by the job
@@ -190,6 +189,38 @@ Example:
 .. code:: json
 
    {"timestamp":1552593348.073045,"name":"submit","context":{"urgency":16,"userid":5588,"flags":0}}
+
+
+Dependency-add Event
+^^^^^^^^^^^^^^^^^^^^
+
+A dependency has been added to the job. This dependency must then be removed
+via a ``dependency-remove`` event.
+
+The following keys are REQUIRED in the event context object:
+
+description
+   (string) Name or description of this dependency.
+
+.. code:: json
+
+   {"timestamp":1552593348.073045,"name":"dependency-add","context":{"description":"begin-time=1552594348"}}
+
+
+Dependency-remove Event
+^^^^^^^^^^^^^^^^^^^^^^^
+
+A dependency has be removed from a job. The dependency description MUST
+match a previously added dependency from a ``dependency-add`` event.
+
+The following keys are REQUIRED in the event context object:
+
+description
+   (string) Name or description of the dependency to remove.
+
+.. code:: json
+
+   {"timestamp":1552594348.0,"name":"dependency-remove","context":{"description":"begin-time=1552594348"}}
 
 
 Depend Event
