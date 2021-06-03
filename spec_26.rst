@@ -77,7 +77,7 @@ scheme
 value
   (string) semantics determined by the scheme.
 
-A dependency object MAY contain additional OPTIONAL keys-value pairs,
+A dependency object MAY contain additional OPTIONAL key-value pairs,
 whose semantics are determined by the scheme.
 
 in jobspec
@@ -110,6 +110,52 @@ Examples:
 
 This form SHOULD be translated by the command line tool to the object
 form above before being shared with other parts of the system.
+
+
+Simple Dependencies
+-------------------
+
+The following dependency schemes are built-in.
+
+after
+~~~~~
+
+``value`` SHALL be interpreted as the antecedent jobid, in any valid
+FLUID encoding from RFC 19.
+
+The dependency SHALL be satisfied once the antecedent job enters RUN state.
+If the antecedent job reaches INACTIVE state without entering RUN state,
+a fatal exception SHOULD be raised on the dependent job.
+
+
+afterany
+~~~~~~~~
+
+``value`` SHALL be interpreted as the antecedent jobid, in any valid
+FLUID encoding from RFC 19.
+
+The dependency SHALL be satisfied once the antecedent job enters INACTIVE
+state, regardless of result.
+
+afterok
+~~~~~~~
+
+``value`` SHALL be interpreted as the antecedent jobid, in any valid
+FLUID encoding from RFC 19.
+
+The dependency SHALL be satisfied once the antecedent job enters INACTIVE
+state, with a successful result.  If the antecedent job does not conclude
+successfully, a fatal exception SHOULD be raised on the dependent job.
+
+afternotok
+~~~~~~~~~~
+
+``value`` SHALL be interpreted as the antecedent jobid, in any valid
+FLUID encoding from RFC 19.
+
+The dependency SHALL be satisfied once the antecedent job enters INACTIVE
+state, with an unsuccessful result.  If the antecedent job concludes
+successfully, a fatal exception SHOULD be raised on the dependent job.
 
 
 OpenMP-style Dependencies

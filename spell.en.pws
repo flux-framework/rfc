@@ -447,3 +447,6 @@ RTT
 dothex
 dec
 Hostlists
+afterany
+afterok
+afternotok
