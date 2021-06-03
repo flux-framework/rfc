@@ -65,22 +65,91 @@ service outside of the job manager; for example, a separate broker module
 or an entity that is not part of Flux.
 
 
-Job Dependency Definition
+Representation
+--------------
+
+A job dependency SHALL be represented as a JSON object with the following
+REQUIRED keys:
+
+scheme
+  (string) name of the dependency scheme
+
+value
+  (string) semantics determined by the scheme.
+
+A dependency object MAY contain additional OPTIONAL keys-value pairs,
+whose semantics are determined by the scheme.
+
+in jobspec
+~~~~~~~~~~
+
+Each dependency requested by the user SHALL be represented as an element in
+the jobspec ``attributes.system.dependencies`` array.  Each element SHALL
+conform to the object definition above.
+
+If job requests no dependencies, the key ``attributes.system.dependencies``
+SHALL NOT be added to the jobspec.
+
+on command line
+~~~~~~~~~~~~~~~
+
+On the command line, a job dependency MAY be expressed in a compact, URI-like
+form, with the first OPTIONAL key-value pair represented as a URI query
+string, and additional OPTIONAL key-value pairs represented as URI query
+options (``&`` or ``;`` delimited):
+
+::
+
+   scheme:value[?key=val[&key=val...]]
+
+Examples:
+
+-  ``afterany:ƒ2oLkTLb``
+-  ``string:foo?type=out``
+-  ``fluid:hungry-hippos-white-elephant``
+
+This form SHOULD be translated by the command line tool to the object
+form above before being shared with other parts of the system.
+
+
+OpenMP-style Dependencies
 -------------------------
 
-A dependency SHALL be a dictionary containing the following keys (whose
-definitions are detailed in the sections below):
+The ``string`` and ``fluid`` schemes are reserved for more sophisticated
+symbolic and jobid based dependencies, inspired by the OpenMP specification.
 
--  **type**
--  **scope**
--  **scheme**
--  **value**
+string
+~~~~~~
+
+``value`` SHALL be interpreted as a symbolic dependency name.
+
+In addition, the following keys are REQUIRED for this scheme:
+
+type
+  (string) ``in``, ``out``, or ``inout`` as described below.
+
+scope
+  (string) ``user`` or ``global`` as described below.
+
+fluid
+~~~~~
+
+``value`` SHALL be interpreted as a jobid, in any valid FLUID encoding from
+RFC 19.
+
+type
+  (string) ``in``, ``out``, or ``inout`` as described below.
+
+scope
+  (string) ``user`` or ``global`` as described below.
+
+A dependency of this ``scheme`` with a ``type`` of ``out`` SHALL be generated
+automatically for every job when OpenMP-style dependencies are active.
 
 Type
 ~~~~
 
-The value of the ``type`` key SHALL be one of the following (the semantics of
-which are inspired by the OpenMP specification):
+The value of the ``type`` key SHALL be one of the following:
 
 -  **out** This key only affects future submitted jobs. If the value of this key
    is the same as the value in an ``in`` or ``inout`` dependency of a future
@@ -110,40 +179,9 @@ The value of the ``scope`` key SHALL be one of the following:
    of any type within this scope. A non-instance owner can only create a
    dependency with the type ``in`` within this scope.
 
-Scheme
-~~~~~~
-
-The value of the ``scheme`` key SHALL be a string. Valid values MAY be but are
-not limited to the following:
-
--  **string** The ``value`` is to be interpreted as a string literal.
-
--  **fluid** The ``value`` is to be interpreted as a Flux Locally Unique ID. A
-   dependency of this ``scheme`` with a ``type`` of ``out`` SHALL be generated
-   automatically for every job by the job dependency system.
-
-Value
-~~~~~
-
-The value of the ``value`` key SHALL be a string, whose semantics are
-determined by the ``scheme``.
-
-Shorthand
----------
-
-For convenience at the command line, dependencies MAY be formatted as a
-`Uniform Resource Identifier (URI) <https://tools.ietf.org/html/rfc3986>`__ and
-then expanded into the dictionary format described above. It is left up to each
-implementation as to which URIs to support, the URIs' semantics, default values,
-and what to do when an unsupported URI is encountered. Some example URIs
-include:
-
--  ``string:foo``
--  ``string:foo?type=out``
--  ``fluid:hungry-hippos-white-elephant``
 
 Examples
---------
+~~~~~~~~
 
 Under the description above, the following are examples of fully compliant
 dependency declarations.
