@@ -31,10 +31,13 @@ Related Standards
 Goals
 -----
 
--  Express the dependencies between jobs to the dependency service.
--  Provide a mechanism for specifying dependencies as a directed acyclic graph
+-  Define how job dependencies are represented in jobspec.
+-  Define how job dependencies are represented as command line arguments.
+-  Describe simple, built-in job dependency schemes.
+-  Plan for new dependency schemes to be added later.
+-  Describe a mechanism for specifying dependencies as a directed acyclic graph
    (DAG).
--  Provide a mechanism for specifying more advanced, runtime dependencies.
+-  Describe a mechanism for specifying more advanced, runtime dependencies.
 
 Job Dependency Definition
 -------------------------
