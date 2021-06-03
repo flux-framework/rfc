@@ -24,6 +24,7 @@ Related Standards
 
 -  :doc:`14/Canonical Job Specification <spec_14>`
 -  :doc:`19/Flux Locally Unique ID <spec_19>`
+-  :doc:`21/Job States and Events <spec_21>`
 -  `OpenMP Specification <https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-5.0.pdf>`__
 -  `IETF RFC3986: Uniform Resource Identifier (URI) <https://tools.ietf.org/html/rfc3986>`__
 
@@ -38,6 +39,31 @@ Goals
 -  Describe a mechanism for specifying dependencies as a directed acyclic graph
    (DAG).
 -  Describe a mechanism for specifying more advanced, runtime dependencies.
+
+
+Background
+----------
+
+RFC 21 defines a DEPEND state for jobs, which is exited once all job
+dependencies have been satisfied, or a fatal exception has occurred.
+The job must progress through DEPEND and PRIORITY states before reaching
+SCHED state, therefore, dependency processing is independent of the scheduler.
+
+When a job enters DEPEND state, job manager plugins post ``dependency-add``
+events to the job eventlog, as described in RFC 21.  Plugins may add
+dependencies based on explicit user requests in the jobspec, or based on
+other implementation-dependent criteria.
+
+As dependencies are satisfied, job manager plugins post ``dependency-remove``
+events to the job eventlog, as described in RFC 21.  The job may leave DEPEND
+state once all added dependencies have been removed.
+
+Built-in job manager plugins handle the simple dependency schemes described
+below.  Job manager plugins may be added to handle new schemes as needed.
+Plugins may be self contained, or may outsource dependency processing to a
+service outside of the job manager; for example, a separate broker module
+or an entity that is not part of Flux.
+
 
 Job Dependency Definition
 -------------------------
