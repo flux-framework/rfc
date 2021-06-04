@@ -24,6 +24,7 @@ Related Standards
 
 -  :doc:`14/Canonical Job Specification <spec_14>`
 -  :doc:`19/Flux Locally Unique ID <spec_19>`
+-  :doc:`21/Job States and Events <spec_21>`
 -  `OpenMP Specification <https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-5.0.pdf>`__
 -  `IETF RFC3986: Uniform Resource Identifier (URI) <https://tools.ietf.org/html/rfc3986>`__
 
@@ -31,27 +32,191 @@ Related Standards
 Goals
 -----
 
--  Express the dependencies between jobs to the dependency service.
--  Provide a mechanism for specifying dependencies as a directed acyclic graph
+-  Define how job dependencies are represented in jobspec.
+-  Define how job dependencies are represented as command line arguments.
+-  Describe simple, built-in job dependency schemes.
+-  Plan for new dependency schemes to be added later.
+-  Describe a mechanism for specifying dependencies as a directed acyclic graph
    (DAG).
--  Provide a mechanism for specifying more advanced, runtime dependencies.
+-  Describe a mechanism for specifying more advanced, runtime dependencies.
 
-Job Dependency Definition
+
+Background
+----------
+
+RFC 21 defines a DEPEND state for jobs, which is exited once all job
+dependencies have been satisfied, or a fatal exception has occurred.
+The job must progress through DEPEND and PRIORITY states before reaching
+SCHED state, therefore, dependency processing is independent of the scheduler.
+
+When a job enters DEPEND state, job manager plugins post ``dependency-add``
+events to the job eventlog, as described in RFC 21.  Plugins may add
+dependencies based on explicit user requests in the jobspec, or based on
+other implementation-dependent criteria.
+
+As dependencies are satisfied, job manager plugins post ``dependency-remove``
+events to the job eventlog, as described in RFC 21.  The job may leave DEPEND
+state once all added dependencies have been removed.
+
+Built-in job manager plugins handle the simple dependency schemes described
+below.  Job manager plugins may be added to handle new schemes as needed.
+Plugins may be self contained, or may outsource dependency processing to a
+service outside of the job manager; for example, a separate broker module
+or an entity that is not part of Flux.
+
+Dependency Event Semantics
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Dependency events SHALL only be posted to the job eventlog by job manager
+plugins.
+
+Dependency events SHALL be treated as matching when their ``description``
+fields have the same value.
+
+A dependency SHALL be considered satisfied when matching ``dependency-add``
+and ``dependency-remove`` events have been posted.
+
+Some special semantics for these events are needed to allow plugins
+to reacquire their internal state when the job manager is restarted:
+
+Attempts to post duplicate ``dependency-add`` events for unsatisfied
+dependencies SHALL NOT raise a plugin error and SHALL NOT be posted.
+
+Attempts to post duplicate ``dependency-add`` events for satisfied
+dependencies SHALL raise a plugin error.
+
+
+Representation
+--------------
+
+A job dependency SHALL be represented as a JSON object with the following
+REQUIRED keys:
+
+scheme
+  (string) name of the dependency scheme
+
+value
+  (string) semantics determined by the scheme.
+
+A dependency object MAY contain additional OPTIONAL key-value pairs,
+whose semantics are determined by the scheme.
+
+in jobspec
+~~~~~~~~~~
+
+Each dependency requested by the user SHALL be represented as an element in
+the jobspec ``attributes.system.dependencies`` array.  Each element SHALL
+conform to the object definition above.
+
+If job requests no dependencies, the key ``attributes.system.dependencies``
+SHALL NOT be added to the jobspec.
+
+on command line
+~~~~~~~~~~~~~~~
+
+On the command line, a job dependency MAY be expressed in a compact, URI-like
+form, with the first OPTIONAL key-value pair represented as a URI query
+string, and additional OPTIONAL key-value pairs represented as URI query
+options (``&`` or ``;`` delimited):
+
+::
+
+   scheme:value[?key=val[&key=val...]]
+
+Examples:
+
+-  ``afterany:ƒ2oLkTLb``
+-  ``string:foo?type=out``
+-  ``fluid:hungry-hippos-white-elephant``
+
+This form SHOULD be translated by the command line tool to the object
+form above before being shared with other parts of the system.
+
+
+Simple Dependencies
+-------------------
+
+The following dependency schemes are built-in.
+
+after
+~~~~~
+
+``value`` SHALL be interpreted as the antecedent jobid, in any valid
+FLUID encoding from RFC 19.
+
+The dependency SHALL be satisfied once the antecedent job enters RUN state.
+If the antecedent job reaches INACTIVE state without entering RUN state,
+a fatal exception SHOULD be raised on the dependent job.
+
+
+afterany
+~~~~~~~~
+
+``value`` SHALL be interpreted as the antecedent jobid, in any valid
+FLUID encoding from RFC 19.
+
+The dependency SHALL be satisfied once the antecedent job enters INACTIVE
+state, regardless of result.
+
+afterok
+~~~~~~~
+
+``value`` SHALL be interpreted as the antecedent jobid, in any valid
+FLUID encoding from RFC 19.
+
+The dependency SHALL be satisfied once the antecedent job enters INACTIVE
+state, with a successful result.  If the antecedent job does not conclude
+successfully, a fatal exception SHOULD be raised on the dependent job.
+
+afternotok
+~~~~~~~~~~
+
+``value`` SHALL be interpreted as the antecedent jobid, in any valid
+FLUID encoding from RFC 19.
+
+The dependency SHALL be satisfied once the antecedent job enters INACTIVE
+state, with an unsuccessful result.  If the antecedent job concludes
+successfully, a fatal exception SHOULD be raised on the dependent job.
+
+
+OpenMP-style Dependencies
 -------------------------
 
-A dependency SHALL be a dictionary containing the following keys (whose
-definitions are detailed in the sections below):
+The ``string`` and ``fluid`` schemes are reserved for more sophisticated
+symbolic and jobid based dependencies, inspired by the OpenMP specification.
 
--  **type**
--  **scope**
--  **scheme**
--  **value**
+string
+~~~~~~
+
+``value`` SHALL be interpreted as a symbolic dependency name.
+
+In addition, the following keys are REQUIRED for this scheme:
+
+type
+  (string) ``in``, ``out``, or ``inout`` as described below.
+
+scope
+  (string) ``user`` or ``global`` as described below.
+
+fluid
+~~~~~
+
+``value`` SHALL be interpreted as a jobid, in any valid FLUID encoding from
+RFC 19.
+
+type
+  (string) ``in``, ``out``, or ``inout`` as described below.
+
+scope
+  (string) ``user`` or ``global`` as described below.
+
+A dependency of this ``scheme`` with a ``type`` of ``out`` SHALL be generated
+automatically for every job when OpenMP-style dependencies are active.
 
 Type
 ~~~~
 
-The value of the ``type`` key SHALL be one of the following (the semantics of
-which are inspired by the OpenMP specification):
+The value of the ``type`` key SHALL be one of the following:
 
 -  **out** This key only affects future submitted jobs. If the value of this key
    is the same as the value in an ``in`` or ``inout`` dependency of a future
@@ -81,40 +246,9 @@ The value of the ``scope`` key SHALL be one of the following:
    of any type within this scope. A non-instance owner can only create a
    dependency with the type ``in`` within this scope.
 
-Scheme
-~~~~~~
-
-The value of the ``scheme`` key SHALL be a string. Valid values MAY be but are
-not limited to the following:
-
--  **string** The ``value`` is to be interpreted as a string literal.
-
--  **fluid** The ``value`` is to be interpreted as a Flux Locally Unique ID. A
-   dependency of this ``scheme`` with a ``type`` of ``out`` SHALL be generated
-   automatically for every job by the job dependency system.
-
-Value
-~~~~~
-
-The value of the ``value`` key SHALL be a string, whose semantics are
-determined by the ``scheme``.
-
-Shorthand
----------
-
-For convenience at the command line, dependencies MAY be formatted as a
-`Uniform Resource Identifier (URI) <https://tools.ietf.org/html/rfc3986>`__ and
-then expanded into the dictionary format described above. It is left up to each
-implementation as to which URIs to support, the URIs' semantics, default values,
-and what to do when an unsupported URI is encountered. Some example URIs
-include:
-
--  ``string:foo``
--  ``string:foo?type=out``
--  ``fluid:hungry-hippos-white-elephant``
 
 Examples
---------
+~~~~~~~~
 
 Under the description above, the following are examples of fully compliant
 dependency declarations.
