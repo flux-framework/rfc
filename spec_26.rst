@@ -64,6 +64,27 @@ Plugins may be self contained, or may outsource dependency processing to a
 service outside of the job manager; for example, a separate broker module
 or an entity that is not part of Flux.
 
+Dependency Event Semantics
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Dependency events SHALL only be posted to the job eventlog by job manager
+plugins.
+
+Dependency events SHALL be treated as matching when their ``description``
+fields have the same value.
+
+A dependency SHALL be considered satisfied when matching ``dependency-add``
+and ``dependency-remove`` events have been posted.
+
+Some special semantics for these events are needed to allow plugins
+to reacquire their internal state when the job manager is restarted:
+
+Attempts to post duplicate ``dependency-add`` events for unsatisfied
+dependencies SHALL NOT raise a plugin error and SHALL NOT be posted.
+
+Attempts to post duplicate ``dependency-add`` events for satisfied
+dependencies SHALL raise a plugin error.
+
 
 Representation
 --------------
