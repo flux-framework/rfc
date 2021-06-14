@@ -178,6 +178,13 @@ The dependency SHALL be satisfied once the antecedent job enters INACTIVE
 state, with an unsuccessful result.  If the antecedent job concludes
 successfully, a fatal exception SHOULD be raised on the dependent job.
 
+begin-time
+~~~~~~~~~~
+
+``value`` SHALL be interpreted as a floating point timestamp in seconds
+since the UNIX epoch. The dependency SHALL be satisfied once the system
+time reaches the specified timestamp.
+
 
 OpenMP-style Dependencies
 -------------------------
