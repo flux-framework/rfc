@@ -226,7 +226,8 @@ additional message parts.
 Flux messages MAY include a stack of message identity parts comprising
 a source address route, positioned first for compatibility with ZeroMQ
 DEALER-ROUTER sockets. If message identity parts are present, a zero-size
-route delimiter frame MUST be present and positioned next.
+route delimiter frame MUST be present and positioned next.  A message
+identity part SHALL consist of a 16 byte UUID.
 
 Flux messages MAY include a topic string part, positioned after route
 delimiter, if any. When the topic string part is first, it is compatible
@@ -252,7 +253,7 @@ ABNF grammar [#f2]_
 
    ; Route frame stack, ZeroMQ DEALER-ROUTER format
    routing         = *identity delimiter
-   identity        = 1*OCTET       ; socket identity ZeroMQ frame
+   identity        = 16OCTET       ; socket identity ZeroMQ frame
    delimiter       = 0OCTET        ; empty delimiter ZeroMQ frame
 
    ; Topic string frame, ZeroMQ PUB-SUB format
