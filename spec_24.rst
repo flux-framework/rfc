@@ -83,7 +83,7 @@ version
 
 encoding
    (object) A dictionary mapping stream names (e.g. ``stdin``, ``stdout``, ``stderr``)
-   to encoding type (e.g. ``base64``, ``UTF-8``).
+   to default encoding type (e.g. ``base64``, ``UTF-8``).
 
 count
    (object) A dictionary mapping stream names (e.g. ``stdout``, ``stderr``)
@@ -145,6 +145,12 @@ data
 
 eof
    (boolean) End of stream indicator.
+
+The following keys are OPTIOINAL in the event context object:
+
+encoding
+   (string) The encoding of this particular data event when different from
+   the default encoding specified by the header event.
 
 The context object SHOULD contain either a ``data`` or ``eof`` key, or both.
 
