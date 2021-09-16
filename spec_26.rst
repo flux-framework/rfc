@@ -144,9 +144,10 @@ after
 ``value`` SHALL be interpreted as the antecedent jobid, in any valid
 FLUID encoding from RFC 19.
 
-The dependency SHALL be satisfied once the antecedent job enters RUN state.
-If the antecedent job reaches INACTIVE state without entering RUN state,
-a fatal exception SHOULD be raised on the dependent job.
+The dependency SHALL be satisfied once the antecedent job enters RUN state
+and posts a ``start`` event. If the antecedent job reaches INACTIVE state
+without entering RUN state and posting a ``start`` event, a fatal exception
+SHOULD be raised on the dependent job.
 
 
 afterany
