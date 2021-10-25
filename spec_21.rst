@@ -190,6 +190,22 @@ Example:
 
    {"timestamp":1552593348.073045,"name":"submit","context":{"urgency":16,"userid":5588,"flags":0}}
 
+Set-flags Event
+^^^^^^^^^^^^^^^
+
+One or more flags have been set on the job.
+
+The following key is REQUIRED in the event context object:
+
+flags
+  (array of string) array of flag names to set.
+
+Example:
+
+.. code:: json
+
+   {"timestamp":1552593348.073045,"name":"set-flags","context":{"flags":["debug"]}}
+
 
 Dependency-add Event
 ^^^^^^^^^^^^^^^^^^^^
