@@ -317,6 +317,53 @@ Example:
    {"timestamp":1552593348.088391,"name":"alloc","context":{"annotations":{"sched.resource_summary":"rank0/core[0-1]"}}}
 
 
+Hold-request Event
+^^^^^^^^^^^^^^^^^^
+
+A hold has been placed on one or more requests that will be made by the job
+manager. The job manager will not perform the named request which is the
+target of the hold until the hold has been released by a ``release-request``
+event. If multiple holds are made for a request, then the request SHALL not
+be issued until all holds are released.
+
+The following key is REQUIRED in the context object:
+
+names:
+  (array of string) array of request names to hold
+
+The current list of job manager requests which may be held include:
+
+start
+  The request made by the job manager to the execution system to start
+  the job shells.
+
+free
+  The request made by the job manager to the scheduler to free some or
+  all of the resources associated with a job.
+
+Example:
+
+.. code:: json
+
+   {"timestamp":1552593348.088391,"name":"hold-request","context":{"names":["start"]}}
+
+
+Release-request Event
+^^^^^^^^^^^^^^^^^^^^^
+A hold placed on a job manager request has been released.
+
+The following key is REQUIRED in the context object:
+
+names:
+  (array of string) array of request names to release
+
+Example:
+
+.. code:: json
+
+   {"timestamp":1552593349.048682,"name":"release-request","context":{"names":["start"]}}
+
+
 Free Event
 ^^^^^^^^^^
 
