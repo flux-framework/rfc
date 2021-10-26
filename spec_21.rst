@@ -317,6 +317,80 @@ Example:
    {"timestamp":1552593348.088391,"name":"alloc","context":{"annotations":{"sched.resource_summary":"rank0/core[0-1]"}}}
 
 
+Prolog-start Event
+^^^^^^^^^^^^^^^^^^
+
+A prolog action has started for the job. This event SHALL prevent the job
+manager from initiating a start request to the execution system until the
+prolog action is completed with a corresponding ``prolog-finish`` event.
+
+The following keys are REQUIRED in the event context object:
+
+description
+   (string) Name or description of the prolog action.
+
+.. code:: json
+
+   {"timestamp":1552593348.073045,"name":"prolog-start","context":{"description":"/usr/sbin/job-prolog.sh"}}
+
+
+Prolog-finish Event
+^^^^^^^^^^^^^^^^^^^
+
+A prolog action for the job has completed. The prolog description SHOULD
+match a previous ``prolog-start`` event.
+
+The following keys are REQUIRED in the event context object:
+
+description
+   (string) Name or description of the prolog action.
+
+status
+   (integer) Completion status of the prolog action. A status of zero SHALL
+   be considered success, with a non-zero status indicating failure.
+
+.. code:: json
+
+   {"timestamp":1552594348.0,"name":"prolog-finish","context":{"description":"/usr/sbin/job-prolog.sh", "status":0}}
+
+
+Epilog-start Event
+^^^^^^^^^^^^^^^^^^
+
+An epilog action has started for the job. This event SHALL prevent the job
+manager from initiating a free request to the scheduler until the
+epilog action is completed with a corresponding ``epilog-finish`` event.
+
+The following keys are REQUIRED in the event context object:
+
+description
+   (string) Name or description of the epilog action.
+
+.. code:: json
+
+   {"timestamp":1552593348.073045,"name":"epilog-start","context":{"description":"/usr/sbin/job-epilog.sh"}}
+
+
+Prolog-finish Event
+^^^^^^^^^^^^^^^^^^^
+
+A epilog action for the job has completed. The epilog description SHOULD
+match a previous ``epilog-start`` event.
+
+The following keys are REQUIRED in the event context object:
+
+description
+   (string) Name or description of the epilog action.
+
+status
+   (integer) Completion status of the epilog action. A status of zero SHALL
+   be considered success, with a non-zero status indicating failure.
+
+.. code:: json
+
+   {"timestamp":1552594348.0,"name":"epilog-finish","context":{"description":"/usr/sbin/job-epilog.sh", "status":0}}
+
+
 Free Event
 ^^^^^^^^^^
 
