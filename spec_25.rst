@@ -104,9 +104,23 @@ following:
    below.
 
 **count**
-   The ``count`` key SHALL indicate the desired number of
-   resources matching the current vertex. The ``count`` SHALL be a single integer
-   value representing a fixed count
+   The ``count`` key SHALL indicate the desired number or range of
+   resources matching the current vertex. The ``count`` SHALL have one
+   of two possible values: either a single integer value representing
+   a fixed count, or a dictionary which SHALL contain the following key:
+
+   **min**
+      The minimum required count or amount of this resource
+
+   A ``count``
+   which specifies the ``min`` key SHALL be considered a request for
+   *at least* that number of a resource, and the scheduler SHALL generate
+   the *R* that contains the maximum number of the resource that is
+   available. By contrast,
+   if a fixed count is given to the ``count`` key, the scheduler SHALL
+   match any resource that contains *at least* ``count`` of the resource,
+   but its *R* SHALL contain exactly ``count`` of the resource
+   (potentially leaving excess resources unutilized).
 
 
 V1-Specific Resource Graph Restrictions
