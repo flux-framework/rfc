@@ -391,6 +391,37 @@ status
    {"timestamp":1552594348.0,"name":"epilog-finish","context":{"description":"/usr/sbin/job-epilog.sh", "status":0}}
 
 
+Flux-Reattach Event
+^^^^^^^^^^^^^^^^^^^
+
+The job manager has restarted and will attempt to reattach to a running job.
+
+The following keys are OPTIONAL in the event context object:
+
+id
+   (long long) job ID to reattach to
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1636747761.5495925,"name":"flux-reattach","context":{"id":341835776000}}
+
+
+Reattached Event
+^^^^^^^^^^^^^^^^
+
+Job shells have reattached to the job.
+
+The context SHALL be empty.
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1636747761.827836,"name":"reattached"}
+
+
 Free Event
 ^^^^^^^^^^
 
