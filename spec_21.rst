@@ -520,6 +520,14 @@ start
 free
    A problem occurred while releasing resources to the scheduler.
 
+Memo Event
+^^^^^^^^^^
+
+A brief data record has been associated with the job.
+
+The context object SHALL be considered the data to associate with
+the job.  Any data attached to the job via a previous "memo"
+event SHALL be updated, i.e. existing keys SHALL be replaced.
 
 Debug Event
 ^^^^^^^^^^^
