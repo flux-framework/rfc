@@ -110,6 +110,14 @@ RUN
    job shells have been started, and a ``finish`` event once all the job shells
    have exited. The state transitions to CLEANUP.
 
+OFFLINE
+   The job was started, but the job manager has lost track of it due
+   to an error (for example, a system crash).  The job manager is
+   attempting to reconnect itself to the running job.  A ``disconnect``
+   event is logged to indicate transition into this state.
+   ``reconnect`` will be logged when the tracking has been
+   reestablished and we can re-enter the RUN state.
+
 CLEANUP
    The job has completed or an exception has occurred. Under normal termination,
    the job manager waits for notification from the exec service that job
@@ -133,10 +141,10 @@ PENDING
   The job is in DEPEND, PRIORITY, or SCHED states.
 
 RUNNING
-  The job is in RUN or CLEANUP states.
+  The job is in RUN, OFFLINE, or CLEANUP states.
 
 ACTIVE
-  The job is in DEPEND, PRIORITY, SCHED, RUN, or CLEANUP states.
+  The job is in DEPEND, PRIORITY, SCHED, RUN, OFFLINE, or CLEANUP states.
 
 
 Exceptions
@@ -389,6 +397,37 @@ status
 .. code:: json
 
    {"timestamp":1552594348.0,"name":"epilog-finish","context":{"description":"/usr/sbin/job-epilog.sh", "status":0}}
+
+
+Disconnect Event
+^^^^^^^^^^^^^^^^
+
+The job manager has lost tracking to a running job.
+
+The following keys are OPTIONAL in the event context object:
+
+id
+   (long long) job ID
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1636747761.5495925,"name":"disconnect","context":{"id":341835776000}}
+
+
+Reconnect Event
+^^^^^^^^^^^^^^^
+
+The job manager has reconnected to the job shells.
+
+The context SHALL be empty.
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1636747761.827836,"name":"reconnect"}
 
 
 Free Event
