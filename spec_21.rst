@@ -520,6 +520,20 @@ start
 free
    A problem occurred while releasing resources to the scheduler.
 
+Memo Event
+^^^^^^^^^^
+
+A brief data record has been associated with the job.
+
+The context object SHALL contain a set of key-value pairs to associate
+with the job. Existing identical keys from a previous memo event SHALL
+be replaced. A value of JSON ``null`` SHALL remove the associated key.
+
+Example:
+
+.. code:: json
+
+  {"timestamp":1637723184.3725791,"name":"memo","context":{"key":"value"})
 
 Debug Event
 ^^^^^^^^^^^
