@@ -120,7 +120,7 @@ design
 -  The IMP SHALL be an independent Flux Framework project, with the ability
    to be tested standalone
 
--  The IMP SHALL be implemented as an executable, ``flux-security-imp``,
+-  The IMP SHALL be implemented as an executable, ``flux-imp``,
    which MAY be installed with setuid permissions in cases where multi-user
    Flux is required.
 
@@ -129,10 +129,10 @@ design
 
 Implementation of the IMP as a separately installed, setuid executable
 allows sysadmin control over where and how the IMP is enabled. If the
-``flux-security-imp`` executable is not installed, or installed without
+``flux-imp`` executable is not installed, or installed without
 setuid bits enabled, then multi-user Flux is simply not available, though
 single user instances of Flux will still operate. The file permissions,
-access controls, or SELinux policy of ``flux-security-imp`` may also be
+access controls, or SELinux policy of ``flux-imp`` may also be
 manipulated to restrict access to a user or group of users. For instance,
 a site may configure permissions such that only a ``flux`` user has execute
 permissions, thus allowing a multi-user system instance running as ``flux``,
@@ -347,7 +347,7 @@ data.
 IMP post-verification execution
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After verification of input is complete, the ``flux-security-imp``
+After verification of input is complete, the ``flux-imp`` executable
 invokes required job setup code as the superuser. This setup code SHALL
 be implemented as system-installed and verified plugins, and MAY include
 such things as
@@ -390,7 +390,7 @@ ancestors thereof that were started by the owner’s instance.
 IMP configuration
 ~~~~~~~~~~~~~~~~~
 
-On execution, the ``flux-security-imp`` SHALL read a site configuration
+On execution, ``flux-imp`` SHALL read a site configuration
 file which MAY contain site-specific information such as paths to trusted
 executables, plugin locations, certificate authority information etc.
 The IMP SHALL check for correct permissions on all configuration
@@ -413,7 +413,7 @@ is still a work in progress.
    without authority. The *intended recipient* field of the user request
    protects against users other than the instance owner using the
    guest request, and a fixed time-to-live prevents the request from
-   being used indefinitely. Finally, the ``flux-security-imp`` logs all
+   being used indefinitely. Finally, ``flux-imp`` logs all
    invocations, thereby allowing replays to be detected and audited.
 
 .. [#f1] `Preventing Privilege Escalation <http://www.citi.umich.edu/u/provos/papers/privsep.pdf>`__, Niels Provos, Markus Friedl, Peter Honeyman.
