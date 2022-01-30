@@ -1,5 +1,5 @@
-pull_request_rules:
-  - name: rebase and merge when passing all checks
+queue_rules:
+  - name: default
     conditions:
       - base=master
       - status-success="validate commits"
@@ -10,8 +10,19 @@ pull_request_rules:
       - "#approved-reviews-by>0"
       - "#changes-requested-reviews-by=0"
       - -title~="^\[*(WIP|wip)"
+      
+pull_request_rules:
+  - name: rebase and merge when passing all checks
+    conditions:
+      - base=master
+      - label="merge-when-passing"
+      - label!="work-in-progress"
+      - "approved-reviews-by=@flux-framework/core"
+      - "#approved-reviews-by>0"
+      - "#changes-requested-reviews-by=0"
+      - -title~="^\[*(WIP|wip)"
     actions:
-      merge:
+      queue:
+        name: default
         method: merge
-        strict: smart
-        strict_method: rebase
+        update_method: rebase
