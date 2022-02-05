@@ -371,7 +371,7 @@ description
    {"timestamp":1552593348.073045,"name":"epilog-start","context":{"description":"/usr/sbin/job-epilog.sh"}}
 
 
-Prolog-finish Event
+Epilog-finish Event
 ^^^^^^^^^^^^^^^^^^^
 
 A epilog action for the job has completed. The epilog description SHOULD
