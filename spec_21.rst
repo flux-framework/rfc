@@ -533,7 +533,7 @@ Example:
 
 .. code:: json
 
-  {"timestamp":1637723184.3725791,"name":"memo","context":{"key":"value"})
+  {"timestamp":1637723184.3725791,"name":"memo","context":{"key":"value"}}
 
 Debug Event
 ^^^^^^^^^^^
