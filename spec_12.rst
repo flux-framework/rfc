@@ -22,7 +22,7 @@ Language
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__.
+be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
 
 
 Related Standards
@@ -235,17 +235,17 @@ authenticity, and integrity such as "CURVE" or "GSSAPI".
 
 ZeroMQ security is documented in:
 
--  `ZeroMQ RFC 23 ZMTP ZeroMQ Message Transport Protocol <http://rfc.zeromq.org/spec:23>`__
+-  `ZeroMQ RFC 23 ZMTP ZeroMQ Message Transport Protocol <https://rfc.zeromq.org/spec:23>`__
 
--  `ZeroMQ RFC 24 ZMTP PLAIN <http://rfc.zeromq.org/spec:24>`__
+-  `ZeroMQ RFC 24 ZMTP PLAIN <https://rfc.zeromq.org/spec:24>`__
 
--  `ZeroMQ RFC 25 ZMTP CURVE <http://rfc.zeromq.org/spec:25>`__
+-  `ZeroMQ RFC 25 ZMTP CURVE <https://rfc.zeromq.org/spec:25>`__
 
--  `ZeroMQ RFC 26 CurveZMQ <http://rfc.zeromq.org/spec:26>`__
+-  `ZeroMQ RFC 26 CurveZMQ <https://rfc.zeromq.org/spec:26>`__
 
--  `ZeroMQ RFC 27 ZAP ZeroMQ Authentication Protocol <http://rfc.zeromq.org/spec:27>`__
+-  `ZeroMQ RFC 27 ZAP ZeroMQ Authentication Protocol <https://rfc.zeromq.org/spec:27>`__
 
--  `ZeroMQ RFC 38 ZMTP GSSAPI <http://rfc.zeromq.org/spec:38>`__
+-  `ZeroMQ RFC 38 ZMTP GSSAPI <https://rfc.zeromq.org/spec:38>`__
 
 The default ZeroMQ security plugin SHALL be "CURVE", which requires
 minimal security infrastructure to operate.

@@ -20,7 +20,7 @@ Language
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__.
+be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
 
 
 Related Standards
@@ -371,7 +371,7 @@ description
    {"timestamp":1552593348.073045,"name":"epilog-start","context":{"description":"/usr/sbin/job-epilog.sh"}}
 
 
-Prolog-finish Event
+Epilog-finish Event
 ^^^^^^^^^^^^^^^^^^^
 
 A epilog action for the job has completed. The epilog description SHOULD
@@ -533,7 +533,7 @@ Example:
 
 .. code:: json
 
-  {"timestamp":1637723184.3725791,"name":"memo","context":{"key":"value"})
+  {"timestamp":1637723184.3725791,"name":"memo","context":{"key":"value"}}
 
 Debug Event
 ^^^^^^^^^^^

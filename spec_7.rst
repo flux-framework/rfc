@@ -21,7 +21,7 @@ Language
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__.
+be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
 
 
 Related Standards
@@ -205,4 +205,4 @@ In emacs, add this to your custom-set-variables defs to highlight whitespace err
 Python coding style
 -------------------
 
--  Python code SHALL be formatted with the `Black code style <https://black.readthedocs.io/en/stable/the_black_code_style.html>`__.
+-  Python code SHALL be formatted with the `Black code style <https://black.readthedocs.io/en/stable/the_black_code_style/index.html>`__.

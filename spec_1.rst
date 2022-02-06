@@ -6,7 +6,7 @@
 ==============================================
 
 The Collective Code Construction Contract (C4.1) is an evolution of the
-github.com `Fork + Pull Model <http://help.github.com/send-pull-requests/>`__,
+github.com `Fork + Pull Model <https://help.github.com/en/pull-requests/>`__,
 aimed at providing an optimal collaboration model for free software
 projects.
 
@@ -24,7 +24,7 @@ Language
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__.
+be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
 
 Related Standards
 -----------------
@@ -181,7 +181,7 @@ Release Process
 -  Releases SHALL be tagged with git annotated tags.
 
 -  Release names SHALL employ version numbers that follow the
-   Semantic Versioning 2.0.0 standard, (C.f. http://semver.org).
+   Semantic Versioning 2.0.0 standard, (C.f. https://semver.org).
 
 -  Release materials for projects that use GNU Autotools SHOULD include
    "dist tarballs"; that is, a source distribution with pre-generated
@@ -239,7 +239,7 @@ Project Administration
 Further Reading
 ---------------
 
--  `ZeroMQ - The Guide, Chapter 6: The ZeroMQ Community <http://zguide.zeromq.org/page:all#Chapter-The-MQ-Community>`__
+-  `ZeroMQ - The Guide, Chapter 6: The ZeroMQ Community <https://zguide.zeromq.org/docs/chapter6/#the-community>`__
 
 -  `Argyris' Models 1 and 2 <http://en.wikipedia.org/wiki/Chris_Argyris>`__ - the goals of C4.1 are consistent with Argyris' Model 2.
 
@@ -251,6 +251,4 @@ Implementations
 
 -  The `ZeroMQ community <http://zeromq.org>`__ uses the C4.1 process for many projects.
 
--  `OSSEC <http://www.ossec.net/>`__ `uses the C4.1 process <http://ossec-docs.readthedocs.org/en/latest/oRFC/orfc-1.html>`__.
-
--  The `ZeroVM <http://zerovm.org>`__ community uses `a C4.1 fork for their work <https://github.com/zerovm/zvm-community/blob/master/process/c4_1.md>`__.
+-  `OSSEC <http://www.ossec.net/>`__ `uses the C4.1 process <https://ossec-docs.readthedocs.io/en/latest/docs/development/oRFC/orfc-1.html>`__.

@@ -25,7 +25,7 @@ Language
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__.
+be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
 
 
 Related Standards
@@ -285,7 +285,7 @@ Notes:
    'PMI_Get_name_length_max()'.
 
 -  'PMI_Get_id_length_max()' was dropped from pmi.h [#f3]_ on 2011-01-28 in
-   `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
+   `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
 .. code:: c
 
@@ -403,7 +403,7 @@ Notes:
    'PMI_Get_clique_size()'.
 
 -  This function was dropped from pmi.h [#f3]_ on 2011-01-28 in
-   `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
+   `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
 
 -  The implementation should fetch the "PMI_process_mapping" value from the KVS
    and calculate the clique ranks (see below).
@@ -424,7 +424,7 @@ Errors:
 Notes:
 
 -  This function was dropped from pmi.h [#f3]_ on 2011-01-28 in
-   `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
+   `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
 
 -  The implementation should fetch the "PMI_process_mapping" value from the KVS
    and calculate the clique ranks (see below).
@@ -542,7 +542,7 @@ Notes:
    an alias for 'PMI_KVS_Get_my_name()'.
 
 -  'PMI_Get_kvs_domain_id()' and 'PMI_Get_id()' were dropped from pmi.h [#f3]_
-   on 2011-01-28 in `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
+   on 2011-01-28 in `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
 .. code:: c
 
@@ -579,7 +579,7 @@ Notes:
 -  These functions are OPTIONAL.
 
 -  Dropped from pmi.h [#f3]_ on 2011-01-28 in
-   `commit f17423ef <http://git.mpich.org/mpich.git/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__,
+   `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__,
 
 
 Dynamic Process Management
@@ -668,7 +668,7 @@ Notes:
 -  These functions are OPTIONAL.
 
 -  These functions were dropped from pmi.h [#f3]_ on 2009-05-01 in
-   `commit 52c462d <http://git.mpich.org/mpich.git/commit/52c462d2be6a8d0720788d36e1e096e991dcff38>`__
+   `commit 52c462d <https://github.com/pmodels/mpich/commit/52c462d2be6a8d0720788d36e1e096e991dcff38>`__
 
 
 Wire Protocol
@@ -913,10 +913,10 @@ References
 
 .. [#f2] `MPI-2: Extensions to the Message-Passing Interface <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/mpi2-report.html>`__
 
-.. [#f3] `MPICH canonical pmi.h header <http://git.mpich.org/mpich.git/blob/HEAD:/src/include/pmi.h>`__
+.. [#f3] `MPICH canonical pmi.h header <https://github.com/pmodels/mpich/blob/94b1cd6f060cafbf68d6d83ea551a8bcc8fcecd4/src/pmi/include/pmi.h>`__
 
-.. [#f4] `MPICH simple PMI implementation <http://git.mpich.org/mpich.git/tree/HEAD:/src/pmi/simple>`__
+.. [#f4] `MPICH simple PMI implementation <https://github.com/pmodels/mpich/tree/94b1cd6f060cafbf68d6d83ea551a8bcc8fcecd4/src/pmi/simple>`__
 
-.. [#f5] `SLURM PMI-1 implementation <https://github.com/SchedMD/slurm/blob/master/src/api/pmi.c>`__
+.. [#f5] `SLURM PMI-1 implementation <https://github.com/SchedMD/slurm/blob/ba603812b947f14c1aba7adb220258feb7960001/src/api/slurm_pmi.c>`__
 
-.. [#f6] `PMI: A Scalable Parallel Process-Management Interface for Extreme-Scale Systems <http://www.mcs.anl.gov/papers/P1760.pdf>`__, P. Balaji et al, EuroMPI Proceedings, 2010.
+.. [#f6] `PMI: A Scalable Parallel Process-Management Interface for Extreme-Scale Systems <https://www.mcs.anl.gov/papers/P1760.pdf>`__, P. Balaji et al, EuroMPI Proceedings, 2010.
