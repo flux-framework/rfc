@@ -9,7 +9,7 @@ This specification describes the format of Flux message broker
 messages, Version 1.
 
 The Flux message protocol is encapsulated in the
-`ZeroMQ Message Transfer Protocol (ZMTP) <http://rfc.zeromq.org/spec:23/ZMTP>`__.
+`ZeroMQ Message Transfer Protocol (ZMTP) <https://rfc.zeromq.org/spec:23/ZMTP>`__.
 
 -  Name: github.com/flux-framework/rfc/spec_3.rst
 
@@ -23,7 +23,7 @@ Language
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <http://tools.ietf.org/html/rfc2119>`__.
+be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
 
 
 Goals
@@ -309,6 +309,6 @@ ABNF grammar [#f2]_
    ; unused 4-byte field
    unused          = %x00.00.00.00
 
-.. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <http://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
+.. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <https://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
 
 .. [#f2] For convenience: the ``C:request``, ``S:response``, ``S:event``, and ``C:keepalive`` ABNF non-terminals refer to ZeroMQ messages, sent by client or server, and built from ordered ZeroMQ message parts (frames). Other non-terminals are built from concatenated ABNF terminals per usual. Thus it is meaningful for ``delimiter``, a message frame, to have zero length, since a zero-length message frame is valid ZMTP.
