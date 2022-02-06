@@ -4,6 +4,7 @@ queue_rules:
       - base=master
       - status-success="validate commits"
       - status-success="make check"
+      - status-success="make linkcheck"
       - label="merge-when-passing"
       - label!="work-in-progress"
       - "approved-reviews-by=@flux-framework/core"
