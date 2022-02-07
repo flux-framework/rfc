@@ -30,7 +30,7 @@ Goals
 -----
 
 The Flux message protocol v1 provides a way for Flux utilities and services to
-communicate with one another within the context of a job. It has
+communicate with one another within the context of a flux instance. It has
 the following specific goals:
 
 -  Endpoint-count scalability (e.g. to 100K nodes) through multi-hop
@@ -58,10 +58,10 @@ Background
 ``flux-broker`` is a message broker daemon for the Flux resource manager
 framework. A Flux *instance* is a set of interconnected ``flux-broker`` tasks
 that together provide a shared communications substrate for distributed
-resource manager services within a job. Services and utilities communicate
-by passing messages through the session brokers. There are four
-types of messages: events, requests, responses, and keepalives, which
-share a common structure described herein.
+resource manager services. Services and utilities communicate by passing
+messages through the session brokers. There are four types of messages:
+events, requests, responses, and keepalives, which share a common structure
+described herein.
 
 Event messages are published such that they are available to subscribers
 throughout the instance. Events are published with a *topic string*
