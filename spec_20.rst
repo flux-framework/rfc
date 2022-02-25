@@ -128,8 +128,9 @@ Execution
 ~~~~~~~~~
 
 The value of the ``execution`` key SHALL contain at least the keys
-``R_lite``, and ``nodelist``, with optional keys ``starttime`` and
-``expiration``. Other keys are reserved for future extensions.
+``R_lite``, and ``nodelist``, with optional keys ``properties``,
+``starttime`` and ``expiration``. Other keys are reserved for future
+extensions.
 
 ``R_lite`` is a strict list of dictionaries each of which SHALL contain
 at least the following two keys:
@@ -161,6 +162,24 @@ of ``R_lite`` ``rank`` entries to hostname. Each entry in ``nodelist`` MAY
 contain a string in RFC 29 *Hostlist Format*, e.g. ``host[0-16]``.
 
 The ``execution`` key MAY also contain any of the following optional keys:
+
+**properties**
+   The optional properties key SHALL be a dictionary where each key maps a
+   single property name to a RFC 22 idset string. The idset string SHALL
+   represent a set of execution target ranks. A given execution target
+   rank MAY appear in multiple property mappings. Property names SHALL
+   be valid UTF-8, and MUST NOT contain the following illegal characters:
+
+   ::
+
+      ! & ' " ^ ` | ( )
+
+   Additionally, the ``@`` character is reserved for scheduler specific
+   property use. Any suffix that appears after the ``@`` character in a
+   property name SHALL be a scheduler-specific string. For example,
+   ``amd-mi50@gpu``, ``amd-mi50`` SHALL be the property string, but a
+   scheduler MAY use the ``gpu`` suffix to perform scheduling optimization
+   for gpus of the corresponding ranks.
 
 **starttime**
    The value of the ``starttime`` key, if present, SHALL
