@@ -41,6 +41,7 @@ Table of Contents
 - [28/Flux Resource Acquisition Protocol Version 1](spec_28.rst)
 - [29/Hostlist Format](spec_29.rst)
 - [30/Job Urgency](spec_30.rst)
+- [31/Job Specification Version 2](spec_31.rst)
 
 Build Instructions
 ------------------
