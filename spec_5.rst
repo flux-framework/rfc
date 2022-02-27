@@ -64,9 +64,9 @@ message handlers for its methods, then run the flux reactor. It should
 use event driven (reactive) programming techniques to remain responsive
 while juggling work from multiple clients.
 
-Keepalive messages are sent to the broker via pre-registered reactor
+Status messages are sent to the broker via pre-registered reactor
 watchers to indicate when the module is initializing, running, finalizing,
-or exited. At initialization, a module MAY also manually send a keepalive
+or exited. At initialization, a module MAY also manually send a status
 message to indicate to the broker when initialization is complete. This
 provides synchronization to the broker module loader as well as useful
 runtime debug information that can be reported by ``flux module list``.
@@ -91,35 +91,59 @@ A broker module SHALL export the following global symbols:
    type of error on failure.
 
 
-Keepalive Values
-~~~~~~~~~~~~~~~~
+Status Messages
+~~~~~~~~~~~~~~~
 
-A broker module SHALL send RFC 3 keepalive messages containing status
-integers to the broker over its broker handle. Status integers are
-enumerated as follows:
+A broker module SHALL be considered to be in one of the following states,
+represented by the integer values shown in parenthesis:
 
 -  FLUX_MODSTATE_INIT (0) - initializing
-
 -  FLUX_MODSTATE_RUNNING (1) - running
-
 -  FLUX_MODSTATE_FINALIZING (2) - finalizing
-
 -  FLUX_MODSTATE_EXITED (3) - ``mod_main()`` exited
 
-Modules SHALL send a keepalive message of ``FLUX_MODSTATE_RUNNING``
-after initialization to notify the broker that the module has started
-successfully. In order to ensure this happens for all modules, A keepalive
-message SHALL be sent via a pre-registered reactor watcher upon a module's
-first entry to the reactor if the module has not otherwise entered the
-RUNNING state. In addition, keepalive messages MAY be sent to the broker
-at regular intervals. The keepalive ``errnum`` field SHALL be zero except
-when ``mod_main()`` returns a value of -1 indicating failure and state
-transitions to FLUX_MODSTATE_EXITED. In this case ``errnum`` SHALL be
-set to the value of POSIX ``errno`` set by ``mod_main()`` before returning.
+Upon loading the module, the broker SHALL initialize the broker state
+to ``FLUX_MODSTATE_INIT``.
 
-The broker MAY track the number of session heartbeats since a
-module last sent a message and report this as "idle time"
-for the module.
+After initialization is complete, a module SHALL send an RPC to the
+``broker.module-status`` service with the FLUX_RPC_NORESPONSE flag to
+notify the broker that the module has started successfully.  In order to
+ensure this happens for all modules, the RPC SHALL be sent via a
+pre-registered reactor watcher upon a module's first entry to the reactor
+if the module has not already sent the message.
+
+Example payload:
+
+.. code:: json
+
+   {
+       "status":1
+   }
+
+After exiting the reactor and before exiting the module thread, the module
+SHALL send an RPC to ``broker.module-status`` indicating that it intends to
+exit.  The module SHALL wait for a response to this message before exiting
+``mod_main()``.
+
+Example payload:
+
+.. code:: json
+
+   {
+       "status":2
+   }
+
+Finally once ``mod_main()`` has exited, the module thread SHALL send an RPC
+to ```broker.module-status`` with the FLUX_RPC_NORESPONSE flag including
+the error status of the module:  zero if ``mod_main()`` exited with a return
+code greater than or equal to zero, otherwise the value of ``errno``.
+
+.. code:: json
+
+   {
+       "status":2,
+       "errnum":0
+   }
 
 
 Load Sequence
@@ -137,10 +161,9 @@ Unload Sequence
 
 The broker module loader SHALL send a ``<service>.shutdown`` request to the
 module when the module loader receives a ``broker.rmmod`` request for the
-module. In response, the broker module SHALL exit ``mod_main()``, send a
-keepalive transition to FLUX_MODSTATE_EXITED state, and exit the
-module’s thread or process. This final state transition indicates to
-the broker that it MAY clean up the module thread.
+module.  In response, the broker module SHALL exit ``mod_main()``, sending
+state transition messages as described above, and exit the module’s thread
+or process. The final state transition indicates to the broker that it MAY clean up the module thread.
 
 
 Built-in Request Handlers

@@ -150,7 +150,7 @@ Examples:
        FLUX_MSGTYPE_REQUEST    = 0x01,
        FLUX_MSGTYPE_RESPONSE   = 0x02,
        FLUX_MSGTYPE_EVENT      = 0x04,
-       FLUX_MSGTYPE_KEEPALIVE  = 0x08,
+       FLUX_MSGTYPE_CONTROL    = 0x08,
        FLUX_MSGTYPE_ANY        = 0x0f,
        FLUX_MSGTYPE_MASK       = 0x0f,
    };

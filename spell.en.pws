@@ -79,7 +79,6 @@ dlopen
 dlsym
 insmod
 json
-keepalive
 lsmod
 modstate
 POSIX
@@ -105,7 +104,6 @@ URI
 bitmask
 codec
 crypto
-keepalives
 MSGFLAG
 resize
 scalability

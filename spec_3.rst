@@ -30,7 +30,7 @@ Goals
 -----
 
 The Flux message protocol v1 provides a way for Flux utilities and services to
-communicate with one another within the context of a job. It has
+communicate with one another within the context of a flux instance. It has
 the following specific goals:
 
 -  Endpoint-count scalability (e.g. to 100K nodes) through multi-hop
@@ -58,10 +58,10 @@ Background
 ``flux-broker`` is a message broker daemon for the Flux resource manager
 framework. A Flux *instance* is a set of interconnected ``flux-broker`` tasks
 that together provide a shared communications substrate for distributed
-resource manager services within a job. Services and utilities communicate
-by passing messages through the session brokers. There are four
-types of messages: events, requests, responses, and keepalives, which
-share a common structure described herein.
+resource manager services. Services and utilities communicate by passing
+messages through the session brokers. There are four types of messages:
+events, requests, responses, and control messages, which share a common
+structure described herein.
 
 Event messages are published such that they are available to subscribers
 throughout the instance. Events are published with a *topic string*
@@ -77,8 +77,9 @@ Responses are optional replies to requests. They follow the ZeroMQ
 ROUTER-DEALER message flow, which unwinds the source address route
 accumulated by the request, and uses them to select among peers at each hop.
 
-Keepalives are control messages used by one peer to indicate to another
-peer that it is still alive when it is not otherwise communicating.
+Control messages are used for connection management and status communication
+between brokers.  Unlike the other message types, they are only used between
+directly connected peers, never routed.
 
 
 Implementation
@@ -242,13 +243,13 @@ ABNF grammar [#f2]_
 
    message       = C:request *S:response
                    / S:event
-                   / C:keepalive
+                   / C:control
 
    ; Multi-part ZeroMQ messages
    C:request       = [routing] topic [payload] PROTO
    S:response      = [routing] topic [payload] PROTO
    S:event         = [routing] topic [payload] PROTO
-   C:keepalive     = PROTO
+   C:control       = PROTO
 
    ; Route frame stack, ZeroMQ DEALER-ROUTER format
    routing         = *identity delimiter
@@ -262,12 +263,12 @@ ABNF grammar [#f2]_
    payload         = *OCTET        ; payload ZeroMQ frame
 
    ; Protocol frame
-   PROTO           = request / response / event / keepalive
+   PROTO           = request / response / event / control
 
    request         = magic version %x01 flags userid rolemask nodeid   matchtag
    response        = magic version %x02 flags userid rolemask errnum   matchtag
    event           = magic version %x04 flags userid rolemask sequence unused
-   keepalive       = magic version %x08 flags userid rolemask errnum   status
+   control         = magic version %x08 flags userid rolemask type     status
 
    ; Constants
    magic           = %x8E          ; magic cookie
@@ -306,9 +307,15 @@ ABNF grammar [#f2]_
    ; Monotonic sequence number in network byte order
    sequence        = 4OCTET
 
+   ; Control message type
+   type            = 4OCTET
+
+   ; Control message status
+   status          = 4OCTET
+
    ; unused 4-byte field
    unused          = %x00.00.00.00
 
 .. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <https://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
 
-.. [#f2] For convenience: the ``C:request``, ``S:response``, ``S:event``, and ``C:keepalive`` ABNF non-terminals refer to ZeroMQ messages, sent by client or server, and built from ordered ZeroMQ message parts (frames). Other non-terminals are built from concatenated ABNF terminals per usual. Thus it is meaningful for ``delimiter``, a message frame, to have zero length, since a zero-length message frame is valid ZMTP.
+.. [#f2] For convenience: the ``C:request``, ``S:response``, ``S:event``, and ``C:control`` ABNF non-terminals refer to ZeroMQ messages, sent by client or server, and built from ordered ZeroMQ message parts (frames). Other non-terminals are built from concatenated ABNF terminals per usual. Thus it is meaningful for ``delimiter``, a message frame, to have zero length, since a zero-length message frame is valid ZMTP.
