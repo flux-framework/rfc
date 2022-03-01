@@ -249,3 +249,4 @@ This specification describes the Flux job urgency parameter.
    spec_28
    spec_29
    spec_30
+   spec_31
