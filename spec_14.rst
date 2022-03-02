@@ -316,11 +316,16 @@ which, if present, must have values. Values MAY have any valid YAML type.
 Some common system attributes are:
 
 **duration**
-   The value of the ``duration`` attribute is a floating-point number greater than
-   or equal to zero representing time span in seconds. A ``duration`` of 0 SHALL be
-   interpreted as "unlimited" or "not set" by the system. The scheduler will make
-   an effort to allocate the requested resources for the number of seconds
-   specified in ``duration``.
+   The value of the ``duration`` attribute is a floating-point number
+   greater than or equal to zero representing time span in seconds.
+   If ``duration`` is greater than zero, then the scheduler SHALL
+   allocate the requested resources for the number of seconds specified
+   in ``duration``. A ``duration`` value of ``0.`` SHALL be interpreted
+   as unlimited or unset, and the scheduler SHALL use a ``duration``
+   that is the minimum of any configured ``duration`` default and the
+   time span to the currently defined instance expiration. If no default
+   ``duration`` is configured, and the current instance has no expiration,
+   then resources shall be allocated without expiration.
 
 **environment**
    The value of the ``environment`` attribute is a dictionary containing the names
