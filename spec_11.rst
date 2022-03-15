@@ -35,11 +35,7 @@ Related Standards
 Goals
 -----
 
--  Facilitate services implementing private KVS namespaces.
-
--  Users may directly walk a KVS namespace, starting with a dirref.
-
--  Tree objects can be exchanged between Flux instances.
+-  Define KVS metadata compatible with the RFC 10 content storage service.
 
 -  Tree objects can be parsed years after they were written (provenance).
 
@@ -115,6 +111,12 @@ A *val* represents opaque data directly, base64-encoded.
      "data":"NDIyCg==",
    }
 
+Short values that are not large enough to warrant a *valref* and independent
+blobs SHOULD be represented as a *val* when written to the content store.
+
+The *val* object MAY be used as part of the protocol for sending key-value
+tuples of any size to the KVS in the JSON payload of an RPC.
+
 
 Dirref
 ~~~~~~
@@ -128,6 +130,9 @@ stored in the content store.
      "type":"dirref",
      "data":["sha1-aaa...","sha1-bbb...",...],
    }
+
+Although the *dirref* definition supports an array of multiple blobrefs,
+at this time the array size is limited to one.
 
 
 Dir
@@ -177,6 +182,8 @@ Hash buckets MAY be sparsely populated. Each hash bucket contains a single
        ]
      }
    }
+
+At this time, *hdir* objects have not been implemented.
 
 
 Symlink
