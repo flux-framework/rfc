@@ -345,6 +345,10 @@ Some common system attributes are:
    The value of the ``dependencies`` attribute SHALL be a
    list of dictionaries following the format specified in RFC 26.
 
+**constraints**
+   The value of the ``constraints`` attribute SHALL be a dictionary
+   expressing job constraints following the specification in RFC 31.
+
 **job**
    The ``job`` attribute is an optional dictionary containing job
    metadata. This metadata may be used for searching and filtering of
