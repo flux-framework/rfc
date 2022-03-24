@@ -175,11 +175,15 @@ The ``execution`` key MAY also contain any of the following optional keys:
       ! & ' " ^ ` | ( )
 
    Additionally, the ``@`` character is reserved for scheduler specific
-   property use. Any suffix that appears after the ``@`` character in a
-   property name SHALL be a scheduler-specific string. For example,
-   ``amd-mi50@gpu``, ``amd-mi50`` SHALL be the property string, but a
-   scheduler MAY use the ``gpu`` suffix to perform scheduling optimization
-   for gpus of the corresponding ranks.
+   property use. In this case, the literal property SHALL still apply
+   to the defined execution target ranks, but the scheduler MAY use the
+   suffix after ``@`` to apply the property to children resources of the
+   execution target or for another scheduler specific purpose. For example,
+   the property ``amd-mi50@gpu`` SHALL apply to the defined execution
+   target ranks, but a scheduler MAY use the ``gpu`` suffix to perform
+   scheduling optimization for gpus of the corresponding ranks. This MAY
+   result in both ``amd-mi50@gpu`` and ``amd-mi50`` being valid properties
+   for resources in the instance.
 
 **starttime**
    The value of the ``starttime`` key, if present, SHALL
