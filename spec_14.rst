@@ -37,6 +37,8 @@ Related Standards
 
 -  :doc:`26/Job Dependency Specification <spec_26>`
 
+-  :doc:`31/Job Constraints Specification <spec_31>`
+
 
 Goals
 -----
@@ -653,6 +655,17 @@ Specific Example
 Jobspec YAML
    .. literalinclude:: data/spec_14/use_case_2.8.yaml
       :language: yaml
+
+Use Case 2.9
+   Specify constraints based on properties
+
+Specific Example
+   Require that allocated resources have the ``amd-mi50`` property
+
+Jobspec YAML
+   .. literalinclude:: data/spec_14/use_case_2.9.yaml
+      :language: yaml
+
 
 .. [#f1] `YAML Ain’t Markup Language (YAML) Version 1.1 <http://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
 
