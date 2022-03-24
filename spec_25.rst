@@ -38,6 +38,9 @@ Related Standards
 
 -  :doc:`20/Resource Set Specification Version 1 <spec_20>`
 
+-  :doc:`26/Job Dependency Specification <spec_26>`
+
+-  :doc:`31/Job Constraints Specification <spec_31>`
 
 Goals
 -----
@@ -171,6 +174,10 @@ definitions can be found in RFC14. Values MAY have any valid YAML type.
    -  environment
 
    -  cwd
+
+   -  dependencies
+
+   -  constraints
 
 Most system attributes are optional, but the ``duration`` attribute is required in
 jobspec V1.
