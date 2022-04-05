@@ -93,7 +93,11 @@ A resource vertex SHALL contain only the following keys:
 
 -  label
 
-The definitions of ``unit``, ``with``, and ``label`` SHALL match
+a ``node`` type resource vertex MAY also contain the following optional keys:
+
+- exclusive
+
+The definitions of ``unit``, ``with``, ``exclusive`` and ``label`` SHALL match
 those found in RFC14. The others are redefined and simplified to mean the
 following:
 
