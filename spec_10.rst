@@ -28,28 +28,27 @@ Related Standards
 
 -  :doc:`3/Flux Message Protocol <spec_3>`
 
+-  :doc:`11/Key Value Store Tree Object Format v1 <spec_11>`
+
 
 Goals
 -----
 
-The Flux content storage service is available for general purpose
-data storage within a Flux instance. The goals of the content storage
-service are:
+The Flux content storage service is the storage layer for the Flux Key Value
+Store (KVS).  The goals of the content storage service are:
 
 -  Provide storage for opaque binary blobs.
 
--  Stored content remains available for the lifetime of the Flux instance.
+-  Once stored from any broker rank, content is available to all broker ranks.
 
 -  Stored content is immutable.
 
--  Stored content is available from any broker rank within an instance.
+-  Content may not be removed while the Flux instance is running.
 
 -  Stored content is addressable by its message digest, computed using a
    cryptographic hash.
 
 -  The cryptographic hash algorithm is configurable per instance.
-
--  Content may be shared between instances
 
 This kind of store has interesting and well-understood properties, as
 explored in Venti, Git, and Camlistore (see References below).
@@ -71,15 +70,16 @@ Rank 0 SHALL retain all content previously stored by the instance.
 Rank 0 MAY extend its cache with an OPTIONAL backing store, the details
 of which are beyond the scope of this RFC.
 
-Rank 0 MAY, as a last resort, attempt to satisfy load requests by making
-a transitive request to the enclosing instance, if any.
-
 
 Content
 ~~~~~~~
 
 Content SHALL consist of from zero to 1,048,576 bytes of data.
 Content SHALL NOT be interpreted by the content service.
+
+Note: The blob size limit was temporarily increased to one gigabyte to
+avoid failures resulting from extreme workloads.  The original limit will
+be restored once KVS *hdir* objects are implemented.
 
 
 Blobref
@@ -155,66 +155,17 @@ A dropcache request SHALL cause the local content service to drop all
 non-essential entries from its cache.
 
 
-Foreign Content
-~~~~~~~~~~~~~~~
-
-If a load request cannot be satisfied by the instance’s content service,
-a load request MAY be sent to the enclosing instance, if applicable.
-
-The enclosing instance MAY have configured a different hash algorithm.
-The content service, therefore, SHALL NOT require that a blobref specified
-in a load request match the configured hash.
-
-
 Garbage Collection
 ~~~~~~~~~~~~~~~~~~
 
-References to content are unconstrained from the perspective of the
-content service, therefore content MUST persist for the lifetime of
-the instance.
+References to content are the responsibility of the Flux key Value Store.
+Content that the KVS no longer references MAY NOT be removed while the Flux
+instance is running.
 
-During instance shutdown, some content MAY be preserved by storing it
-in the enclosing instance when the instance is *reaped*. All other
-content SHALL be destroyed when the instance terminates.
-
-
-Message Definitions
-~~~~~~~~~~~~~~~~~~~
-
-Content service messages SHALL follow the Flux rules described
-in RFC 3 for requests and responses, and are described in detail by
-the following ABNF grammar:
-
-::
-
-   CONTENT         = C:store-req     S:store-rep
-                   / C:load-req      S:load-rep
-                   / C:flush-req     S:flush-rep
-                   / C:dropcache-req S:dropcache-rep
-
-   ; Multi-part ZeroMQ messages
-   C:store-req     = [routing] "content.store" [blob] PROTO
-   S:store-rep     = [routing] "content.store" blobref PROTO
-
-   ; Multi-part ZeroMQ messages
-   C:load-req      = [routing] "content.load" blobref PROTO
-   S:load-rep      = [routing] "content.load" [blob] PROTO
-
-   ; Multi-part ZeroMQ messages
-   C:flush-req     = [routing] "content.flush" PROTO
-   S:flush-rep     = [routing] "content.flush" PROTO
-
-   ; Multi-part ZeroMQ messages
-   C:dropcache-req = [routing] "content.dropcache" PROTO
-   S:dropcache-rep = [routing] "content.dropcache" PROTO
-
-   blobref         = hash-name "-" digest %x00
-   hash-name   = 1*(ALPHA / DIGIT)
-   digest      = 1*(HEXDIG)
-
-   blob            = 0*(OCTET)
-
-   ; PROTO and [routing] are as defined in RFC 3.
+A Flux instance that is configured to restart saves content before shutting
+down.  The shutdown process, after the KVS service has been stopped, MAY choose
+to omit content that the final KVS root does not reference as a form of
+garbage collection.
 
 
 References
