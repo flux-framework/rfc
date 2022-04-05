@@ -216,6 +216,12 @@ This specification describes the Flux implementation of the Hostlist Format
 
 This specification describes the Flux job urgency parameter.
 
+:doc:`31/Job Constraints Specification <spec_31>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification describes an extensible format for the description of
+job constraints.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
