@@ -158,7 +158,7 @@ non-essential entries from its cache.
 Garbage Collection
 ~~~~~~~~~~~~~~~~~~
 
-References to content are the responsibility of the Flux key Value Store.
+References to content are the responsibility of the Flux Key Value Store.
 Content that the KVS no longer references MAY NOT be removed while the Flux
 instance is running.
 
