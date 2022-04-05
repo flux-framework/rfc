@@ -150,6 +150,20 @@ down
   for scheduling.  The idset only contains targets that are transitioning,
   not the full set of unavailable targets.
 
+property-add
+  (object) RFC 20 conforming properties object containing properties that
+  should be added to the specified execution targets. When present, this
+  key reflects an update to the instance resource inventory which MAY
+  affect job satisfiability, the determination of which is left to the
+  scheduler implementation.
+
+property-remove
+  (object) RFC 20 conforming properties object containing properties that
+  should be removed from the specified execution targets. When present,
+  this key reflects an update to the instance resource inventory which
+  MAY affect job satisfiability, the determination of which is left to the
+  scheduler implementation.
+
 
 Example:
 
@@ -158,6 +172,8 @@ Example:
    {
       "up": "3-6",
       "down": "2"
+      "property-add": { "foo": "0-1" },
+      "property-remove" { "bar": "3" }
    }
 
 If down resources are assigned to a job, the scheduler SHALL NOT raise an
