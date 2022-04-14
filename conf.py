@@ -63,6 +63,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'README.md']
 master_doc = 'index'
 source_suffix = '.rst'
 
+linkcheck_ignore = [
+    "https://help.github.com/en/pull-requests", # 403 Forbidden
+]
+
 
 # -- Options for HTML output -------------------------------------------------
 
