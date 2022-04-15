@@ -1,6 +1,6 @@
 .. github display
    GitHub is NOT the preferred viewer for this file. Please visit
-   https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_26.html
+   https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_31.html
 
 31/Job Constraints Specification
 ================================
