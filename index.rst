@@ -228,6 +228,12 @@ job constraints.
 This specification describes Version 1 of the Flux Execution Protocol
 implemented by the job manager and job execution system.
 
+:doc:`33/Distributed Job Control Protocol<spec_33>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification describes the Distributed Job Protocol,
+a distributed protocol used within the job execution broker modules.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -263,3 +269,4 @@ implemented by the job manager and job execution system.
    spec_30
    spec_31
    spec_32
+   spec_33
