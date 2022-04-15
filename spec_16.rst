@@ -75,26 +75,21 @@ Upon success, the jobid is returned to the user. The *job manager* then
 takes the active role in moving a job through its life cycle:
 
 1) If a job has dependencies, interacting with a job dependency
-subsystem to ensure they are met before proceeding.
-
+   subsystem to ensure they are met before proceeding.
 2) Submitting an allocation request to the *scheduler* to obtain resources.
-
 3) Once resources are allocated, submitting a start request to the
-*exec service*.
-
+   *exec service*.
 4) The *exec service* starts *job shells* directly in a single-user instance.
-In a multi-user instance, it directs the IMP to start them with guest
-credentials, with appropriate containment.
-
+   In a multi-user instance, it directs the IMP to start them with guest
+   credentials, with appropriate containment.
 5) The *job shell* examines jobspec and allocated resource set, then
-launches tasks on local resources. It provides standard I/O, parallel
-bootstrap, signal propagation, and exit code collection services.
-It is a user-replaceable component.
-
+   launches tasks on local resources. It provides standard I/O, parallel
+   bootstrap, signal propagation, and exit code collection services.
+   It is a user-replaceable component.
 6) Once tasks exit, or an exceptional condition such as cancellation or
-expiration of wall clock allocation occurs, the *exec service* cleans up
-any lingering tasks and *job shells*, and notifies the *job manager* which
-frees resources back to the *scheduler*.
+   expiration of wall clock allocation occurs, the *exec service* cleans up
+   any lingering tasks and *job shells*, and notifies the *job manager* which
+   frees resources back to the *scheduler*.
 
 The job is now complete.
 
