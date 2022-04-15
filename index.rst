@@ -222,6 +222,12 @@ This specification describes the Flux job urgency parameter.
 This specification describes an extensible format for the description of
 job constraints.
 
+:doc:`32/Flux Job Execution Protocol Version 1 <spec_32>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification describes Version 1 of the Flux Execution Protocol
+implemented by the job manager and job execution system.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -256,3 +262,4 @@ job constraints.
    spec_29
    spec_30
    spec_31
+   spec_32
