@@ -42,6 +42,7 @@ Table of Contents
 - [29/Hostlist Format](spec_29.rst)
 - [30/Job Urgency](spec_30.rst)
 - [31/Job Constraints Specification](spec_31.rst)
+- [32/Flux Job Execution Protocol Version 1](spec_32.rst)
 
 Build Instructions
 ------------------
