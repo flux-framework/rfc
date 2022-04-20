@@ -205,7 +205,7 @@ release
        "type": "release",
        "data": {
          "ranks": "0-2",
-	 "final": true,
+         "final": true,
        },
      }
 
