@@ -152,7 +152,9 @@ jobspec
   (object) *jobspec* object (RFC 14)
 
 reattach
-  (boolean) TBD
+  (boolean) Set to True if broker has been restarted and job should still
+  be running.
+
 
 Example:
 
