@@ -51,7 +51,13 @@ Store (KVS).  The goals of the content storage service are:
 -  The cryptographic hash algorithm is configurable per instance.
 
 This kind of store has interesting and well-understood properties, as
-explored in Venti, Git, and Camlistore (see References below).
+explored in Venti, Git, and Perkeep (see References below), for example:
+
+-  Writes are idempotent
+
+-  De-duplication is automatic
+
+-  The address may be used to check the integrity of the addressed content
 
 
 Implementation
@@ -70,6 +76,27 @@ Rank 0 SHALL retain all content previously stored by the instance.
 Rank 0 MAY extend its cache with an OPTIONAL backing store, the details
 of which are beyond the scope of this RFC.
 
+The content service SHALL NOT be accessible by guest users.
+
+
+Hash Algorithm
+~~~~~~~~~~~~~~
+
+A Flux instance SHALL select a hash algorithm at startup.  This selection
+MUST NOT change throughout the lifetime of the instance.
+
+The configured algorithm SHALL be made available to Flux components via the
+``content.hash`` broker attribute.
+
+The hash algorithm:
+
+-  MUST have a high enough collision resistance so that the probability of
+   storing two different blobs with the same address is extremely unlikely
+
+-  is RECOMMENDED to have high space efficiency
+
+-  is RECOMMENDED to have low computational overhead
+
 
 Content
 ~~~~~~~
@@ -82,11 +109,14 @@ avoid failures resulting from extreme workloads.  The original limit will
 be restored once KVS *hdir* objects are implemented.
 
 
-Blobref
+Address
 ~~~~~~~
 
-Each unique, stored blob of content SHALL be addressable by its blobref.
-A blobref SHALL consist of a string formed by the concatenation of:
+Each unique, stored blob of content SHALL be addressable by its hash digest.
+
+A human-readable *blobref* MAY be used as an alternate representation of
+the hash digest.  A blobref SHALL consist of a string formed by the
+concatenation of:
 
 -  the name of hash algorithm used to store the content
 
@@ -100,8 +130,7 @@ Example:
 
    sha1-f1d2d2f924e986ac86fdf7b36c94bcdf32beec15
 
-Note: "blobref" was shamelessly borrowed from Camlistore
-(see References below).
+Note: "blobref" was shamelessly borrowed from Perkeep (see References below).
 
 
 Store
@@ -111,7 +140,7 @@ A store request SHALL be encoded as a Flux request message with the blob
 as raw payload (blob length > 0), or no payload (blob length = 0).
 
 A store response SHALL be encoded as a Flux response message with
-NULL-terminated blobref string as raw payload, or an error response.
+the message digest as raw payload, or an error response.
 
 A request to store content that exceeds the maximum size SHALL
 receive error number 27, "File too large", in response.
@@ -124,7 +153,7 @@ Load
 ~~~~
 
 A load request SHALL be encoded as a Flux request message with
-NULL-terminated blobref string as raw payload.
+message digest as raw payload.
 
 A load response SHALL be encoded as a Flux response message with blob
 as raw payload (blob length > 0), no payload (blob length = 0),
@@ -171,7 +200,7 @@ garbage collection.
 References
 ----------
 
--  `Camlistore is your personal storage system for life <https://camlistore.org/>`__.
+-  `Perkeep lets you permanently keep your stuff, for life. <https://perkeep.org/>`__.
 
 -  `Venti: a new approach to archival storage <http://doc.cat-v.org/plan_9/4th_edition/papers/venti/>`__, Bell Labs, Quinlan and Dorward.
 
