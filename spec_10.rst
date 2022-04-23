@@ -109,11 +109,14 @@ avoid failures resulting from extreme workloads.  The original limit will
 be restored once KVS *hdir* objects are implemented.
 
 
-Blobref
+Address
 ~~~~~~~
 
-Each unique, stored blob of content SHALL be addressable by its blobref.
-A blobref SHALL consist of a string formed by the concatenation of:
+Each unique, stored blob of content SHALL be addressable by its hash digest.
+
+A human-readable *blobref* MAY be used as an alternate representation of
+the hash digest.  A blobref SHALL consist of a string formed by the
+concatenation of:
 
 -  the name of hash algorithm used to store the content
 
@@ -138,7 +141,7 @@ A store request SHALL be encoded as a Flux request message with the blob
 as raw payload (blob length > 0), or no payload (blob length = 0).
 
 A store response SHALL be encoded as a Flux response message with
-NULL-terminated blobref string as raw payload, or an error response.
+the message digest as raw payload, or an error response.
 
 A request to store content that exceeds the maximum size SHALL
 receive error number 27, "File too large", in response.
@@ -151,7 +154,7 @@ Load
 ~~~~
 
 A load request SHALL be encoded as a Flux request message with
-NULL-terminated blobref string as raw payload.
+message digest as raw payload.
 
 A load response SHALL be encoded as a Flux response message with blob
 as raw payload (blob length > 0), no payload (blob length = 0),
