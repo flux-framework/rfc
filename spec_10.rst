@@ -76,6 +76,8 @@ Rank 0 SHALL retain all content previously stored by the instance.
 Rank 0 MAY extend its cache with an OPTIONAL backing store, the details
 of which are beyond the scope of this RFC.
 
+The content service SHALL NOT be accessible by guest users.
+
 
 Content
 ~~~~~~~
