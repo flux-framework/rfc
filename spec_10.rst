@@ -51,7 +51,7 @@ Store (KVS).  The goals of the content storage service are:
 -  The cryptographic hash algorithm is configurable per instance.
 
 This kind of store has interesting and well-understood properties, as
-explored in Venti, Git, and Camlistore (see References below), for example:
+explored in Venti, Git, and Perkeep (see References below), for example:
 
 -  Writes are idempotent
 
@@ -130,8 +130,7 @@ Example:
 
    sha1-f1d2d2f924e986ac86fdf7b36c94bcdf32beec15
 
-Note: "blobref" was shamelessly borrowed from Camlistore
-(see References below).
+Note: "blobref" was shamelessly borrowed from Perkeep (see References below).
 
 
 Store
@@ -201,7 +200,7 @@ garbage collection.
 References
 ----------
 
--  `Camlistore is your personal storage system for life <https://camlistore.org/>`__.
+-  `Perkeep lets you permanently keep your stuff, for life. <https://perkeep.org/>`__.
 
 -  `Venti: a new approach to archival storage <http://doc.cat-v.org/plan_9/4th_edition/papers/venti/>`__, Bell Labs, Quinlan and Dorward.
 
