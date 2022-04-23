@@ -79,6 +79,25 @@ of which are beyond the scope of this RFC.
 The content service SHALL NOT be accessible by guest users.
 
 
+Hash Algorithm
+~~~~~~~~~~~~~~
+
+A Flux instance SHALL select a hash algorithm at startup.  This selection
+MUST NOT change throughout the lifetime of the instance.
+
+The configured algorithm SHALL be made available to Flux components via the
+``content.hash`` broker attribute.
+
+The hash algorithm:
+
+-  MUST have a high enough collision resistance so that the probability of
+   storing two different blobs with the same address is extremely unlikely
+
+-  is RECOMMENDED to have high space efficiency
+
+-  is RECOMMENDED to have low computational overhead
+
+
 Content
 ~~~~~~~
 
