@@ -51,7 +51,13 @@ Store (KVS).  The goals of the content storage service are:
 -  The cryptographic hash algorithm is configurable per instance.
 
 This kind of store has interesting and well-understood properties, as
-explored in Venti, Git, and Camlistore (see References below).
+explored in Venti, Git, and Camlistore (see References below), for example:
+
+-  Writes are idempotent
+
+-  De-duplication is automatic
+
+-  The address may be used to check the integrity of the addressed content
 
 
 Implementation
