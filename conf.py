@@ -45,6 +45,7 @@ release = '0.13.0'
 extensions = [
     'sphinx.ext.intersphinx',
     'sphinxcontrib.spelling',
+    'sphinxcontrib.mermaid'
 ]
 
 # sphinxcontrib.spelling settings
