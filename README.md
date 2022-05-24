@@ -43,6 +43,7 @@ Table of Contents
 - [30/Job Urgency](spec_30.rst)
 - [31/Job Constraints Specification](spec_31.rst)
 - [32/Flux Job Execution Protocol Version 1](spec_32.rst)
+- [33/Flux Job Queues](spec_33.rst)
 
 Build Instructions
 ------------------

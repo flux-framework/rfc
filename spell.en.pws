@@ -451,3 +451,9 @@ afternotok
 login
 satisfiability
 satisfiable
+validator
+superset
+ncores
+ngpus
+ncpus
+jobtap
