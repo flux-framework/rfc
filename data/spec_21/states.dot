@@ -16,7 +16,7 @@ digraph states {
         CLEANUP;
     }
 
-    NEW -> DEPEND;
+    NEW -> DEPEND [label="validate"];
     DEPEND -> PRIORITY [label="depend"];
     PRIORITY -> SCHED [label="priority"];
     SCHED -> RUN [label="alloc"];
