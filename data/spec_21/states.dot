@@ -21,7 +21,7 @@ digraph states {
     PRIORITY -> SCHED [label="priority"];
     SCHED -> RUN [label="alloc"];
     RUN -> CLEANUP [label="finish"];
-    CLEANUP -> INACTIVE;
+    CLEANUP -> INACTIVE [label="clean"];
 
     SCHED -> PRIORITY [label="flux-restart"]
     SCHED -> PRIORITY [label="urgency"]
