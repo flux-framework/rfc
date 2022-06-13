@@ -29,6 +29,7 @@ digraph states {
     edge [weight=0 color="red"];
 
     DEPEND -> CLEANUP [label="exception"];
+    PRIORITY -> CLEANUP;
     SCHED -> CLEANUP;
     RUN -> CLEANUP;
 }
