@@ -85,8 +85,9 @@ State Descriptions
 ~~~~~~~~~~~~~~~~~~
 
 NEW
-   Initial state. The required ``submit`` event, which logs the job’s creation,
-   transitions the state to DEPEND.
+   Initial state. The required first ``submit`` event logs the job’s creation,
+   and the ``validate`` event transitions the state to DEPEND after the job
+   has been validated.
 
 DEPEND
    The job is blocked waiting for dependencies to be satisfied. Once all
@@ -189,6 +190,33 @@ Example:
 .. code:: json
 
    {"timestamp":1552593348.073045,"name":"submit","context":{"urgency":16,"userid":5588,"flags":0}}
+
+Validate Event
+^^^^^^^^^^^^^^
+
+Job submission is valid.
+
+No context is defined for this event.
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1605115080.0358412,"name":"validate"}
+
+Invalidate Event
+^^^^^^^^^^^^^^^^
+
+Job submission is invalid.  The job (including the KVS eventlog) SHALL be
+immediately removed.
+
+No context is defined for this event.
+
+Example:
+
+.. code:: json
+
+    {"timestamp":1605115080.0358412,"name":"invalidate"}
 
 Set-flags Event
 ^^^^^^^^^^^^^^^
