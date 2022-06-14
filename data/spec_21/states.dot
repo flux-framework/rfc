@@ -16,12 +16,12 @@ digraph states {
         CLEANUP;
     }
 
-    NEW -> DEPEND;
+    NEW -> DEPEND [label="validate"];
     DEPEND -> PRIORITY [label="depend"];
     PRIORITY -> SCHED [label="priority"];
     SCHED -> RUN [label="alloc"];
     RUN -> CLEANUP [label="finish"];
-    CLEANUP -> INACTIVE;
+    CLEANUP -> INACTIVE [label="clean"];
 
     SCHED -> PRIORITY [label="flux-restart"]
     SCHED -> PRIORITY [label="urgency"]
@@ -29,6 +29,7 @@ digraph states {
     edge [weight=0 color="red"];
 
     DEPEND -> CLEANUP [label="exception"];
+    PRIORITY -> CLEANUP;
     SCHED -> CLEANUP;
     RUN -> CLEANUP;
 }
