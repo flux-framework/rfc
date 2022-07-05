@@ -193,6 +193,24 @@ Example:
 
 The ``submit`` event SHALL be the first event posted for each job.
 
+Jobspec-update Event
+^^^^^^^^^^^^^^^^^^^^
+
+Set jobspec attributes after job submission.  The event context object SHALL
+consist of a dictionary of period-delimited keys beginning with ``attributes.``
+and MUST contain at least one entry.
+
+Example:
+
+.. code:: json
+
+   {"timestamp":1552593348.073045,"name":"jobspec-update","context":{"attributes.system.duration":3600}}
+
+.. note::
+   The ``jobspec-update`` event affects only the Flux instance's view of the
+   job.  The signed request containing the user's original jobspec SHALL NOT
+   be altered.
+
 Validate Event
 ^^^^^^^^^^^^^^
 
