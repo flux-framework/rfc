@@ -191,6 +191,8 @@ Example:
 
    {"timestamp":1552593348.073045,"name":"submit","context":{"urgency":16,"userid":5588,"flags":0}}
 
+The ``submit`` event SHALL be the first event posted for each job.
+
 Validate Event
 ^^^^^^^^^^^^^^
 
