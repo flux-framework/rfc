@@ -114,7 +114,7 @@ Unicode character U+0192 ``ƒ``, and the final result SHALL be termed
 "FLUID base58 Encoding" or F58 for short. For example, the FLUID
 ``6731191091817518`` from above SHALL be represented in F58 as
 ``ƒuZZybuNNy``. As a fallback mechanism, a FLUID prefixed with an
-ASCII lowercase f ``f`` will also be decoded as F58.
+ASCII lowercase ``f`` will also be decoded as F58.
 
 Examples: ``ƒZemgA8Bzf``, ``ƒ278oEf7zGf``
 
