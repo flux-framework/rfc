@@ -117,15 +117,15 @@ values SHALL override global policy values.
 Jobspec Defaults Policy
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``jobspec.defaults`` policy table contains default values for jobspec
+The ``policy.jobspec.defaults`` table contains default values for jobspec
 attributes that were not explicitly set by the user and MAY contain following
 OPTIONAL keys.  The key names are identical to the corresponding jobspec
 attribute names (RFC 14, 25).
 
-system.duration
+policy.jobspec.defaults.system.duration
   (string) default duration, in Flux Standard Duration format (RFC 23).
 
-system.queue
+policy.jobspec.defaults.system.queue
   (string) default queue name.
 
 .. note::
@@ -140,22 +140,22 @@ system.queue
 Limits Policy
 ^^^^^^^^^^^^^
 
-The `limits` policy table configures job limits and MAY contain the following
+The ``policy.limits`` table configures job limits and MAY contain the following
 OPTIONAL keys.
 
-job-size.max.nnodes
+policy.limits.job-size.max.nnodes
   (integer) maximum number of nodes.
 
-job-size.max.ncores
+policy.limits.job-size.max.ncores
   (integer) maximum number of cores.
 
-job-size.max.ngpus
+policy.limits.job-size.max.ngpus
   (integer) maximum number of gpus.
 
-job-size.min.nnodes
+policy.limits.job-size.min.nnodes
   (integer) minimum number of nodes.
 
-duration
+policy.limits.duration
   (string) maximum job duration, in Flux Standard Duration format (RFC 23).
 
 .. note::
@@ -169,7 +169,7 @@ duration
 Scheduler Policy
 ^^^^^^^^^^^^^^^^
 
-The ``scheduler`` policy table is read by the scheduler implementation
+The ``policy.scheduler`` table is read by the scheduler implementation
 and is opaque to the rest of Flux.
 
 Priority Policy
@@ -180,14 +180,14 @@ TBD
 Access Policy
 ^^^^^^^^^^^^^
 
-The ``access`` policy table MAY restrict queue access by UNIX user and group.
+The ``policy.access`` table MAY restrict queue access by UNIX user and group.
 It MAY contain following OPTIONAL keys:
 
-allow-user
+policy.access.allow-user
   (list of strings) Specify a list of UNIX user names that are to be granted
   access.
 
-allow-group
+policy.access.allow-group
   (list of strings) Specify a list of UNIX group names that are to be granted
   access.
 
@@ -204,13 +204,13 @@ A ``queues`` TOML table MAY define one or more named queues.  Each queue
 SHALL be represented as a sub-table that MAY contain the following OPTIONAL
 keys:
 
-requires
+queues.NAME.requires
   (table) Specify queue-specific resource constraint(s) in RFC 31 format,
   that SHALL be added to the jobspec ``system.constraints`` attribute of all
   jobs submitted to this queue.  If the jobspec already specifies constraints,
   then the queue-specific constraints SHALL be added with an ``and`` operator.
 
-policy
+queues.NAME.policy
   (table) Specify policy fragments that apply only to this queue, using the
   form described in the previous section.  If the same policy appears in the
   top-level ``policy`` table  and a queue-specific ``policy`` table, the
@@ -221,10 +221,9 @@ Initial Assignment of Job to Queue
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Job requests MAY specify a queue name at submission time by setting the
-``queue`` jobspec system attribute (RFC 14).  If a queue was not explicitly
+``system.queue`` jobspec attribute (RFC 14).  If a queue was not explicitly
 named in the jobspec, and a default queue is defined, the queue SHALL be
-assigned by the job manager during the initial request validation,
-before the jobtap ``job.validate`` callbacks are run.
+assigned by before the jobtap ``job.validate`` callbacks are run.
 
 Request Validation
 ~~~~~~~~~~~~~~~~~~
