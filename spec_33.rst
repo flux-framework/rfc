@@ -154,14 +154,6 @@ policy.limits.job-size.min.nnodes
 policy.limits.duration
   (string) maximum job duration, in Flux Standard Duration format (RFC 23).
 
-.. note::
-   A general mechanism for configuring and applying limits in a distributed
-   fashion is proposed in rough form in
-   https://github.com/flux-framework/flux-core/issues/4309.
-   Consider creating an RFC for limits that can be referenced from this one
-   and skip those details here.
-
-
 Scheduler Policy
 ^^^^^^^^^^^^^^^^
 
