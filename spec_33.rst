@@ -262,7 +262,3 @@ to request jobs in other queues by name, or all queues.
 The job submission tools SHOULD leave the queue unset (thereby selecting
 the default.  An option SHALL be provided to direct jobs to other
 queues by name.
-
-.. note::
-   The ``sched.queue`` annotation defined in RFC 27 is no longer necessary
-   since the queue name is represented in the job jobspec as described above.
