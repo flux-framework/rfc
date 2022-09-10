@@ -129,13 +129,9 @@ policy.jobspec.defaults.system.queue
   (string) default queue name.
 
 .. note::
-   Jobspec updates are applied to the in-memory copy of the jobspec held
-   by the job manager.  The in-memory copy is also sent to the scheduler with
-   the job's ``alloc`` request.  The original jobspec in the KVS (both signed
-   and unsigned) is unaltered.  Since jobspec modifications are posted to the
-   job eventlog as ``jobspec-update`` events (RFC 21), the altered jobspec
-   may by reconstructed by fetching the original jobspec, then replaying any
-   ``jobspec-update`` events.
+   Jobspec defaults are applied at ingest to the unsigned copy of the jobspec
+   held stored in the KVS under the ``jobspec`` key.  The original jobspec
+   remains within the signed ``J`` key.
 
 Limits Policy
 ^^^^^^^^^^^^^
