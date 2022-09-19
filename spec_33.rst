@@ -193,10 +193,11 @@ SHALL be represented as a sub-table that MAY contain the following OPTIONAL
 keys:
 
 queues.NAME.requires
-  (table) Specify queue-specific resource constraint(s) in RFC 31 format,
-  that SHALL be added to the jobspec ``system.constraints`` attribute of all
-  jobs submitted to this queue.  If the jobspec already specifies constraints,
-  then the queue-specific constraints SHALL be added with an ``and`` operator.
+  (array of strings) Specify queue-specific resource property constraints
+  (RFC 31) that SHALL be added to the jobspec ``system.constraints.properties``
+  array of all jobs submitted to this queue.  If the jobspec already specifies
+  property constraints, then the queue-specific properties SHALL be appended
+  (logical and).
 
 queues.NAME.policy
   (table) Specify policy fragments that apply only to this queue, using the
