@@ -156,8 +156,8 @@ used to generate Flux job IDs.
 This specification defines the version 1 format of the resource-set
 representation or *R* in short.
 
-:doc:`21/Job States and Events <spec_21>`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:doc:`21/Job States and Events Version 1 <spec_21>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This specification describes Flux job states and the events that
 trigger job state transitions.

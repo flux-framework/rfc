@@ -2,8 +2,8 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_21.html
 
-21/Job States and Events
-========================
+21/Job States and Events Version 1
+==================================
 
 This specification describes Flux job states and the events that trigger
 job state transitions.
@@ -69,6 +69,10 @@ Design Criteria
 -  Events SHALL be logged to the job eventlog.
 
 -  Replaying the job eventlog SHALL accurately reproduce the current job state.
+
+-  The job manager SHOULD be capable of ingesting job eventlogs following
+   recent versions of this specification, to avoid losing job data when Flux
+   is restarted after a software upgrade.
 
 
 Implementation
@@ -185,11 +189,15 @@ userid
 flags
    (integer) Mask of flags (1=debug).
 
+version
+   (integer) Version of the job eventlog format.  This document describes
+   version 1.
+
 Example:
 
 .. code:: json
 
-   {"timestamp":1552593348.073045,"name":"submit","context":{"urgency":16,"userid":5588,"flags":0}}
+   {"timestamp":1552593348.073045,"name":"submit","context":{"urgency":16,"userid":5588,"flags":0,"version":1}}
 
 The ``submit`` event SHALL be the first event posted for each job.
 
