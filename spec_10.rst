@@ -200,7 +200,7 @@ garbage collection.
 References
 ----------
 
--  `Perkeep lets you permanently keep your stuff, for life. <https://perkeep.org/>`__.
+-  `Perkeep lets you permanently keep your stuff, for life. <https://en.wikipedia.org/wiki/Perkeep>`__.
 
 -  `Venti: a new approach to archival storage <http://doc.cat-v.org/plan_9/4th_edition/papers/venti/>`__, Bell Labs, Quinlan and Dorward.
 
