@@ -341,6 +341,19 @@ Flux messages are specified by the following modified ABNF grammar [#f2]_
    ; unused 4-byte field
    unused          = %x00.00.00.00
 
+
+Message Framing
+~~~~~~~~~~~~~~~
+
+When Flux uses ZeroMQ for transport (``tcp``, ``ipc``, and ``shmem``
+connectors), ZeroMQ handles the message framing.
+
+When Flux uses a UNIX domain stream socket for transport (``local`` connector),
+Flux handles the message framing as follows:  first, a 4 byte magic value is
+sent (``FF``, ``EE``, ``00``, ``12``).  Next the message length is sent as a
+4-byte unsigned integer in network byte order.  Finally, the message content
+is sent, encoded as described above.
+
 .. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <https://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
 
 .. [#f2] For convenience: the ``C:request``, ``S:response``, ``S:event``, and ``C:control`` ABNF non-terminals refer to multi-part messages, sent by client (C) or server (S). Message part *size* framing is not shown for clarity.
