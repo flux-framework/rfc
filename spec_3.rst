@@ -215,29 +215,54 @@ established for common payload types:
 5. JSON payloads SHALL include a terminating NULL character.
 
 
-General Message Format
-~~~~~~~~~~~~~~~~~~~~~~
+Message Structure
+~~~~~~~~~~~~~~~~~
 
-Flux messages are multi-part ZeroMQ messages.
+An individual message SHALL consist of one or more concatenated, variable
+length message parts.  Each message part SHALL be encoded as a *size* field
+followed by a *data* field.  The *size* field consists of a short message
+size (1 byte) followed by an optional long message size (4 bytes).  The
+message sizes SHALL be interpreted as unsigned integers in network byte order.
 
-Flux messages MUST include a PROTO message part, positioned last for fast
-access. The PROTO part includes flags that indicate the presence of
-additional message parts.
+small message parts
+  If the *data* field is from 0 to 254 bytes, its length SHALL be placed
+  in the short message size.  The long message size SHALL be omitted.
 
-Flux messages MAY include a stack of message identity parts comprising
-a source address route, positioned first for compatibility with ZeroMQ
-DEALER-ROUTER sockets. If message identity parts are present, a zero-size
-route delimiter frame MUST be present and positioned next.
+large message parts
+  If the *data* field is from 255 to 4294967295 bytes, its length SHALL be
+  placed in the long message size.  The short message size SHALL be set to
+  a value of 255.
 
-Flux messages MAY include a topic string part, positioned after route
-delimiter, if any. When the topic string part is first, it is compatible
-with ZeroMQ PUB-SUB sockets.
+If the message part has more than 4294967295 bytes of data, it MUST be
+rejected as invalid.
 
-Finally, Flux messages MAY include a payload part, positioned before
-the PROTO part. Payloads MAY consist of any byte sequence.
+Flux messages SHALL consist of the following message parts, in order:
 
-Flux messages are specified in terms of ZeroMQ messages by the following
-ABNF grammar [#f2]_
+routes (optional)
+  Messages MAY contain a "route stack" for request/response message routing.
+  Each route SHALL be a message part containing a UUID string that represents
+  one route hop.  The most recent hop SHALL be on the top of the stack (first
+  message part).
+
+route stack delimiter (optional)
+  The route stack delimiter is an empty message frame that delimits the route
+  stack from other message parts.  The delimiter is REQUIRED if the message
+  contains any routes.
+
+topic string (optional)
+  Messages MAY contain a period-delimited string representing an event topic
+  or a RPC service endpoint.  The topic string is REQUIRED if the message type
+  is a request, response, or event.
+
+payload (optional)
+  Messages MAY contain a payload of zero or more bytes of user-specific content.
+
+PROTO block (required)
+  The PROTO block is a 20-byte block of message data defined in the ABNF
+  below.  Among other things, it contains message flags that indicate which
+  of the optional message parts are present.
+
+Flux messages are specified by the following modified ABNF grammar [#f2]_
 
 ::
 
@@ -318,4 +343,4 @@ ABNF grammar [#f2]_
 
 .. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <https://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
 
-.. [#f2] For convenience: the ``C:request``, ``S:response``, ``S:event``, and ``C:control`` ABNF non-terminals refer to ZeroMQ messages, sent by client or server, and built from ordered ZeroMQ message parts (frames). Other non-terminals are built from concatenated ABNF terminals per usual. Thus it is meaningful for ``delimiter``, a message frame, to have zero length, since a zero-length message frame is valid ZMTP.
+.. [#f2] For convenience: the ``C:request``, ``S:response``, ``S:event``, and ``C:control`` ABNF non-terminals refer to multi-part messages, sent by client (C) or server (S). Message part *size* framing is not shown for clarity.
