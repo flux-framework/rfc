@@ -262,6 +262,14 @@ PROTO block (required)
   below.  Among other things, it contains message flags that indicate which
   of the optional message parts are present.
 
+.. figure:: images/messages.png
+   :width: 600
+   :alt: Flux message examples
+   :align: center
+
+   Example of (a) Flux request message, and (b) Flux response message.  Integer
+   values are in hex, and for clarity are not converted to network byte order.
+
 Flux messages are specified by the following modified ABNF grammar [#f2]_
 
 ::
