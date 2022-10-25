@@ -350,17 +350,27 @@ Flux messages are specified by the following modified ABNF grammar [#f2]_
    unused          = %x00.00.00.00
 
 
-Message Framing
-~~~~~~~~~~~~~~~
+Message Framing and Security
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When Flux uses ZeroMQ for transport (``tcp``, ``ipc``, and ``shmem``
-connectors), ZeroMQ handles the message framing.
+When Flux uses ZeroMQ for transport (overlay network peer connections and the
+``shmem`` connector), ZeroMQ handles security and message framing.  When Flux
+uses a UNIX domain stream socket for transport (``local`` connector), Flux
+handles security and message framing as described below.
 
-When Flux uses a UNIX domain stream socket for transport (``local`` connector),
-Flux handles the message framing as follows:  first, a 4 byte magic value is
-sent (``FF``, ``EE``, ``00``, ``12``).  Next the message length is sent as a
-4-byte unsigned integer in network byte order.  Finally, the message content
-is sent, encoded as described above.
+Upon accepting a connection from a new client on a UNIX domain socket, Flux
+SHALL determine the peer identity using SO_PEERCRED and apply security policies
+described in RFC 12 to determine if user is authorized to access Flux.  If the
+user is *denied* access, a single nonzero byte representing a POSIX errno SHALL
+be sent to the client.  When the client receives a nonzero errno byte, it
+SHOULD interpret the error and disconnect.  If the user is *allowed* access,
+a single zero byte SHALL be sent to the client.  Upon receipt of the zero byte,
+the client MAY proceed to exchange Flux messages on the socket.
+
+These messages SHALL be framed as follows:  First, a 4 byte magic value SHALL
+be sent (``FF``, ``EE``, ``00``, ``12``).  Next, the message length SHALL be
+sent as a 4-byte unsigned integer in network byte order.  Finally, the message
+content SHALL be sent, encoded as described above.
 
 .. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <https://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
 
