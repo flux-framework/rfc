@@ -878,7 +878,9 @@ Local Process Group Information
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The process manager SHALL provide the local process group information
-to programs via the KVS under the "PMI_process_mapping" key.
+to programs via the KVS under the "PMI_process_mapping" key.  It MAY be
+used by MPI to determine which process ranks are co-located on a given node.
+
 The value SHALL consist of a vector of "blocks", where a block is a
 3-tuple of starting node id, number of nodes, and number of processes per
 node, in the following format, expressed in ABNF:
@@ -894,12 +896,24 @@ node, in the following format, expressed in ABNF:
 
 Examples:
 
--  '(vector,(0,16,16))' - 256 processes regularly mapped to 16 nodes,
-   16 processes per node.
+(vector,(0,2,2))
+  4 processes mapped to 2 nodes with *block* task distribution.
+  Nodeid 0 has ranks 0-1;  nodeid 1 has ranks 2-3.
 
--  '(vector,(0,8,16),(8,4,32))' - 256 processes irregularly mapped to 12
-   nodes, 16 processes per node on the first eight nodes, 32 processes per
-   node on the last 4 nodes.
+(vector,(0,2,1),(0,2,1))
+  4 processes mapped to 2 nodes with *cyclic* task distribution.
+  Nodeid 0 has ranks 0,2;  nodeid 1 has ranks 1,3.
+
+(vector,(0,16,16))
+  256 processes mapped to 16 nodes with *block* task distribution.
+  Nodeid 0 has ranks 0-15;  nodeid 1 has ranks 16-31;  and so on.
+
+(vector,(0,8,16),(8,4,32))
+  256 processes mapped to 12 nodes with *block* task distribution.
+  Nodeid 0 has ranks 0-7;  nodeid 1 has ranks 8-15; and so on through nodeid 7.
+  Nodeid 8 has ranks 64-95; nodeid 9 has ranks 96-127, and so on.
+
+
 
 If the process mapping value is too long to fit in a KVS value, the process
 manager SHALL return a value consisting of an empty string, indicating that
