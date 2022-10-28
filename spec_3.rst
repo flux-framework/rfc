@@ -218,25 +218,9 @@ established for common payload types:
 Message Structure
 ~~~~~~~~~~~~~~~~~
 
-An individual message SHALL consist of one or more concatenated, variable
-length message parts.  Each message part SHALL be encoded as a *size* field
-followed by a *data* field.  The *size* field consists of a short message
-size (1 byte) followed by an optional long message size (4 bytes).  The
-message sizes SHALL be interpreted as unsigned integers in network byte order.
-
-small message parts
-  If the *data* field is from 0 to 254 bytes, its length SHALL be placed
-  in the short message size.  The long message size SHALL be omitted.
-
-large message parts
-  If the *data* field is from 255 to 4294967295 bytes, its length SHALL be
-  placed in the long message size.  The short message size SHALL be set to
-  a value of 255.
-
-If the message part has more than 4294967295 bytes of data, it MUST be
-rejected as invalid.
-
-Flux messages SHALL consist of the following message parts, in order:
+An individual message SHALL consist of a list of one or more variable
+length message parts.  Flux messages SHALL consist of the following message
+parts, in order:
 
 routes (optional)
   Messages MAY contain a "route stack" for request/response message routing.
@@ -356,21 +340,46 @@ Message Framing and Security
 When Flux uses ZeroMQ for transport (overlay network peer connections and the
 ``shmem`` connector), ZeroMQ handles security and message framing.  When Flux
 uses a UNIX domain stream socket for transport (``local`` connector), Flux
-handles security and message framing as described below.
+handles security and message framing as described below.  The remainder of
+this section applies only to connection over UNIX domain stream sockets.
 
-Upon accepting a connection from a new client on a UNIX domain socket, Flux
-SHALL determine the peer identity using SO_PEERCRED and apply security policies
-described in RFC 12 to determine if user is authorized to access Flux.  If the
-user is *denied* access, a single nonzero byte representing a POSIX errno SHALL
-be sent to the client.  When the client receives a nonzero errno byte, it
-SHOULD interpret the error and disconnect.  If the user is *allowed* access,
-a single zero byte SHALL be sent to the client.  Upon receipt of the zero byte,
-the client MAY proceed to exchange Flux messages on the socket.
+Upon accepting a connection from a new client, Flux SHALL determine the peer
+identity using SO_PEERCRED and apply security policies described in RFC 12 to
+determine if user is authorized to access Flux.  If the user is *denied*
+access, a single nonzero byte representing a POSIX errno SHALL be sent to the
+client.  When the client receives a nonzero errno byte, it SHOULD interpret
+the error and disconnect.  If the user is *allowed* access, a single zero byte
+SHALL be sent to the client.  Upon receipt of the zero byte, the client MAY
+proceed to exchange Flux messages on the socket.
 
-These messages SHALL be framed as follows:  First, a 4 byte magic value SHALL
-be sent (``FF``, ``EE``, ``00``, ``12``).  Next, the message length SHALL be
-sent as a 4-byte unsigned integer in network byte order.  Finally, the message
-content SHALL be sent, encoded as described above.
+Messages SHALL be framed as follows:  First, within a message, message parts
+SHALL be encoded as as a *size* field followed by a *data* field.  The *size*
+field consists of a short message size (1 byte) followed by an optional long
+message size (4 bytes).  The message sizes SHALL be interpreted as unsigned
+integers in network byte order.
+
+short message parts
+  If the *data* field is from 0 to 254 bytes, its length SHALL be placed
+  in the short message size.  The long message size SHALL be omitted.
+
+long message parts
+  If the *data* field is 255 bytes or greater, its length SHALL be placed in
+  the long message size.  The short message size SHALL be set to a value of 255.
+
+After the message parts are encoded and concatenated, the message SHALL be
+prefaced with a 4 byte magic value of (``FF``, ``EE``, ``00``, ``12``) and
+a 4-byte unsigned integer message length in network byte order.  The message
+length SHALL be set to the size of the concatenated message parts, including
+their length fields.
+
+.. figure:: images/messages_framed.png
+   :width: 200
+   :alt: Flux message examples (framed)
+   :align: center
+
+   Example of a Flux request message with framing for transmission over a
+   UNIX domain stream socket.
+
 
 .. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <https://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
 
