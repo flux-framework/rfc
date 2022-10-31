@@ -36,24 +36,26 @@ The Flux message protocol v1 provides a way for Flux utilities and services to
 communicate with one another within the context of a flux instance. It has
 the following specific goals:
 
--  Endpoint-count scalability (e.g. to 100K nodes) through multi-hop
-   overlay networks.
+-  Enable Flux components to communicate within a Flux instance.
 
--  Overlay networks sharable by multiple Flux services and utilities.
+-  Enable the remote procedure call communication idiom.
 
--  Provide request-response (RPC) communication idiom.
+-  Enable the publish-subscribe communication idiom.
 
--  Provide publish-subscribe communication idiom.
+-  Allow Flux services to be deployed and accessed without consulting a
+   location service.
 
--  Handle common failure cases such as hard-hung brokers or crashed nodes,
-   but OK to propagate errors to services when necessary to keep running.
+-  Avoid sending Flux data over networks without encryption.
 
--  Peer network transit latency of O(10\ :sup:`-3`\ sec) for small messages
+-  Allow messages to be propagated over different transports including, but
+   not limited to, ZeroMQ.
 
--  Protect messages with strong crypto: privacy, integrity.
+-  Enable scalability to many thousands of nodes.
 
--  Fast codec, minimizing heap memory allocations
+-  Implement failure mitigation strategies that are simple to reason about.
 
+-  Ensure that messages between any pair of endpoints are received in
+   transmission order.
 
 Background
 ----------
