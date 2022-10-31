@@ -8,9 +8,6 @@
 This specification describes the format of Flux message broker
 messages, Version 1.
 
-The Flux message protocol is encapsulated in the
-`ZeroMQ Message Transfer Protocol (ZMTP) <https://rfc.zeromq.org/spec:23/ZMTP>`__.
-
 -  Name: github.com/flux-framework/rfc/spec_3.rst
 
 -  Editor: Jim Garlick <garlick@llnl.gov>
@@ -24,6 +21,12 @@ Language
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
 be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+
+
+Related Standards
+-----------------
+
+- `ZeroMQ Message Transfer Protocol (ZMTP) <https://rfc.zeromq.org/spec:23/ZMTP>`_
 
 
 Goals
