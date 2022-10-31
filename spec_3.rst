@@ -60,32 +60,49 @@ the following specific goals:
 Background
 ----------
 
-``flux-broker`` is a message broker daemon for the Flux resource manager
-framework. A Flux *instance* is a set of interconnected ``flux-broker`` tasks
-that together provide a shared communications substrate for distributed
-resource manager services. Services and utilities communicate by passing
-messages through the session brokers. There are four types of messages:
-events, requests, responses, and control messages, which share a common
-structure described herein.
+The ``flux-broker`` is a message broker daemon for the Flux resource manager
+framework.  A Flux *instance* is a set of ``flux-broker`` processes that
+form an overlay network for distributed communication.  Flux components
+communicate with each other by exchanging messages over the overlay network.
 
-Event messages are published such that they are available to subscribers
-throughout the instance. Events are published with a *topic string*
-attached. Subscribers register a list of topic string prefixes
-to filter the set of messages they receive.
+In a Flux instance of size *N*, each broker is assigned a rank from 0 to
+*N - 1*.  The overlay network is a tree topology, with the root of the tree
+at rank 0.  Different tree shapes are permitted as long as peer connections are
+only between tree levels, and each node has at most one parent.  The tree
+shape, the instance size, and each broker's rank are fixed once the instance
+begins running.
 
-Requests are messages addressed to a resource manager or broker service.
-A topic string identifies the service and *method*. A *nodeid* optionally
-identifies a particular ``flux-broker`` rank. Requests follow the ZeroMQ
-DEALER-ROUTER message flow, which builds a source-address route at each hop.
+.. figure:: images/tree.png
+   :width: 150
+   :alt: Flux overlay network topology
+   :align: center
 
-Responses are optional replies to requests. They follow the ZeroMQ
-ROUTER-DEALER message flow, which unwinds the source address route
-accumulated by the request, and uses them to select among peers at each hop.
+   The Flux overlay network with root broker at rank 0.
 
-Control messages are used for connection management and status communication
-between brokers.  Unlike the other message types, they are only used between
-directly connected peers, never routed.
+The overlay network is capable of routing messages using several methods.
+Messages may be routed over the shortest path between any two brokers, using
+"smart host" routing where messages are forwarded upstream until a more
+informed broker knows how to route it, or by multi-casting to all broker
+ranks.  These capabilities support remote procedure call and
+publish-subscribe, the two main communication idioms used in Flux.
 
+If a broker fails or its connection is lost, any pending RPCs involving that
+broker as a target or as a message router receive automatic error responses,
+and the broker is forced to restart before reconnecting.  If the failed broker
+is an interior node of the tree acting as a router, its entire sub-tree is
+forced to restart.  In a Flux system instance, this restart is managed by
+systemd.
+
+Flux messages share a common structure that is strongly influenced by ZeroMQ
+conventions, since ZeroMQ provides a transport for Flux messages, and certain
+ZeroMQ socket types impose structural requirements on messages for routing
+and subscription filtering.  Flux messages may be sent over other transports,
+however.  For example, regular UNIX domain stream sockets transport messages
+between local processes and Flux brokers.
+
+There are four distinct Flux message types:  *request* and *response* messages
+for remote procedure call;  *event* messages for publish-subscribe, and
+*control* messages for internal use by the overlay network implementation.
 
 Implementation
 --------------
