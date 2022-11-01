@@ -2,8 +2,9 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_3.html
 
+#######################
 3/Flux Message Protocol
-=======================
+#######################
 
 This specification describes the format of Flux message broker
 messages, Version 1.
@@ -15,16 +16,18 @@ messages, Version 1.
 -  State: draft
 
 
+********
 Language
---------
+********
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
 be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
 
 
+*****************
 Related Standards
------------------
+*****************
 
 -  :doc:`6/Flux Remote Procedure Call Protocol <spec_6>`
 
@@ -33,8 +36,9 @@ Related Standards
 - `ZeroMQ Message Transfer Protocol (ZMTP) <https://rfc.zeromq.org/spec:23/ZMTP>`_
 
 
+*****
 Goals
------
+*****
 
 The Flux message protocol v1 provides a way for Flux utilities and services to
 communicate with one another within the context of a flux instance. It has
@@ -61,8 +65,9 @@ the following specific goals:
 -  Ensure that messages between any pair of endpoints are received in
    transmission order.
 
+**********
 Background
-----------
+**********
 
 The ``flux-broker`` is a message broker daemon for the Flux resource manager
 framework.  A Flux *instance* is a set of ``flux-broker`` processes that
@@ -108,12 +113,13 @@ There are four distinct Flux message types:  *request* and *response* messages
 for remote procedure call;  *event* messages for publish-subscribe, and
 *control* messages for internal use by the overlay network implementation.
 
+**************
 Implementation
---------------
+**************
 
 
 Rank Assignment
-~~~~~~~~~~~~~~~
+===============
 
 A *node* is defined as a ``flux-broker`` task. Each node in a Flux
 instance of size N SHALL be assigned a rank in the range of 0 to N - 1.
@@ -137,7 +143,7 @@ be covered in a future version of this specification.]
 
 
 Overlay Networks
-~~~~~~~~~~~~~~~~
+================
 
 The nodes of a Flux instance SHALL at minimum be interconnected in
 tree based overlay network with rank 0 at the root of the tree.
@@ -147,7 +153,7 @@ overlay networks to improve efficiency or fault tolerance.
 
 
 Service Addressing
-~~~~~~~~~~~~~~~~~~
+==================
 
 A Flux service SHALL be identified in a request by a *topic string*,
 a set of words delimited by periods, in which the first word identifies
@@ -156,7 +162,7 @@ For example, "kvs.get" refers to the *get* method of the *kvs* service.
 
 
 Default Request Routing
-~~~~~~~~~~~~~~~~~~~~~~~
+=======================
 
 Request messages MAY be addressed to *any rank* (FLUX_NODEID_ANY).
 Such messages SHALL be routed to the local broker, then to the
@@ -187,7 +193,7 @@ that the message SHALL NOT be delivered on the sending node.
 
 
 Rank Request Routing
-~~~~~~~~~~~~~~~~~~~~
+====================
 
 Request messages MAY be addressed to a specific rank.
 Such messages SHALL be routed to the target broker rank, then as follows:
@@ -210,21 +216,21 @@ unless suppressed as described below.
 
 
 Suppression of Responses
-~~~~~~~~~~~~~~~~~~~~~~~~
+========================
 
 If a request message includes the FLUX_MSGFLAG_NORESPONSE (4) flag,
 the broker or other responding entity SHALL NOT send a response message.
 
 
 Event Routing
-~~~~~~~~~~~~~
+=============
 
 Event messages SHALL only be published by the rank 0 broker. Other ranks MAY
 cause an event to be sent by first forwarding it to rank 0.
 
 
 Payload Conventions
-~~~~~~~~~~~~~~~~~~~
+===================
 
 Request, response, and event messages MAY contain a payload. Payloads MAY
 consist of any byte sequence. To maximize interoperability, norms are
@@ -242,7 +248,7 @@ established for common payload types:
 
 
 Message Structure
-~~~~~~~~~~~~~~~~~
+=================
 
 An individual message SHALL consist of a list of one or more variable
 length message parts.  Flux messages SHALL consist of the following message
@@ -361,7 +367,7 @@ Flux messages are specified by the following modified ABNF grammar [#f2]_
 
 
 Message Framing and Security
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
 When Flux uses ZeroMQ for transport (overlay network peer connections and the
 ``shmem`` connector), ZeroMQ handles security and message framing.  When Flux
