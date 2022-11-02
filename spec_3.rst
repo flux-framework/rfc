@@ -2,14 +2,12 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_3.html
 
+#######################
 3/Flux Message Protocol
-=======================
+#######################
 
 This specification describes the format of Flux message broker
 messages, Version 1.
-
-The Flux message protocol is encapsulated in the
-`ZeroMQ Message Transfer Protocol (ZMTP) <https://rfc.zeromq.org/spec:23/ZMTP>`__.
 
 -  Name: github.com/flux-framework/rfc/spec_3.rst
 
@@ -18,268 +16,178 @@ The Flux message protocol is encapsulated in the
 -  State: draft
 
 
+********
 Language
---------
+********
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
 be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
 
 
+*****************
+Related Standards
+*****************
+
+-  :doc:`6/Flux Remote Procedure Call Protocol <spec_6>`
+
+-  :doc:`12/Flux Security Architecture <spec_12>`
+
+- `ZeroMQ Message Transfer Protocol (ZMTP) <https://rfc.zeromq.org/spec:23/ZMTP>`_
+
+
+*****
 Goals
------
+*****
 
 The Flux message protocol v1 provides a way for Flux utilities and services to
 communicate with one another within the context of a flux instance. It has
 the following specific goals:
 
--  Endpoint-count scalability (e.g. to 100K nodes) through multi-hop
-   overlay networks.
+-  Enable Flux components to communicate within a Flux instance.
 
--  Overlay networks sharable by multiple Flux services and utilities.
+-  Enable the remote procedure call communication idiom.
 
--  Provide request-response (RPC) communication idiom.
+-  Enable the publish-subscribe communication idiom.
 
--  Provide publish-subscribe communication idiom.
+-  Allow Flux services to be deployed and accessed without consulting a
+   location service.
 
--  Handle common failure cases such as hard-hung brokers or crashed nodes,
-   but OK to propagate errors to services when necessary to keep running.
+-  Avoid sending Flux data over networks without encryption.
 
--  Peer network transit latency of O(10\ :sup:`-3`\ sec) for small messages
+-  Allow messages to be propagated over different transports including, but
+   not limited to, ZeroMQ.
 
--  Protect messages with strong crypto: privacy, integrity.
+-  Enable scalability to many thousands of nodes.
 
--  Fast codec, minimizing heap memory allocations
+-  Implement failure mitigation strategies that are simple to reason about.
 
+-  Ensure that messages between any pair of endpoints are received in
+   transmission order.
 
+**********
 Background
-----------
+**********
 
-``flux-broker`` is a message broker daemon for the Flux resource manager
-framework. A Flux *instance* is a set of interconnected ``flux-broker`` tasks
-that together provide a shared communications substrate for distributed
-resource manager services. Services and utilities communicate by passing
-messages through the session brokers. There are four types of messages:
-events, requests, responses, and control messages, which share a common
-structure described herein.
+The ``flux-broker`` is a message broker daemon for the Flux resource manager
+framework.  A Flux *instance* is a set of ``flux-broker`` processes that
+form an overlay network for distributed communication.  Flux components
+communicate with each other by exchanging messages over the overlay network.
 
-Event messages are published such that they are available to subscribers
-throughout the instance. Events are published with a *topic string*
-attached. Subscribers register a list of topic string prefixes
-to filter the set of messages they receive.
+In a Flux instance of size *N*, each broker is assigned a rank from 0 to
+*N - 1*.  The overlay network is a tree topology, with the root of the tree
+at rank 0.  Different tree shapes are permitted as long as peer connections are
+only between tree levels, and each node has at most one parent.  The tree
+shape, the instance size, and each broker's rank are fixed once the instance
+begins running.
 
-Requests are messages addressed to a resource manager or broker service.
-A topic string identifies the service and *method*. A *nodeid* optionally
-identifies a particular ``flux-broker`` rank. Requests follow the ZeroMQ
-DEALER-ROUTER message flow, which builds a source-address route at each hop.
-
-Responses are optional replies to requests. They follow the ZeroMQ
-ROUTER-DEALER message flow, which unwinds the source address route
-accumulated by the request, and uses them to select among peers at each hop.
-
-Control messages are used for connection management and status communication
-between brokers.  Unlike the other message types, they are only used between
-directly connected peers, never routed.
-
-
-Implementation
---------------
-
-
-Rank Assignment
-~~~~~~~~~~~~~~~
-
-A *node* is defined as a ``flux-broker`` task. Each node in a Flux
-instance of size N SHALL be assigned a rank in the range of 0 to N - 1.
-Ranks SHALL be represented by a 32 bit unsigned integer, with the highest
-value of (2:sup:`32` - 3).
-
-The rank FLUX_NODEID_ANY (2:sup:`32` - 1) SHALL be reserved to indicate
-*any rank* in addressing.
-
-The rank FLUX_NODEID_UPSTREAM (2:sup:`32` - 2) SHALL be reserved to indicate
-*any rank* that is upstream of the sender in request addressing.
-This value is reserved for the convenience of API implementations
-and SHALL NOT appear in the nodeid slot of an encoded message.
-
-A node’s rank SHALL be assigned at broker startup and SHALL NOT change
-for the node’s lifetime.
-
-The size of the Flux instance SHALL be determined at startup and SHALL
-not change for the life of the Flux instance. [Dynamic resize will
-be covered in a future version of this specification.]
-
-
-Overlay Networks
-~~~~~~~~~~~~~~~~
-
-The nodes of a Flux instance SHALL at minimum be interconnected in
-tree based overlay network with rank 0 at the root of the tree.
-
-The nodes of a Flux instance MAY be interconnected in additional
-overlay networks to improve efficiency or fault tolerance.
-
-
-Service Addressing
-~~~~~~~~~~~~~~~~~~
-
-A Flux service SHALL be identified in a request by a *topic string*,
-a set of words delimited by periods, in which the first word identifies
-the service, and remaining words represent *methods* within that service.
-For example, "kvs.get" refers to the *get* method of the *kvs* service.
-
-
-Default Request Routing
-~~~~~~~~~~~~~~~~~~~~~~~
-
-Request messages MAY be addressed to *any rank* (FLUX_NODEID_ANY).
-Such messages SHALL be routed to the local broker, then to the
-first match in the following sequence:
-
-1. If topic string begins with a word matching a local broker module
-   and the sender is not the same module attached to the same rank
-   broker, the message SHALL be routed to the broker module.
-
-2. If the broker is not the root node of the tree based overlay network,
-   the message SHALL be routed to a parent node in the tree based overlay
-   network, which SHALL re-apply this routing algorithm.
-
-If the message is received by a broker module, but the remaining words of the
-topic string do not match a method it implements, the module SHALL
-respond with error number 38, "Function not implemented", unless suppressed
-as described below.
-
-If the message reaches the root node, but none of the above conditions
-are met, the root broker SHALL respond with error number 38,
-"Function not implemented", unless suppressed as described below.
-
-A service may send a request *upstream* on the tree based overlay network
-by placing the sending nodeid in the message and setting the
-FLUX_MSGFLAG_UPSTREAM (16) flag. Such a message SHALL handled
-by the broker as if it were addressed to FLUX_NODEID_ANY, except
-that the message SHALL NOT be delivered on the sending node.
-
-
-Rank Request Routing
-~~~~~~~~~~~~~~~~~~~~
-
-Request messages MAY be addressed to a specific rank.
-Such messages SHALL be routed to the target broker rank, then as follows:
-
-1. If topic string begins with a word matching a local broker module,
-   the message SHALL be routed to the module.
-
-If the message is received by a broker module, but the remaining words of the
-topic string do not match a method it implements, the module SHALL
-respond with error number 38, "Function not implemented", unless suppressed
-as described below.
-
-If the message reaches the target node, but none of the above conditions
-are met, the broker SHALL respond with error number 38,
-"Function not implemented", unless suppressed as described below.
-
-If the message cannot be routed to the target node, the broker making
-this determination SHALL respond with error number 113, "No route to host",
-unless suppressed as described below.
-
-
-Suppression of Responses
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-If a request message includes the FLUX_MSGFLAG_NORESPONSE (4) flag,
-the broker or other responding entity SHALL NOT send a response message.
-
-
-Event Routing
-~~~~~~~~~~~~~
-
-Event messages SHALL only be published by the rank 0 broker. Other ranks MAY
-cause an event to be sent by first forwarding it to rank 0.
-
-
-Payload Conventions
-~~~~~~~~~~~~~~~~~~~
-
-Request, response, and event messages MAY contain a payload. Payloads MAY
-consist of any byte sequence. To maximize interoperability, norms are
-established for common payload types:
-
-1. String payloads SHALL include a terminating NULL character.
-
-2. Structured objects are RECOMMENDED to be represented as JSON [#f1]_.
-
-3. JSON payloads SHALL conform to Internet RFC 7159.
-
-4. JSON payloads SHALL be objects, not arrays or bare values.
-
-5. JSON payloads SHALL include a terminating NULL character.
-
-
-Message Structure
-~~~~~~~~~~~~~~~~~
-
-An individual message SHALL consist of a list of one or more variable
-length message parts.  Flux messages SHALL consist of the following message
-parts, in order:
-
-routes (optional)
-  Messages MAY contain a "route stack" for request/response message routing.
-  Each route SHALL be a message part containing a UUID string that represents
-  one route hop.  The most recent hop SHALL be on the top of the stack (first
-  message part).
-
-route stack delimiter (optional)
-  The route stack delimiter is an empty message frame that delimits the route
-  stack from other message parts.  The delimiter is REQUIRED if the message
-  contains any routes.
-
-topic string (optional)
-  Messages MAY contain a period-delimited string representing an event topic
-  or a RPC service endpoint.  The topic string is REQUIRED if the message type
-  is a request, response, or event.
-
-payload (optional)
-  Messages MAY contain a payload of zero or more bytes of user-specific content.
-
-PROTO block (required)
-  The PROTO block is a 20-byte block of message data defined in the ABNF
-  below.  Among other things, it contains message flags that indicate which
-  of the optional message parts are present.
-
-.. figure:: images/messages.png
-   :width: 600
-   :alt: Flux message examples
+.. figure:: images/tree.png
+   :width: 150
+   :alt: Flux overlay network topology
    :align: center
 
-   Example of (a) Flux request message, and (b) Flux response message.  Integer
-   values are in hex, and for clarity are not converted to network byte order.
+   The Flux overlay network with root broker at rank 0.
 
-Flux messages are specified by the following modified ABNF grammar [#f2]_
+The overlay network is capable of routing messages using several methods.
+Messages may be routed over the shortest path between any two brokers, using
+"smart host" routing where messages are forwarded upstream until a more
+informed broker knows how to route it, or by multi-casting to all broker
+ranks.  These capabilities support remote procedure call (RPC) and
+publish-subscribe, the two main communication idioms used in Flux.
 
-::
+If a broker fails or its connection is lost, any pending RPCs involving that
+broker as a target or as a message router receive automatic error responses,
+and the broker is forced to restart before reconnecting.  If the failed broker
+is an interior node of the tree acting as a router, its entire sub-tree is
+forced to restart.  In a Flux system instance, this restart is managed by
+systemd.
 
-   message       = C:request *S:response
-                   / S:event
-                   / C:control
+Flux messages share a common structure that is strongly influenced by ZeroMQ
+conventions, since ZeroMQ provides a transport for Flux messages, and certain
+ZeroMQ socket types impose structural requirements on messages for routing
+and subscription filtering.  Flux messages may be sent over other transports,
+however.  For example, regular UNIX domain stream sockets transport messages
+between local processes and Flux brokers.
 
-   ; Multi-part ZeroMQ messages
-   C:request       = [routing] topic [payload] PROTO
-   S:response      = [routing] topic [payload] PROTO
-   S:event         = [routing] topic [payload] PROTO
-   C:control       = PROTO
+There are four distinct Flux message types:  *request* and *response* messages
+for remote procedure call;  *event* messages for publish-subscribe, and
+*control* messages for internal use by the overlay network implementation.
 
-   ; Route frame stack, ZeroMQ DEALER-ROUTER format
-   routing         = *identity delimiter
-   identity        = 1*OCTET       ; socket identity ZeroMQ frame
-   delimiter       = 0OCTET        ; empty delimiter ZeroMQ frame
 
-   ; Topic string frame, ZeroMQ PUB-SUB format
-   topic           = 1*(ALPHA / DIGIT / ".")
+**************
+Implementation
+**************
 
-   ; Payload frame
-   payload         = *OCTET        ; payload ZeroMQ frame
+Common Message Format
+=====================
 
-   ; Protocol frame
+All Flux messages share a common message structure that is compatible with
+the ZeroMQ message transport:
+
+- Message SHALL be divided into ordered *parts*.
+
+- Messages SHALL support a *route stack* of message parts for source-address
+  routing.
+
+- Messages SHALL support a *topic string* message part for subscriber
+  filtering.
+
+The boundary between message parts SHALL be preserved by message transports;
+that is, Flux messages sent as an array of parts MUST be received as an array
+of parts, not a concatenated blob.
+
+Message transports MAY modify Flux messages if directed to do so.  For
+example, a ZeroMQ ROUTER socket implements source-address routing by adding
+a message part in one direction and removing one in the opposite direction.
+
+Optional Message Parts
+^^^^^^^^^^^^^^^^^^^^^^
+
+The following message parts MAY appear in Flux messages, in the following
+order:
+
+routes
+  Messages MAY contain a *route stack* for request/response message routing.
+  Each route SHALL be a message part containing a NULL-terminated UUID string
+  that represents one route hop.  The most recent hop SHALL be on the top of
+  the stack.
+
+route stack delimiter
+  The route stack delimiter is an empty message frame that delimits the route
+  stack from other message parts.  The delimiter is REQUIRED if the message
+  contains any routes.  The routes and delimiter MUST be the first message
+  parts in the message, if present.
+
+topic string
+  Messages MAY contain a NULL-terminated string representing an event topic
+  or a RPC service endpoint.
+
+payload
+  Messages MAY contain a payload of zero or more bytes of user-specific
+  content.
+
+Required Message Parts
+^^^^^^^^^^^^^^^^^^^^^^
+
+Flux messages are REQUIRED to have one message part that acts as a protocol
+header and is encoded as described by the following ABNF [#f2]_ grammar.
+This block of data MUST be the last message part in the message.  Note the
+following about the message header:
+
+- It has a fixed length.
+
+- It includes the message type.
+
+- Some fields (notably the last two 4-byte integers) have different meanings
+  depending on the message type.
+
+- The message flags determine which of the optional message parts are present.
+
+- The message credentials (*userid* and *rolemask*) are those of the user that
+  sent the message, and are set when the message is accepted by a broker.
+
+.. code-block:: ABNF
+
    PROTO           = request / response / event / control
 
    request         = magic version %x01 flags userid rolemask nodeid   matchtag
@@ -334,8 +242,163 @@ Flux messages are specified by the following modified ABNF grammar [#f2]_
    unused          = %x00.00.00.00
 
 
+Request Message Type
+====================
+
+When the message header indicates a message type of *request* (1),
+the following rules apply:
+
+- The message SHALL include a route delimiter.
+
+- The message MAY include routes.  One SHALL be added by the system each time
+  the request transits a socket.
+
+- The message SHALL include a topic string, which MAY include period
+  delimiters.  The first portion (up to the first period) SHALL be interpreted
+  as a service name.
+
+- The message MAY include a payload.
+
+- The header MAY include the *upstream* flag, which affects request routing.
+
+- The header SHALL include a *nodeid* field which affects request routing.
+
+- The header SHALL include a *matchtag* field, used to match requests and
+  responses.
+
+- If the header *noresponse* flag is set, responses to the request SHALL
+  be suppressed.
+
+Request Routing
+^^^^^^^^^^^^^^^
+
+Request messages received by a broker are routed in three ways, depending on
+the value of the *nodeid* header field and the *upstream* header flag:
+
+1. If the request *nodeid* is set to the *nodeid-any* constant, the broker
+SHALL attempt to match a locally-registered service with the request topic
+string.  On a match, the message SHALL be routed to that service.  Otherwise,
+it SHALL be routed to the next upstream broker peer, which does the same.
+If the message reaches the root broker without matching a service, that
+broker SHALL generate a response message containing POSIX error number 39
+(Function not implemented).
+
+2. If the request *nodeid* is not *nodeid-any* and the *upstream* flag is
+clear, the nodeid SHALL be interpreted as the destination broker rank.
+Brokers SHALL use topology data to route these requests to the destination
+broker.  Upon receipt, the destination broker SHALL attempt to match a
+locally-registered service with the request topic string.  On a match, the
+message SHALL be routed to that service.  Otherwise, the broker SHALL generate
+a response message containing POSIX error number 39 (Function not
+implemented).
+
+3. If the request *nodeid* is not *nodeid-any* and the *upstream* flag is set,
+the nodeid SHALL be interpreted as the broker rank of the sender.  The
+receiving broker SHALL NOT attempt to match a locally-registered service on
+that rank.  Instead, the message SHALL be routed to the upstream broker peer,
+as in the first case, until a service is matched or an error is generated.
+
+.. note::
+  The *upstream* flag enables a distributed service that registers the same
+  service name on all broker ranks to send requests to its own service on an
+  upstream broker.  Without the flag, the request would be looped back to the
+  sender.  The same could be accomplished by addressing the request to the
+  upstream broker's rank, but that requires knowledge of the topology, which
+  is a little more involved than setting a message flag.
+
+
+Response Message Type
+=====================
+
+When the message header indicates a message type of *response* (2),
+the following rules apply:
+
+- The message SHALL include a route delimiter and routes copied from the
+  request.  A route SHALL be removed by the system each time the response
+  transits a socket.  The route selects the next peer hop.
+
+- The message SHALL include a topic string, copied from the request.
+
+- The message MAY include a payload.
+
+- The header SHALL include a *errnum* field.
+
+- The header SHALL include a *matchtag* field, copied from the request.
+
+.. figure:: images/messages.png
+   :width: 600
+   :alt: Flux message examples
+   :align: center
+
+   Example of (a) Flux request message, and (b) Flux response message.  Integer
+   values are in hex, and for clarity are not converted to network byte order.
+
+
+Event Message Type
+==================
+
+When the message header indicates a message type of *event* (4),
+the following rules apply:
+
+- The message SHALL NOT include routes or a route delimiter.
+
+- The message SHALL include a topic string.
+
+- The message MAY include a payload.
+
+- The header SHALL include a monotonically increasing event sequence number.
+
+- The header MAY include the *private* flag, which instructs the broker only
+  to deliver the event to connections with credentials matching the event
+  sender or the instance owner.
+
+Event messages SHALL only be published by the rank 0 broker. Other ranks MAY
+cause an event to be sent by first forwarding it to rank 0.
+
+Control message type
+====================
+
+When the message header indicates a message type of *control* (8),
+the following rules apply:
+
+- The message SHALL NOT include routes or a route delimiter.
+
+- The message SHALL NOT include a topic string.
+
+- The message SHALL NOT include a payload.
+
+- The header SHALL include two general purpose 4-byte integers labeled
+  *type* and *status*.
+
+- The message SHALL NOT be routed - it is only for use between direct peers.
+
+.. note::
+  Control messages are currently used between overlay network peers to
+  communicate status, send heartbeats, and to force disconnects.  They are
+  also used between broker modules and the broker module loader to communicate
+  module status.  Since they are not routed, they are not of much use outside
+  of those contexts.
+
+
+Payload Conventions
+===================
+
+Request, response, and event messages MAY contain a payload. Payloads MAY
+consist of any byte sequence. To maximize interoperability, norms are
+established for common payload types:
+
+1. String payloads SHALL include a terminating NULL character.
+
+2. Structured objects are RECOMMENDED to be represented as JSON [#f1]_.
+
+3. JSON payloads SHALL conform to Internet RFC 7159.
+
+4. JSON payloads SHALL be objects, not arrays or bare values.
+
+5. JSON payloads SHALL include a terminating NULL character.
+
 Message Framing and Security
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
 When Flux uses ZeroMQ for transport (overlay network peer connections and the
 ``shmem`` connector), ZeroMQ handles security and message framing.  When Flux
@@ -353,7 +416,7 @@ SHALL be sent to the client.  Upon receipt of the zero byte, the client MAY
 proceed to exchange Flux messages on the socket.
 
 Messages SHALL be framed as follows:  First, within a message, message parts
-SHALL be encoded as as a *size* field followed by a *data* field.  The *size*
+SHALL be encoded as a *size* field followed by a *data* field.  The *size*
 field consists of a short message size (1 byte) followed by an optional long
 message size (4 bytes).  The message sizes SHALL be interpreted as unsigned
 integers in network byte order.
