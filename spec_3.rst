@@ -416,7 +416,7 @@ SHALL be sent to the client.  Upon receipt of the zero byte, the client MAY
 proceed to exchange Flux messages on the socket.
 
 Messages SHALL be framed as follows:  First, within a message, message parts
-SHALL be encoded as as a *size* field followed by a *data* field.  The *size*
+SHALL be encoded as a *size* field followed by a *data* field.  The *size*
 field consists of a short message size (1 byte) followed by an optional long
 message size (4 bytes).  The message sizes SHALL be interpreted as unsigned
 integers in network byte order.
