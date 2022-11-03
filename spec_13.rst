@@ -743,7 +743,7 @@ elements SHALL begin with zero and increase monotonically.
 Protocol Definition
 ~~~~~~~~~~~~~~~~~~~
 
-::
+.. code-block:: ABNF
 
    PMI1            = C:init      S:init
                    / C:maxes     S:maxes
@@ -885,7 +885,7 @@ The value SHALL consist of a vector of "blocks", where a block is a
 3-tuple of starting node id, number of nodes, and number of processes per
 node, in the following format, expressed in ABNF:
 
-::
+.. code-block:: ABNF
 
    PMI_process_mapping = "(vector," blocklist ")"
 
