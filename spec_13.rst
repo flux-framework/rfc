@@ -894,26 +894,25 @@ node, in the following format, expressed in ABNF:
 
    uint                = 1*DIGIT                        ; unsigned integer
 
-Examples:
 
-(vector,(0,2,2))
-  4 processes mapped to 2 nodes with *block* task distribution.
-  Nodeid 0 has ranks 0-1;  nodeid 1 has ranks 2-3.
+.. list-table:: PMI_process_mapping examples
+   :header-rows: 1
 
-(vector,(0,2,1),(0,2,1))
-  4 processes mapped to 2 nodes with *cyclic* task distribution.
-  Nodeid 0 has ranks 0,2;  nodeid 1 has ranks 1,3.
-
-(vector,(0,16,16))
-  256 processes mapped to 16 nodes with *block* task distribution.
-  Nodeid 0 has ranks 0-15;  nodeid 1 has ranks 16-31;  and so on.
-
-(vector,(0,8,16),(8,4,32))
-  256 processes mapped to 12 nodes with *block* task distribution.
-  Nodeid 0 has ranks 0-7;  nodeid 1 has ranks 8-15; and so on through nodeid 7.
-  Nodeid 8 has ranks 64-95; nodeid 9 has ranks 96-127, and so on.
-
-
+   * - nnodes*ppn
+     - block
+     - cyclic
+   * - 2*2
+     - (vector,(0,2,2))
+     - (vector,(0,2,1),(0,2,1))
+   * - 2*4
+     - (vector,(0,2,4))
+     - (vector,(0,2,1),(0,2,1),(0,2,1),(0,2,1))
+   * - 2*2 + 2*4
+     - (vector,(0,2,2),(2,2,4))
+     - (vector,(0,4,1),(0,4,1),(2,2,1),(2,2,1))
+   * - 4096*256
+     - (vector,(0,4096,256))
+     - *long string*
 
 If the process mapping value is too long to fit in a KVS value, the process
 manager SHALL return a value consisting of an empty string, indicating that
