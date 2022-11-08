@@ -234,6 +234,11 @@ implemented by the job manager and job execution system.
 This specification describes Flux Job Queues. A Flux Job queue is a named,
 user-visible container for job requests sorted by priority.
 
+:doc:`34/Flux Task Map <spec_34>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Flux Task Map is a compact mapping between job task ranks and node IDs.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -270,3 +275,4 @@ user-visible container for job requests sorted by priority.
    spec_31
    spec_32
    spec_33
+   spec_34

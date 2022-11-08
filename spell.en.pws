@@ -409,6 +409,7 @@ svg
 invariants
 unutilized
 idset
+idsets
 starttime
 oom
 waitpid
@@ -457,3 +458,4 @@ ncores
 ngpus
 ncpus
 jobtap
+scalably
