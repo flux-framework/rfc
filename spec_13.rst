@@ -109,17 +109,20 @@ library providing the PMI-1 API implemented using a proprietary protocol.
 Terminology
 -----------
 
-"Process manager" is the provider of PMI services. A resource manager
-MAY operate in the role of process manager.
+Process manager
+  The provider of PMI services. A resource manager MAY operate in the role
+  of process manager.
 
-"Process group" is a parallel program, including but not limited to
-MPI programs. It is the user of PMI services. In this document
-"program" is used interchangeably with process group.
+Process group
+  A parallel program, including but not limited to MPI programs.  It is
+  the user of PMI services.  In this document *program* is used interchangeably
+  process group.
 
-"process" is a UNIX process, in this context, a member of a process
-group or a program.
+process
+  A UNIX process, in this context, a member of a process group or a program.
 
-"PMI library" is a shared library that provides the PMI-1 API.
+PMI library
+  A shared library that provides the PMI-1 API.
 
 
 Caveats
@@ -153,15 +156,19 @@ process group information to processes.
 If the PMI wire protocol is offered, the process manager SHALL
 set the following environment variables:
 
--  PMI_FD - file descriptor process SHALL use to communicate with
-   process manager
+.. list-table::
+   :header-rows: 1
 
--  PMI_RANK - rank of this process within the program (zero-origin)
-
--  PMI_SIZE - size of the program (number of ranks)
-
--  PMI_SPAWNED - only set (to 1) if the program was created by
-   'PMI_Spawn_multiple()'
+   * - Variable
+     - Description
+   * - PMI_FD
+     - file descriptor process SHALL use to communicate with process manager
+   * - PMI_RANK
+     - rank of this process within the program (zero-origin)
+   * - PMI_SIZE
+     - size of the program (number of ranks)
+   * - PMI_SPAWNED
+     - only set (to 1) if the program was created by ``PMI_Spawn_multiple()``
 
 
 Application Programming Interface
@@ -196,35 +203,58 @@ Return Codes
 All PMI-1 functions SHALL return one of the following integer values,
 indicating the result of the operation:
 
--  PMI_SUCCESS (0): operation completed successfully
+.. list-table::
+   :header-rows: 1
+   :widths: 20 5 20
 
--  PMI_FAIL (-1): operation failed
-
--  PMI_ERR_INIT (1): PMI not initialized
-
--  PMI_ERR_NOMEM (2): input buffer not large enough
-
--  PMI_ERR_INVALID_ARG (3): invalid argument
-
--  PMI_ERR_INVALID_KEY (4): invalid key argument
-
--  PMI_ERR_INVALID_KEY_LENGTH (5): invalid key length argument
-
--  PMI_ERR_INVALID_VAL (6): invalid val argument
-
--  PMI_ERR_INVALID_VAL_LENGTH (7): invalid val length argument
-
--  PMI_ERR_INVALID_LENGTH (8): invalid length argument
-
--  PMI_ERR_INVALID_NUM_ARGS (9): invalid number of arguments
-
--  PMI_ERR_INVALID_ARGS (10): invalid args argument
-
--  PMI_ERR_INVALID_NUM_PARSED (11): invalid num_parsed length argument
-
--  PMI_ERR_INVALID_KEYVALP (12): invalid keyvalp argument
-
--  PMI_ERR_INVALID_SIZE (13): invalid size argument
+   * - Name
+     - Value
+     - Description
+   * - PMI_SUCCESS
+     - 0
+     - operation completed successfully
+   * - PMI_FAIL
+     - -1
+     - operation failed
+   * - PMI_ERR_INIT
+     - 1
+     - PMI not initialized
+   * - PMI_ERR_NOMEM
+     - 2
+     - input buffer not large enough
+   * - PMI_ERR_INVALID_ARG
+     - 3
+     - invalid argument
+   * - PMI_ERR_INVALID_KEY
+     - 4
+     - invalid key argument
+   * - PMI_ERR_INVALID_KEY_LENGTH
+     - 5
+     - invalid key length argument
+   * - PMI_ERR_INVALID_VAL
+     - 6
+     - invalid val argument
+   * - PMI_ERR_INVALID_VAL_LENGTH
+     - 7
+     - invalid val length argument
+   * - PMI_ERR_INVALID_LENGTH
+     - 8
+     - invalid length argument
+   * - PMI_ERR_INVALID_NUM_ARGS
+     - 9
+     - invalid number of arguments
+   * - PMI_ERR_INVALID_ARGS
+     - 10
+     - invalid args argument
+   * - PMI_ERR_INVALID_NUM_PARSED
+     - 11
+     - invalid num_parsed length argument
+   * - PMI_ERR_INVALID_KEYVALP
+     - 12
+     - invalid keyvalp argument
+   * - PMI_ERR_INVALID_SIZE
+     - 13
+     - invalid size argument
 
 
 Initialization
@@ -235,28 +265,28 @@ Initialization
    int PMI_Init (int *spawned);
 
 Initialize the PMI library for this process. Upon success, the value
-of 'spawned' (boolean) SHALL bet set to (1) if this process was created
-by 'PMI_Spawn_multiple()', or (0) if not.
+of ``spawned`` (boolean) SHALL bet set to (1) if this process was created
+by ``PMI_Spawn_multiple()``, or (0) if not.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_FAIL' - initialization failed
+-  PMI_FAIL - initialization failed
 
 .. code:: c
 
    int PMI_Initialized (int *initialized);
 
 Check if the PMI library has been initialized for this process.
-Upon success, the the value of 'initialized' (boolean) SHALL be set to
+Upon success, the the value of ``initialized`` (boolean) SHALL be set to
 (1) or (0) to indicate whether or not PMI has been successfully initialized.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_FAIL' - unable to set the variable
+-  PMI_FAIL - unable to set the variable
 
 .. code:: c
 
@@ -267,24 +297,24 @@ Errors:
 
 Obtain the maximum length (including terminating NULL) of KVS name,
 key, value, and id strings. Upon success, the PMI library SHALL
-set the value of 'length' to the maximum name length for the requested
+set the value of ``length`` to the maximum name length for the requested
 parameter.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_FAIL' - unable to set the length
+-  PMI_FAIL - unable to set the length
 
 Notes:
 
 -  Process Management in MPICH [#f1]_ recommends minimum lengths for
    name, key, and value of 16, 32, and 64, respectively.
 
--  'PMI_Get_id_length_max()' SHALL be considered an alias for
-   'PMI_Get_name_length_max()'.
+-  ``PMI_Get_id_length_max()`` SHALL be considered an alias for
+   ``PMI_Get_name_length_max()``.
 
--  'PMI_Get_id_length_max()' was dropped from pmi.h [#f3]_ on 2011-01-28 in
+-  ``PMI_Get_id_length_max()`` was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
 .. code:: c
@@ -295,15 +325,15 @@ Finalize the PMI library for this process.
 
 Errors:
 
--  'PMI_FAIL' - finalization failed
+-  PMI_FAIL - finalization failed
 
 .. code:: c
 
    int PMI_Abort (int exit_code, const char error_msg[]);
 
 Abort the process group associated with this process.
-The PMI library SHALL print 'error_msg' to standard error, then exit this
-process with with 'exit_code'. This function SHALL NOT return.
+The PMI library SHALL print ``error_msg`` to standard error, then exit this
+process with with ``exit_code``. This function SHALL NOT return.
 
 
 Process Group Information
@@ -314,41 +344,41 @@ Process Group Information
    int PMI_Get_size (int *size);
 
 Obtain the size of the process group to which the local process belongs.
-Upon success, the value of 'size' SHALL be set to the size of the process
+Upon success, the value of ``size`` SHALL be set to the size of the process
 group.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_FAIL' - unable to return the size
+-  PMI_FAIL - unable to return the size
 
 .. code:: c
 
    int PMI_Get_rank (int *rank);
 
 Obtain the rank (0…​size-1) of the local process in the process group.
-Upon success, 'rank' SHALL be set to the rank of the local process.
+Upon success, ``rank`` SHALL be set to the rank of the local process.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_FAIL' - unable to return the rank
+-  PMI_FAIL - unable to return the rank
 
 .. code:: c
 
    int PMI_Get_universe_size (int *size);
 
 Obtain the universe size, which is the the maximum future size of the
-process group for dynamic applications. Upon success, 'size' SHALL
+process group for dynamic applications. Upon success, ``size`` SHALL
 be set to the rank of the local process.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_FAIL' - unable to return the size
+-  PMI_FAIL - unable to return the size
 
 Notes:
 
@@ -358,14 +388,14 @@ Notes:
 
    int PMI_Get_appnum (int *appnum);
 
-Obtain the application number. Upon success, 'appnum' SHALL be set to
+Obtain the application number. Upon success, ``appnum`` SHALL be set to
 the application number.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_FAIL' - unable to return the appnum
+-  PMI_FAIL - unable to return the appnum
 
 Notes
 
@@ -382,52 +412,52 @@ Local Process Group Information
 Get the ranks of the local processes in the process group.
 This is a simple topology function to distinguish between processes that can
 communicate through IPC mechanisms (e.g., shared memory) and other network
-mechanisms. The user SHALL set 'length' to the size returned by
-'PMI_Get_clique_size()', and 'ranks' to an integer array of that length.
+mechanisms. The user SHALL set ``length`` to the size returned by
+``PMI_Get_clique_size()``, and ``ranks`` to an integer array of that length.
 Upon success, the PMI library SHALL fill each slot of the array with the
 rank of a local process in the process group.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_ERR_INVALID_LENGTH' - invalid length argument
+-  PMI_ERR_INVALID_LENGTH - invalid length argument
 
--  'PMI_FAIL' - unable to return the ranks
+-  PMI_FAIL - unable to return the ranks
 
 Notes:
 
 -  This function returns the ranks of the processes on the local node.
 
 -  The array must be at least as large as the size returned by
-   'PMI_Get_clique_size()'.
+   ``PMI_Get_clique_size()``.
 
 -  This function was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
 
--  The implementation should fetch the "PMI_process_mapping" value from the KVS
-   and calculate the clique ranks (see below).
+-  The implementation should fetch the ``PMI_process_mapping`` value from the
+   KVS and calculate the clique ranks (see below).
 
 .. code:: c
 
    int PMI_Get_clique_size (int *size);
 
-Obtain the number of processes on the local node. Upon success, 'size'
+Obtain the number of processes on the local node. Upon success, ``size``
 SHALL be set to the number of processes on the local node.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_FAIL' - unable to return the clique size
+-  PMI_FAIL - unable to return the clique size
 
 Notes:
 
 -  This function was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
 
--  The implementation should fetch the "PMI_process_mapping" value from the KVS
-   and calculate the clique ranks (see below).
+-  The implementation should fetch the ``PMI_process_mapping`` value from the
+   KVS and calculate the clique ranks (see below).
 
 
 Key Value Store
@@ -438,23 +468,24 @@ Key Value Store
    int PMI_KVS_Put (const char kvsname[], const char key[], const char value[]);
 
 Put a key/value pair in a keyval space.
-The user SHALL set 'kvsname' to the name returned from 'PMI_KVS_Get_my_name()'.
-The user SHALL set 'key' and 'value' to NULL terminated strings no longer
-(with NULL) than the sizes returned by 'PMI_KVS_Get_key_length_max()' and
-'PMI_KVS_Get_value_length_max()' respectively.
+The user SHALL set ``kvsname`` to the name returned from
+``PMI_KVS_Get_my_name()``.  The user SHALL set ``key`` and ``value`` to NULL
+terminated strings no longer (with NULL) than the sizes returned by
+``PMI_KVS_Get_key_length_max()`` and ``PMI_KVS_Get_value_length_max()``
+respectively.
 
 Upon success, the PMI value SHALL be visible to other processes after
-'PMI_KVS_Commit()' and 'PMI_Barrier()' are called.
+``PMI_KVS_Commit()`` and ``PMI_Barrier()`` are called.
 
 Errors:
 
--  'PMI_ERR_INVALID_KVS' - invalid kvsname argument
+-  PMI_ERR_INVALID_KVS - invalid kvsname argument
 
--  'PMI_ERR_INVALID_KEY' - invalid key argument
+-  PMI_ERR_INVALID_KEY - invalid key argument
 
--  'PMI_ERR_INVALID_VAL' - invalid val argument
+-  PMI_ERR_INVALID_VAL - invalid val argument
 
--  'PMI_FAIL' - put failed
+-  PMI_FAIL - put failed
 
 Notes:
 
@@ -469,8 +500,8 @@ Notes:
    int PMI_KVS_Commit (const char kvsname[]);
 
 Commit all previous puts to the keyval space. Upon success, all puts
-since the last 'PMI_KVS_Commit()' shall be stored into the specified
-'kvsname'.
+since the last ``PMI_KVS_Commit()`` shall be stored into the specified
+``kvsname``.
 
 Errors:
 
@@ -491,25 +522,26 @@ Notes:
    int PMI_KVS_Get (const char kvsname[], const char key[], char value[], int length);
 
 Get a key/value pair from a keyval space.
-The user SHALL set 'kvsname' to the name returned from 'PMI_KVS_Get_my_name()'.
-The user SHALL set 'length' to the length of the 'value' array, which SHALL
-be no shorter than the length returned by 'PMI_KVS_Get_value_length_max()'.
-The user SHALL set 'key' to a NULL terminated string no longer (with NULL)
-than the size returned by 'PMI_KVS_Get_key_length_max()'.
+The user SHALL set ``kvsname`` to the name returned from
+``PMI_KVS_Get_my_name()``.  The user SHALL set ``length`` to the length of the
+``value`` array, which SHALL be no shorter than the length returned by
+``PMI_KVS_Get_value_length_max()``.  The user SHALL set 'key' to a NULL
+terminated string no longer (with NULL) than the size returned by
+``PMI_KVS_Get_key_length_max()``.
 
-Upon success, the PMI library SHALL fill 'value' with the value of 'key'.
+Upon success, the PMI library SHALL fill ``value`` with the value of ``key``.
 
 Errors:
 
--  'PMI_ERR_INVALID_KVS' - invalid kvsname argument
+-  PMI_ERR_INVALID_KVS - invalid kvsname argument
 
--  'PMI_ERR_INVALID_KEY' - invalid key argument
+-  PMI_ERR_INVALID_KEY - invalid key argument
 
--  'PMI_ERR_INVALID_VAL' - invalid val argument
+-  PMI_ERR_INVALID_VAL - invalid val argument
 
--  'PMI_ERR_INVALID_LENGTH' - invalid length argument
+-  PMI_ERR_INVALID_LENGTH - invalid length argument
 
--  'PMI_FAIL' - get failed
+-  PMI_FAIL - get failed
 
 .. code:: c
 
@@ -518,31 +550,31 @@ Errors:
    int PMI_Get_id( char kvsname[], int length );
 
 This function returns the common keyval space for this process group.
-The user SHALL set set 'length' to the length of the 'kvsname' array,
+The user SHALL set set ``length`` to the length of the ``kvsname`` array,
 which SHALL be no shorter than the length returned by
-'PMI_KVS_Get_name_length_max()'.
+``PMI_KVS_Get_name_length_max()``.
 
-Upon success, the PMI library SHALL set 'kvsname' to a NULL terminated
+Upon success, the PMI library SHALL set ``kvsname`` to a NULL terminated
 string representing the keyval space.
 
 Errors:
 
--  'PMI_ERR_INVALID_ARG' - invalid argument
+-  PMI_ERR_INVALID_ARG - invalid argument
 
--  'PMI_ERR_INVALID_LENGTH' - invalid length argument
+-  PMI_ERR_INVALID_LENGTH - invalid length argument
 
--  'PMI_FAIL' - unable to return the kvsname
+-  PMI_FAIL - unable to return the kvsname
 
 Notes:
 
 -  length SHALL be greater than or equal to the length returned
-   by 'PMI_KVS_Get_name_length_max()'.
+   by ``PMI_KVS_Get_name_length_max()``.
 
--  'PMI_Get_kvs_domain_id()' and 'PMI_Get_id()' SHALL be considered
-   an alias for 'PMI_KVS_Get_my_name()'.
+-  ``PMI_Get_kvs_domain_id()`` and ``PMI_Get_id()`` SHALL be considered
+   an alias for ``PMI_KVS_Get_my_name()``.
 
--  'PMI_Get_kvs_domain_id()' and 'PMI_Get_id()' were dropped from pmi.h [#f3]_
-   on 2011-01-28 in `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
+-  ``PMI_Get_kvs_domain_id()`` and ``PMI_Get_id()`` were dropped from pmi.h
+   [#f3]_ on 2011-01-28 in `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
 .. code:: c
 
@@ -603,22 +635,23 @@ Dynamic Process Management
                            int errors[]);
 
 This function spawns a set of processes into a new process group.
-'count' refers to the size of the array parameters 'cmd', 'argvs',
-'maxprocs', 'info_keyval_sizes' and 'info_keyval_vectors'.
-'preput_keyval_size' refers to the size of the 'preput_keyval_vector' array.
+``count`` refers to the size of the array parameters ``cmd``, ``argvs``,
+``maxprocs``, ``info_keyval_sizes`` and ``info_keyval_vectors``.
+``preput_keyval_size`` refers to the size of the ``preput_keyval_vector``
+array.
 
-'preput_keyval_vector' contains keyval pairs that will be put in the
+``preput_keyval_vector`` contains keyval pairs that will be put in the
 keyval space of the newly created process group before the processes
 are started.
 
-The 'maxprocs' array specifies the desired number of processes
-to create for each 'cmd' string. The actual number of processes
+The ``maxprocs`` array specifies the desired number of processes
+to create for each ``cmd`` string. The actual number of processes
 may be less than the numbers specified in maxprocs. The acceptable
 number of processes spawned may be controlled by "soft" keyvals in
 the info arrays.
 
 Environment variables may be passed to the spawned processes through PMI
-implementation specific 'info_keyval' parameters.
+implementation specific ``info_keyval`` parameters.
 
 Errors:
 
@@ -743,7 +776,7 @@ elements SHALL begin with zero and increase monotonically.
 Protocol Definition
 ~~~~~~~~~~~~~~~~~~~
 
-::
+.. code-block:: ABNF
 
    PMI1            = C:init      S:init
                    / C:maxes     S:maxes
@@ -885,7 +918,7 @@ The value SHALL consist of a vector of "blocks", where a block is a
 3-tuple of starting node id, number of nodes, and number of processes per
 node, in the following format, expressed in ABNF:
 
-::
+.. code-block:: ABNF
 
    PMI_process_mapping = "(vector," blocklist ")"
 
@@ -894,26 +927,25 @@ node, in the following format, expressed in ABNF:
 
    uint                = 1*DIGIT                        ; unsigned integer
 
-Examples:
 
-(vector,(0,2,2))
-  4 processes mapped to 2 nodes with *block* task distribution.
-  Nodeid 0 has ranks 0-1;  nodeid 1 has ranks 2-3.
+.. list-table:: PMI_process_mapping examples
+   :header-rows: 1
 
-(vector,(0,2,1),(0,2,1))
-  4 processes mapped to 2 nodes with *cyclic* task distribution.
-  Nodeid 0 has ranks 0,2;  nodeid 1 has ranks 1,3.
-
-(vector,(0,16,16))
-  256 processes mapped to 16 nodes with *block* task distribution.
-  Nodeid 0 has ranks 0-15;  nodeid 1 has ranks 16-31;  and so on.
-
-(vector,(0,8,16),(8,4,32))
-  256 processes mapped to 12 nodes with *block* task distribution.
-  Nodeid 0 has ranks 0-7;  nodeid 1 has ranks 8-15; and so on through nodeid 7.
-  Nodeid 8 has ranks 64-95; nodeid 9 has ranks 96-127, and so on.
-
-
+   * - nnodes*ppn
+     - block
+     - cyclic
+   * - 2*2
+     - (vector,(0,2,2))
+     - (vector,(0,2,1),(0,2,1))
+   * - 2*4
+     - (vector,(0,2,4))
+     - (vector,(0,2,1),(0,2,1),(0,2,1),(0,2,1))
+   * - 2*2 + 2*4
+     - (vector,(0,2,2),(2,2,4))
+     - (vector,(0,4,1),(0,4,1),(2,2,1),(2,2,1))
+   * - 4096*256
+     - (vector,(0,4096,256))
+     - *long string*
 
 If the process mapping value is too long to fit in a KVS value, the process
 manager SHALL return a value consisting of an empty string, indicating that
