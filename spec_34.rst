@@ -113,7 +113,10 @@ Implementation
 **************
 
 The Flux task map SHALL be represented as a JSON array to avoid the need
-for a custom parser.  The array MUST contain one or more *map blocks*.
+for a custom parser.  The array MUST contain zero or more *map blocks*.
+
+A Flux task map that contains zero map blocks SHALL indicate that the task
+mapping is unknown.
 
 A Flux task map block is a JSON array with four REQUIRED integer array
 elements:
@@ -182,6 +185,8 @@ Test Vectors
 
    * - raw task map
      - Flux task map
+   * - mapping unknown
+     - []
    * - 0
      - [[0,1,1,1]]
    * - 0;1
