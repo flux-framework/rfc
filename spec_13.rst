@@ -2,6 +2,7 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_13.html
 
+======================================
 13/Simple Process Manager Interface v1
 ======================================
 
@@ -20,22 +21,25 @@ managers that must support current and legacy MPI implementations.
 -  State: raw
 
 
+********
 Language
---------
+********
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
 be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
 
 
+*****************
 Related Standards
------------------
+*****************
 
 -  :doc:`12/Flux Security Architecture <spec_12>`
 
 
+*****
 Goals
------
+*****
 
 -  Decrease coupling between process managers and MPI implementations by
    clarifying their "contract" for communication.
@@ -51,8 +55,9 @@ Goals
 -  Identify which functions are optional, and under what circumstances.
 
 
+************
 PMI Versions
-------------
+************
 
 This document covers PMI 1.1 with a few notes about backwards
 compatibility with earlier versions.
@@ -72,8 +77,9 @@ PMIX ("X" for extension), is as set of extensions to PMI-2. The PMIX
 extensions are not covered here.
 
 
+********
 Overview
---------
+********
 
 PMI was designed as an interface between process managers and parallel
 programs, including, but not limited to, MPI runtimes. It has two main
@@ -106,8 +112,9 @@ implemented using the PMI-1 wire protocol; or less flexibly, a shared
 library providing the PMI-1 API implemented using a proprietary protocol.
 
 
+***********
 Terminology
------------
+***********
 
 Process manager
   The provider of PMI services. A resource manager MAY operate in the role
@@ -125,8 +132,9 @@ PMI library
   A shared library that provides the PMI-1 API.
 
 
+*******
 Caveats
--------
+*******
 
 Some deficiencies of PMI 1 are noted in the PMI-2 paper [#f6]_:
 
@@ -147,8 +155,9 @@ in stronger coupling between process managers and MPI implementations
 than necessary.
 
 
+***********
 Environment
------------
+***********
 
 The process manager MAY use the UNIX environment to communicate basic
 process group information to processes.
@@ -171,8 +180,9 @@ set the following environment variables:
      - only set (to 1) if the program was created by ``PMI_Spawn_multiple()``
 
 
+*********************************
 Application Programming Interface
----------------------------------
+*********************************
 
 Programs SHOULD NOT strongly bind to a particular process manager’s
 PMI library, for example with rpath, as this complicates running a
@@ -198,7 +208,7 @@ therefore PMI libraries SHALL NOT implement functions not defined below.
 
 
 Return Codes
-~~~~~~~~~~~~
+============
 
 All PMI-1 functions SHALL return one of the following integer values,
 indicating the result of the operation:
@@ -258,7 +268,7 @@ indicating the result of the operation:
 
 
 Initialization
-~~~~~~~~~~~~~~
+==============
 
 .. code:: c
 
@@ -337,7 +347,7 @@ process with with ``exit_code``. This function SHALL NOT return.
 
 
 Process Group Information
-~~~~~~~~~~~~~~~~~~~~~~~~~
+=========================
 
 .. code:: c
 
@@ -403,7 +413,7 @@ Notes
 
 
 Local Process Group Information
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===============================
 
 .. code:: c
 
@@ -461,7 +471,7 @@ Notes:
 
 
 Key Value Store
-~~~~~~~~~~~~~~~
+===============
 
 .. code:: c
 
@@ -615,7 +625,7 @@ Notes:
 
 
 Dynamic Process Management
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
 
 .. code:: c
 
@@ -704,8 +714,9 @@ Notes:
    `commit 52c462d <https://github.com/pmodels/mpich/commit/52c462d2be6a8d0720788d36e1e096e991dcff38>`__
 
 
+*************
 Wire Protocol
--------------
+*************
 
 The reference implementation of the PMI-1.1 wire protocol is the MPICH
 Hydra [#f4]_ process manager.
@@ -729,7 +740,7 @@ For maximum interoperability, a message parser SHOULD allow
 
 
 Connection
-~~~~~~~~~~
+==========
 
 If the wire protocol is offered, the process manager SHALL "pre-connect"
 a file descriptor, arrange for the file descriptor to be inherited by
@@ -738,7 +749,7 @@ at process launch time.
 
 
 Version Negotiation
-~~~~~~~~~~~~~~~~~~~
+===================
 
 The client SHALL send the init request first, with the highest version
 of PMI supported by the client. The server SHALL respond with the
@@ -747,7 +758,7 @@ send other commands until the init operation has completed.
 
 
 Error Handling
-~~~~~~~~~~~~~~
+==============
 
 All responses MAY include an "rc" key.
 On error, the "rc" key SHALL be set to a nonzero value.
@@ -763,7 +774,7 @@ the problem can be tracked down.
 
 
 Spawn Operation
-~~~~~~~~~~~~~~~
+===============
 
 The spawn request consists of multiple newline-terminated messages.
 These messages SHALL NOT be interspersed with messages for other operations.
@@ -774,7 +785,7 @@ elements SHALL begin with zero and increase monotonically.
 
 
 Protocol Definition
-~~~~~~~~~~~~~~~~~~~
+===================
 
 .. code-block:: ABNF
 
@@ -900,15 +911,16 @@ Protocol Definition
 
 
 Back Compatibility
-~~~~~~~~~~~~~~~~~~
+==================
 
 Earlier versions of the PMI-1 wire protocol did not include the init
 operation in which versions are exchanged. Protocol operations that
 were culled in PMI 1.1 are not covered here.
 
 
+*******************************
 Local Process Group Information
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*******************************
 
 The process manager SHALL provide the local process group information
 to programs via the KVS under the "PMI_process_mapping" key.  It MAY be
@@ -952,8 +964,9 @@ manager SHALL return a value consisting of an empty string, indicating that
 the mapping is unknown.
 
 
+**********
 References
-----------
+**********
 
 .. [#f1] `Process Management in MPICH Draft 2.1 <https://drive.google.com/file/d/0B273EWJxZUxsbS15SEkzZGtXU2c/view?usp=sharing>`__
 
