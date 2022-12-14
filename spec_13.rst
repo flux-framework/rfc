@@ -270,9 +270,7 @@ indicating the result of the operation:
 Initialization
 ==============
 
-.. code:: c
-
-   int PMI_Init (int *spawned);
+.. c:function:: int PMI_Init (int *spawned)
 
 Initialize the PMI library for this process. Upon success, the value
 of ``spawned`` (boolean) SHALL bet set to (1) if this process was created
@@ -284,9 +282,7 @@ Errors:
 
 -  PMI_FAIL - initialization failed
 
-.. code:: c
-
-   int PMI_Initialized (int *initialized);
+.. c:function:: int PMI_Initialized (int *initialized)
 
 Check if the PMI library has been initialized for this process.
 Upon success, the the value of ``initialized`` (boolean) SHALL be set to
@@ -298,12 +294,10 @@ Errors:
 
 -  PMI_FAIL - unable to set the variable
 
-.. code:: c
-
-   int PMI_KVS_Get_name_length_max (int *length);
-   int PMI_KVS_Get_key_length_max (int *length);
-   int PMI_KVS_Get_value_length_max (int *length);
-   int PMI_Get_id_length_max (int *length);
+.. c:function:: int PMI_KVS_Get_name_length_max (int *length)
+.. c:function:: int PMI_KVS_Get_key_length_max (int *length)
+.. c:function:: int PMI_KVS_Get_value_length_max (int *length)
+.. c:function:: int PMI_Get_id_length_max (int *length)
 
 Obtain the maximum length (including terminating NULL) of KVS name,
 key, value, and id strings. Upon success, the PMI library SHALL
@@ -327,9 +321,7 @@ Notes:
 -  ``PMI_Get_id_length_max()`` was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
-.. code:: c
-
-   int PMI_Finalize (void);
+.. c:function:: int PMI_Finalize (void)
 
 Finalize the PMI library for this process.
 
@@ -337,9 +329,7 @@ Errors:
 
 -  PMI_FAIL - finalization failed
 
-.. code:: c
-
-   int PMI_Abort (int exit_code, const char error_msg[]);
+.. c:function:: int PMI_Abort (int exit_code, const char error_msg[])
 
 Abort the process group associated with this process.
 The PMI library SHALL print ``error_msg`` to standard error, then exit this
@@ -349,9 +339,7 @@ process with with ``exit_code``. This function SHALL NOT return.
 Process Group Information
 =========================
 
-.. code:: c
-
-   int PMI_Get_size (int *size);
+.. c:function:: int PMI_Get_size (int *size)
 
 Obtain the size of the process group to which the local process belongs.
 Upon success, the value of ``size`` SHALL be set to the size of the process
@@ -363,9 +351,7 @@ Errors:
 
 -  PMI_FAIL - unable to return the size
 
-.. code:: c
-
-   int PMI_Get_rank (int *rank);
+.. c:function:: int PMI_Get_rank (int *rank)
 
 Obtain the rank (0…​size-1) of the local process in the process group.
 Upon success, ``rank`` SHALL be set to the rank of the local process.
@@ -376,9 +362,7 @@ Errors:
 
 -  PMI_FAIL - unable to return the rank
 
-.. code:: c
-
-   int PMI_Get_universe_size (int *size);
+.. c:function:: int PMI_Get_universe_size (int *size)
 
 Obtain the universe size, which is the the maximum future size of the
 process group for dynamic applications. Upon success, ``size`` SHALL
@@ -394,9 +378,7 @@ Notes:
 
 -  See MPI-2 [#f2]_ section `5.5.1. Universe Size <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node111.htm>`__.
 
-.. code:: c
-
-   int PMI_Get_appnum (int *appnum);
+.. c:function:: int PMI_Get_appnum (int *appnum)
 
 Obtain the application number. Upon success, ``appnum`` SHALL be set to
 the application number.
@@ -415,9 +397,7 @@ Notes
 Local Process Group Information
 ===============================
 
-.. code:: c
-
-   int PMI_Get_clique_ranks (int ranks[], int length);
+.. c:function:: int PMI_Get_clique_ranks (int ranks[], int length)
 
 Get the ranks of the local processes in the process group.
 This is a simple topology function to distinguish between processes that can
@@ -448,9 +428,7 @@ Notes:
 -  The implementation should fetch the ``PMI_process_mapping`` value from the
    KVS and calculate the clique ranks (see below).
 
-.. code:: c
-
-   int PMI_Get_clique_size (int *size);
+.. c:function:: int PMI_Get_clique_size (int *size)
 
 Obtain the number of processes on the local node. Upon success, ``size``
 SHALL be set to the number of processes on the local node.
@@ -473,9 +451,7 @@ Notes:
 Key Value Store
 ===============
 
-.. code:: c
-
-   int PMI_KVS_Put (const char kvsname[], const char key[], const char value[]);
+.. c:function:: int PMI_KVS_Put (const char kvsname[], const char key[], const char value[])
 
 Put a key/value pair in a keyval space.
 The user SHALL set ``kvsname`` to the name returned from
@@ -505,9 +481,7 @@ Notes:
 
 -  A key SHALL NOT be put more than once to a keyval space.
 
-.. code:: c
-
-   int PMI_KVS_Commit (const char kvsname[]);
+.. c:function:: int PMI_KVS_Commit (const char kvsname[])
 
 Commit all previous puts to the keyval space. Upon success, all puts
 since the last ``PMI_KVS_Commit()`` shall be stored into the specified
@@ -527,9 +501,7 @@ Notes:
 -  It is a process local operation, thus in some implementations,
    it MAY have no effect and still return PMI_SUCCESS.
 
-.. code:: c
-
-   int PMI_KVS_Get (const char kvsname[], const char key[], char value[], int length);
+.. c:function:: int PMI_KVS_Get (const char kvsname[], const char key[], char value[], int length)
 
 Get a key/value pair from a keyval space.
 The user SHALL set ``kvsname`` to the name returned from
@@ -553,11 +525,9 @@ Errors:
 
 -  PMI_FAIL - get failed
 
-.. code:: c
-
-   int PMI_KVS_Get_my_name (char kvsname[], int length);
-   int PMI_Get_kvs_domain_id (char kvsname[], int length);
-   int PMI_Get_id( char kvsname[], int length );
+.. c:function:: int PMI_KVS_Get_my_name (char kvsname[], int length)
+.. c:function:: int PMI_Get_kvs_domain_id (char kvsname[], int length)
+.. c:function:: int PMI_Get_id (char kvsname[], int length)
 
 This function returns the common keyval space for this process group.
 The user SHALL set set ``length`` to the length of the ``kvsname`` array,
@@ -586,9 +556,7 @@ Notes:
 -  ``PMI_Get_kvs_domain_id()`` and ``PMI_Get_id()`` were dropped from pmi.h
    [#f3]_ on 2011-01-28 in `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
-.. code:: c
-
-   int PMI_Barrier (void);
+.. c:function:: int PMI_Barrier (void)
 
 This function is a collective call across all processes in the process group
 the local process belongs to. The PMI library SHALL attempt to block until
@@ -609,12 +577,10 @@ Notes:
 -  The barrier operation MUST be usable as a generic synchronization mechanism,
    without requiring KVS data to be queued for exchange.
 
-.. code:: c
-
-   int PMI_KVS_Create( char kvsname[], int length );
-   int PMI_KVS_Destroy( const char kvsname[] );
-   int PMI_KVS_Iter_first(const char kvsname[], char key[], int key_len, char val[], int val_len);
-   int PMI_KVS_Iter_next(const char kvsname[], char key[], int key_len, char val[], int val_len);
+.. c:function:: int PMI_KVS_Create (char kvsname[], int length)
+.. c:function:: int PMI_KVS_Destroy (const char kvsname[]);
+.. c:function:: int PMI_KVS_Iter_first (const char kvsname[], char key[], int key_len, char val[], int val_len)
+.. c:function:: int PMI_KVS_Iter_next (const char kvsname[], char key[], int key_len, char val[], int val_len)
 
 Notes:
 
@@ -634,15 +600,7 @@ Dynamic Process Management
        char * val;
    } PMI_keyval_t;
 
-   int PMI_Spawn_multiple (int count,
-                           const char * cmds[],
-                           const char ** argvs[],
-                           const int maxprocs[],
-                           const int info_keyval_sizesp[],
-                           const PMI_keyval_t * info_keyval_vectors[],
-                           int preput_keyval_size,
-                           const PMI_keyval_t preput_keyval_vector[],
-                           int errors[]);
+.. c:function:: int PMI_Spawn_multiple (int count, const char *cmds[], const char **argvs[], const int maxprocs[], const int info_keyval_sizesp[], const PMI_keyval_t *info_keyval_vectors[], int preput_keyval_size, const PMI_keyval_t preput_keyval_vector[], int errors[])
 
 This function spawns a set of processes into a new process group.
 ``count`` refers to the size of the array parameters ``cmd``, ``argvs``,
@@ -678,11 +636,9 @@ Notes:
 
 -  See MPI-2 [#f2]_ section `5.3.5.1. Manager-worker Example, Using MPI_SPAWN. <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node98.htm>`__
 
-.. code:: c
-
-   int PMI_Publish_name (const char service_name[], const char port[]);
-   int PMI_Unpublish_name (const char service_name[]);
-   int PMI_Lookup_name (const char service_name[], char port[]);
+.. c:function:: int PMI_Publish_name (const char service_name[], const char port[])
+.. c:function:: int PMI_Unpublish_name (const char service_name[])
+.. c:function:: int PMI_Lookup_name (const char service_name[], char port[])
 
 Publish/unpublish/lookup a name.
 
@@ -699,12 +655,10 @@ Notes:
 
 -  See MPI-2 [#f2]_ section `5.4.4. Name Publishing <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node104.htm>`__.
 
-.. code:: c
-
-   int PMI_Parse_option (int num_args, char *args[], int *num_parsed, PMI_keyval_t **keyvalp, int *size);
-   int PMI_Args_to_keyval (int *argcp, char *((*argvp)[]), PMI_keyval_t **keyvalp, int *size);
-   int PMI_Free_keyvals (PMI_keyval_t keyvalp[], int size);
-   int PMI_Get_options (char *str, int *length);
+.. c:function:: int PMI_Parse_option (int num_args, char *args[], int *num_parsed, PMI_keyval_t **keyvalp, int *size)
+.. c:function:: int PMI_Args_to_keyval (int *argcp, char *((*argvp)[]), PMI_keyval_t **keyvalp, int *size)
+.. c:function:: int PMI_Free_keyvals (PMI_keyval_t keyvalp[], int size)
+.. c:function:: int PMI_Get_options (char *str, int *length)
 
 Notes:
 
