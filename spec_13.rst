@@ -6,6 +6,8 @@
 13/Simple Process Manager Interface v1
 ======================================
 
+.. highlight:: c
+
 The MPI process manager interface (PMI) version 1 is a de-facto standard
 API and wire protocol for communication between MPI runtimes and resource
 managers. It was added to the MPICH2 MPI-2 reference implementation in
@@ -274,7 +276,7 @@ Initialization
 
 Initialize the PMI library for this process. Upon success, the value
 of ``spawned`` (boolean) SHALL bet set to (1) if this process was created
-by ``PMI_Spawn_multiple()``, or (0) if not.
+by :c:func:`PMI_Spawn_multiple`, or (0) if not.
 
 Errors:
 
@@ -315,10 +317,10 @@ Notes:
 -  Process Management in MPICH [#f1]_ recommends minimum lengths for
    name, key, and value of 16, 32, and 64, respectively.
 
--  ``PMI_Get_id_length_max()`` SHALL be considered an alias for
-   ``PMI_Get_name_length_max()``.
+-  :c:func:`PMI_Get_id_length_max` SHALL be considered an alias for
+   :c:func:`PMI_KVS_Get_name_length_max`.
 
--  ``PMI_Get_id_length_max()`` was dropped from pmi.h [#f3]_ on 2011-01-28 in
+-  :c:func:`PMI_Get_id_length_max` was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
 .. c:function:: int PMI_Finalize (void)
@@ -403,7 +405,7 @@ Get the ranks of the local processes in the process group.
 This is a simple topology function to distinguish between processes that can
 communicate through IPC mechanisms (e.g., shared memory) and other network
 mechanisms. The user SHALL set ``length`` to the size returned by
-``PMI_Get_clique_size()``, and ``ranks`` to an integer array of that length.
+:c:func:`PMI_Get_clique_size`, and ``ranks`` to an integer array of that length.
 Upon success, the PMI library SHALL fill each slot of the array with the
 rank of a local process in the process group.
 
@@ -420,7 +422,7 @@ Notes:
 -  This function returns the ranks of the processes on the local node.
 
 -  The array must be at least as large as the size returned by
-   ``PMI_Get_clique_size()``.
+   :c:func:`PMI_Get_clique_size`.
 
 -  This function was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
@@ -455,13 +457,13 @@ Key Value Store
 
 Put a key/value pair in a keyval space.
 The user SHALL set ``kvsname`` to the name returned from
-``PMI_KVS_Get_my_name()``.  The user SHALL set ``key`` and ``value`` to NULL
+:c:func:`PMI_KVS_Get_my_name`.  The user SHALL set ``key`` and ``value`` to NULL
 terminated strings no longer (with NULL) than the sizes returned by
-``PMI_KVS_Get_key_length_max()`` and ``PMI_KVS_Get_value_length_max()``
+:c:func:`PMI_KVS_Get_key_length_max` and :c:func:`PMI_KVS_Get_value_length_max`
 respectively.
 
 Upon success, the PMI value SHALL be visible to other processes after
-``PMI_KVS_Commit()`` and ``PMI_Barrier()`` are called.
+:c:func:`PMI_KVS_Commit` and :c:func:`PMI_Barrier` are called.
 
 Errors:
 
@@ -484,7 +486,7 @@ Notes:
 .. c:function:: int PMI_KVS_Commit (const char kvsname[])
 
 Commit all previous puts to the keyval space. Upon success, all puts
-since the last ``PMI_KVS_Commit()`` shall be stored into the specified
+since the last :c:func:`PMI_KVS_Commit` shall be stored into the specified
 ``kvsname``.
 
 Errors:
@@ -505,11 +507,11 @@ Notes:
 
 Get a key/value pair from a keyval space.
 The user SHALL set ``kvsname`` to the name returned from
-``PMI_KVS_Get_my_name()``.  The user SHALL set ``length`` to the length of the
+:c:func:`PMI_KVS_Get_my_name`.  The user SHALL set ``length`` to the length of the
 ``value`` array, which SHALL be no shorter than the length returned by
-``PMI_KVS_Get_value_length_max()``.  The user SHALL set 'key' to a NULL
+:c:func:`PMI_KVS_Get_value_length_max`.  The user SHALL set 'key' to a NULL
 terminated string no longer (with NULL) than the size returned by
-``PMI_KVS_Get_key_length_max()``.
+:c:func:`PMI_KVS_Get_key_length_max`.
 
 Upon success, the PMI library SHALL fill ``value`` with the value of ``key``.
 
@@ -532,7 +534,7 @@ Errors:
 This function returns the common keyval space for this process group.
 The user SHALL set set ``length`` to the length of the ``kvsname`` array,
 which SHALL be no shorter than the length returned by
-``PMI_KVS_Get_name_length_max()``.
+:c:func:`PMI_KVS_Get_name_length_max`.
 
 Upon success, the PMI library SHALL set ``kvsname`` to a NULL terminated
 string representing the keyval space.
@@ -548,10 +550,10 @@ Errors:
 Notes:
 
 -  length SHALL be greater than or equal to the length returned
-   by ``PMI_KVS_Get_name_length_max()``.
+   by :c:func:`PMI_KVS_Get_name_length_max`.
 
--  ``PMI_Get_kvs_domain_id()`` and ``PMI_Get_id()`` SHALL be considered
-   an alias for ``PMI_KVS_Get_my_name()``.
+-  :c:func:`PMI_Get_kvs_domain_id` and :c:func:`PMI_Get_id` SHALL be considered
+   an alias for :c:func:`PMI_KVS_Get_my_name`.
 
 -  ``PMI_Get_kvs_domain_id()`` and ``PMI_Get_id()`` were dropped from pmi.h
    [#f3]_ on 2011-01-28 in `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
