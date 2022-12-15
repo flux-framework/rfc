@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
@@ -16,12 +16,12 @@ jobs:
     name: make check
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v4
       with:
-        python-version: 3.6
+        python-version: '3.9'
     - name: install dependencies
       run: |
         pip3 install --upgrade -r ./requirements.txt
@@ -33,12 +33,12 @@ jobs:
     name: make linkcheck
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v4
       with:
-        python-version: 3.6
+        python-version: '3.9'
     - name: install dependencies
       run: |
         pip3 install --upgrade -r ./requirements.txt
