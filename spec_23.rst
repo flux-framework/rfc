@@ -72,5 +72,34 @@ The OPTIONAL unit suffix MUST be one of the following (case sensitive):
 As a special case, when N is ``infinity`` or ``inf``, the unit suffix SHALL
 be omitted.
 
+Test Vectors
+------------
+
+.. list-table::
+   :header-rows: 1
+
+   * - FSD string
+     - duration (seconds)
+   * - 2ms
+     - 0.002
+   * - 0.1s
+     - 0.1
+   * - 30
+     - 30
+   * - 1.2h
+     - 4320
+   * - 5m
+     - 300
+   * - 0s
+     - 0
+   * - 5d
+     - 432000
+   * - inf
+     - INFINITY [#f2]_
+   * - INF
+     - INFINITY
+   * - infinity
+     - INFINITY
+
 .. [#f1] `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.20.1.3: The strtod, strtof, and strtold functions
 .. [#f2] `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.12/4 INFINITY (p: 212-213)
