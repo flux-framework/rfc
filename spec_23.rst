@@ -39,12 +39,13 @@ said to support "Flux Standard Duration."
 Implementation
 --------------
 
-A duration in Flux Standard Duration SHALL be of the form ``N[SUFFIX]``
-where ``SUFFIX`` SHALL be optional and, if provided, MUST be a string from
-the set { ``ms``, ``s``, ``m``, ``h``, ``d`` }. The value ``N`` MUST be a
-non-negative, non-infinite, floating-point number excluding ``NaN``. The
-value ``N`` SHALL be in one of the forms allowed by C99  [#f1]_ ``strtof``
-or ``strtod`` and SHALL be interpreted as:
+A Flux Standard Duration SHALL be a string of the form ``N[SUFFIX]``,
+where *N* is a floating point number and *SUFFIX* is an OPTIONAL unit.
+
+*N* SHALL have a range of [0:infinity] and SHALL be in a form allowed by
+C99  [#f1]_ ``strtof`` or ``strtod``.
+
+The OPTIONAL unit suffix MUST be one of the following (case sensitive):
 
 -  *milliseconds* if ``SUFFIX`` is ``ms``.
 
