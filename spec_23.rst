@@ -47,15 +47,27 @@ C99  [#f1]_ ``strtof`` or ``strtod``.
 
 The OPTIONAL unit suffix MUST be one of the following (case sensitive):
 
--  *milliseconds* if ``SUFFIX`` is ``ms``.
+.. list-table::
+   :header-rows: 1
 
--  *seconds* if ``SUFFIX`` is not provided, or is ``s``.
-
--  *minutes* if ``SUFFIX`` is ``m``.
-
--  *hours* if ``SUFFIX`` is ``h``.
-
--  *days* if ``SUFFIX`` is ``d``.
+   * - Suffix
+     - Name
+     - Multiplier
+   * - ms
+     - milliseconds
+     - 1E-3
+   * - s
+     - seconds
+     - 1
+   * - m
+     - minutes
+     - 60
+   * - h
+     - hours
+     - 3600
+   * - d
+     - days
+     - 86400
 
 As a special case, the string ``infinity`` SHALL be interpreted as a
 duration equivalent to the C99 macro [#f2]_ ``INFINITY``.
