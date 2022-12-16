@@ -69,8 +69,8 @@ The OPTIONAL unit suffix MUST be one of the following (case sensitive):
      - days
      - 86400
 
-As a special case, the string ``infinity`` SHALL be interpreted as a
-duration equivalent to the C99 macro [#f2]_ ``INFINITY``.
+As a special case, when N is ``infinity`` or ``inf``, the unit suffix SHALL
+be omitted.
 
 .. [#f1] `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.20.1.3: The strtod, strtof, and strtold functions
 .. [#f2] `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.12/4 INFINITY (p: 212-213)
