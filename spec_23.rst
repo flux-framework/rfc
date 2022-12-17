@@ -39,21 +39,67 @@ said to support "Flux Standard Duration."
 Implementation
 --------------
 
-A duration in Flux Standard Duration SHALL be of the form ``N[SUFFIX]``
-where ``SUFFIX`` SHALL be optional and, if provided, MUST be a string from
-the set { ``ms``, ``s``, ``m``, ``h``, ``d`` }. The value ``N`` MUST be a
-non-negative, non-infinite, floating-point number excluding ``NaN``. The
-value ``N`` SHALL be in one of the forms allowed by C99  [#f1]_ ``strtof``
-or ``strtod`` and SHALL be interpreted as:
+A Flux Standard Duration SHALL be a string of the form ``N[SUFFIX]``,
+where *N* is a floating point number and *SUFFIX* is an OPTIONAL unit.
 
--  *milliseconds* if ``SUFFIX`` is ``ms``.
+*N* SHALL have a range of [0:infinity] and SHALL be in a form allowed by
+C99  [#f1]_ ``strtof`` or ``strtod``.
 
--  *seconds* if ``SUFFIX`` is not provided, or is ``s``.
+The OPTIONAL unit suffix MUST be one of the following (case sensitive):
 
--  *minutes* if ``SUFFIX`` is ``m``.
+.. list-table::
+   :header-rows: 1
 
--  *hours* if ``SUFFIX`` is ``h``.
+   * - Suffix
+     - Name
+     - Multiplier
+   * - ms
+     - milliseconds
+     - 1E-3
+   * - s
+     - seconds
+     - 1
+   * - m
+     - minutes
+     - 60
+   * - h
+     - hours
+     - 3600
+   * - d
+     - days
+     - 86400
 
--  *days* if ``SUFFIX`` is ``d``.
+As a special case, when N is ``infinity`` or ``inf``, the unit suffix SHALL
+be omitted.
+
+Test Vectors
+------------
+
+.. list-table::
+   :header-rows: 1
+
+   * - FSD string
+     - duration (seconds)
+   * - 2ms
+     - 0.002
+   * - 0.1s
+     - 0.1
+   * - 30
+     - 30
+   * - 1.2h
+     - 4320
+   * - 5m
+     - 300
+   * - 0s
+     - 0
+   * - 5d
+     - 432000
+   * - inf
+     - INFINITY [#f2]_
+   * - INF
+     - INFINITY
+   * - infinity
+     - INFINITY
 
 .. [#f1] `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.20.1.3: The strtod, strtof, and strtold functions
+.. [#f2] `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.12/4 INFINITY (p: 212-213)
