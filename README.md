@@ -45,6 +45,7 @@ Table of Contents
 - [32/Flux Job Execution Protocol Version 1](spec_32.rst)
 - [33/Flux Job Queues](spec_33.rst)
 - [34/Flux Task Map](spec_34.rst)
+- [35/Constraint Query Syntax](spec_35.rst)
 
 Build Instructions
 ------------------
