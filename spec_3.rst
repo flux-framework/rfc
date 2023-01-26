@@ -178,6 +178,8 @@ following about the message header:
 
 - It includes the message type.
 
+- The 4-byte integers SHALL be encoded in network (big endian) byte order.
+
 - Some fields (notably the last two 4-byte integers) have different meanings
   depending on the message type.
 
@@ -222,14 +224,14 @@ following about the message header:
    matchtag        = 4OCTET / matchtag-none
    matchtag-none   = %x00.00.00.00
 
-   ; Target node ID in network byte order
+   ; Target node ID
    nodeid          = 4OCTET / nodeid-any
    nodeid-any      = %xFF.FF.FF.FF
 
-   ; UNIX errno in network byte order
+   ; UNIX errno
    errnum          = 4OCTET
 
-   ; Monotonic sequence number in network byte order
+   ; Monotonic sequence number
    sequence        = 4OCTET
 
    ; Control message type
@@ -331,7 +333,7 @@ the following rules apply:
    :align: center
 
    Example of (a) Flux request message, and (b) Flux response message.  Integer
-   values are in hex, and for clarity are not converted to network byte order.
+   values are in hex.
 
 
 Event Message Type
