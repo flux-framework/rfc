@@ -331,7 +331,7 @@ the following rules apply:
    :align: center
 
    Example of (a) Flux request message, and (b) Flux response message.  Integer
-   values are in hex, and for clarity are not converted to network byte order.
+   values are in hex.
 
 
 Event Message Type
