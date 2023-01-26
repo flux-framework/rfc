@@ -62,8 +62,7 @@ several advantages:
  * The format allows nesting to support complex constraints
  * Simple cases can be expressed simply
 
-In this version of the RFC, only the following constraint operators SHALL be
-supported
+The following constraint operators SHALL be supported
 
  - ``properties``: The set of values SHALL designate a set of required
    properties on execution targets. As a special case, if a property value
@@ -71,13 +70,11 @@ supported
    SHALL indicate a property that MUST NOT be included in the allocated
    resource set.
 
-Future extensions
-~~~~~~~~~~~~~~~~~
+ - ``hostlist``: The set of values SHALL designate one or more sets of
+   required hostnames in RFC 29 Hostlist Format.
 
-The following constraint operators MAY be supported. If a job is submitted
-using these constraint operators, and the operators are not supported by
-the instance, then the job SHALL be rejected with an appropriate error
-message:
+ - ``ranks``: The set of values SHALL designate one or more sets of
+   ranks compatible with the RFC 22 Idset Representation.
 
  - ``not``: Logical negation. Takes a single value and negates it. For
    example, to constrain a job to only those resources that do not have
@@ -115,4 +112,39 @@ are allocated:
 
   { "properties": [ "^slowgpu" ] }
 
+or
+
+.. code:: json
+
+  { "not": [ { "properties": [ "slowgpu" ] } ] }
+
+Constrain resources to have property ``ssd`` or ``huge``:
+
+.. code:: json
+
+  { "or": [ { "properties": [ "ssd" ] }, { "properties": [ "huge" ] } ] }
+
+Constrain resources to include only a set of hostnames host0 and host1:
+
+.. code:: json
+
+  { "hostlist": [ "host[0-1]" ] }
+
+Constrain resources to exclude hosts host0 and host1:
+
+.. code:: json
+
+  { "not": [ { "hostlist": [ "host[0-1]" ] } ] }
+
+Constrain resources to a set of ``hosts host[0-1]`` and property ``ssd``:
+
+.. code:: json
+
+  { "and": [ { "hostlist": [ "host[0-1]" ] }, { "properties": [ "ssd" ] } ] }
+
+Constrain resources to only those on rank 0:
+
+.. code:: json
+
+  { "ranks": [ "0" ] }
 
