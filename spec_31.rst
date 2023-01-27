@@ -8,7 +8,7 @@
 This specification describes an extensible format for the description of
 job constraints.
 
--  Name: github.com/flux-framework/rfc/spec_26.rst
+-  Name: github.com/flux-framework/rfc/spec_31.rst
 -  Editor: Mark A. Grondona <mgrondona@llnl.gov>
 -  State: raw
 
