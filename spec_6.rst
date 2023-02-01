@@ -54,14 +54,12 @@ sent from a client to a server, and zero or more response messages sent
 from a server to a client. The client and server roles are not
 mutually-exclusive—​ broker modules often act in both roles.
 
-::
+.. figure:: images/rpc1.png
+   :alt: RPC
+   :align: center
 
-   +--------+    Request      +--------+
-   |        | --------------> |        |
-   | Client |                 | Server |
-   |        | <-------------- |        |
-   +--------+    Response     +--------+
-
+   Example RPC for ``flux getattr size``, with the flux broker acting as
+   server.
 
 Request Message
 ~~~~~~~~~~~~~~~
@@ -105,6 +103,11 @@ terminators.
 
 The server MAY respond to requests in any order.
 
+.. figure:: images/rpc2.png
+   :alt: RPC
+   :align: center
+
+   Example RPC for ``flux getattr badkey``, which elicits an error response.
 
 Streaming Responses
 ~~~~~~~~~~~~~~~~~~~
@@ -122,6 +125,12 @@ The service MAY signify a successful "end of response stream" with an ENODATA
 The FLUX_MSGFLAG_STREAMING flag SHALL be set in all non-error responses in
 the response stream. The flag MAY be set in the final error response.
 
+.. figure:: images/rpc3.png
+   :alt: RPC
+   :align: center
+
+   Example RPC for ``flux dmesg``, which returns one log message followed
+   by ENODATA.
 
 Matchtag Field
 ~~~~~~~~~~~~~~
