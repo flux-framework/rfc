@@ -170,7 +170,13 @@ Job state transitions are driven by events that are logged to
 ``job.<jobid>.eventlog`` as required by RFC 16.
 
 Events are formatted as described in RFC 18, with additional requirements
-described below:
+described below.
+
+Events beyond those listed below MAY appear in a job eventlog.
+
+Unless otherwise specified, keys beyond those listed as OPTIONAL and
+REQUIRED below MAY be included in event context objects for use by plugins
+or extensions.
 
 
 Submit Event
