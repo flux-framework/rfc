@@ -245,6 +245,12 @@ The Flux Task Map is a compact mapping between job task ranks and node IDs.
 The Constraint Query Syntax describes a simple text-based syntax for generating
 JSON objects in the format described in RFC 31.
 
+:doc:`36/Batch Script Directives <spec_36>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification defines a method for embedding job submission options
+and other directives in files.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -283,3 +289,4 @@ JSON objects in the format described in RFC 31.
    spec_33
    spec_34
    spec_35
+   spec_36
