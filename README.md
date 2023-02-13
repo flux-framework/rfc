@@ -46,6 +46,7 @@ Table of Contents
 - [33/Flux Job Queues](spec_33.rst)
 - [34/Flux Task Map](spec_34.rst)
 - [35/Constraint Query Syntax](spec_35.rst)
+- [36/Batch Script Directives](spec_36.rst)
 
 Build Instructions
 ------------------
