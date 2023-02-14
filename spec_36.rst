@@ -130,11 +130,11 @@ Examples
        flux: --queue=batch
        flux: --job-name="my python job"
         
-       flux: # Set some arbitrary user data:
+       # Set some arbitrary user data:
        flux: --setattr=user.data='''
-       x, y, z
-       a, b, c
-       '''
+       flux: x, y, z
+       flux: a, b, c
+       flux: '''
        """
        run()
 
@@ -147,7 +147,7 @@ Examples
    --
    -- flux: -N1 --exclusive
    -- flux: --output=job.out
-   local aap = require 'app'
+   local app = require 'app'
    app.run()
 
  * Directives can be mixed with non-directive comments if they share
