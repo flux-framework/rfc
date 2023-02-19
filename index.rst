@@ -251,6 +251,12 @@ JSON objects in the format described in RFC 31.
 This specification defines a method for embedding job submission options
 and other directives in files.
 
+:doc:`37/Flux JSON Archive <spec_37>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification defines a method for archiving a directory of files in
+JSON.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -290,3 +296,4 @@ and other directives in files.
    spec_34
    spec_35
    spec_36
+   spec_37

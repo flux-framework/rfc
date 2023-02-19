@@ -464,3 +464,7 @@ llsubmit
 multiline
 Lua
 docstring
+subinstance
+hoc
+config
+unarchive
