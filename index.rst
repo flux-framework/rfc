@@ -251,6 +251,12 @@ JSON objects in the format described in RFC 31.
 This specification defines a method for embedding job submission options
 and other directives in files.
 
+:doc:`37/File Archive Format <spec_37>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The File Archive Format defines a JSON representation of a set or list
+of file system objects.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -290,3 +296,4 @@ and other directives in files.
    spec_34
    spec_35
    spec_36
+   spec_37
