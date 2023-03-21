@@ -48,6 +48,7 @@ Table of Contents
 - [35/Constraint Query Syntax](spec_35.rst)
 - [36/Batch Script Directives](spec_36.rst)
 - [37/File Archive Format](spec_37.rst)
+- [38/Command Line Job](spec_38.rst)
 
 Build Instructions
 ------------------
