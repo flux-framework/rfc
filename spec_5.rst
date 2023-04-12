@@ -40,23 +40,19 @@ of Flux exclusively via messages.
 The ``flux-module`` front-end utility loads, unloads, and lists broker modules
 by exchanging RPC messages with a module management component of the broker.
 
-A broker module exports two symbols: a ``mod_main()`` function, and
-a ``mod_name`` NULL-terminated string.
+A broker module exports a function named ``mod_main()`` that is the starting
+point for a new broker thread.  The function accepts a ``flux_t`` handle and
+an *argc, argv* style argument list.  The ``flux_t`` handle provides direct
+communication with the broker over shared memory.  The argument list is derived
+from the free arguments on the ``flux module load`` command line.  When
+``mod_main()`` returns, the thread is terminated and the module is unloaded.
 
-The broker starts a module by calling its ``mod_main()`` function in
-a new thread. The broker provides a broker handle and argv vector
-style arguments to the via ``mod_main()`` arguments. The arguments originate
-on the ``flux-module load`` command line.
-
-Prior to calling ``mod_main()``, the broker registers a service for the
-module based on the value of ``mod_name``. Request messages with
-topic strings starting with this service name are diverted by the broker
-to the module as described in RFC 3. The portion of the topic string
-following the service name is called a "service method". A module
-may register many service methods.
-
-The broker also pre-registers handlers for service methods that all
-modules are expected to provide, such as "ping" and "shutdown". These
+Prior to calling the function entry point, the broker registers the module
+name as a service and arranges for request messages with topics matching the
+service to be routed to the module, as described in RFC 3.  Importantly,
+messages may be sent to this service immediately upon completion of the
+``flux module load`` command.  Handlers for a few standard methods such as
+"ping" and "shutdown" are automatically registered for the module.  These
 handlers may be overridden by the module if desired.
 
 The broker module implementing a new service is expected to register
@@ -79,16 +75,13 @@ Implementation
 Well known Symbols
 ~~~~~~~~~~~~~~~~~~
 
-A broker module SHALL export the following global symbols:
+A broker module SHALL export the following global symbol:
 
-``const char \*mod_name;``
-   A null-terminated C string defining the module name.
-
-``int mod_main (void \*context, int argc, char \**argv);``
+``int mod_main (flux_t *h, int argc, char **argv);``
    A C function that SHALL serve as the entry point for a thread of control.
-   This function SHALL return zero to indicate success or -1 to indicate failure.
-   The POSIX ``errno`` thread-specific variable SHOULD be set to indicate the
-   type of error on failure.
+   This function SHALL return zero to indicate success or -1 to indicate
+   failure.  The POSIX ``errno`` thread-specific variable SHOULD be set to
+   indicate the type of error on failure.
 
 
 Status Messages
@@ -163,7 +156,8 @@ The broker module loader SHALL send a ``<service>.shutdown`` request to the
 module when the module loader receives a ``broker.rmmod`` request for the
 module.  In response, the broker module SHALL exit ``mod_main()``, sending
 state transition messages as described above, and exit the module’s thread
-or process. The final state transition indicates to the broker that it MAY clean up the module thread.
+or process. The final state transition indicates to the broker that it MAY
+clean up the module thread.
 
 
 Built-in Request Handlers
@@ -175,12 +169,12 @@ All broker modules receive default handlers for the following methods:
    The default handler immediately stops the reactor. This handler may
    be overridden if a broker module requires a more complex shutdown sequence.
 
-``<service>.stats.get``
+``<service>.stats-get``
    The default handler returns a JSON object containing message counts.
    This handler may be overridden if module-specific stats are available.
    The ``flux-module stats`` command sends this request and reports the result.
 
-``<service>.stats.clear``
+``<service>.stats-clear``
    The default handler zeroes message counts.
    This handler may be overridden if module-specific stats are available.
    The ``flux-module stats --clear`` sends this request.
@@ -203,72 +197,42 @@ Built-in Event Handlers
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 In addition, all broker modules subscribe to and register a handler for
-the following events:
+the following pub/sub events:
 
-``<service>.stats.clear``
+``<service>.stats-clear``
    The default handler zeroes message counts. A custom handler may be
    registered for this event if module-specific stats are available.
    The ``flux-module stats --clear-all`` publishes this event.
 
+Module Attributes
+~~~~~~~~~~~~~~~~~
 
-Module Management Message Definitions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The following key-value pairs SHALL be provided to broker modules via the
+``flux_t`` handle AUX container:
 
-Module management messages SHALL follow the Flux message rules described
-in RFC 3 for requests and responses with JSON payloads.
+flux::uuid
+   The UUID assigned to the module which is used for message routing,
+   in string form.
 
-The broker module loader SHALL implement the ``broker.insmod``,
-``broker.rmmod``, and ``broker.lsmod`` methods.
+flux::name
+   The module name.  This is usually derived from basename of the module's
+   shared object file, minus the ``.so`` extension.  However it may also be
+   overridden by request at module load time.
 
-Module management messages are described in detail by the following
-ABNF grammar:
+Multiple Loading
+~~~~~~~~~~~~~~~~
 
-::
+A properly conditioned broker module MAY be loaded more than once under
+different names.  The following constraints SHOULD be considered:
 
-   MODULE          = C:insmod-req S:insmod-rep
-                   / C:rmmod-req  S:rmmod-rep
-                   / C:lsmod-req  S:lsmod-rep
+- The service registered on behalf of the module is based on its name,
+  therefore any message handlers for the module's default service MUST
+  be registered with a matching topic string.  This may be accomplished
+  by using the ``flux::name`` attribute to build matching topic strings,
+  or using topic string wildcards.
 
-   ; Multi-part zeromq messages
-   C:insmod-req    = [routing] insmod-topic insmod-json PROTO ; see below for JSON
-   S:insmod-rep    = [routing] insmod-topic PROTO
+- There are no safeguards against loading improperly conditioned modules
+  multiple times.  A module MAY prevent multiple loading by checking for
+  an expected value of ``flux::name``.
 
-   C:rmmod-req     = [routing] rmmod-topic rmmod-json PROTO   ; see below for JSON
-   S:rmmod-rep     = [routing] rmmod-topic PROTO
-
-   C:lsmod-req     = [routing] lsmod-topic PROTO
-   S:lsmod-rep     = [routing] lsmod-topic lsmod-json PROTO   ; see below for JSON
-
-   ; topic strings are optional service + module operation
-   insmod-topic    = "broker.insmod"
-   rmmod-topic     = "broker.rmmod"
-   lsmod-topic     = "broker.lsmod"
-
-   ; PROTO and [routing] are as defined in RFC 3.
-
-JSON payloads for the above messages are as follows, described using
-`JSON
-Content Rules <https://tools.ietf.org/html/draft-newton-json-content-rules-05>`__
-
-::
-
-   insmod-json {
-       "path"     : string,          ; path to module file
-       "args"     : [ *: string ]    ; argv array (first element is not special)
-   }
-
-   rmmod-json {
-       "name"     : string,          ; module name
-   }
-
-   lsmod-obj {
-       "name"     : string           ; module name
-       "size"     : integer 0..      ; module file size
-       "digest"   : string           ; SHA1 digest of module file
-       "idle"     : integer 0..      ; idle time in heartbeats
-       "status"   : integer 0..      ; module state (enumerated above)
-   }
-
-   lsmod-json {
-       "mods"     : [ *lsmod-obj ]
-   }
+Service-specific constraints SHOULD be considered as well.
