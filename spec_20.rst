@@ -290,7 +290,7 @@ may provide the information specific to the scheduler used
 to produce this document. For example, a scheduler that
 manages multiple job queues may add ``queue=batch``
 to indicate that this resource set was allocated from within
-its ``batch`` queue. 
+its ``batch`` queue.
 
 
 References
