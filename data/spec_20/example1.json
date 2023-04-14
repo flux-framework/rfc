@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "execution": {
+    "R_lite": [
+      {
+        "rank": "19-22",
+        "children": {
+          "core": "0-47",
+          "gpu": "0-7"
+        }
+      }
+    ],
+    "nodelist": [
+      "node[186-189]"
+    ],
+    "starttime": 1676560542,
+    "expiration": 1676562342
+  }
+}
