@@ -101,6 +101,11 @@ However, when no ``values`` are listed for the conditional operators listed abov
 ``{ "or": [] }`` and ``{ "and": [] }`` are defined to always return true and
 match anything.  ``{ "not": [] }`` is defined to return false and match nothing.
 
+There may be circumstances where it is convenient to specify a constraint object
+to "always match" or "never match".  The empty value conditionals may be used
+in those circumstances. i.e. ``{ "or": [] }`` to "always match" and
+``{ "not": [] }`` to "never match".
+
 Examples
 --------
 
