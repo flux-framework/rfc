@@ -95,6 +95,12 @@ The following constraint operators SHALL be supported
 
  - ``and``: Simple logical ``and``.
 
+If a constraint operator does not list any ``values``, behavior is operator
+dependent.  The operator may return a match, not a match, or report an error.
+However, when no ``values`` are listed for the conditional operators listed above,
+``{ "or": [] }`` and ``{ "and": [] }`` are defined to always return true and
+match anything.  ``{ "not": [] }`` is defined to return false and match nothing.
+
 Examples
 --------
 
