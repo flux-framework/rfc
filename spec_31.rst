@@ -93,7 +93,6 @@ The following constraint operators SHALL be supported
 
       { "or": [{ "properties": [ "foo" ]}, { "properties": [ "bar" ]}] }
 
-   
  - ``and``: Simple logical ``and``.
 
 Examples
