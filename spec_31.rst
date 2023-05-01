@@ -106,6 +106,9 @@ to "always match" or "never match".  The empty value conditionals may be used
 in those circumstances. i.e. ``{ "or": [] }`` to "always match" and
 ``{ "not": [] }`` to "never match".
 
+In addition, an empty constraint object ``{}`` is similarly defined to
+"always match".
+
 Examples
 --------
 
