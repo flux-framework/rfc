@@ -343,6 +343,10 @@ Some common system attributes are:
    The value of the ``cwd`` attribute is a string containing the absolute
    path to the current working directory to use when spawning the task.
 
+**queue**
+   The value of the ``queue`` attribute is a string containing the name of
+   the job queue this job should be submitted to.
+
 **dependencies**
    The value of the ``dependencies`` attribute SHALL be a
    list of dictionaries following the format specified in RFC 26.
