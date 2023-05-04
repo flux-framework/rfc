@@ -60,6 +60,8 @@ Goals
 
 -  Support shell error and debug logging.
 
+-  Support de-duplication of stream contents, where applicable.
+
 
 Implementation
 --------------
@@ -151,6 +153,12 @@ The following keys are OPTIOINAL in the event context object:
 encoding
    (string) The encoding of this particular data event when different from
    the default encoding specified by the header event.
+
+repeat
+   (integer) Consecutive, identical data MAY be combined in one event for
+   better space efficiency.  If data is combined, ``repeat`` SHALL indicate
+   the number of copies represented by the event.  If ``repeat`` is not
+   present, the number of copies is assumed to be 1.
 
 The context object SHOULD contain either a ``data`` or ``eof`` key, or both.
 
