@@ -2,3 +2,4 @@ sphinx-rtd-theme>=0.5.2
 sphinxcontrib-spelling
 pyyaml
 jsonschema
+urllib3<2
