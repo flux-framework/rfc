@@ -133,6 +133,10 @@ and is REQUIRED to be assigned to the instance owner.
 FLUX_ROLE_USER (2) SHALL confer access, but no administrative privilege
 upon the user.
 
+FLUX_ROLE_LOCAL (4) SHALL be set on messages that were sent from the local
+broker rank.  This role SHALL be cleared when the message is received by
+another broker.
+
 Other role bit definitions are TBD.
 
 
