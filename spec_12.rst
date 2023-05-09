@@ -120,7 +120,7 @@ Flux Credentials
 Flux credentials SHALL consist of a 32-bit *userid* and a 32-bit *rolemask*.
 A users's Flux user ID SHALL be the same as the user's POSIX UID.
 
-FLUX_USERID_UNKNOWN (2:sup:`32` - 1) SHALL be a reserved userid to indicate
+FLUX_USERID_UNKNOWN (4294967295) SHALL be a reserved userid to indicate
 "invalid user".
 
 The Flux rolemask MAY be assigned the following roles:
@@ -132,6 +132,10 @@ and is REQUIRED to be assigned to the instance owner.
 
 FLUX_ROLE_USER (2) SHALL confer access, but no administrative privilege
 upon the user.
+
+FLUX_ROLE_LOCAL (4) SHALL be set on messages that were sent from the local
+broker rank.  This role SHALL be cleared when the message is received by
+another broker.
 
 Other role bit definitions are TBD.
 
@@ -197,7 +201,7 @@ message types SHALL be dropped. By default the handler rolemask contains
 only FLUX_ROLE_OWNER.
 
 A message handler MAY disable the built-in policy by setting its rolemask
-to FLUX_ROLE_ALL (2:sup:`32` - 1). It MAY then use message functions to
+to FLUX_ROLE_ALL (4294967295). It MAY then use message functions to
 access userid and rolemask to implement its own algorithm for accepting
 or rejecting messages.
 
