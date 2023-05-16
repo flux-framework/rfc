@@ -468,3 +468,5 @@ blobvec
 mtime
 ctime
 unarchived
+subinstance
+unarchive
