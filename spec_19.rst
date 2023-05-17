@@ -152,6 +152,40 @@ by speaking, e.g. over the phone.
 
 Examples: ``reform-remote-galileo--heart-package-academy``, ``random-idea-yoyo--sugar-printer-academy``
 
+FLUID Emoji Encoding
+++++++++++++++++++++
+
+In order to encode a FLUID using a minimal number of printable characters,
+and to increase visual appeal when displaying FLUIDs in various settings,
+a conformant implementation MAY supply an encoding of FLUIDs to a string of
+`Unicode emoji <https://www.unicode.org/reports/tr51/>`__ characters.
+
+The emoji used for encoding SHALL be selected to have the following
+properties:
+
+ * For maximum compatibility, the selected emoji SHALL be taken from the
+   standard Unicode 6.0 2010 emoji set here:
+   https://unicode.org/emoji/charts/emoji-versions.html#2010,
+ * The selected emoji SHALL be encoded as 4 bytes in UTF-8
+ * The selected emoji SHALL start with the common bytes: F0 9F
+
+The implementation SHALL store the emoji in the order specified by the
+CLDR collation rules as in the above array and as shown here:
+
+ https://unicode.org/emoji/charts-12.1/emoji-ordering.txt
+
+The above specifications result in a selection of 576 emoji here:
+
+.. literalinclude:: data/spec_19/basemoji.h
+   :language: C
+
+The above table of 576 emoji SHALL be used to encode a FLUID in base 576
+with the position of an emoji in the array above denoting its value.
+That is, the first emoji (U+1F603 😃 grinning face with big eyes)
+SHALL represent decimal 0, the second (U+1F604 😄 grinning face with
+smiling eyes) SHALL represent 1, etc.
+
+Examples: ``🚹💂🙌😳💱🏃``, ``😄😹🎇📥🏧🙉🔞``, ``🚹💂🈳💰🎩🏃``
 
 Decoding Alternate FLUID Representations
 ++++++++++++++++++++++++++++++++++++++++
@@ -166,6 +200,8 @@ SHALL use the following rules to decode the argument:
  * If a string contains ``.``, then decode as "dothex"
  * Else if the string contains ``-``, then decode as "words"
  * Else if the string starts with ``ƒ`` or ``f``, decode as F58
+ * Else if the string begins with bytes ``0xf0`` and ``0x9f``
+   then decode as "emoji"
  * Else if the string starts with ``0x`` decode as "hex"
  * Otherwise, decode as decimal
 
