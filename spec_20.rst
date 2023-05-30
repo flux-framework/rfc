@@ -290,7 +290,21 @@ may provide the information specific to the scheduler used
 to produce this document. For example, a scheduler that
 manages multiple job queues may add ``queue=batch``
 to indicate that this resource set was allocated from within
-its ``batch`` queue. 
+its ``batch`` queue.
+
+
+Example R
+~~~~~~~~~
+
+The following is an example of a version 1 resource specification.
+The example below indicates a resource set with the ranks 19
+through 22.  These ranks correspond to the nodes node186 through
+node189.  Each of the nodes contains 48 cores (0-47) and 8 gpus (0-7).
+The ``startime`` and ``expiration`` indicate the resources were valid
+for about 30 minutes on February 16, 2023.
+
+.. literalinclude:: data/spec_20/example1.json
+   :language: json
 
 
 References
