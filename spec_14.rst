@@ -378,6 +378,21 @@ Some common system attributes are:
       for the job shell. A job shell and its plugins are free to define
       what keys and values should go into ``options``.
 
+**files**
+   The ``files`` key SHALL consist of a dictionary in RFC 37 File Archive
+   Format containing files that SHALL be made available to the job.
+   The ``files`` key is intended to allow batch scripts, configuration
+   files, and user defined input files to be embedded in jobspec. The job
+   shell SHALL unarchive each file encoded in the archive into a temporary
+   directory for use by the job. The following top-level files in the
+   input archive are reserved:
+
+   **script**
+      The ``script`` key SHALL be reserved for a batch job script.
+
+   **conf.json**
+      The ``conf.json`` key SHALL be reserved for use as a subinstance
+      configuration file.
 
 Example Jobspec
 ~~~~~~~~~~~~~~~
