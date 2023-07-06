@@ -93,8 +93,21 @@ The following constraint operators SHALL be supported
 
       { "or": [{ "properties": [ "foo" ]}, { "properties": [ "bar" ]}] }
 
-   
  - ``and``: Simple logical ``and``.
+
+If a constraint operator does not list any ``values``, behavior is operator
+dependent.  The operator may return a match, not a match, or report an error.
+However, when no ``values`` are listed for the conditional operators listed above,
+``{ "or": [] }`` and ``{ "and": [] }`` are defined to always return true and
+match anything.  ``{ "not": [] }`` is defined to return false and match nothing.
+
+There may be circumstances where it is convenient to specify a constraint object
+to "always match" or "never match".  The empty value conditionals may be used
+in those circumstances. i.e. ``{ "or": [] }`` to "always match" and
+``{ "not": [] }`` to "never match".
+
+In addition, an empty constraint object ``{}`` is similarly defined to
+"always match".
 
 Examples
 --------
