@@ -548,10 +548,12 @@ severity
    (integer) Specify the severity of the exception, in range of 0 (most severe)
    to to 7 (least severe).
 
-The following keys are OPTIONAL:
-
 note
-   (string) Brief human-readable explanation of the exception.
+
+   (string) Brief human-readable explanation of the exception.  If no explanation
+   is given, an empty string SHOULD be set for the note.
+
+The following keys are OPTIONAL:
 
 userid
    (integer) User ID that initiated the exception, if other than instance owner.
