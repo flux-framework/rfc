@@ -103,6 +103,8 @@ Design Criteria
 - Capture scheduler specific job annotations for display by the job listing
   tool (e.g. start time estimates).
 
+- Allow the expiration time of a resource allocation to be adjusted.
+
 
 Implementation
 --------------
@@ -541,6 +543,40 @@ No response is sent to the ``sched.prioritize`` request.
     jobs at once.  The job manager captures these updates in a single
     ``sched.prioritize`` request.
 
+Expiration
+~~~~~~~~~~
+
+The job manager MAY request an adjustment to the expiration time of an
+existing allocation by sending a ``sched.expiration`` request.  The request
+payload consists of a JSON object with the following REQUIRED keys:
+
+id
+  (integer) job ID
+
+expiration
+  (integer) the proposed new expiration time, in seconds since the Unix Epoch
+  (1970-01-01 UTC).  It MAY reduce or extend the current expiration time.
+
+The response consists of an empty payload on success.
+
+The request MAY fail, for example if:
+
+- The job ID is invalid or does not currently have an allocation.
+
+- The new expiration time would invalidate an advance reservation.
+
+- The new expiration is less than the instance lifetime.
+
+- The scheduler does not implement ``sched.expiration``.
+
+.. note::
+    The job-manager SHALL interpret an ENOSYS error response to
+    ``sched.expiration`` as "not implemented" and process the new
+    expiration time as though the request were successful.  Schedulers
+    that require accurate expiration times SHOULD implement this RPC to
+    avoid making schedules that are based on outdated information.
+    Note that enforcement of expiration times is the responsibility of the
+    execution system, not the scheduler.
 
 Free
 ~~~~
