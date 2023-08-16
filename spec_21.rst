@@ -225,6 +225,20 @@ Example:
    job.  The signed request containing the user's original jobspec SHALL NOT
    be altered.
 
+Resource-update Event
+^^^^^^^^^^^^^^^^^^^^^
+
+Update R expiration time after allocation.  The event context object SHALL
+consist of a dictionary containing the key ``expiration`` with an integer
+value representing seconds since the Unix Epoch (1970-01-01 UTC).
+
+Example:
+
+.. code:: json
+
+   {"timestamp":1552593348.073045,"name":"resource-update","context":{"expiration":1692206240}}
+
+
 Validate Event
 ^^^^^^^^^^^^^^
 
