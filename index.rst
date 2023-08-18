@@ -185,6 +185,7 @@ I/O streams in the Flux KVS.
 Version 1 of the domain specific job specification language
 canonically defined in RFC14.
 
+
 :doc:`26/Job Dependency Specification <spec_26>`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -257,6 +258,13 @@ and other directives in files.
 The File Archive Format defines a JSON representation of a set or list
 of file system objects.
 
+:doc:`38/Command Line Job Specification Version 1 <spec_38>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The command line jobspec describes how to define a shape on the
+command line that expands out to a full Job Specification. 
+It can be provided to several Flux commands.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -297,3 +305,4 @@ of file system objects.
    spec_35
    spec_36
    spec_37
+   spec_38
