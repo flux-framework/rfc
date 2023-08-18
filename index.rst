@@ -257,6 +257,12 @@ and other directives in files.
 The File Archive Format defines a JSON representation of a set or list
 of file system objects.
 
+:doc:`38/Flux Security Key Value Encoding <spec_38>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Flux Security Key Value Encoding is a serialization format
+for a series of typed key-value pairs.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -297,3 +303,4 @@ of file system objects.
    spec_35
    spec_36
    spec_37
+   spec_38
