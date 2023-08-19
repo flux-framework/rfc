@@ -29,6 +29,8 @@ Related Standards
 
 -  :doc:`12/Flux Security Architecture <spec_12>`
 
+-  :doc:`38/Flux Security Key Value Encoding <spec_38>`
+
 
 Introduction
 ------------
