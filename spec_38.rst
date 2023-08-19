@@ -36,7 +36,7 @@ Background
 The flux-security project requires simple objects to be encoded for
 communication in the following security-sensitive situations:
 
-- To receive *J* (signed jobspec plus metadata).
+- To encode the header component of *J* (signed jobspec plus metadata).
 
 - When communicating options between privileged and unprivileged sections
   of the IMP.
