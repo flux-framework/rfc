@@ -64,6 +64,14 @@ character, a type character, a UTF-8 value string, and a NULL character.
 
 Each key SHALL have a length greater than zero.
 
+Keys and string values MAY NOT contain the UTF-8 NULL character.
+
+.. note::
+   A zero byte MAY NOT be embedded in any key or value encoding because
+   it would be indistinguishable from the NULL field delimiter.  The only UTF-8
+   encoding that contains a zero byte is that of the NULL character, therefore
+   the NULL character is forbidden.
+
 Value type characters and associated value string encodings are as follows:
 
 s
