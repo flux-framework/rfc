@@ -59,18 +59,19 @@ Goals
 Implementation
 **************
 
-A single key-value pair SHALL be encoded as the UTF-8 key name, a NULL
-character, a type character, a UTF-8 value string, and a NULL character.
+A single key-value pair SHALL be encoded as the UTF-8 key name, a zero
+byte delimiter, a type character, a UTF-8 value string, and zero byte
+delimiter.
 
 Each key SHALL have a length greater than zero.
 
-Keys and string values MAY NOT contain the UTF-8 NULL character.
+Keys and string values MAY NOT contain the UTF-8 NUL character.
 
 .. note::
    A zero byte MAY NOT be embedded in any key or value encoding because
-   it would be indistinguishable from the NULL field delimiter.  The only UTF-8
-   encoding that contains a zero byte is that of the NULL character, therefore
-   the NULL character is forbidden.
+   it would be indistinguishable from a field delimiter.  The only UTF-8
+   encoding that contains a zero byte is that of the NUL character, therefore
+   the NUL character is forbidden.
 
 Value type characters and associated value string encodings are as follows:
 
