@@ -36,7 +36,7 @@ Background
 The flux-security project requires simple objects to be encoded for
 communication in the following security-sensitive situations:
 
-- To receive *J* (signed jobspec plus metadata).
+- To encode the header component of *J* (signed jobspec plus metadata).
 
 - When communicating options between privileged and unprivileged sections
   of the IMP.
@@ -59,10 +59,19 @@ Goals
 Implementation
 **************
 
-A single key-value pair SHALL be encoded as the UTF-8 key name, a NULL
-character, a type character, a UTF-8 value string, and a NULL character.
+A single key-value pair SHALL be encoded as the UTF-8 key name, a zero
+byte delimiter, a type character, a UTF-8 value string, and zero byte
+delimiter.
 
 Each key SHALL have a length greater than zero.
+
+Keys and string values MAY NOT contain the UTF-8 NUL character.
+
+.. note::
+   A zero byte MAY NOT be embedded in any key or value encoding because
+   it would be indistinguishable from a field delimiter.  The only UTF-8
+   encoding that contains a zero byte is that of the NUL character, therefore
+   the NUL character is forbidden.
 
 Value type characters and associated value string encodings are as follows:
 
