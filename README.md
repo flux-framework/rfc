@@ -49,6 +49,7 @@ Table of Contents
 - [36/Batch Script Directives](spec_36.rst)
 - [37/File Archive Format](spec_37.rst)
 - [38/Flux Security Key Value Encoding](spec_38.rst)
+- [39/Flux Security Signature](spec_39.rst)
 
 Build Instructions
 ------------------

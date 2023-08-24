@@ -263,6 +263,12 @@ of file system objects.
 The Flux Security Key Value Encoding is a serialization format
 for a series of typed key-value pairs.
 
+:doc:`39/Flux Security Signature <spec_39>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Flux Security Signature is a NUL terminated string that represents
+content secured with a digital signature.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -304,3 +310,4 @@ for a series of typed key-value pairs.
    spec_36
    spec_37
    spec_38
+   spec_39
