@@ -25,6 +25,7 @@ digraph states {
 
     SCHED -> PRIORITY [label="flux-restart"]
     SCHED -> PRIORITY [label="urgency"]
+    SCHED -> PRIORITY [label="jobspec-update"]
 
     edge [weight=0 color="red"];
 
