@@ -418,4 +418,4 @@ is still a work in progress.
    being used indefinitely. Finally, ``flux-imp`` logs all
    invocations, thereby allowing replays to be detected and audited.
 
-.. [#f1] `Preventing Privilege Escalation <http://www.citi.umich.edu/u/provos/papers/privsep.pdf>`__, Niels Provos, Markus Friedl, Peter Honeyman.
+.. [#f1] `Preventing Privilege Escalation <https://www.usenix.org/legacy/events/sec03/tech/full_papers/provos_et_al/provos_et_al.pdf>`__, Niels Provos, Markus Friedl, Peter Honeyman.
