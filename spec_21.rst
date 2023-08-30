@@ -210,9 +210,11 @@ The ``submit`` event SHALL be the first event posted for each job.
 Jobspec-update Event
 ^^^^^^^^^^^^^^^^^^^^
 
-Set jobspec attributes after job submission.  The event context object SHALL
-consist of a dictionary of period-delimited keys beginning with ``attributes.``
-and MUST contain at least one entry.
+Change jobspec after job submission.  The event context object SHALL consist
+of a dictionary of period-delimited keys that SHALL be interpreted as a
+hierarchical JSON path.  The dictionary MUST contain at least one entry.
+If the key already exists in the jobspec object, the old value SHALL be
+replaced with the new value.
 
 Example:
 
