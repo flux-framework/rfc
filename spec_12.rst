@@ -221,3 +221,40 @@ the following is true:
 - the peer is known to be the instance owner
 
 - the peer's authenticated userid matches the event message credential userid
+
+Request Example
+===============
+
+.. figure:: images/cred.png
+   :width: 400
+   :alt: Flux message credential propagation example
+   :align: center
+
+   A guest user runs ``flux ping -r 1 kvs``.
+
+It may be helpful to trace the path of a request message sent by a guest to
+a service on another broker rank.
+
+#. The ``flux ping`` command connects to Flux as a guest user with POSIX UID
+   of ``5500`` and sends a request message to the KVS module on rank 1.
+   The request message has an invalid credential (``0xffffffff``, ``0``).
+
+#. The Flux instance's connector-local broker module is configured to allow
+   guests, so the connection is permitted.  Because the connection is
+   authenticated as a guest and the connection is local, the credential
+   (``5500``, FLUX_ROLE_USER | FLUX_ROLE_LOCAL) is assigned and the message
+   is forwarded to the next hop, broker 0.
+
+#. Broker 0 knows that the connector-local module, which is a local thread
+   communicating over shared memory, is running as the instance owner, so the
+   message is forwarded as-is to the next hop, broker 1, using the overlay
+   network.
+
+#. Broker 1 knows that the overlay network only connects remote brokers
+   running as the instance owner, so it clears FLUX_ROLE_LOCAL and forwards
+   the message to the local kvs module.
+
+#. The KVS module knows that the broker is running as the instance owner so
+   it accepts the request as-is.  The request credential (``5500``,
+   FLUX_ROLE_USER) is compared against the allow rolemask for ``kvs.ping``,
+   which contains FLUX_ROLE_USER, and the request is accepted and processed.
