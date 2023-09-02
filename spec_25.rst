@@ -32,8 +32,6 @@ Related Standards
 
 -  :doc:`4/Flux Resource Model <spec_4>`
 
--  :doc:`8/Flux Task and Program Execution Services <spec_8>`
-
 -  :doc:`14/Canonical Job Specification <spec_14>`
 
 -  :doc:`20/Resource Set Specification Version 1 <spec_20>`
@@ -51,7 +49,7 @@ Goals
    and GPUs.
 
 -  Express program attributes such as arguments, run time, and
-   task layout, to be considered by the program execution service (RFC 12)
+   task layout, to be considered by the execution service
 
 
 Overview

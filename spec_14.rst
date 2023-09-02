@@ -31,8 +31,6 @@ Related Standards
 
 -  :doc:`4/Flux Resource Model <spec_4>`
 
--  :doc:`8/Flux Task and Program Execution Services <spec_8>`
-
 -  :doc:`20/Resource Set Specification Version 1 <spec_20>`
 
 -  :doc:`26/Job Dependency Specification <spec_26>`
