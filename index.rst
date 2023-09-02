@@ -62,15 +62,6 @@ built on top of Flux request and response messages.
 This specification presents the recommended standards when
 contributing C code to the Flux code base.
 
-:doc:`8/Flux Task and Program Execution Services <spec_8>`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-A core service of Flux is to launch, monitor, and handle I/O for
-distributed sets of tasks in order to execute a parallel workload. A
-Flux workload can include further instances of Flux, to arbitrary
-recursive depth. The goal of this RFC is to specify in detail the
-services required to execute a Flux workload.
-
 :doc:`9/Distributed Communication and Synchronization Best Practices <spec_9>`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -280,7 +271,6 @@ content secured with a digital signature.
    spec_5
    spec_6
    spec_7
-   spec_8
    spec_9
    spec_10
    spec_11

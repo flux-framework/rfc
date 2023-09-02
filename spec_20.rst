@@ -28,8 +28,6 @@ Related Standards
 
 -  :doc:`4/Flux Resource Model <spec_4>`
 
--  :doc:`8/Flux Task and Program Execution Services <spec_8>`
-
 -  :doc:`14/Canonical Job Specification <spec_14>`
 
 -  :doc:`15/Independent Minister of Privilege for Flux <spec_15>`
@@ -69,8 +67,7 @@ The *R* format is designed with the following goals:
 -  Allow the resource data conformant to our resource model (RFC 4)
    to be serialized and deserialized with no data loss;
 
--  Express the resource allocation information to the program execution
-   service (RFC 8);
+-  Express the resource allocation information to the execution service;
 
 -  Use the same format to release a resource subset of *R* to the scheduler;
 

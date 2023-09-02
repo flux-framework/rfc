@@ -19,7 +19,6 @@ Table of Contents
 - [5/Flux Broker Modules](spec_5.rst)
 - [6/Flux Remote Procedure Call Protocol](spec_6.rst)
 - [7/Flux Coding Style Guide](spec_7.rst)
-- [8/Flux Task and Program Execution Services](spec_8.rst)
 - [9/Distributed Communication and Synchronization Best Practices](spec_9.rst)
 - [10/Content Storage](spec_10.rst)
 - [11/Key Value Store Tree Object Format v1](spec_11.rst)
