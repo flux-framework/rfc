@@ -69,6 +69,8 @@ The OPTIONAL unit suffix MUST be one of the following (case sensitive):
      - days
      - 86400
 
+If no suffix is specified, N is assumed to be in seconds.
+
 As a special case, when N is ``infinity`` or ``inf``, the unit suffix SHALL
 be omitted.
 
