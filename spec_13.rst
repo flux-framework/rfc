@@ -8,6 +8,8 @@
 
 .. highlight:: c
 
+.. default-domain:: c
+
 The MPI process manager interface (PMI) version 1 is a de-facto standard
 API and wire protocol for communication between MPI runtimes and resource
 managers. It was added to the MPICH2 MPI-2 reference implementation in
@@ -72,10 +74,9 @@ protocol versions. Apart from version negotiation and the common
 fundamentals, PMI version 2 a different protocol and not covered here.
 
 PMIx ("x" for exascale, from the OpenMPI community) is a separate effort
-that provides compatible PMI version 1 and 2 APIs but uses an incompatible
-wire protocol. PMIx is not covered here.
+that is not covered here.
 
-PMIX ("X" for extension), is as set of extensions to PMI-2. The PMIX
+PMIX ("X" for extension), is a set of extensions to PMI-2. The PMIX
 extensions are not covered here.
 
 
@@ -86,9 +87,9 @@ Overview
 PMI was designed as an interface between process managers and parallel
 programs, including, but not limited to, MPI runtimes. It has two main
 parts, one part designed to assist with bootstrap activities that need
-to take place inside 'MPI_Init()', and the other part designed to
+to take place inside :func:`MPI_Init`, and the other part designed to
 support MPI-2’s dynamic process management features, such as
-'MPI_Comm_spawn()'.
+:func:`MPI_Comm_spawn`.
 
 A newly-launched MPI process needs to find out (minimally) its rank,
 the total number of ranks in the program, and network addresses of
@@ -179,7 +180,7 @@ set the following environment variables:
    * - PMI_SIZE
      - size of the program (number of ranks)
    * - PMI_SPAWNED
-     - only set (to 1) if the program was created by ``PMI_Spawn_multiple()``
+     - only set (to 1) if the program was created by :func:`PMI_Spawn_multiple`
 
 
 *********************************
@@ -272,11 +273,11 @@ indicating the result of the operation:
 Initialization
 ==============
 
-.. c:function:: int PMI_Init (int *spawned)
+.. function:: int PMI_Init (int *spawned)
 
 Initialize the PMI library for this process. Upon success, the value
-of ``spawned`` (boolean) SHALL bet set to (1) if this process was created
-by :c:func:`PMI_Spawn_multiple`, or (0) if not.
+of :var:`spawned` (boolean) SHALL bet set to (1) if this process was created
+by :func:`PMI_Spawn_multiple`, or (0) if not.
 
 Errors:
 
@@ -284,10 +285,10 @@ Errors:
 
 -  PMI_FAIL - initialization failed
 
-.. c:function:: int PMI_Initialized (int *initialized)
+.. function:: int PMI_Initialized (int *initialized)
 
 Check if the PMI library has been initialized for this process.
-Upon success, the the value of ``initialized`` (boolean) SHALL be set to
+Upon success, the the value of :var:`initialized` (boolean) SHALL be set to
 (1) or (0) to indicate whether or not PMI has been successfully initialized.
 
 Errors:
@@ -296,14 +297,14 @@ Errors:
 
 -  PMI_FAIL - unable to set the variable
 
-.. c:function:: int PMI_KVS_Get_name_length_max (int *length)
-.. c:function:: int PMI_KVS_Get_key_length_max (int *length)
-.. c:function:: int PMI_KVS_Get_value_length_max (int *length)
-.. c:function:: int PMI_Get_id_length_max (int *length)
+.. function:: int PMI_KVS_Get_name_length_max (int *length)
+.. function:: int PMI_KVS_Get_key_length_max (int *length)
+.. function:: int PMI_KVS_Get_value_length_max (int *length)
+.. function:: int PMI_Get_id_length_max (int *length)
 
 Obtain the maximum length (including terminating NULL) of KVS name,
 key, value, and id strings. Upon success, the PMI library SHALL
-set the value of ``length`` to the maximum name length for the requested
+set the value of :var:`length` to the maximum name length for the requested
 parameter.
 
 Errors:
@@ -317,13 +318,13 @@ Notes:
 -  Process Management in MPICH [#f1]_ recommends minimum lengths for
    name, key, and value of 16, 32, and 64, respectively.
 
--  :c:func:`PMI_Get_id_length_max` SHALL be considered an alias for
-   :c:func:`PMI_KVS_Get_name_length_max`.
+-  :func:`PMI_Get_id_length_max` SHALL be considered an alias for
+   :func:`PMI_KVS_Get_name_length_max`.
 
--  :c:func:`PMI_Get_id_length_max` was dropped from pmi.h [#f3]_ on 2011-01-28 in
+-  :func:`PMI_Get_id_length_max` was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
-.. c:function:: int PMI_Finalize (void)
+.. function:: int PMI_Finalize (void)
 
 Finalize the PMI library for this process.
 
@@ -331,21 +332,21 @@ Errors:
 
 -  PMI_FAIL - finalization failed
 
-.. c:function:: int PMI_Abort (int exit_code, const char error_msg[])
+.. function:: int PMI_Abort (int exit_code, const char error_msg[])
 
 Abort the process group associated with this process.
-The PMI library SHALL print ``error_msg`` to standard error, then exit this
-process with with ``exit_code``. This function SHALL NOT return.
+The PMI library SHALL print :var:`error_msg` to standard error, then exit
+this process with with :var:`exit_code`. This function SHALL NOT return.
 
 
 Process Group Information
 =========================
 
-.. c:function:: int PMI_Get_size (int *size)
+.. function:: int PMI_Get_size (int *size)
 
 Obtain the size of the process group to which the local process belongs.
-Upon success, the value of ``size`` SHALL be set to the size of the process
-group.
+Upon success, the value of :var:`size` SHALL be set to the size of the
+process group.
 
 Errors:
 
@@ -353,10 +354,10 @@ Errors:
 
 -  PMI_FAIL - unable to return the size
 
-.. c:function:: int PMI_Get_rank (int *rank)
+.. function:: int PMI_Get_rank (int *rank)
 
 Obtain the rank (0…​size-1) of the local process in the process group.
-Upon success, ``rank`` SHALL be set to the rank of the local process.
+Upon success, :var:`rank` SHALL be set to the rank of the local process.
 
 Errors:
 
@@ -364,10 +365,10 @@ Errors:
 
 -  PMI_FAIL - unable to return the rank
 
-.. c:function:: int PMI_Get_universe_size (int *size)
+.. function:: int PMI_Get_universe_size (int *size)
 
 Obtain the universe size, which is the the maximum future size of the
-process group for dynamic applications. Upon success, ``size`` SHALL
+process group for dynamic applications. Upon success, :var:`size` SHALL
 be set to the rank of the local process.
 
 Errors:
@@ -380,9 +381,9 @@ Notes:
 
 -  See MPI-2 [#f2]_ section `5.5.1. Universe Size <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node111.htm>`__.
 
-.. c:function:: int PMI_Get_appnum (int *appnum)
+.. function:: int PMI_Get_appnum (int *appnum)
 
-Obtain the application number. Upon success, ``appnum`` SHALL be set to
+Obtain the application number. Upon success, :var:`appnum` SHALL be set to
 the application number.
 
 Errors:
@@ -399,15 +400,15 @@ Notes
 Local Process Group Information
 ===============================
 
-.. c:function:: int PMI_Get_clique_ranks (int ranks[], int length)
+.. function:: int PMI_Get_clique_ranks (int ranks[], int length)
 
 Get the ranks of the local processes in the process group.
 This is a simple topology function to distinguish between processes that can
 communicate through IPC mechanisms (e.g., shared memory) and other network
-mechanisms. The user SHALL set ``length`` to the size returned by
-:c:func:`PMI_Get_clique_size`, and ``ranks`` to an integer array of that length.
-Upon success, the PMI library SHALL fill each slot of the array with the
-rank of a local process in the process group.
+mechanisms. The user SHALL set :var:`length` to the size returned by
+:func:`PMI_Get_clique_size`, and :var:`ranks` to an integer array of that
+length.  Upon success, the PMI library SHALL fill each slot of the array with
+the rank of a local process in the process group.
 
 Errors:
 
@@ -422,7 +423,7 @@ Notes:
 -  This function returns the ranks of the processes on the local node.
 
 -  The array must be at least as large as the size returned by
-   :c:func:`PMI_Get_clique_size`.
+   :func:`PMI_Get_clique_size`.
 
 -  This function was dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__
@@ -430,9 +431,9 @@ Notes:
 -  The implementation should fetch the ``PMI_process_mapping`` value from the
    KVS and calculate the clique ranks (see below).
 
-.. c:function:: int PMI_Get_clique_size (int *size)
+.. function:: int PMI_Get_clique_size (int *size)
 
-Obtain the number of processes on the local node. Upon success, ``size``
+Obtain the number of processes on the local node. Upon success, :var:`size`
 SHALL be set to the number of processes on the local node.
 
 Errors:
@@ -453,17 +454,17 @@ Notes:
 Key Value Store
 ===============
 
-.. c:function:: int PMI_KVS_Put (const char kvsname[], const char key[], const char value[])
+.. function:: int PMI_KVS_Put (const char kvsname[], const char key[], const char value[])
 
 Put a key/value pair in a keyval space.
-The user SHALL set ``kvsname`` to the name returned from
-:c:func:`PMI_KVS_Get_my_name`.  The user SHALL set ``key`` and ``value`` to NULL
-terminated strings no longer (with NULL) than the sizes returned by
-:c:func:`PMI_KVS_Get_key_length_max` and :c:func:`PMI_KVS_Get_value_length_max`
-respectively.
+The user SHALL set :var:`kvsname` to the name returned from
+:func:`PMI_KVS_Get_my_name`.  The user SHALL set :var:`key` and
+:var:`value` to NULL terminated strings no longer (with NULL) than the sizes
+returned by :func:`PMI_KVS_Get_key_length_max` and
+:func:`PMI_KVS_Get_value_length_max` respectively.
 
 Upon success, the PMI value SHALL be visible to other processes after
-:c:func:`PMI_KVS_Commit` and :c:func:`PMI_Barrier` are called.
+:func:`PMI_KVS_Commit` and :c:func:`PMI_Barrier` are called.
 
 Errors:
 
@@ -483,11 +484,11 @@ Notes:
 
 -  A key SHALL NOT be put more than once to a keyval space.
 
-.. c:function:: int PMI_KVS_Commit (const char kvsname[])
+.. function:: int PMI_KVS_Commit (const char kvsname[])
 
 Commit all previous puts to the keyval space. Upon success, all puts
-since the last :c:func:`PMI_KVS_Commit` shall be stored into the specified
-``kvsname``.
+since the last :func:`PMI_KVS_Commit` shall be stored into the specified
+:var:`kvsname`.
 
 Errors:
 
@@ -503,17 +504,18 @@ Notes:
 -  It is a process local operation, thus in some implementations,
    it MAY have no effect and still return PMI_SUCCESS.
 
-.. c:function:: int PMI_KVS_Get (const char kvsname[], const char key[], char value[], int length)
+.. function:: int PMI_KVS_Get (const char kvsname[], const char key[], char value[], int length)
 
 Get a key/value pair from a keyval space.
-The user SHALL set ``kvsname`` to the name returned from
-:c:func:`PMI_KVS_Get_my_name`.  The user SHALL set ``length`` to the length of the
-``value`` array, which SHALL be no shorter than the length returned by
-:c:func:`PMI_KVS_Get_value_length_max`.  The user SHALL set 'key' to a NULL
-terminated string no longer (with NULL) than the size returned by
-:c:func:`PMI_KVS_Get_key_length_max`.
+The user SHALL set :var:`kvsname` to the name returned from
+:func:`PMI_KVS_Get_my_name`.  The user SHALL set :var:`length` to the
+length of the :var:`value` array, which SHALL be no shorter than the length
+returned by :func:`PMI_KVS_Get_value_length_max`.  The user SHALL set
+:var:`key` to a NULL terminated string no longer (with NULL) than the size
+returned by :func:`PMI_KVS_Get_key_length_max`.
 
-Upon success, the PMI library SHALL fill ``value`` with the value of ``key``.
+Upon success, the PMI library SHALL fill :var:`value` with the value
+associated the key.
 
 Errors:
 
@@ -527,16 +529,16 @@ Errors:
 
 -  PMI_FAIL - get failed
 
-.. c:function:: int PMI_KVS_Get_my_name (char kvsname[], int length)
-.. c:function:: int PMI_Get_kvs_domain_id (char kvsname[], int length)
-.. c:function:: int PMI_Get_id (char kvsname[], int length)
+.. function:: int PMI_KVS_Get_my_name (char kvsname[], int length)
+.. function:: int PMI_Get_kvs_domain_id (char kvsname[], int length)
+.. function:: int PMI_Get_id (char kvsname[], int length)
 
 This function returns the common keyval space for this process group.
-The user SHALL set set ``length`` to the length of the ``kvsname`` array,
-which SHALL be no shorter than the length returned by
-:c:func:`PMI_KVS_Get_name_length_max`.
+The user SHALL set set :var:`length` to the length of the :var:`kvsname`
+array, which SHALL be no shorter than the length returned by
+:func:`PMI_KVS_Get_name_length_max`.
 
-Upon success, the PMI library SHALL set ``kvsname`` to a NULL terminated
+Upon success, the PMI library SHALL set :var:`kvsname` to a NULL terminated
 string representing the keyval space.
 
 Errors:
@@ -549,16 +551,16 @@ Errors:
 
 Notes:
 
--  length SHALL be greater than or equal to the length returned
-   by :c:func:`PMI_KVS_Get_name_length_max`.
+-  :var:`length` SHALL be greater than or equal to the length returned
+   by :func:`PMI_KVS_Get_name_length_max`.
 
--  :c:func:`PMI_Get_kvs_domain_id` and :c:func:`PMI_Get_id` SHALL be considered
-   an alias for :c:func:`PMI_KVS_Get_my_name`.
+-  :func:`PMI_Get_kvs_domain_id` and :c:func:`PMI_Get_id` SHALL be considered
+   an alias for :func:`PMI_KVS_Get_my_name`.
 
--  ``PMI_Get_kvs_domain_id()`` and ``PMI_Get_id()`` were dropped from pmi.h
-   [#f3]_ on 2011-01-28 in `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
+-  :func:`PMI_Get_kvs_domain_id()` and :c:func:`PMI_Get_id()` were dropped
+   from pmi.h [#f3]_ on 2011-01-28 in `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__.
 
-.. c:function:: int PMI_Barrier (void)
+.. function:: int PMI_Barrier (void)
 
 This function is a collective call across all processes in the process group
 the local process belongs to. The PMI library SHALL attempt to block until
@@ -579,10 +581,10 @@ Notes:
 -  The barrier operation MUST be usable as a generic synchronization mechanism,
    without requiring KVS data to be queued for exchange.
 
-.. c:function:: int PMI_KVS_Create (char kvsname[], int length)
-.. c:function:: int PMI_KVS_Destroy (const char kvsname[]);
-.. c:function:: int PMI_KVS_Iter_first (const char kvsname[], char key[], int key_len, char val[], int val_len)
-.. c:function:: int PMI_KVS_Iter_next (const char kvsname[], char key[], int key_len, char val[], int val_len)
+.. function:: int PMI_KVS_Create (char kvsname[], int length)
+.. function:: int PMI_KVS_Destroy (const char kvsname[]);
+.. function:: int PMI_KVS_Iter_first (const char kvsname[], char key[], int key_len, char val[], int val_len)
+.. function:: int PMI_KVS_Iter_next (const char kvsname[], char key[], int key_len, char val[], int val_len)
 
 Notes:
 
@@ -602,26 +604,26 @@ Dynamic Process Management
        char * val;
    } PMI_keyval_t;
 
-.. c:function:: int PMI_Spawn_multiple (int count, const char *cmds[], const char **argvs[], const int maxprocs[], const int info_keyval_sizesp[], const PMI_keyval_t *info_keyval_vectors[], int preput_keyval_size, const PMI_keyval_t preput_keyval_vector[], int errors[])
+.. function:: int PMI_Spawn_multiple (int count, const char *cmds[], const char **argvs[], const int maxprocs[], const int info_keyval_sizesp[], const PMI_keyval_t *info_keyval_vectors[], int preput_keyval_size, const PMI_keyval_t preput_keyval_vector[], int errors[])
 
 This function spawns a set of processes into a new process group.
-``count`` refers to the size of the array parameters ``cmd``, ``argvs``,
-``maxprocs``, ``info_keyval_sizes`` and ``info_keyval_vectors``.
-``preput_keyval_size`` refers to the size of the ``preput_keyval_vector``
-array.
+:var:`count` refers to the size of the array parameters :var:`cmd`,
+:var:`argvs`, :var:`maxprocs`, :var:`info_keyval_sizes` and
+:var:`info_keyval_vectors`.  :var:`preput_keyval_size` refers to the size
+of the :var:`preput_keyval_vector` array.
 
-``preput_keyval_vector`` contains keyval pairs that will be put in the
+:var:`preput_keyval_vector` contains keyval pairs that will be put in the
 keyval space of the newly created process group before the processes
 are started.
 
-The ``maxprocs`` array specifies the desired number of processes
-to create for each ``cmd`` string. The actual number of processes
-may be less than the numbers specified in maxprocs. The acceptable
+The :var:`maxprocs` array specifies the desired number of processes
+to create for each :var:`cmd` string. The actual number of processes
+may be less than the numbers specified in :var:`maxprocs`. The acceptable
 number of processes spawned may be controlled by "soft" keyvals in
 the info arrays.
 
 Environment variables may be passed to the spawned processes through PMI
-implementation specific ``info_keyval`` parameters.
+implementation specific :var:`info_keyval` parameters.
 
 Errors:
 
@@ -638,9 +640,9 @@ Notes:
 
 -  See MPI-2 [#f2]_ section `5.3.5.1. Manager-worker Example, Using MPI_SPAWN. <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node98.htm>`__
 
-.. c:function:: int PMI_Publish_name (const char service_name[], const char port[])
-.. c:function:: int PMI_Unpublish_name (const char service_name[])
-.. c:function:: int PMI_Lookup_name (const char service_name[], char port[])
+.. function:: int PMI_Publish_name (const char service_name[], const char port[])
+.. function:: int PMI_Unpublish_name (const char service_name[])
+.. function:: int PMI_Lookup_name (const char service_name[], char port[])
 
 Publish/unpublish/lookup a name.
 
@@ -657,10 +659,10 @@ Notes:
 
 -  See MPI-2 [#f2]_ section `5.4.4. Name Publishing <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node104.htm>`__.
 
-.. c:function:: int PMI_Parse_option (int num_args, char *args[], int *num_parsed, PMI_keyval_t **keyvalp, int *size)
-.. c:function:: int PMI_Args_to_keyval (int *argcp, char *((*argvp)[]), PMI_keyval_t **keyvalp, int *size)
-.. c:function:: int PMI_Free_keyvals (PMI_keyval_t keyvalp[], int size)
-.. c:function:: int PMI_Get_options (char *str, int *length)
+.. function:: int PMI_Parse_option (int num_args, char *args[], int *num_parsed, PMI_keyval_t **keyvalp, int *size)
+.. function:: int PMI_Args_to_keyval (int *argcp, char *((*argvp)[]), PMI_keyval_t **keyvalp, int *size)
+.. function:: int PMI_Free_keyvals (PMI_keyval_t keyvalp[], int size)
+.. function:: int PMI_Get_options (char *str, int *length)
 
 Notes:
 
