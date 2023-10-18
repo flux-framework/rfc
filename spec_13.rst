@@ -72,8 +72,7 @@ protocol versions. Apart from version negotiation and the common
 fundamentals, PMI version 2 a different protocol and not covered here.
 
 PMIx ("x" for exascale, from the OpenMPI community) is a separate effort
-that provides compatible PMI version 1 and 2 APIs but uses an incompatible
-wire protocol. PMIx is not covered here.
+that is not covered here.
 
 PMIX ("X" for extension), is as set of extensions to PMI-2. The PMIX
 extensions are not covered here.
