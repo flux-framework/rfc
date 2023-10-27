@@ -164,6 +164,10 @@ property-remove
   MAY affect job satisfiability, the determination of which is left to the
   scheduler implementation.
 
+expiration
+  (float) When present, this key notifies the scheduler that the expiration
+  time of the resource set has been updated to the included floating-point
+  value.
 
 Example:
 
