@@ -111,26 +111,6 @@ Design Goals
 Implementation
 **************
 
-Producers and Consumers
-=======================
-
--  The scheduler for a Flux instance (or instance scheduler) uses
-   this format to serialize each resource allocation
-   as REQUIRED by the instance program execution service and OPTIONALLY
-   REQUIRED by child scheduler instances.
-
--  The instance scheduler deserializes an *R* object to build
-   its internal resource data used for scheduling.
-
--  Users MAY manually write an *R* object for testing and debugging.
-
--  User-facing utilities that query a resource status (e.g., what
-   resources are available or idle, or what resources are allocated to a job)
-   MAY use an *R* object to extract this information;
-
--  The program execution service emits a valid *R* object to release
-   a resource subset of an *R* to the instance scheduler.
-
 Resource Set Format Definition
 ==============================
 
