@@ -67,17 +67,27 @@ where it primes the child scheduler with a block of allocatable resources.
 Design Goals
 ************
 
-The *R* format is designed with the following goals:
+*R* is designed with the following goals:
 
--  Allow the resource data conformant to our resource model (RFC 4)
-   to be serialized and deserialized with no data loss;
+-  Identify the specific resources where a job's tasks are to be launched.
 
--  Express the resource allocation information to the execution service;
+-  Identify the specific resources managed by a Flux instance.
 
--  Use the same format to release a resource subset of *R* to the scheduler;
+-  Be suitable for inclusion in a job's post-mortem record, and useful for
+   answering forensic questions like "did my job run on the node that failed?".
 
--  Allow the consumers of *R* to deserialize an *R* object while minimizing
-   the parsing complexity and the data to read;
+-  Handle nodes, cores, and GPUs simply to ease the initial Flux implementation.
+
+-  Allow schedulers to add proprietary enhancements that are ignored by
+   the rest of Flux.
+
+-  Don't explode in size on large clusters/jobs.
+
+-  Handle resource properties as described in RFC 31
+
+-  Build towards the general resource model of RFC 4.
+
+
 
 **************
 Implementation
