@@ -47,21 +47,39 @@ Related Standards
 Overview
 ********
 
-Flexible resource representation is important for some of the key
-components of Flux.
-Resource requests are part of Flux jobspec, described in RFC 14.
-This RFC describes the format of a concrete resource-set representation
-referred to as *R*, constructed by the scheduler in response
-to a resource request.
-*R* is input to the remote execution system, which uses information
-expressed in *R* to establish containment, binding, mapping,
-and execution of program tasks, apportioned across broker ranks.
-As a program terminates, the execution system releases
-shards of the original *R*, eventually
-adding up to its union, back to the scheduler.
-Finally, when a Flux instance launches a child instance,
-*R* is passed down from the enclosing instance to the child instance,
-where it primes the child scheduler with a block of allocatable resources.
+This specification describes a JSON object *R* used to represents sets of
+specific resources.  *R* is for representing concrete resources like "cores
+2-5 of node 9".  It is distinct from the *jobspec* resources section (RFC 14)
+which is for abstract resource requirements like "one node with four cores".
+
+The following Flux subsystems must handle *R*:
+
+resource module
+  A Flux instance has a resource inventory which it obtains from configuration,
+  through allocation from the enclosing instance, or via dynamic probing.
+  The end result is expressed as *R*.  The resources in *R* are also monitored
+  at the rank level for availability.
+
+scheduler
+  The scheduler obtains the resource inventory at initialization and fulfills
+  job requests by allocating *R* subsets to them.  When jobs terminate their
+  *R* subsets are returned to the scheduler and become available for
+  fulfilling other job requests.
+
+job manager
+  The job manager tracks *R* so it can pass it to the scheduler and execution
+  subsystems as the job transitions through job states.  In addition, *R* is
+  made available to jobtap plugins which extend the job manager's function.
+  Finally, when *R* is updated, for example to extend the duration of a
+  running job, the job manager coordinates *R* updates across subsystems.
+
+execution
+  The job execution system uses *R* to determine where to launch Flux shells.
+
+shell
+  The job shell uses *R* to determine where to launch tasks.  Shell plugins
+  may use *R* for various purposes such setting core and GPU affinity.
+
 
 ************
 Design Goals
