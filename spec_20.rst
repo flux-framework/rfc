@@ -106,16 +106,13 @@ Resource Set Format Definition
 
 The JSON documents that conform to the *R* format SHALL be referred
 to as *R* JSON documents or in short *R* documents.
-An *R* JSON document SHALL consist of a dictionary with four
-keys: :data:`version`, :data:`execution`, :data:`scheduling` and
-:data:`attributes`.  It SHALL be valid if and only
+An *R* JSON document SHALL consist of a dictionary with three
+keys: :data:`version`, :data:`execution`, and :data:`scheduling`.
+It SHALL be valid if and only
 if it contains the :data:`version` key and either or both the :data:`execution`
 and :data:`scheduling` keys. The value of the :data:`execution` key SHALL
 contain sufficient data for the execution system to perform its core tasks. The
 value of :data:`scheduling` SHALL contain sufficient data for schedulers.
-Finally, the value of :data:`attributes` SHALL provide optional information
-including but not being limited to data specific to the scheduler used to
-create this JSON document.
 
 .. data:: version
 
@@ -215,31 +212,6 @@ create this JSON document.
   along on the resource acquisition protocol (RFC 28) and resource allocation
   protocol (RFC 27) so that it may be included in static configuration,
   allocated to jobs, and passed down a Flux instance hierarchy.
-
-.. data:: attributes
-
-  The purpose of the :data:`attributes` key is to provide optional
-  information on this *R* document. The :data:`attributes` key SHALL
-  be a dictionary of one key: :data:`system`.
-
-  Other keys are reserved for future extensions.
-
-  .. data:: system
-
-    Attributes in the :data:`system` dictionary provide additional system
-    information that have affected the creation of this *R* document.
-    All of the system attributes are optional.
-
-    A common system attribute is:
-
-    .. describe:: scheduler
-
-      The value of the :data:`scheduler` key is a free-from dictionary that
-      may provide the information specific to the scheduler used
-      to produce this document. For example, a scheduler that
-      manages multiple job queues may add ``queue=batch``
-      to indicate that this resource set was allocated from within
-      its ``batch`` queue.
 
 
 Example R
