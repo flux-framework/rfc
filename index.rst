@@ -260,6 +260,13 @@ for a series of typed key-value pairs.
 The Flux Security Signature is a NUL terminated string that represents
 content secured with a digital signature.
 
+:doc:`40/Fluxion Resource Set Extension <spec_39>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This specification defines the data format used by the Fluxion scheduler
+to store resource graph data in RFC 20 *R* version 1 objects.
+
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -301,3 +308,4 @@ content secured with a digital signature.
    spec_37
    spec_38
    spec_39
+   spec_40
