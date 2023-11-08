@@ -2,8 +2,9 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_20.html
 
+#######################################
 20/Resource Set Specification Version 1
-=======================================
+#######################################
 
 This specification defines the version 1 format of the resource-set
 representation or *R* in short.
@@ -14,17 +15,17 @@ representation or *R* in short.
 
 -  State: Raw
 
-
+********
 Language
---------
+********
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
 in this document are to be interpreted as described in RFC 2119.
 
-
+*****************
 Related Standards
------------------
+*****************
 
 -  :doc:`4/Flux Resource Model <spec_4>`
 
@@ -38,9 +39,9 @@ Related Standards
 
 -  :doc:`29/Hostlist Format <spec_29>`
 
-
+********
 Overview
---------
+********
 
 Flexible resource representation is important for some of the key
 components of Flux.
@@ -58,9 +59,9 @@ Finally, when a Flux instance launches a child instance,
 *R* is passed down from the enclosing instance to the child instance,
 where it primes the child scheduler with a block of allocatable resources.
 
-
+************
 Design Goals
-------------
+************
 
 The *R* format is designed with the following goals:
 
@@ -74,9 +75,12 @@ The *R* format is designed with the following goals:
 -  Allow the consumers of *R* to deserialize an *R* object while minimizing
    the parsing complexity and the data to read;
 
+**************
+Implementation
+**************
 
 Producers and Consumers
------------------------
+=======================
 
 -  The scheduler for a Flux instance (or instance scheduler) uses
    this format to serialize each resource allocation
@@ -95,9 +99,8 @@ Producers and Consumers
 -  The program execution service emits a valid *R* object to release
    a resource subset of an *R* to the instance scheduler.
 
-
 Resource Set Format Definition
-------------------------------
+==============================
 
 The JSON documents that conform to the *R* format SHALL be referred
 to as *R* JSON documents or in short *R* documents.
@@ -113,16 +116,14 @@ optional information including but not being limited
 to data specific to the scheduler used to create
 this JSON document.
 
-
 Version
-~~~~~~~
+^^^^^^^
 
 The value of the ``version`` key SHALL contain 1 to indicate
 the format version.
 
-
 Execution
-~~~~~~~~~
+^^^^^^^^^
 
 The value of the ``execution`` key SHALL contain at least the keys
 ``R_lite``, and ``nodelist``, with optional keys ``properties``,
@@ -199,9 +200,8 @@ The ``execution`` key MAY also contain any of the following optional keys:
    specified end time and is valid beginning at ``starttime`` without
    expiration.
 
-
 Scheduling
-~~~~~~~~~~
+^^^^^^^^^^
 
 The ``scheduling`` key MAY contain scheduler-specific resource data.  It
 SHALL NOT be interpreted other Flux components.  When used, it SHALL ride
@@ -209,9 +209,9 @@ along on the resource acquisition protocol (RFC 28) and resource allocation
 protocol (RFC 27) so that it may be included in static configuration,
 allocated to jobs, and passed down a Flux instance hierarchy.
 
-
 Attributes
-~~~~~~~~~~
+^^^^^^^^^^
+
 The purpose of the ``attributes`` key is to provide optional
 information on this *R* document. The ``attributes`` key SHALL
 be a dictionary of one key: ``system``.
@@ -234,7 +234,7 @@ its ``batch`` queue.
 
 
 Example R
-~~~~~~~~~
+=========
 
 The following is an example of a version 1 resource specification.
 The example below indicates a resource set with the ranks 19
