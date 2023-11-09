@@ -13,7 +13,7 @@ representation or *R* in short.
 
 -  Name: github.com/flux-framework/rfc/spec_20.rst
 
--  Editor: Dong H. Ahn <ahn1@llnl.gov>
+-  Editor: Jim Garlick <garlick@llnl.gov>
 
 -  State: Raw
 
