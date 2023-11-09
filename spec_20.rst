@@ -13,7 +13,7 @@ representation or *R* in short.
 
 -  Name: github.com/flux-framework/rfc/spec_20.rst
 
--  Editor: Dong H. Ahn <ahn1@llnl.gov>
+-  Editor: Jim Garlick <garlick@llnl.gov>
 
 -  State: Raw
 
@@ -41,140 +41,147 @@ Related Standards
 
 -  :doc:`29/Hostlist Format <spec_29>`
 
+-  :doc:`31/Job Constraints Specification <spec_31>`
+
 ********
 Overview
 ********
 
-Flexible resource representation is important for some of the key
-components of Flux.
-Resource requests are part of Flux jobspec, described in RFC 14.
-This RFC describes the format of a concrete resource-set representation
-referred to as *R*, constructed by the scheduler in response
-to a resource request.
-*R* is input to the remote execution system, which uses information
-expressed in *R* to establish containment, binding, mapping,
-and execution of program tasks, apportioned across broker ranks.
-As a program terminates, the execution system releases
-shards of the original *R*, eventually
-adding up to its union, back to the scheduler.
-Finally, when a Flux instance launches a child instance,
-*R* is passed down from the enclosing instance to the child instance,
-where it primes the child scheduler with a block of allocatable resources.
+This specification describes a JSON object *R* used to represents sets of
+specific resources.  *R* is for representing concrete resources like "cores
+2-5 of node 9".  It is distinct from the *jobspec* resources section (RFC 14)
+which is for abstract resource requirements like "one node with four cores".
+
+The following Flux subsystems must handle *R*:
+
+resource module
+  A Flux instance has a resource inventory which it obtains from configuration,
+  through allocation from the enclosing instance, or via dynamic probing.
+  The end result is expressed as *R*.  The resources in *R* are also monitored
+  at the rank level for availability.
+
+scheduler
+  The scheduler obtains the resource inventory at initialization and fulfills
+  job requests by allocating *R* subsets to them.  When jobs terminate their
+  *R* subsets are returned to the scheduler and become available for
+  fulfilling other job requests.
+
+job manager
+  The job manager tracks *R* so it can pass it to the scheduler and execution
+  subsystems as the job transitions through job states.  In addition, *R* is
+  made available to jobtap plugins which extend the job manager's function.
+  Finally, when *R* is updated, for example to extend the duration of a
+  running job, the job manager coordinates *R* updates across subsystems.
+
+execution
+  The job execution system uses *R* to determine where to launch Flux shells.
+
+shell
+  The job shell uses *R* to determine where to launch tasks.  Shell plugins
+  may use *R* for various purposes such setting core and GPU affinity.
+
 
 ************
 Design Goals
 ************
 
-The *R* format is designed with the following goals:
+*R* is designed with the following goals:
 
--  Allow the resource data conformant to our resource model (RFC 4)
-   to be serialized and deserialized with no data loss;
+-  Identify the specific resources where a job's tasks are to be launched.
 
--  Express the resource allocation information to the execution service;
+-  Identify the specific resources managed by a Flux instance.
 
--  Use the same format to release a resource subset of *R* to the scheduler;
+-  Be suitable for inclusion in a job's post-mortem record, and useful for
+   answering forensic questions like "did my job run on the node that failed?".
 
--  Allow the consumers of *R* to deserialize an *R* object while minimizing
-   the parsing complexity and the data to read;
+-  Handle nodes, cores, and GPUs simply to ease the initial Flux implementation.
+
+-  Allow schedulers to add proprietary enhancements that are ignored by
+   the rest of Flux.
+
+-  Don't explode in size on large clusters/jobs.
+
+-  Handle resource properties as described in RFC 31
+
+-  Build towards the general resource model of RFC 4.
+
+
 
 **************
 Implementation
 **************
 
-Producers and Consumers
-=======================
+.. note::
 
--  The scheduler for a Flux instance (or instance scheduler) uses
-   this format to serialize each resource allocation
-   as REQUIRED by the instance program execution service and OPTIONALLY
-   REQUIRED by child scheduler instances.
+  In Flux documentation, the terms "node rank" and "execution target" are
+  sometimes used interchangeably to refer to the Flux broker rank used to
+  launch tasks on a given resource set.  When Flux launches a new Flux
+  instance on a subset of resources, the new broker ranks do not match those
+  of the the enclosing instance and the inherited *R* must be re-ranked
+  before it can be brought into inventory.  Therefore, to avoid implying
+  that a node rank uniquely identifies a physical node across instances,
+  execution target is preferred in this document.
 
--  The instance scheduler deserializes an *R* object to build
-   its internal resource data used for scheduling.
+R Format
+========
 
--  Users MAY manually write an *R* object for testing and debugging.
-
--  User-facing utilities that query a resource status (e.g., what
-   resources are available or idle, or what resources are allocated to a job)
-   MAY use an *R* object to extract this information;
-
--  The program execution service emits a valid *R* object to release
-   a resource subset of an *R* to the instance scheduler.
-
-Resource Set Format Definition
-==============================
-
-The JSON documents that conform to the *R* format SHALL be referred
-to as *R* JSON documents or in short *R* documents.
-An *R* JSON document SHALL consist of a dictionary with four
-keys: :data:`version`, :data:`execution`, :data:`scheduling` and
-:data:`attributes`.  It SHALL be valid if and only
-if it contains the :data:`version` key and either or both the :data:`execution`
-and :data:`scheduling` keys. The value of the :data:`execution` key SHALL
-contain sufficient data for the execution system to perform its core tasks. The
-value of :data:`scheduling` SHALL contain sufficient data for schedulers.
-Finally, the value of :data:`attributes` SHALL provide optional information
-including but not being limited to data specific to the scheduler used to
-create this JSON document.
+*R* SHALL be defined as a JSON dictionary with the following keys:
 
 .. data:: version
 
-  The value of the :data:`version` key SHALL contain 1 to indicate
-  the format version.
+  (*integer*, REQUIRED) The *R* specification version.
+
+  For this specification the value is always 1.
 
 .. data:: execution
 
-  The value of the :data:`execution` key SHALL contain at least the keys
-  :data:`R_lite`, and :data:`nodelist`, with optional keys :data:`properties`,
-  :data:`starttime` and :data:`expiration`. Other keys are reserved for future
-  extensions.
+  (*dictionary*, REQUIRED) The resource set.  It SHALL have following keys:
 
   .. data:: R_lite
 
-    :data:`R_lite` is a strict list of dictionaries each of which SHALL contain
-    at least the :data:`rank` and :data:`children` keys.
+    (*array of dictionary*, REQUIRED) A list that identifies one or more
+    execution targets and the specific cores and GPUs they control.  Each
+    entry SHALL have the following keys:
 
     .. data:: rank
 
-      The value of the :data:`rank` key SHALL be a string list of
-      broker rank identifiers in **idset format** (See RFC 22). This list
-      SHALL indicate the broker ranks to which other information in
-      the current entry applies.
+      (*string*, REQUIRED) An RFC 22 idset representing one or more execution
+      targets.
 
     .. data:: children
 
-      The :data:`children` key encodes the information about certain compute
-      resources contained within this compute node. The value of this key SHALL
-      contain a dictionary with two keys: :data:`core` and :data:`gpu`. Other
-      keys are reserved for future extensions.
+      (*dictionary*, REQUIRED) The specific resources controlled by the
+      execution targets in :data:`rank`.  It SHALL have the following keys:
 
       .. data:: core
 
-        The :data:`core` key SHALL contain a logical compute core IDs string
-        in RFC 22 **idset format**.
+        (*string*, REQUIRED) An RFC 22 idset representing one or more
+	logical CPU cores IDs.
 
       .. data:: gpu
 
-        The OPTIONAL :data:`gpu` key SHALL contain a logical GPU IDs string
-        in RFC 22 **idset format**.
+        (*string*, OPTIONAL) An RFC 22 idset representing one or more
+	logical GPU IDs.
 
   .. data:: nodelist
 
-    The :data:`nodelist` key SHALL be an array of hostnames which correspond to
-    the :data:`rank` entries of the :data:`R_lite` dictionary, and serves as a
-    mapping of :data:`R_lite` :data:`rank` entries to hostname. Each entry in
-    :data:`nodelist` MAY contain a string in RFC 29 *Hostlist Format*, e.g.
-    ``host[0-16]``.
+    (*array of string*, REQUIRED) A list of hostnames corresponding
+    to the execution targets in :data:`R_lite`.
 
-  The :data:`execution` key MAY also contain any of the following optional keys:
+    Each entry SHALL be either a single hostname or an RFC 29 hostlist.
+
+    The order of hostnames MUST correspond to the order of execution targets in
+    :data:`R_lite`.  However, the number of entries in each array need not be
+    the same.  For example, :data:`nodelist` MAY contain one hostlist entry
+    for all the execution targets spread over multiple :data:`R_lite` entries.
 
   .. data:: properties
 
-    The optional :data:`properties` key SHALL be a dictionary where each key
-    maps a single property name to a RFC 22 idset string. The idset string SHALL
-    represent a set of execution target ranks. A given execution target
-    rank MAY appear in multiple property mappings. Property names SHALL
-    be valid UTF-8, and MUST NOT contain the following illegal characters::
+    (*dictionary of string*, OPTIONAL) Each key
+    maps a single property name to a RFC 22 idset string. The idset string
+    SHALL represent a set of execution targets. A given target MAY appear in
+    multiple property mappings. Property names SHALL be valid UTF-8, and MUST
+    NOT contain the following illegal characters::
 
       ! & ' " ^ ` | ( )
 
@@ -191,30 +198,43 @@ create this JSON document.
 
   .. data:: starttime
 
-    The value of the :data:`starttime` key, if present, SHALL
-    encode the start time at which the resource set is valid. The
-    value SHALL be the number of seconds elapsed since the Unix Epoch
-    (1970-01-01 00:00:00 UTC) with optional microsecond precision.
+    (*number*, OPTIONAL) The start time at which the resource set is valid.
+
+    A value of `0.` SHALL be interpreted as "unset".
+
+    The value SHALL be expressed as the number of seconds elapsed since the
+    Unix Epoch (1970-01-01 00:00:00 UTC) with optional microsecond precision.
+
     If :data:`starttime` is unset, then the resource set has no specified
     start time and is valid beginning at any time up to :data:`expiration`.
 
   .. data:: expiration
 
-    The value of the :data:`expiration` key, if present, SHALL
-    encode the end or expiration time of the resource set in seconds
-    since the Unix Epoch, with optional microsecond precision. If
-    :data:`starttime` is also set, :data:`expiration` MUST be greater than
-    :data:`starttime`. If :data:`expiration` is unset, the resource set has no
-    specified end time and is valid beginning at :data:`starttime` without
-    expiration.
+    (*number*, OPTIONAL) The end or expiration time of the resource set,
+    after which it becomes invalid.
+
+    A value of `0.` SHALL be interpreted as "unset".
+
+    The value SHALL be expressed as the number of seconds elapsed since the
+    Unix Epoch (1970-01-01 00:00:00 UTC) with optional microsecond precision.
+
+    If :data:`starttime` is also set, :data:`expiration` MUST be greater than
+    :data:`starttime`.
+
+    If :data:`expiration` is unset, the resource set has no specified end time.
 
 .. data:: scheduling
 
-  The :data:`scheduling` key MAY contain scheduler-specific resource data.  It
-  SHALL NOT be interpreted other Flux components.  When used, it SHALL ride
-  along on the resource acquisition protocol (RFC 28) and resource allocation
-  protocol (RFC 27) so that it may be included in static configuration,
-  allocated to jobs, and passed down a Flux instance hierarchy.
+  (*dictionary*, OPTIONAL) Scheduler-specific resource data which SHOULD NOT
+  be interpreted other Flux components.  When used, it SHALL ride along on the
+  resource acquisition protocol (RFC 28) and resource allocation protocol
+  (RFC 27) so that it may be included in static configuration, allocated to
+  jobs, and passed down a Flux instance hierarchy.
+
+  Linkage to specific resources in :data:`R_lite` SHOULD use hostnames rather
+  than execution targets since the scheduler-agnostic re-ranking of *R* that
+  occurs when a new Flux instance is started cannot do the same for the opaque
+  :data:`scheduling` key.
 
 .. data:: attributes
 
@@ -249,7 +269,7 @@ The following is an example of a version 1 resource specification.
 The example below indicates a resource set with the ranks 19
 through 22.  These ranks correspond to the nodes node186 through
 node189.  Each of the nodes contains 48 cores (0-47) and 8 gpus (0-7).
-The :data:`starttime` and data:`expiration` indicate the resources were valid
+The :data:`starttime` and :data:`expiration` indicate the resources were valid
 for about 30 minutes on February 16, 2023.
 
 .. literalinclude:: data/spec_20/example1.json
