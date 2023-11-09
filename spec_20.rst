@@ -41,6 +41,8 @@ Related Standards
 
 -  :doc:`29/Hostlist Format <spec_29>`
 
+-  :doc:`31/Job Constraints Specification <spec_31>`
+
 ********
 Overview
 ********
