@@ -249,7 +249,7 @@ The following is an example of a version 1 resource specification.
 The example below indicates a resource set with the ranks 19
 through 22.  These ranks correspond to the nodes node186 through
 node189.  Each of the nodes contains 48 cores (0-47) and 8 gpus (0-7).
-The :data:`starttime` and data:`expiration` indicate the resources were valid
+The :data:`starttime` and :data:`expiration` indicate the resources were valid
 for about 30 minutes on February 16, 2023.
 
 .. literalinclude:: data/spec_20/example1.json
