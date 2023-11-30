@@ -9,11 +9,15 @@
 The File Archive Format defines a JSON representation of a set or list
 of file system objects.
 
-- Name: github.com/flux-framework/rfc/spec_37.rst
+.. list-table::
+  :widths: 25 75
 
-- Editor: Jim Garlick <garlick@llnl.gov>
-
-- State: raw
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_37.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 ********
 Language

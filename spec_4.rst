@@ -8,12 +8,15 @@
 The Flux Resource Model describes the conceptual model used for
 resources within the Flux framework.
 
--  Name: github.com/flux-framework/rfc/spec_4.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Mark Grondona <mgrondona@llnl.gov>
-
--  State: draft
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_4.rst
+  * - **Editor**
+    - Mark Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - draft
 
 Language
 --------

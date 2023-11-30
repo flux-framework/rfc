@@ -7,12 +7,15 @@
 
 This specification describes the format for Flux KVS Event Logs.
 
--  Name: github.com/flux-framework/rfc/spec_18.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Stephen Herbein <sherbein@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_18.rst
+  * - **Editor**
+    - Stephen Herbein <sherbein@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

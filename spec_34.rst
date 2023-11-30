@@ -8,11 +8,15 @@
 
 The Flux Task Map is a compact mapping between job task ranks and node IDs.
 
-- Name: github.com/flux-framework/rfc/spec_34.rst
+.. list-table::
+  :widths: 25 75
 
-- Editor: Jim Garlick <garlick@llnl.gov>
-
-- State: raw
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_34.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 ********
 Language

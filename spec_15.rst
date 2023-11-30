@@ -9,12 +9,15 @@ This specification describes Flux Security IMP, a privileged service
 used by multi-user Flux instances to launch, monitor, and control
 processes running as users other than the instance owner.
 
--  Name: github.com/flux-framework/rfc/spec_10.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Mark A. Grondona <mgrondona@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_15.rst
+  * - **Editor**
+    - Mark A. Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

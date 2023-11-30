@@ -9,12 +9,15 @@
 This specification describes the format of Flux message broker
 messages, Version 1.
 
--  Name: github.com/flux-framework/rfc/spec_3.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: draft
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_3.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - draft
 
 ********
 Language

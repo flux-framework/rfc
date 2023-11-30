@@ -9,11 +9,15 @@
 The Flux Security Key Value Encoding is a serialization format
 for a series of typed key-value pairs.
 
-- Name: github.com/flux-framework/rfc/spec_38.rst
+.. list-table::
+  :widths: 25 75
 
-- Editor: Jim Garlick <garlick@llnl.gov>
-
-- State: raw
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_38.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 ********
 Language

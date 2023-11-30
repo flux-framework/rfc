@@ -7,14 +7,18 @@
 
 This specification presents the recommended standards when contributing code to the Flux code base.
 
--  Name: github.com/flux-framework/rfc/spec_7.rst
 
--  Editor: Tom Scogland <scogland1@llnl.gov>
+.. list-table::
+  :widths: 25 75
 
--  Original author: Don Lipari <lipari@llnl.gov>
-
--  State: draft
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_7.rst
+  * - **Editor**
+    - Tom Scogland <scogland1@llnl.gov>
+  * - **Original Author**
+    - Don Lipari <lipari@llnl.gov>
+  * - **State**
+    - draft
 
 Language
 --------

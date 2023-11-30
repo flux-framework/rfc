@@ -8,12 +8,15 @@
 This specification describes how Flux Remote Procedure Call (RPC) is
 built on top of request and response messages defined in RFC 3.
 
--  Name: github.com/flux-framework/rfc/spec_6.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_6.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

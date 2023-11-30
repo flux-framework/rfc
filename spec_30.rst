@@ -7,12 +7,15 @@
 
 This specification describes the Flux job urgency parameter.
 
--  Name: github.com/flux-framework/rfc/spec_30.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_30.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

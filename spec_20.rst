@@ -11,11 +11,15 @@
 This specification defines the version 1 format of the resource-set
 representation or *R* in short.
 
--  Name: github.com/flux-framework/rfc/spec_20.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: Raw
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_20.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 ********
 Language

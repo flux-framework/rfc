@@ -9,11 +9,15 @@
 The Flux Security Signature is a NUL terminated string that represents
 content secured with a digital signature.
 
-- Name: github.com/flux-framework/rfc/spec_39.rst
+.. list-table::
+  :widths: 25 75
 
-- Editor: Jim Garlick <garlick@llnl.gov>
-
-- State: raw
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_39.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 ********
 Language

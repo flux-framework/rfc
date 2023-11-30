@@ -8,12 +8,15 @@
 This specification describes the format used to represent
 standard I/O streams in the Flux KVS.
 
--  Name: github.com/flux-framework/rfc/spec_24.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick.jim@gmail.com>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_24.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

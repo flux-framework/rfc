@@ -8,12 +8,15 @@
 This specification describes the format of data stored in the KVS
 for Flux jobs.
 
--  Name: github.com/flux-framework/rfc/spec_16.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_16.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

@@ -10,9 +10,15 @@ succinctly express constraints as described in RFC 31. The syntax may
 also be useful in generating search and match expressions for use in other
 parts of Flux.
 
--  Name: github.com/flux-framework/rfc/spec_35.rst
--  Editor: Mark A. Grondona <mgrondona@llnl.gov>
--  State: raw
+.. list-table::
+  :widths: 25 75
+
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_35.rst
+  * - **Editor**
+    - Mark A. Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

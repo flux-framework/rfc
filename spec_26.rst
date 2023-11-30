@@ -8,9 +8,15 @@
 An extension to the canonical jobspec designed to express the dependencies
 between one or more programs submitted to a Flux instance for execution.
 
--  Name: github.com/flux-framework/rfc/spec_26.rst
--  Editor: Stephen Herbein <herbein1@llnl.gov>
--  State: raw
+.. list-table::
+  :widths: 25 75
+
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_26.rst
+  * - **Editor**
+    - Stephen Herbein <herbein1@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

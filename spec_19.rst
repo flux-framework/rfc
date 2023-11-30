@@ -11,12 +11,15 @@ identifiers that are a combination of timestamp since some epoch,
 generator id, and sequence number. The scheme is used to generate
 Flux job IDs.
 
--  Name: github.com/flux-framework/rfc/spec_19.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Mark Grondona <mgrondona@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_19.rst
+  * - **Editor**
+    - Mark Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

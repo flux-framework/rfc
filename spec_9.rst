@@ -5,12 +5,15 @@
 9/Distributed Communication and Synchronization Best Practices
 ==============================================================
 
--  Name: github.com/flux-framework/rfc/spec_9.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Tom Scogland <scogland1@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_9.rst
+  * - **Editor**
+    - Tom Scogland <scogland1@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

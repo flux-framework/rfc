@@ -9,11 +9,15 @@
 This document describes the how Flux message credentials are used to
 secure access to services.
 
--  Name: github.com/flux-framework/rfc/spec_12.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_12.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 ********
 Language

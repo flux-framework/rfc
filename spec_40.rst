@@ -10,12 +10,15 @@
 This specification defines the data format used by the Fluxion scheduler
 to store resource graph data in RFC 20 *R* version 1 objects.
 
--  Name: github.com/flux-framework/rfc/spec_20.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Dong H. Ahn <ahn1@llnl.gov>
-
--  State: Raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_40.rst
+  * - **Editor**
+    - Dong H. Ahn <ahn1@llnl.gov>
+  * - **State**
+    - raw
 
 ********
 Language

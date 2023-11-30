@@ -8,12 +8,15 @@
 This specification describes Flux Job Queues.  A Flux Job Queue is a named,
 user-visible container for job requests sorted by priority.
 
+.. list-table::
+  :widths: 25 75
 
--  Name: github.com/flux-framework/rfc/spec_33.rst
-
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_33.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

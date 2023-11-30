@@ -8,12 +8,15 @@
 This specification describes a simple string format used to represent
 a duration of time.
 
--  Name: github.com/flux-framework/rfc/spec_23.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Mark A. Grondona <mark.grondona@gmail.com>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_23.rst
+  * - **Editor**
+    - Mark A. Grondona <mark.grondona@gmail.com>
+  * - **State**
+    - raw
 
 Language
 --------

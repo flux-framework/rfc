@@ -8,12 +8,15 @@
 This specification describes Flux job states and the events that trigger
 job state transitions.
 
--  Name: github.com/flux-framework/rfc/spec_21.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_21.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

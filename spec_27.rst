@@ -8,12 +8,15 @@
 This specification describes Version 1 of the Flux Resource Allocation
 Protocol implemented by the job manager and a compliant Flux scheduler.
 
--  Name: github.com/flux-framework/rfc/spec_27.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_27.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

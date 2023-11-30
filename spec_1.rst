@@ -10,14 +10,17 @@ github.com `Fork + Pull Model <https://help.github.com/en/pull-requests/>`__,
 aimed at providing an optimal collaboration model for free software
 projects.
 
--  Name: github.com/flux-framework/rfc/spec_1.rst
+.. list-table::
+  :widths: 25 75
 
--  Forked from: rfc.zeromq.org/spec:22/C4.1
-
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: draft
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_1.rst
+  * - **Forked from**
+    - rfc.zeromq.org/spec:22/C4.1
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - draft
 
 Language
 --------

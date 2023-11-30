@@ -11,12 +11,15 @@ submitted to a Flux instance for execution. This RFC describes the
 canonical jobspec form, which represents a request to run exactly
 one program.
 
--  Name: github.com/flux-framework/rfc/spec_14.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Tom Scogland <scogland1@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_14.rst
+  * - **Editor**
+    -  Tom Scogland <scogland1@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

@@ -11,12 +11,15 @@ Namespaces are organized as hash trees of content-addressed *tree objects*
 and values. This specification defines the version 1 format of key value
 store tree objects.
 
--  Name: github.com/flux-framework/rfc/spec_11.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_11.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

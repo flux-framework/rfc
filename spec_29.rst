@@ -8,12 +8,15 @@
 This specification describes a compact form for expressing a list of
 hostnames which contain an optional numerical part.
 
--  Name: github.com/flux-framework/rfc/spec_29.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Mark A. Grondona <mgrondona@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_29.rst
+  * - **Editor**
+    - Mark A. Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

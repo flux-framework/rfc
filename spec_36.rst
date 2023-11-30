@@ -8,9 +8,15 @@
 This specification describes a method for embedding options and other
 directives into a file for use by utilities that submit jobs to Flux.
 
--  Name: github.com/flux-framework/rfc/spec_36.rst
--  Editor: Mark A. Grondona <mgrondona@llnl.gov>
--  State: raw
+.. list-table::
+  :widths: 25 75
+
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_36.rst
+  * - **Editor**
+    - Mark A. Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------

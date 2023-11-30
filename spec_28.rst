@@ -9,12 +9,15 @@ This specification describes the Flux service that schedulers use to
 acquire exclusive access to resources and monitor their ongoing
 availability.
 
--  Name: github.com/flux-framework/rfc/spec_28.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_28.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
 --------
