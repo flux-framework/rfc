@@ -3,38 +3,36 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_33.html
 
 33/Flux Job Queues
-==================
+##################
 
 This specification describes Flux Job Queues.  A Flux Job Queue is a named,
 user-visible container for job requests sorted by priority.
 
+.. list-table::
+  :widths: 25 75
 
--  Name: github.com/flux-framework/rfc/spec_33.rst
-
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_33.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`14/Canonical Job Specification <spec_14>`
-
--  :doc:`20/Resource Set Specification Version 1 <spec_20>`
-
--  :doc:`21/Job States and Events <spec_21>`
-
--  :doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
+- :doc:`spec_14`
+- :doc:`spec_20`
+- :doc:`spec_21`
+- :doc:`spec_27`
 
 Background
-----------
+**********
 
 Support for multiple queues is motivated by the following use cases:
 
@@ -58,7 +56,7 @@ Support for multiple queues is motivated by the following use cases:
    https://github.com/flux-framework/flux-core/issues/4306
 
 Design Criteria
----------------
+***************
 
 - Handle the motivating use cases in the background section.
 
@@ -78,7 +76,7 @@ Design Criteria
   "expedite", or "exempt" queues).
 
 Implementation
---------------
+**************
 
 A Flux Job Queue is a user-visible container for job requests stored in
 priority order.
@@ -104,7 +102,7 @@ Queues MAY be independently configured with:
 - resource subset
 
 Policy Configuration
-~~~~~~~~~~~~~~~~~~~~
+====================
 
 A ``policy`` TOML table MAY specify queue policy that applies to all queues,
 including the anonymous one, unless overridden on a per-queue basis.  This
@@ -115,7 +113,7 @@ Each queue MAY contain a ``policy`` table.  If present, queue-specific policy
 values SHALL override global policy values.
 
 Jobspec Defaults Policy
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 The ``policy.jobspec.defaults`` table contains default values for jobspec
 attributes that were not explicitly set by the user and MAY contain following
@@ -134,7 +132,7 @@ policy.jobspec.defaults.system.queue
    remains within the signed ``J`` key.
 
 Limits Policy
-^^^^^^^^^^^^^
+-------------
 
 The ``policy.limits`` table configures job limits and MAY contain the following
 OPTIONAL keys.
@@ -155,18 +153,18 @@ policy.limits.duration
   (string) maximum job duration, in Flux Standard Duration format (RFC 23).
 
 Scheduler Policy
-^^^^^^^^^^^^^^^^
+----------------
 
 The ``policy.scheduler`` table is read by the scheduler implementation
 and is opaque to the rest of Flux.
 
 Priority Policy
-^^^^^^^^^^^^^^^
+---------------
 
 TBD
 
 Access Policy
-^^^^^^^^^^^^^
+-------------
 
 The ``policy.access`` table MAY restrict queue access by UNIX user and group.
 It MAY contain following OPTIONAL keys:
@@ -186,7 +184,7 @@ the flux-accounting multi-factor priority plugin controls access to queues
 based on the user and bank information from the accounting database.
 
 Queue Configuration
-~~~~~~~~~~~~~~~~~~~
+===================
 
 A ``queues`` TOML table MAY define one or more named queues.  Each queue
 SHALL be represented as a sub-table that MAY contain the following OPTIONAL
@@ -205,9 +203,8 @@ queues.NAME.policy
   top-level ``policy`` table  and a queue-specific ``policy`` table, the
   queue-specific value takes precedence for jobs submitted to that queue.
 
-
 Initial Assignment of Job to Queue
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------
 
 Job requests MAY specify a queue name at submission time by setting the
 ``system.queue`` jobspec attribute (RFC 14).  If a queue was not explicitly
@@ -215,14 +212,14 @@ named in the jobspec, and a default queue is defined, the queue SHALL be
 assigned by before the jobtap ``job.validate`` callbacks are run.
 
 Request Validation
-~~~~~~~~~~~~~~~~~~
+------------------
 
 A job request SHALL be rejected on submission if it names an unknown queue,
 or if it is possible to determine that the job would exceed limits or violate
 access policy of the assigned queue.
 
 Administrative Tools
-~~~~~~~~~~~~~~~~~~~~
+====================
 
 A Flux command line tool SHALL provide the ability to enable/disable job
 submission on each queue individually, or on all queues.
@@ -239,7 +236,7 @@ become idle, or for all queues to become idle, where idle is defined as
 containing no jobs in RUN or CLEANUP state.
 
 Job Submission and Listing Tools
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 Job submission and listing tools SHOULD NOT need to parse the ``queues``
 TOML table.

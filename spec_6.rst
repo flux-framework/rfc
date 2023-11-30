@@ -3,34 +3,33 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_6.html
 
 6/Flux Remote Procedure Call Protocol
-=====================================
+#####################################
 
 This specification describes how Flux Remote Procedure Call (RPC) is
 built on top of request and response messages defined in RFC 3.
 
--  Name: github.com/flux-framework/rfc/spec_6.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_6.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`3/Flux Message Protocol <spec_3>`
-
+- :doc:`spec_3`
 
 Goals
------
+*****
 
 Flux RPC protocol enables broker modules, utilities, or other software
 communicating with a Flux instance to call the methods implemented
@@ -45,9 +44,8 @@ by broker modules. Flux RPC has the following goals:
 
 -  Provide a mechanism to abort in-progress RPC calls.
 
-
 Implementation
---------------
+**************
 
 A remote procedure call SHALL consist of one request message
 sent from a client to a server, and zero or more response messages sent
@@ -62,7 +60,7 @@ mutually-exclusive—​ broker modules often act in both roles.
    server.
 
 Request Message
-~~~~~~~~~~~~~~~
+===============
 
 Per RFC 3, the request message SHALL include a nodeid and topic string
 used to aid the broker in selecting appropriate routes to the server.
@@ -79,9 +77,8 @@ FLUX_MSGFLAG_STREAMING message flag.
 A request MAY indicate that the response should be suppressed by
 setting the FLUX_MSGFLAG_NORESPONSE message flag.
 
-
 Response Messages
-~~~~~~~~~~~~~~~~~
+=================
 
 The server SHALL send zero or more responses to each request, as
 established by prior agreement between client and server (e.g. defined
@@ -110,7 +107,7 @@ The server MAY respond to requests in any order.
    Example RPC for ``flux getattr badkey``, which elicits an error response.
 
 Streaming Responses
-~~~~~~~~~~~~~~~~~~~
+===================
 
 Services that send multiple responses to a request SHALL immediately reject
 requests that do not have the FLUX_MSGFLAG_STREAMING flag set by sending
@@ -133,7 +130,7 @@ the response stream. The flag MAY be set in the final error response.
    by ENODATA.
 
 Matchtag Field
-~~~~~~~~~~~~~~
+==============
 
 RFC 3 provisions request and response messages with a 32-bit matchtag field.
 The client MAY assign a unique (to the client) value to this field,
@@ -153,9 +150,8 @@ MAY be reused if a response containing the matchtag arrives with the
 FLUX_MSGFLAG_STREAMING message flag clear, or if the response contains
 a non-zero error number.
 
-
 Exceptional Conditions
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 If a request cannot be delivered to the server, the broker MAY respond to
 the sender with an error. For example, per RFC 3, a broker SHALL respond
@@ -169,9 +165,8 @@ MAY cause messages to be lost. It is the client’s responsibility to
 implement any timeouts or other mitigation to handle missing or delayed
 responses.
 
-
 Disconnection
-~~~~~~~~~~~~~
+=============
 
 If a client aborts with an RPC in progress, it or its proxy SHOULD send a
 request to the server with a topic string of "*service*.disconnect".
@@ -188,9 +183,8 @@ frame (closest to routing delimiter frame) from the request message.
 Servers which maintain per-request state SHOULD index it by sender identity
 so that it can be removed upon receipt of the disconnect request.
 
-
 Cancellation
-~~~~~~~~~~~~
+============
 
 A service MAY implement a method which allows pending requests on its
 other methods to be canceled.  If implemented, the cancellation method

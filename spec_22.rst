@@ -3,28 +3,28 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_22.html
 
 22/Idset String Representation
-==============================
+##############################
 
 This specification describes a compact form for
 expressing a set of non-negative, integer ids.
 
--  Name: github.com/flux-framework/rfc/spec_22.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_22.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Background
-----------
+**********
 
 It is often necessary to represent a set of non-negative, integer ids
 as a compact string for human input, output, or in messages. For example:
@@ -35,9 +35,8 @@ as a compact string for human input, output, or in messages. For example:
 
 -  A set of resource ids or indices.
 
-
 Implementation
---------------
+**************
 
 An idset SHALL consist of unique, non-negative integer ids.
 

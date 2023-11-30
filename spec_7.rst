@@ -3,43 +3,42 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_7.html
 
 7/Flux Coding Style Guide
-=========================
+#########################
 
 This specification presents the recommended standards when contributing code to the Flux code base.
 
--  Name: github.com/flux-framework/rfc/spec_7.rst
 
--  Editor: Tom Scogland <scogland1@llnl.gov>
+.. list-table::
+  :widths: 25 75
 
--  Original author: Don Lipari <lipari@llnl.gov>
-
--  State: draft
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_7.rst
+  * - **Editor**
+    - Tom Scogland <scogland1@llnl.gov>
+  * - **Original Author**
+    - Don Lipari <lipari@llnl.gov>
+  * - **State**
+    - draft
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
 -  https://www.kernel.org/doc/Documentation/CodingStyle
 
-
 Goals
------
+*****
 
 -  Encourage a uniform coding style in flux-framework projects
 
 -  Provide a document to reference when providing style feedback in project pull requests
 
-
 C Coding Style Recommendations
-------------------------------
+******************************
 
 Flux projects written in C SHOULD conform to the C99 version of the language.
 
@@ -65,9 +64,8 @@ In general, Flux follows the "Kernighan & Ritchie coding style" with the followi
 
    int *ptr;
 
-
 Variable Names
-~~~~~~~~~~~~~~
+==============
 
 Variable names SHOULD NOT include upper case letters.
 For example ``msg_count`` is OK, but ``MsgCount`` or ``MSG_COUNT`` do not conform.
@@ -75,9 +73,8 @@ For example ``msg_count`` is OK, but ``MsgCount`` or ``MSG_COUNT`` do not confor
 Preprocessor macro names SHOULD NOT include lower case letters.
 For example ``FLUX_FOO_MAGIC`` is OK but ``flux_foo_magic`` and ``FluxFooMagic`` do not conform.
 
-
 Typedefs
-~~~~~~~~
+========
 
 C typedef names SHOULD NOT include upper case letters.
 
@@ -111,9 +108,8 @@ Typedefs SHOULD NOT be used for fixed length character arrays, as this
 obscures the fact that they are merely pointers when used in function
 prototypes, and give different ``sizeof`` results depending on context.
 
-
 Structures
-~~~~~~~~~~
+==========
 
 Structure tags SHOULD NOT contain the string "struct".
 
@@ -130,9 +126,8 @@ we also should not write:
 
    struct foo_struct {};
 
-
 Enums and constants
-~~~~~~~~~~~~~~~~~~~
+===================
 
 Enumerations SHOULD be used instead of preprocessor macros for integral
 constants. Each ``enum`` SHOULD have a name, to facilitate bindings and avoid
@@ -174,9 +169,8 @@ Examples:
 In order to represent the full range of values, enums that use a zero for none
 or similar SHOULD include an item with the value zero to represent that state.
 
-
 Tools for C formatting
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 The flux-core repository includes a ``.clang-format`` file for use with
 clang-format, and SHOULD be used for automated formatting if possible.
@@ -203,6 +197,6 @@ In emacs, add this to your custom-set-variables defs to highlight whitespace err
 
 
 Python coding style
--------------------
+*******************
 
 -  Python code SHALL be formatted with the `Black code style <https://black.readthedocs.io/en/stable/the_black_code_style/index.html>`__.

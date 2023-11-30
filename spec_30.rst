@@ -3,32 +3,33 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_30.html
 
 30/Job Urgency
-==============
+##############
 
 This specification describes the Flux job urgency parameter.
 
--  Name: github.com/flux-framework/rfc/spec_30.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_30.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`21/Job States and Events <spec_21>`
+- :doc:`spec_21`
 
 
 Background
-----------
+**********
 
 The Flux job *urgency* parameter reflects the job owner's idea of the job's
 importance relative to other work queued on the system.  It is one factor
@@ -39,9 +40,8 @@ presented to the scheduler.
 The urgency MAY be provided by the job owner at job submission time.
 It MAY be adjusted by the job owner while the job is pending.
 
-
 Implementation
---------------
+**************
 
 Job *urgency* SHALL be an integer with range of 0 through 31.
 

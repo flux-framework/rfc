@@ -2,34 +2,32 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_38.html
 
-###################################
 38/Flux Security Key Value Encoding
 ###################################
 
 The Flux Security Key Value Encoding is a serialization format
 for a series of typed key-value pairs.
 
-- Name: github.com/flux-framework/rfc/spec_38.rst
+.. list-table::
+  :widths: 25 75
 
-- Editor: Jim Garlick <garlick@llnl.gov>
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_38.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
-- State: raw
-
-********
 Language
 ********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
-- :doc:`15/Independent Minister of Privilege for Flux: The Security IMP <spec_15>`
+- :doc:`spec_15`
 
-**********
 Background
 **********
 
@@ -41,7 +39,6 @@ communication in the following security-sensitive situations:
 - When communicating options between privileged and unprivileged sections
   of the IMP.
 
-*****
 Goals
 *****
 
@@ -55,7 +52,6 @@ Goals
 
 - Design should allow for a simple, embedded C implementation.
 
-**************
 Implementation
 **************
 
@@ -95,7 +91,6 @@ e.g.  ``key\0Tvalue\0key\0Tvalue\0...key\0Tvalue\0``.
 An implementation defined limit SHALL be imposed on the maximum overall size
 of a serialized object to avoid resource exhaustion.
 
-************
 Test Vectors
 ************
 

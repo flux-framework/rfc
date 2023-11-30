@@ -3,36 +3,40 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_31.html
 
 31/Job Constraints Specification
-================================
+################################
 
 This specification describes an extensible format for the description of
 job constraints.
 
--  Name: github.com/flux-framework/rfc/spec_31.rst
--  Editor: Mark A. Grondona <mgrondona@llnl.gov>
--  State: raw
+.. list-table::
+  :widths: 25 75
+
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_31.rst
+  * - **Editor**
+    - Mark A. Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`14/Canonical Job Specification <spec_14>`
--  :doc:`20/Resource Set Specification Version 1 <spec_20>`
+- :doc:`spec_14`
+- :doc:`spec_20`
 
 Goals
------
+*****
 
 -  Define a format for the specification of general constraints in jobspec
 -  Embed extensibility into the format to allow for growth of feature set
 
 Background
-----------
+**********
 
 It is common practice for resource management systems to allow job
 requests to contain constraints beyond the size and count of resources
@@ -45,7 +49,7 @@ This RFC defines an extensible format for the specification of job
 constraints in JSON.
 
 Representation
---------------
+**************
 
 Job constraints SHALL be represented as a JSON object, which loosely
 follows the `JsonLogic <https://jsonlogic.com/>`_ format of
@@ -110,7 +114,7 @@ In addition, an empty constraint object ``{}`` is similarly defined to
 "always match".
 
 Examples
---------
+********
 
 Constrain resources such that all execution targets have property ``ssd``:
 

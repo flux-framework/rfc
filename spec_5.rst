@@ -3,34 +3,33 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_5.html
 
 5/Flux Broker Modules
-=====================
+#####################
 
 This specification describes the broker extension modules
 used to implement Flux services.
 
--  Name: github.com/flux-framework/rfc/spec_5.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_5.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`3/Flux Message Protocol <spec_3>`
-
+- :doc:`spec_3`
 
 Background
-----------
+**********
 
 Flux services are implemented as dynamically loaded broker plugins called
 "broker modules". They are "actors" in the sense that they have
@@ -67,13 +66,11 @@ message to indicate to the broker when initialization is complete. This
 provides synchronization to the broker module loader as well as useful
 runtime debug information that can be reported by ``flux module list``.
 
-
 Implementation
---------------
-
+**************
 
 Well known Symbols
-~~~~~~~~~~~~~~~~~~
+==================
 
 A broker module SHALL export the following global symbol:
 
@@ -83,9 +80,8 @@ A broker module SHALL export the following global symbol:
    failure.  The POSIX ``errno`` thread-specific variable SHOULD be set to
    indicate the type of error on failure.
 
-
 Status Messages
-~~~~~~~~~~~~~~~
+===============
 
 A broker module SHALL be considered to be in one of the following states,
 represented by the integer values shown in parenthesis:
@@ -138,9 +134,8 @@ code greater than or equal to zero, otherwise the value of ``errno``.
        "errnum":0
    }
 
-
 Load Sequence
-~~~~~~~~~~~~~
+=============
 
 The broker module loader SHALL launch the module’s ``mod_main()`` in a
 new thread. The ``broker.insmod`` response is deferred until the module
@@ -148,9 +143,8 @@ state transitions out of FLUX_MODSTATE_INIT. If it transitions immediately to
 FLUX_MODSTATE_EXITED, and the ``errnum`` value is nonzero, an error response
 SHALL be returned as described in RFC 3.
 
-
 Unload Sequence
-~~~~~~~~~~~~~~~
+===============
 
 The broker module loader SHALL send a ``<service>.shutdown`` request to the
 module when the module loader receives a ``broker.rmmod`` request for the
@@ -161,7 +155,7 @@ clean up the module thread.
 
 
 Built-in Request Handlers
-~~~~~~~~~~~~~~~~~~~~~~~~~
+=========================
 
 All broker modules receive default handlers for the following methods:
 
@@ -192,9 +186,8 @@ All broker modules receive default handlers for the following methods:
    module’s broker handle aux hash, under the key "flux::debug_flags".
    The ``flux-module debug`` sends this request.
 
-
 Built-in Event Handlers
-~~~~~~~~~~~~~~~~~~~~~~~
+=======================
 
 In addition, all broker modules subscribe to and register a handler for
 the following pub/sub events:
@@ -205,7 +198,7 @@ the following pub/sub events:
    The ``flux-module stats --clear-all`` publishes this event.
 
 Module Attributes
-~~~~~~~~~~~~~~~~~
+=================
 
 The following key-value pairs SHALL be provided to broker modules via the
 ``flux_t`` handle AUX container:
@@ -220,7 +213,7 @@ flux::name
    overridden by request at module load time.
 
 Multiple Loading
-~~~~~~~~~~~~~~~~
+================
 
 A properly conditioned broker module MAY be loaded more than once under
 different names.  The following constraints SHOULD be considered:

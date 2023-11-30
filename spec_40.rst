@@ -2,46 +2,36 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_40.html
 
-
-#################################
 40/Fluxion Resource Set Extension
 #################################
 
 This specification defines the data format used by the Fluxion scheduler
 to store resource graph data in RFC 20 *R* version 1 objects.
 
--  Name: github.com/flux-framework/rfc/spec_20.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Dong H. Ahn <ahn1@llnl.gov>
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_40.rst
+  * - **Editor**
+    - Dong H. Ahn <ahn1@llnl.gov>
+  * - **State**
+    - raw
 
--  State: Raw
-
-
-********
 Language
 ********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
-in this document are to be interpreted as described in RFC 2119.
+.. include:: common/language.rst
 
-
-*****************
 Related Standards
 *****************
 
--  :doc:`4/Flux Resource Model <spec_4>`
+- :doc:`spec_4`
+- :doc:`spec_14`
+- :doc:`spec_20`
+- :doc:`spec_27`
+- :doc:`spec_28`
 
--  :doc:`14/Canonical Job Specification <spec_14>`
-
--  :doc:`20/Resource Set Specification Version 1 <spec_20>`
-
--  :doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
-
--  :doc:`28/Flux Resource Aquisition Protocol Version 1 <spec_28>`
-
-
-**********
 Background
 **********
 
@@ -63,7 +53,6 @@ The ``scheduling`` key is opaque to rest of Flux, but:
 This document describes the resource graph representation used by the Fluxion
 scheduler within the ``scheduling`` key of *R*.
 
-**************
 Implementation
 **************
 
@@ -75,7 +64,6 @@ extensions.  The ``graph`` key SHALL conform to the latest version of the JSON
 Graph Format (JGF).  Thus, its value is a dictionary with two keys, ``nodes``
 and ``edges``, that encode the resource vertices and edges as described in
 RFC 4.
-
 
 Graph Vertices
 ==============
@@ -107,7 +95,6 @@ keys to describe the base data of a resource pool:
 
 It MAY contain other OPTIONAL resource vertex data.
 
-
 Graph Edges
 ===========
 
@@ -131,8 +118,6 @@ as described in RFC 4. It SHALL contain two keys:
    The relationship SHALL only be defined within the subsystem defined
    above. (e.g., "contains" relationship within the "containment" subsystem).
 
-
-**********
 References
 **********
 

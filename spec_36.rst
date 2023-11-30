@@ -3,24 +3,28 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_31.html
 
 36/Submission Directives
-========================
+########################
 
 This specification describes a method for embedding options and other
 directives into a file for use by utilities that submit jobs to Flux.
 
--  Name: github.com/flux-framework/rfc/spec_36.rst
--  Editor: Mark A. Grondona <mgrondona@llnl.gov>
--  State: raw
+.. list-table::
+  :widths: 25 75
+
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_36.rst
+  * - **Editor**
+    - Mark A. Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
 Goals
------
+*****
 
 - Describe an understandable and easily processed syntax for embedding
   job submission utility options and other directives into a file or
@@ -31,7 +35,7 @@ Goals
 - Allow future extensions to increase the versatility of the syntax
 
 Background
-----------
+**********
 
 Many extant and moribund computational batch systems support embedding job
 submission options within a submitted batch script. For example LoadLeveler's
@@ -40,9 +44,8 @@ submission options within a submitted batch script. For example LoadLeveler's
 options may result in unnecessary copies of batch scripts, the practice
 is well established and many users are now dependent on this behavior.
 
-
 Description
------------
+***********
 
  * An option, flag, or other directive embedded in a file or script SHALL
    be known as a *submission directive*.
@@ -106,7 +109,7 @@ Description
    processing submission utility.
 
 Examples
---------
+********
 
  * Directives in a shell script, maximum nostalgia mode:
 
@@ -193,5 +196,7 @@ Examples
    hostname; date
    #FLUX: --job-name=test
 
+References
+**********
 
 .. [#f1] `Shell Command Language: Quoting <https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html>`__; The Open Group Base Specifications Issue 6; IEEE Std 1003.1, 2004 Edition

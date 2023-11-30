@@ -2,38 +2,34 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_39.html
 
-##########################
 39/Flux Security Signature
 ##########################
 
 The Flux Security Signature is a NUL terminated string that represents
 content secured with a digital signature.
 
-- Name: github.com/flux-framework/rfc/spec_39.rst
+.. list-table::
+  :widths: 25 75
 
-- Editor: Jim Garlick <garlick@llnl.gov>
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_39.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
-- State: raw
-
-********
 Language
 ********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
-- :doc:`14/Canonical Job Specification <spec_14>`
+- :doc:`spec_14`
+- :doc:`spec_15`
+- :doc:`spec_38`
 
-- :doc:`15/Independent Minister of Privilege for Flux: The Security IMP <spec_15>`
-
-- :doc:`38/Flux Security Key Value Encoding <spec_38>`
-
-**********
 Background
 **********
 
@@ -52,7 +48,6 @@ are passed to the IMP exactly as specified by the user.
 RFC 15 refers to the signed jobspec as *J*.  The content of *J* is thus fully
 specified by this document and RFC 14.
 
-*****
 Goals
 *****
 
@@ -66,7 +61,6 @@ Goals
 
 - The signature SHOULD support a configurable time-to-live.
 
-**************
 Implementation
 **************
 
@@ -103,7 +97,6 @@ userid (integer)
 
 Mechanism-specific keys MAY also be included in the header.
 
-**********
 Mechanisms
 **********
 

@@ -3,38 +3,35 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_24.html
 
 24/Flux Job Standard I/O Version 1
-==================================
+##################################
 
 This specification describes the format used to represent
 standard I/O streams in the Flux KVS.
 
--  Name: github.com/flux-framework/rfc/spec_24.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick.jim@gmail.com>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_24.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`16/KVS Job Schema <spec_16>`
-
--  :doc:`18/KVS Event Log Format <spec_18>`
-
--  :doc:`22/Idset String Representation <spec_22>`
-
+- :doc:`spec_16`
+- :doc:`spec_18`
+- :doc:`spec_22`
 
 Goals
------
+*****
 
 -  Incorporate task I/O streams into KVS job record.
 
@@ -62,18 +59,16 @@ Goals
 
 -  Support de-duplication of stream contents, where applicable.
 
-
 Implementation
---------------
+**************
 
 Standard I/O streams SHALL be stored under two keys in the
 KVS job schema: ``job.<jobid>.guest.output`` and ``job.<jobid>.guest.input``.
 The values SHALL be formatted as a KVS event log (RFC 18), with events as
 described below.
 
-
 Header Event
-~~~~~~~~~~~~
+============
 
 The header event describes the input or output events that follow.
 There SHALL be exactly one header event in each log, appearing first.
@@ -117,15 +112,13 @@ Example:
      }
    }
 
-
 Header Options
-^^^^^^^^^^^^^^
+--------------
 
 TBD: input distribution options.
 
-
 Data Event
-~~~~~~~~~~
+==========
 
 The output event encapsulates a blob of input or output data.
 
@@ -177,9 +170,8 @@ Example:
      }
    }
 
-
 Redirect Event
-~~~~~~~~~~~~~~
+==============
 
 The redirect event indicates that a stream’s data has been redirected
 away from the log. The caller should not expect any additional data
@@ -214,9 +206,8 @@ Example:
      }
    }
 
-
 Log Event
-~~~~~~~~~
+=========
 
 The log event supports error and debug logging from the Flux shells.
 

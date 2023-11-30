@@ -3,37 +3,41 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_31.html
 
 35/Constraint Query Syntax
-==========================
+##########################
 
 This specification describes a simple string syntax which can be used to
 succinctly express constraints as described in RFC 31. The syntax may
 also be useful in generating search and match expressions for use in other
 parts of Flux.
 
--  Name: github.com/flux-framework/rfc/spec_35.rst
--  Editor: Mark A. Grondona <mgrondona@llnl.gov>
--  State: raw
+.. list-table::
+  :widths: 25 75
+
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_35.rst
+  * - **Editor**
+    - Mark A. Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`31/Job Constraints Specification <spec_31>`
+- :doc:`spec_31`
 
 Goals
------
+*****
 
 -  Describe and define a grammar for a simple text-based string syntax for
    generating JSON objects in the constraint format defined in RFC 31.
 
 Background
-----------
+**********
 
 The JSON constraint format described in RFC 31 is not conducive to use
 on the command line or for other cases where constraints are input by
@@ -48,7 +52,7 @@ by Flux tools and commands to generate RFC 31 compatible JSON constraint
 objects.
 
 Description
------------
+***********
 
  * A constraint query string is formed by a series of terms.
  * A term has the form ``operator:operand``, where ``operator:`` is
@@ -69,7 +73,7 @@ Description
    of general expressions, e.g. ``-(a|b)`` SHALL be a syntax error.
 
 Grammar
--------
+*******
 
 The basic grammar for the constraint query language is
 
@@ -103,7 +107,7 @@ The basic grammar for the constraint query language is
      : STRING
 
 Examples
---------
+********
 
 The following examples assume a default operator of ``name``
 

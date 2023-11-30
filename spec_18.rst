@@ -3,33 +3,33 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_18.html
 
 18/KVS Event Log Format
-=======================
+#######################
 
 This specification describes the format for Flux KVS Event Logs.
 
--  Name: github.com/flux-framework/rfc/spec_18.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Stephen Herbein <sherbein@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_18.rst
+  * - **Editor**
+    - Stephen Herbein <sherbein@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`21/Job States and Events <spec_21>`
+- :doc:`spec_21`
 
 
 Background
-----------
+**********
 
 The initial use case for Flux KVS Event Logs is recording events
 that cause Flux job state transitions, for historical and
@@ -40,9 +40,8 @@ KVS atomic append capability enables multiple writers to add events to
 a single Flux Event Log in a race-free manner. KVS watch capability
 enables a Flux Event Log to be used for synchronization.
 
-
 Event Log Format
-----------------
+****************
 
 A Flux KVS Event Log SHALL consist of events separated by newlines.
 Each event SHALL be an independent JSON object, serialized without
@@ -69,7 +68,7 @@ context
 
 
 Example
--------
+*******
 
 An example Flux Event Log:
 

@@ -2,36 +2,33 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_37.html
 
-######################
 37/File Archive Format
 ######################
 
 The File Archive Format defines a JSON representation of a set or list
 of file system objects.
 
-- Name: github.com/flux-framework/rfc/spec_37.rst
+.. list-table::
+  :widths: 25 75
 
-- Editor: Jim Garlick <garlick@llnl.gov>
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_37.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
-- State: raw
-
-********
 Language
 ********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
-- :doc:`10/Content Storage <spec_10>`
+- :doc:`spec_10`
+- :doc:`spec_14`
 
-- :doc:`14/Canonical Job Specification <spec_14>`
-
-**********
 Background
 **********
 
@@ -42,7 +39,6 @@ The File Archive Format is a container of file system objects envisioned for:
 
 - Stage-in and stage-out of job data sets.
 
-*****
 Goals
 *****
 
@@ -63,7 +59,6 @@ Goals
 
 - Enable efficient representation of sparse files.
 
-**************
 Implementation
 **************
 
@@ -143,7 +138,7 @@ Regular Files
 Regular files are represented as follows.
 
 Empty Files
-^^^^^^^^^^^
+-----------
 
 An empty regular file (zero length or sparse with no data) SHALL be
 represented with **size** set to the file size and no **encoding** or
@@ -162,7 +157,7 @@ Example:
   }
 
 JSON Content
-^^^^^^^^^^^^
+------------
 
 A regular file with JSON content MAY be represented without encoding.
 In this case, **size** and **encoding** SHALL NOT be set and **data** SHALL
@@ -185,7 +180,7 @@ Example:
   }
 
 Text Content
-^^^^^^^^^^^^
+------------
 
 A regular file containing text MAY be represented with UTF-8 encoding.
 In this case, **size** SHALL be set to the file size, **encoding** SHALL be
@@ -204,7 +199,7 @@ Example:
   }
 
 Literal Binary Content
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 A regular file that requires a self-contained representation in the archive
 and whose content is unknown SHALL be represented with base64 encoding.
@@ -224,7 +219,7 @@ Example:
   }
 
 Referenced Binary Content
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 A regular file that requires content to be referenced to the associative cache
 described in RFC 10 SHALL be represented with blobvec encoding.  In this case,
@@ -266,5 +261,8 @@ Example:
 
 .. note::
   Only blobvec encoding is capable of representing non-empty sparse files.
+
+References
+**********
 
 .. [#f1] `sys/stat.h - data returned by the stat() function sys/stat.h <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_stat.h.html>`__; The Open Group Base Specifications Issue 7, 2018 edition IEEE Std 1003.1-2017 (Revision of IEEE Std 1003.1-2008)

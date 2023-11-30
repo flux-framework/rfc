@@ -3,34 +3,37 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_26.html
 
 26/Job Dependency Specification
-===============================
+###############################
 
 An extension to the canonical jobspec designed to express the dependencies
 between one or more programs submitted to a Flux instance for execution.
 
--  Name: github.com/flux-framework/rfc/spec_26.rst
--  Editor: Stephen Herbein <herbein1@llnl.gov>
--  State: raw
+.. list-table::
+  :widths: 25 75
+
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_26.rst
+  * - **Editor**
+    - Stephen Herbein <herbein1@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`14/Canonical Job Specification <spec_14>`
--  :doc:`19/Flux Locally Unique ID <spec_19>`
--  :doc:`21/Job States and Events <spec_21>`
--  `OpenMP Specification <https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-5.0.pdf>`__
--  `IETF RFC3986: Uniform Resource Identifier (URI) <https://tools.ietf.org/html/rfc3986>`__
-
+- :doc:`spec_14`
+- :doc:`spec_19`
+- :doc:`spec_21`
+- `OpenMP Specification <https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-5.0.pdf>`__
+- `IETF RFC3986: Uniform Resource Identifier (URI) <https://tools.ietf.org/html/rfc3986>`__
 
 Goals
------
+*****
 
 -  Define how job dependencies are represented in jobspec.
 -  Define how job dependencies are represented as command line arguments.
@@ -40,9 +43,8 @@ Goals
    (DAG).
 -  Describe a mechanism for specifying more advanced, runtime dependencies.
 
-
 Background
-----------
+**********
 
 RFC 21 defines a DEPEND state for jobs, which is exited once all job
 dependencies have been satisfied, or a fatal exception has occurred.
@@ -65,7 +67,7 @@ service outside of the job manager; for example, a separate broker module
 or an entity that is not part of Flux.
 
 Dependency Event Semantics
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
 
 Dependency events SHALL only be posted to the job eventlog by job manager
 plugins.
@@ -85,9 +87,8 @@ dependencies SHALL NOT raise a plugin error and SHALL NOT be posted.
 Attempts to post duplicate ``dependency-add`` events for satisfied
 dependencies SHALL raise a plugin error.
 
-
 Representation
---------------
+**************
 
 A job dependency SHALL be represented as a JSON object with the following
 REQUIRED keys:
@@ -102,7 +103,7 @@ A dependency object MAY contain additional OPTIONAL key-value pairs,
 whose semantics are determined by the scheme.
 
 in jobspec
-~~~~~~~~~~
+==========
 
 Each dependency requested by the user SHALL be represented as an element in
 the jobspec ``attributes.system.dependencies`` array.  Each element SHALL
@@ -112,7 +113,7 @@ If job requests no dependencies, the key ``attributes.system.dependencies``
 SHALL NOT be added to the jobspec.
 
 on command line
-~~~~~~~~~~~~~~~
+===============
 
 On the command line, a job dependency MAY be expressed in a compact, URI-like
 form, with the first OPTIONAL key-value pair represented as a URI query
@@ -132,14 +133,13 @@ Examples:
 This form SHOULD be translated by the command line tool to the object
 form above before being shared with other parts of the system.
 
-
 Simple Dependencies
--------------------
+*******************
 
 The following dependency schemes are built-in.
 
 after
-~~~~~
+=====
 
 ``value`` SHALL be interpreted as the antecedent jobid, in any valid
 FLUID encoding from RFC 19.
@@ -149,9 +149,8 @@ and posts a ``start`` event. If the antecedent job reaches INACTIVE state
 without entering RUN state and posting a ``start`` event, a fatal exception
 SHOULD be raised on the dependent job.
 
-
 afterany
-~~~~~~~~
+========
 
 ``value`` SHALL be interpreted as the antecedent jobid, in any valid
 FLUID encoding from RFC 19.
@@ -160,7 +159,7 @@ The dependency SHALL be satisfied once the antecedent job enters INACTIVE
 state, regardless of result.
 
 afterok
-~~~~~~~
+=======
 
 ``value`` SHALL be interpreted as the antecedent jobid, in any valid
 FLUID encoding from RFC 19.
@@ -170,7 +169,7 @@ state, with a successful result.  If the antecedent job does not conclude
 successfully, a fatal exception SHOULD be raised on the dependent job.
 
 afternotok
-~~~~~~~~~~
+==========
 
 ``value`` SHALL be interpreted as the antecedent jobid, in any valid
 FLUID encoding from RFC 19.
@@ -180,21 +179,20 @@ state, with an unsuccessful result.  If the antecedent job concludes
 successfully, a fatal exception SHOULD be raised on the dependent job.
 
 begin-time
-~~~~~~~~~~
+==========
 
 ``value`` SHALL be interpreted as a floating point timestamp in seconds
 since the UNIX epoch. The dependency SHALL be satisfied once the system
 time reaches the specified timestamp.
 
-
 OpenMP-style Dependencies
--------------------------
+*************************
 
 The ``string`` and ``fluid`` schemes are reserved for more sophisticated
 symbolic and jobid based dependencies, inspired by the OpenMP specification.
 
 string
-~~~~~~
+======
 
 ``value`` SHALL be interpreted as a symbolic dependency name.
 
@@ -207,7 +205,7 @@ scope
   (string) ``user`` or ``global`` as described below.
 
 fluid
-~~~~~
+=====
 
 ``value`` SHALL be interpreted as a jobid, in any valid FLUID encoding from
 RFC 19.
@@ -222,7 +220,7 @@ A dependency of this ``scheme`` with a ``type`` of ``out`` SHALL be generated
 automatically for every job when OpenMP-style dependencies are active.
 
 Type
-~~~~
+====
 
 The value of the ``type`` key SHALL be one of the following:
 
@@ -242,7 +240,7 @@ The value of the ``type`` key SHALL be one of the following:
 Planned future values for ``type`` include ``inoutset``, ``runtime``, and ``all``.
 
 Scope
-~~~~~
+=====
 
 The value of the ``scope`` key SHALL be one of the following:
 
@@ -254,9 +252,8 @@ The value of the ``scope`` key SHALL be one of the following:
    of any type within this scope. A non-instance owner can only create a
    dependency with the type ``in`` within this scope.
 
-
 Examples
-~~~~~~~~
+========
 
 Under the description above, the following are examples of fully compliant
 dependency declarations.

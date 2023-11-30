@@ -2,41 +2,34 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_3.html
 
-#######################
 3/Flux Message Protocol
 #######################
 
 This specification describes the format of Flux message broker
 messages, Version 1.
 
--  Name: github.com/flux-framework/rfc/spec_3.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_3.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - draft
 
--  State: draft
-
-
-********
 Language
 ********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
-
-*****************
 Related Standards
 *****************
 
--  :doc:`6/Flux Remote Procedure Call Protocol <spec_6>`
-
--  :doc:`12/Flux Security Architecture <spec_12>`
-
+- :doc:`spec_6`
+- :doc:`spec_12`
 - `ZeroMQ Message Transfer Protocol (ZMTP) <https://rfc.zeromq.org/spec:23/ZMTP>`_
 
-
-*****
 Goals
 *****
 
@@ -65,7 +58,6 @@ the following specific goals:
 -  Ensure that messages between any pair of endpoints are received in
    transmission order.
 
-**********
 Background
 **********
 
@@ -113,8 +105,6 @@ There are four distinct Flux message types:  *request* and *response* messages
 for remote procedure call;  *event* messages for publish-subscribe, and
 *control* messages for internal use by the overlay network implementation.
 
-
-**************
 Implementation
 **************
 
@@ -141,7 +131,7 @@ example, a ZeroMQ ROUTER socket implements source-address routing by adding
 a message part in one direction and removing one in the opposite direction.
 
 Optional Message Parts
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 The following message parts MAY appear in Flux messages, in the following
 order:
@@ -167,7 +157,7 @@ payload
   content.
 
 Required Message Parts
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 Flux messages are REQUIRED to have one message part that acts as a protocol
 header and is encoded as described by the following ABNF [#f2]_ grammar.
@@ -243,7 +233,6 @@ following about the message header:
    ; unused 4-byte field
    unused          = %x00.00.00.00
 
-
 Request Message Type
 ====================
 
@@ -272,7 +261,7 @@ the following rules apply:
   be suppressed.
 
 Request Routing
-^^^^^^^^^^^^^^^
+---------------
 
 Request messages received by a broker are routed in three ways, depending on
 the value of the *nodeid* header field and the *upstream* header flag:
@@ -308,7 +297,6 @@ as in the first case, until a service is matched or an error is generated.
   upstream broker's rank, but that requires knowledge of the topology, which
   is a little more involved than setting a message flag.
 
-
 Response Message Type
 =====================
 
@@ -334,7 +322,6 @@ the following rules apply:
 
    Example of (a) Flux request message, and (b) Flux response message.  Integer
    values are in hex.
-
 
 Event Message Type
 ==================
@@ -380,7 +367,6 @@ the following rules apply:
   also used between broker modules and the broker module loader to communicate
   module status.  Since they are not routed, they are not of much use outside
   of those contexts.
-
 
 Payload Conventions
 ===================
@@ -445,6 +431,8 @@ their length fields.
    Example of a Flux request message with framing for transmission over a
    UNIX domain stream socket.
 
+References
+**********
 
 .. [#f1] `RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format <https://www.rfc-editor.org/rfc/rfc7159.txt>`__, T. Bray, Google, Inc, March 2014.
 

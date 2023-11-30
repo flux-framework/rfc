@@ -3,34 +3,33 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_4.html
 
 4/Flux Resource Model
-=====================
+#####################
 
 The Flux Resource Model describes the conceptual model used for
 resources within the Flux framework.
 
--  Name: github.com/flux-framework/rfc/spec_4.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Mark Grondona <mgrondona@llnl.gov>
-
--  State: draft
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_4.rst
+  * - **Editor**
+    - Mark Grondona <mgrondona@llnl.gov>
+  * - **State**
+    - draft
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
-:doc:`14/Canonical Job Specification <spec_14>`
-
+- :doc:`spec_14`
 
 Goals
------
+*****
 
 The Flux Resource Model provides a common conceptual model for resources
 described and managed by the Flux framework and its components. The
@@ -44,9 +43,8 @@ goals of this model are to:
 -  Provide a common storage, access, modification and discovery APIs for
    managing resource information
 
-
 Background
-----------
+**********
 
 As in traditional resource management software, the Flux framework
 requires a method for the description, configuration, tracking, and
@@ -60,9 +58,8 @@ computing (HPC) resources in relation to other resource management components.
 We term the model for describing resources in Flux
 *The Flux Resource Model*.
 
-
 The Flux Resource Model
------------------------
+***********************
 
 The Flux Resource Model combines two basic concepts to describe
 individual resources and various relationships among them.
@@ -107,9 +104,8 @@ connected by these edges SHALL represent a unique subsystem
 of resources (e.g., a compute subsystem, a parallel
 I/O subsystem, a power subsystem, etc).
 
-
 Resource Pool Data Model
-~~~~~~~~~~~~~~~~~~~~~~~~
+========================
 
 This section describes the resource pool data required
 to be stored, tracked, and queried.
@@ -158,9 +154,8 @@ It MAY include, but be not limited to:
 
 -  Scheduling state data such as job allocations and reservations
 
-
 Graph Data Model
-~~~~~~~~~~~~~~~~
+================
 
 A graph consists of a set of vertices and edges.
 The Flux Resource Model uses a vertex to represent a resource pool.
@@ -223,9 +218,8 @@ if this graph belongs to that named hierarchy. Similarly, if the graph
 shown in Figure 2 is a part of the I/O data path of a parallel file system,
 PFS1, its name MAY be "PFS1 I/O bandwidth hierarchy."
 
-
 Common Patterns
----------------
+***************
 
 The Flux Resource Model SHALL support a range of resource sets, from
 all of the resources in the center
@@ -242,9 +236,8 @@ the nodes and cores as the finest resource granularity.
 The following provides common examples to illustrate how Flux composes
 two basic concepts to model some of the common HPC resources.
 
-
 The Composite Resource Pool
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===========================
 
 The dominant form of the Flux Resource Model is called
 *composite resource pool*, the combination of a *composite type*
@@ -277,9 +270,8 @@ Use of the composite resource pool in Flux has the following properties:
 
 -  High level resources can be created piece-wise from base resource types.
 
-
 The Channeled Resource Pool
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===========================
 
 As HPC centers are becoming increasingly data- and power-constrained,
 the Flux Resource Model MUST be flexible to be able to model
@@ -306,9 +298,8 @@ MAY allocate the bandwidth capacity required by a job
 on all of the distribution units that lie along the data path
 up to PFS1 when the platform is I/O bandwidth-constrained.
 
-
 Unifying Different Patterns under the Same Model
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================
 
 Because any specialized form of a resource subsystem SHALL be
 itself built out of the same basic concepts, the Flux Resource Model
@@ -327,9 +318,8 @@ generalizes ways to model any resources, their individual
 relationships, and perhaps more importantly subsystems
 of these resources.
 
-
 Abstract Interfaces
--------------------
+*******************
 
 The abstract interfaces of the Flux Resource Model SHALL
 include, but not be limited to the following.
@@ -339,9 +329,8 @@ The implementors of the Flux Resource Model MAY
 use this as a guide to determine the proper abstraction
 level exposed by the implementations.
 
-
 Resource Pool
-~~~~~~~~~~~~~
+=============
 
 When operating on a resource pool as an object, the following methods
 SHALL be supported. The majority of methods are accessors.
@@ -364,9 +353,8 @@ Matching support
    filter can match on both base and extended data (e.g., tags,
    properties, size, type, name, basename, ids, etc).
 
-
 Graph
-~~~~~
+=====
 
 The following are the primary abstract types and their
 roles as relevant to the graph.

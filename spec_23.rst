@@ -3,28 +3,28 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_23.html
 
 23/Flux Standard Duration
-=========================
+#########################
 
 This specification describes a simple string format used to represent
 a duration of time.
 
--  Name: github.com/flux-framework/rfc/spec_23.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Mark A. Grondona <mark.grondona@gmail.com>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_23.rst
+  * - **Editor**
+    - Mark A. Grondona <mark.grondona@gmail.com>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Background
-----------
+**********
 
 Many Flux utilities and services may take a time *duration* as input
 either via user-provided options, configuration input, or message payload
@@ -35,9 +35,8 @@ a duration format that is human readable, easily parsed, and compact.
 Utilities and services that support the duration form described here are
 said to support "Flux Standard Duration."
 
-
 Implementation
---------------
+**************
 
 A Flux Standard Duration SHALL be a string of the form ``N[SUFFIX]``,
 where *N* is a floating point number and *SUFFIX* is an OPTIONAL unit.
@@ -75,7 +74,7 @@ As a special case, when N is ``infinity`` or ``inf``, the unit suffix SHALL
 be omitted.
 
 Test Vectors
-------------
+************
 
 .. list-table::
    :header-rows: 1
@@ -102,6 +101,9 @@ Test Vectors
      - INFINITY
    * - infinity
      - INFINITY
+
+References
+**********
 
 .. [#f1] `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.20.1.3: The strtod, strtof, and strtold functions
 .. [#f2] `C99 - ISO/IEC 9899:1999 standard <https://www.iso.org/standard/29237.html>`__ section 7.12/4 INFINITY (p: 212-213)

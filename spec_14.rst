@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_14.html
 
 14/Canonical Job Specification
-==============================
+##############################
 
 A domain specific language based on YAML is defined to express the
 resource requirements and other attributes of one or more programs
@@ -11,35 +11,32 @@ submitted to a Flux instance for execution. This RFC describes the
 canonical jobspec form, which represents a request to run exactly
 one program.
 
--  Name: github.com/flux-framework/rfc/spec_14.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Tom Scogland <scogland1@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_14.rst
+  * - **Editor**
+    -  Tom Scogland <scogland1@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`4/Flux Resource Model <spec_4>`
-
--  :doc:`20/Resource Set Specification Version 1 <spec_20>`
-
--  :doc:`26/Job Dependency Specification <spec_26>`
-
--  :doc:`31/Job Constraints Specification <spec_31>`
+-  :doc:`spec_4`
+-  :doc:`spec_20`
+-  :doc:`spec_26`
+-  :doc:`spec_31`
 
 
 Goals
------
+*****
 
 -  Express the resource requirements of a program to the scheduler.
 
@@ -58,9 +55,8 @@ Goals
 
 -  Promote sharing and reuse of jobspec.
 
-
 Overview
---------
+********
 
 This RFC describes the canonical form of "jobspec", a domain specific
 language based on YAML  [#f1]_. The canonical jobspec SHALL consist of
@@ -83,9 +79,8 @@ or other sources. Such tools MAY:
 
 -  convert command line arguments to jobspec, e.g. "flux mpirun"
 
-
 Jobspec and Program Life Cycle
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==============================
 
 The jobspec SHALL be submitted to a job submission service. Malformed
 jobspec SHALL be immediately rejected by the job submission service.
@@ -109,24 +104,22 @@ be returned to the scheduler.
 Once a job is retired, the jobspec SHALL be retained as part of
 its provenance record.
 
-
 Resource Matching
-~~~~~~~~~~~~~~~~~
+=================
 
 Resources are represented as hierarchies or graphs, as described in RFC 4.
 
 FIXME: describe how Flux hierarchical resource representation affects
 jobspec design.
 
-
 Terminology
-~~~~~~~~~~~
+===========
 
 FIXME: Fill in
 
 
 Jobspec Language Definition
----------------------------
+***************************
 
 A canonical jobspec YAML document SHALL consist of a dictionary
 defining the resources, tasks and other attributes of a single
@@ -137,9 +130,8 @@ Each of the listed jobspec keys SHALL meet the form and requirements
 listed in detail in the sections below. For reference, a ruleset for
 compliant canonical jobspec is provided in the **Schema** section below.
 
-
 Resources
-~~~~~~~~~
+=========
 
 The value of the ``resources`` key SHALL be a strict list which MUST
 define at least one resource. Each list element SHALL represent a
@@ -219,9 +211,8 @@ following keys
    The value of the ``id`` key SHALL be a string indicating a set of
    matching resource identifiers.
 
-
 Reserved Resource Types
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 **slot**
    A resource type of ``type: slot`` SHALL indicate a grouping
@@ -235,9 +226,8 @@ Reserved Resource Types
    to the program described in the jobspec, unless otherwise specified
    in the ``exclusive`` field of the associated resource.
 
-
 Tasks
-~~~~~
+=====
 
 The value of the ``tasks`` key SHALL be a strict list which MUST
 define at least one task. Each list element SHALL be a dictionary
@@ -288,9 +278,8 @@ descriptor SHALL contain the following keys:
    be used as input to the launcher’s algorithm for task placement and
    layout among task slots.
 
-
 Attributes
-~~~~~~~~~~
+==========
 
 The value of the ``attributes`` key SHALL be a dictionary of dictionaries.
 The ``attributes`` dictionary MAY contain one or both of the following keys
@@ -393,7 +382,7 @@ Some common system attributes are:
       configuration file.
 
 Example Jobspec
-~~~~~~~~~~~~~~~
+***************
 
 Under the description above, the following is an example of a fully compliant
 canonical jobspec. The example below declares a request for 4 "nodes"
@@ -409,9 +398,8 @@ Another example, running one task on each of four nodes.
 .. literalinclude:: data/spec_14/example2.yaml
    :language: yaml
 
-
 Schema
-~~~~~~
+******
 
 A jobspec conforming to the canonical language definition SHALL
 adhere to the following ruleset, described using JSON Schema  [#f2]_.
@@ -419,17 +407,15 @@ adhere to the following ruleset, described using JSON Schema  [#f2]_.
 .. literalinclude:: data/spec_14/schema.json
    :language: json
 
-
-
 Basic Use Cases
----------------
+***************
 
 To implement basic resource manager functionality, the following use
 cases SHALL be supported by the jobspec:
 
 
 Section 1: Node-level Requests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==============================
 
 The following "node-level" requests are all requests to start an instance,
 i.e. run a single copy of ``flux start`` per allocated node. Many of these
@@ -547,7 +533,7 @@ Jobspec YAML
       :language: yaml
 
 Section 2: General Requests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===========================
 
 The following use cases are more general and include more complex slot placement
 and task counts.
@@ -683,6 +669,8 @@ Jobspec YAML
    .. literalinclude:: data/spec_14/use_case_2.9.yaml
       :language: yaml
 
+References
+**********
 
 .. [#f1] `YAML Ain’t Markup Language (YAML) Version 1.1 <http://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
 

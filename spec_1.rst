@@ -3,39 +3,38 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_1.html
 
 1/C4.1 - Collective Code Construction Contract
-==============================================
+##############################################
 
 The Collective Code Construction Contract (C4.1) is an evolution of the
 github.com `Fork + Pull Model <https://help.github.com/en/pull-requests/>`__,
 aimed at providing an optimal collaboration model for free software
 projects.
 
--  Name: github.com/flux-framework/rfc/spec_1.rst
+.. list-table::
+  :widths: 25 75
 
--  Forked from: rfc.zeromq.org/spec:22/C4.1
-
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: draft
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_1.rst
+  * - **Forked from**
+    - rfc.zeromq.org/spec:22/C4.1
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - draft
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`2/Flux Licensing and Collaboration Guidelines <spec_2>`
-
--  :doc:`7/Flux Coding Style Guide <spec_7>`
-
+- :doc:`spec_2`
+- :doc:`spec_7`
 
 Goals
------
+*****
 
 C4.1 is meant to provide a reusable optimal collaboration model for open source software projects. It has these specific goals:
 
@@ -53,11 +52,10 @@ C4.1 is meant to provide a reusable optimal collaboration model for open source 
 
 
 Design
-------
-
+******
 
 Preliminaries
-~~~~~~~~~~~~~
+=============
 
 -  The project SHALL use the git distributed revision control system.
 
@@ -77,9 +75,8 @@ Preliminaries
 
 -  Everyone, without distinction or discrimination, SHALL have an equal right to become a Contributor under the terms of this contract.
 
-
 Licensing and Ownership
-~~~~~~~~~~~~~~~~~~~~~~~
+=======================
 
 -  The project SHALL use a share-alike license, such as the GPLv3 or a variant thereof (LGPL, AGPL), or the MPLv2 for reasons outlined in :doc:`RFC 2 <spec_2>`.
 
@@ -91,9 +88,8 @@ Licensing and Ownership
 
 -  The git commit history SHALL be considered the primary source of contributor identities.
 
-
 Patch Requirements
-~~~~~~~~~~~~~~~~~~
+==================
 
 -  Maintainers and Contributors MUST have a Platform account and SHOULD use their real names or a well-known alias.
 
@@ -127,9 +123,8 @@ Patch Requirements
 
 -  A "Correct Patch" is one that satisfies the above requirements.
 
-
 Development Process
-~~~~~~~~~~~~~~~~~~~
+===================
 
 -  Change on the project SHALL be governed by the pattern of accurately identifying problems and applying minimal, accurate solutions to these problems.
 
@@ -174,9 +169,8 @@ Development Process
 -  Autotools products, if applicable, SHOULD NOT be checked into the project
    revision control system
 
-
 Release Process
-~~~~~~~~~~~~~~~
+===============
 
 -  Releases SHALL be tagged with git annotated tags.
 
@@ -187,9 +181,8 @@ Release Process
    "dist tarballs"; that is, a source distribution with pre-generated
    configure script, Makefile.in, etc..
 
-
 Creating Stable Releases
-~~~~~~~~~~~~~~~~~~~~~~~~
+========================
 
 -  The project SHALL have one branch ("master") that always holds the latest in-progress version and SHOULD always build.
 
@@ -203,9 +196,8 @@ Creating Stable Releases
 
 -  A patch to a stabilization project declared "stable" SHALL be accompanied by a reproducible test case.
 
-
 Evolution of Public Contracts
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=============================
 
 -  All Public Contracts (APIs or protocols) SHOULD be documented.
 
@@ -223,9 +215,8 @@ Evolution of Public Contracts
 
 -  When old names are removed, their implementations MUST provoke an exception (assertion) if used by applications.
 
-
 Project Administration
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 -  The project founders SHALL act as Administrators to manage the set of project Maintainers.
 
@@ -235,9 +226,8 @@ Project Administration
 
 -  Administrators MAY remove Maintainers who are inactive for an extended period of time, or who repeatedly fail to apply this process accurately.
 
-
 Further Reading
----------------
+***************
 
 -  `ZeroMQ - The Guide, Chapter 6: The ZeroMQ Community <https://zguide.zeromq.org/docs/chapter6/#the-community>`__
 
@@ -245,9 +235,8 @@ Further Reading
 
 -  `Toyota Kata <http://en.wikipedia.org/wiki/Toyota_Kata>`__ - covering the Improvement Kata (fixing problems one at a time) and the Coaching Kata (helping others to learn the Improvement Kata).
 
-
 Implementations
----------------
+***************
 
 -  The `ZeroMQ community <http://zeromq.org>`__ uses the C4.1 process for many projects.
 

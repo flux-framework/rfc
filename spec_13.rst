@@ -2,9 +2,8 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_13.html
 
-======================================
 13/Simple Process Manager Interface v1
-======================================
+######################################
 
 .. highlight:: c
 
@@ -18,30 +17,26 @@ standardized by the MPI Forum and has been only lightly documented.
 This RFC is an attempt to document PMI-1 to guide developers of resource
 managers that must support current and legacy MPI implementations.
 
--  Name: github.com/flux-framework/rfc/spec_13.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_13.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
--  State: raw
-
-
-********
 Language
 ********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
-
-*****************
 Related Standards
 *****************
 
--  :doc:`12/Flux Security Architecture <spec_12>`
+- :doc:`spec_12`
 
-
-*****
 Goals
 *****
 
@@ -58,8 +53,6 @@ Goals
 
 -  Identify which functions are optional, and under what circumstances.
 
-
-************
 PMI Versions
 ************
 
@@ -79,8 +72,6 @@ that is not covered here.
 PMIX ("X" for extension), is a set of extensions to PMI-2. The PMIX
 extensions are not covered here.
 
-
-********
 Overview
 ********
 
@@ -114,8 +105,6 @@ the PMI-1 wire protocol; a shared library providing the PMI-1 API
 implemented using the PMI-1 wire protocol; or less flexibly, a shared
 library providing the PMI-1 API implemented using a proprietary protocol.
 
-
-***********
 Terminology
 ***********
 
@@ -134,8 +123,6 @@ process
 PMI library
   A shared library that provides the PMI-1 API.
 
-
-*******
 Caveats
 *******
 
@@ -157,8 +144,6 @@ non-conforming PMI library implementations. This in turn has resulted
 in stronger coupling between process managers and MPI implementations
 than necessary.
 
-
-***********
 Environment
 ***********
 
@@ -182,8 +167,6 @@ set the following environment variables:
    * - PMI_SPAWNED
      - only set (to 1) if the program was created by :func:`PMI_Spawn_multiple`
 
-
-*********************************
 Application Programming Interface
 *********************************
 
@@ -208,7 +191,6 @@ to return PMI_FAIL with no effect.
 There is no defined mechanism to extend PMI-1 without inadvertently
 coupling users of a extension to a PMI library and/or process manager,
 therefore PMI libraries SHALL NOT implement functions not defined below.
-
 
 Return Codes
 ============
@@ -268,7 +250,6 @@ indicating the result of the operation:
    * - PMI_ERR_INVALID_SIZE
      - 13
      - invalid size argument
-
 
 Initialization
 ==============
@@ -338,7 +319,6 @@ Abort the process group associated with this process.
 The PMI library SHALL print :var:`error_msg` to standard error, then exit
 this process with with :var:`exit_code`. This function SHALL NOT return.
 
-
 Process Group Information
 =========================
 
@@ -396,7 +376,6 @@ Notes
 
 -  See MPI-2 [#f2]_ section `5.5.3. MPI_APPNUM <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/node113.htm>`__.
 
-
 Local Process Group Information
 ===============================
 
@@ -449,7 +428,6 @@ Notes:
 
 -  The implementation should fetch the ``PMI_process_mapping`` value from the
    KVS and calculate the clique ranks (see below).
-
 
 Key Value Store
 ===============
@@ -593,7 +571,6 @@ Notes:
 -  Dropped from pmi.h [#f3]_ on 2011-01-28 in
    `commit f17423ef <https://github.com/pmodels/mpich/commit/f17423ef535f562bcacf981a9f7e379838962c6e>`__,
 
-
 Dynamic Process Management
 ==========================
 
@@ -671,8 +648,6 @@ Notes:
 -  These functions were dropped from pmi.h [#f3]_ on 2009-05-01 in
    `commit 52c462d <https://github.com/pmodels/mpich/commit/52c462d2be6a8d0720788d36e1e096e991dcff38>`__
 
-
-*************
 Wire Protocol
 *************
 
@@ -696,7 +671,6 @@ For maximum interoperability, a message parser SHOULD allow
 
 -  additional keys to be present
 
-
 Connection
 ==========
 
@@ -705,7 +679,6 @@ a file descriptor, arrange for the file descriptor to be inherited by
 the process, and pass its number in the PMI_FD environment variable
 at process launch time.
 
-
 Version Negotiation
 ===================
 
@@ -713,7 +686,6 @@ The client SHALL send the init request first, with the highest version
 of PMI supported by the client. The server SHALL respond with the
 version of PMI that will be used for this connection. The client SHALL NOT
 send other commands until the init operation has completed.
-
 
 Error Handling
 ==============
@@ -730,7 +702,6 @@ If a protocol error occurs, the detecting side SHALL immediately close
 the connection and abort the program. IT SHOULD log the message so that
 the problem can be tracked down.
 
-
 Spawn Operation
 ===============
 
@@ -740,7 +711,6 @@ These messages SHALL NOT be interspersed with messages for other operations.
 The spawn operation passes zero or more arguments, zero or more "preput"
 elements, and zero or more "info" elements. The numbered indices of these
 elements SHALL begin with zero and increase monotonically.
-
 
 Protocol Definition
 ===================
@@ -867,7 +837,6 @@ Protocol Definition
    int             = *1("+" "-") uint              ; signed integer
    uint            = 1*DIGIT                       ; unsigned integer
 
-
 Back Compatibility
 ==================
 
@@ -875,8 +844,6 @@ Earlier versions of the PMI-1 wire protocol did not include the init
 operation in which versions are exchanged. Protocol operations that
 were culled in PMI 1.1 are not covered here.
 
-
-*******************************
 Local Process Group Information
 *******************************
 
@@ -921,8 +888,6 @@ If the process mapping value is too long to fit in a KVS value, the process
 manager SHALL return a value consisting of an empty string, indicating that
 the mapping is unknown.
 
-
-**********
 References
 **********
 

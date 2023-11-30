@@ -2,40 +2,35 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_12.html
 
-#################################
 12/Flux Role-based Access Control
 #################################
 
 This document describes the how Flux message credentials are used to
 secure access to services.
 
--  Name: github.com/flux-framework/rfc/spec_12.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_12.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
--  State: raw
-
-********
 Language
 ********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
+.. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
-- :doc:`3/Flux Message Protocol <spec_3>`
+- :doc:`spec_3`
+- :doc:`spec_6`
+- :doc:`spec_15`
+- :doc:`spec_39`
 
-- :doc:`6/Flux Remote Procedure Call Protocol <spec_6>`
-
-- :doc:`15/Independent Minister of Privilege for Flux: The Security IMP <spec_15>`
-
-- :doc:`39/Flux Security Signature <spec_39>`
-
-*****
 Goals
 *****
 
@@ -48,7 +43,6 @@ Goals
 
 - Describe pub/sub message privacy.
 
-**********
 Background
 **********
 
@@ -79,7 +73,6 @@ in a multi-user Flux instance may be decomposed into two main topics:
 This RFC describes how message credentials are used to implement role-based
 access control in a multi-user Flux instance.
 
-**************
 Implementation
 **************
 

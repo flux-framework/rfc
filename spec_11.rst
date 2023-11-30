@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_11.html
 
 11/Key Value Store Tree Object Format v1
-========================================
+########################################
 
 The Flux Key Value Store (KVS) implements hierarchical key namespaces
 layered atop the content storage service described in RFC 10.
@@ -11,29 +11,28 @@ Namespaces are organized as hash trees of content-addressed *tree objects*
 and values. This specification defines the version 1 format of key value
 store tree objects.
 
--  Name: github.com/flux-framework/rfc/spec_11.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_11.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`10/Content Storage Service <spec_10>`
-
+- :doc:`spec_10`
 
 Goals
------
+*****
 
 -  Define KVS metadata compatible with the RFC 10 content storage service.
 
@@ -51,9 +50,8 @@ Goals
 
 -  Large directories are not expensive to access or update.
 
-
 Implementation
---------------
+**************
 
 In contrast to the original KVS prototype, in this specification, KVS
 values are unstructured, opaque data.
@@ -84,9 +82,8 @@ There are six types:
 -  *symlink*, data is an object containing a target key and optionally
    a namespace.
 
-
 Valref
-~~~~~~
+======
 
 A *valref* refers to opaque data in the content store (the actual data,
 not a *val* object).
@@ -98,9 +95,8 @@ not a *val* object).
      "data":["sha1-aaa...","sha1-bbb...",...],
    }
 
-
 Val
-~~~
+===
 
 A *val* represents opaque data directly, base64-encoded.
 
@@ -117,9 +113,8 @@ blobs SHOULD be represented as a *val* when written to the content store.
 The *val* object MAY be used as part of the protocol for sending key-value
 tuples of any size to the KVS in the JSON payload of an RPC.
 
-
 Dirref
-~~~~~~
+======
 
 A *dirref* refers to a *dir* or *hdir* object that was serialized and
 stored in the content store.
@@ -134,9 +129,8 @@ stored in the content store.
 Although the *dirref* definition supports an array of multiple blobrefs,
 at this time the array size is limited to one.
 
-
 Dir
-~~~
+===
 
 A *dir* is a dictionary mapping keys to any of the tree object types.
 
@@ -152,9 +146,8 @@ A *dir* is a dictionary mapping keys to any of the tree object types.
      }
    }
 
-
 Hdir
-~~~~
+====
 
 A *hdir* is a dictionary mapping keys to any of the tree object types,
 though a level of indirection. The *hdir* object is for efficiently
@@ -185,9 +178,8 @@ Hash buckets MAY be sparsely populated. Each hash bucket contains a single
 
 At this time, *hdir* objects have not been implemented.
 
-
 Symlink
-~~~~~~~
+=======
 
 A *symlink* is a symbolic pointer to a another KVS key, which may or
 may not be fully qualified. Optionally, a namespace can be specified

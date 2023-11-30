@@ -3,30 +3,30 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_2.html
 
 2/Flux Licensing and Collaboration Guidelines
-=============================================
+#############################################
 
 The Flux framework is a family of projects used to build site-customized
 resource management systems for High Performance Computing (HPC) data
 centers. This document specifies licensing and collaboration guidelines
 for Flux projects.
 
--  Name: github.com/flux-framework/rfc/spec_2.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_2.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Goals
------
+*****
 
 A Flux project is defined as software which implements a resource
 manager function, or is otherwise tightly coupled to the resource
@@ -56,13 +56,11 @@ Our licensing and collaboration guidelines must balance the following goals:
    projects such as applications, application runtimes, and tools, that are
    distributed under a wide variety of open source and commercial licenses.
 
-
 Design
-------
-
+******
 
 Collaboration Model for Flux Projects
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=====================================
 
 -  Flux projects SHALL adopt the Collective Code Construction Contract
    (C4.1) described in Flux RFC 1.
@@ -74,9 +72,8 @@ Collaboration Model for Flux Projects
 -  It is RECOMMENDED that Flux projects be discussed on the Flux
    discussion list <flux-discuss@lists.llnl.gov>.
 
-
 License for Flux Projects
-~~~~~~~~~~~~~~~~~~~~~~~~~
+=========================
 
 -  Flux projects are RECOMMENDED to be licensed under the `GNU Lesser General Public License (LGPL) version 3 <https://www.gnu.org/licenses/lgpl-3.0.en.html>`__.
 
@@ -84,9 +81,8 @@ License for Flux Projects
    under the project’s base license version, or any later version per
    `Free Software Foundation recommendations <http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater>`__.
 
-
 Copyright
-~~~~~~~~~
+=========
 
 -  Copyright for a particular Flux project SHALL be held jointly by
    the contributors to that project.
@@ -113,6 +109,9 @@ Copyright
     */
 
 -  The SPDX license shorthand is RECOMMENDED [#f2]_.
+
+References
+**********
 
 .. [#f1] `The Free-Libre / Open Source Software (FLOSS) License Slide <https://dwheeler.com/essays/floss-license-slide.html>`__, David A. Wheeler.
 

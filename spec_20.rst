@@ -4,46 +4,38 @@
 
 .. default-domain:: js
 
-#######################################
 20/Resource Set Specification Version 1
 #######################################
 
 This specification defines the version 1 format of the resource-set
 representation or *R* in short.
 
--  Name: github.com/flux-framework/rfc/spec_20.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_20.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
--  State: Raw
-
-********
 Language
 ********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
-in this document are to be interpreted as described in RFC 2119.
+.. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
--  :doc:`4/Flux Resource Model <spec_4>`
+- :doc:`spec_4`
+- :doc:`spec_14`
+- :doc:`spec_15`
+- :doc:`spec_16`
+- :doc:`spec_22`
+- :doc:`spec_29`
+- :doc:`spec_31`
 
--  :doc:`14/Canonical Job Specification <spec_14>`
-
--  :doc:`15/Independent Minister of Privilege for Flux <spec_15>`
-
--  :doc:`16/KVS Job Schema <spec_16>`
-
--  :doc:`22/Idset String Representation <spec_22>`
-
--  :doc:`29/Hostlist Format <spec_29>`
-
--  :doc:`31/Job Constraints Specification <spec_31>`
-
-********
 Overview
 ********
 
@@ -80,8 +72,6 @@ shell
   The job shell uses *R* to determine where to launch tasks.  Shell plugins
   may use *R* for various purposes such setting core and GPU affinity.
 
-
-************
 Design Goals
 ************
 
@@ -105,9 +95,6 @@ Design Goals
 
 -  Build towards the general resource model of RFC 4.
 
-
-
-**************
 Implementation
 **************
 
@@ -260,7 +247,6 @@ R Format
       manages multiple job queues may add ``queue=batch``
       to indicate that this resource set was allocated from within
       its ``batch`` queue.
-
 
 Example R
 =========

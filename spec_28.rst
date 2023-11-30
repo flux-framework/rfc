@@ -3,39 +3,36 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_28.html
 
 28/Flux Resource Acquisition Protocol Version 1
-===============================================
+###############################################
 
 This specification describes the Flux service that schedulers use to
 acquire exclusive access to resources and monitor their ongoing
 availability.
 
--  Name: github.com/flux-framework/rfc/spec_28.rst
+.. list-table::
+  :widths: 25 75
 
--  Editor: Jim Garlick <garlick@llnl.gov>
-
--  State: raw
-
+  * - **Name**
+    - github.com/flux-framework/rfc/spec_28.rst
+  * - **Editor**
+    - Jim Garlick <garlick@llnl.gov>
+  * - **State**
+    - raw
 
 Language
---------
+********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to
-be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`__.
-
+.. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
--  :doc:`20/Resource Set Specification Version 1 <spec_20>`
-
--  :doc:`22/Idset String Representation <spec_22>`
-
--  :doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
-
+- :doc:`spec_20`
+- :doc:`spec_22`
+- :doc:`spec_27`
 
 Background
-----------
+**********
 
 A Flux instance manages a set of resources.  This resource set may be obtained
 from a configuration file, dynamically discovered, or assigned by the enclosing
@@ -61,9 +58,8 @@ availability changes.
 Version 1 of this protocol supports a static resource set per Flux instance.
 Resource *grow* and *shrink* are to be handled by a future protocol revision.
 
-
 Design Criteria
----------------
+***************
 
 - Provide resource discovery service to scheduler implementations.
 
@@ -76,23 +72,20 @@ Design Criteria
 
 - Support administrative exclusion of execution targets.
 
-
 Implementation
---------------
+**************
 
 The scheduler SHALL send a ``resource.acquire`` streaming RPC request at
 initialization to obtain resources to be used for scheduling and monitor
 changes in status.
 
-
 Acquire Request
-^^^^^^^^^^^^^^^
+===============
 
 The ``resource.acquire`` request has no payload.
 
-
 Initial Acquire Response
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 The initial ``resource.acquire`` response SHALL include the following keys:
 
@@ -133,9 +126,8 @@ Example:
       "up": "0-2"
    }
 
-
 Additional Acquire Responses
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------
 
 Subsequent ``resource.acquire`` responses SHALL include one or more
 of the following OPTIONAL keys:
@@ -191,16 +183,15 @@ request for the offline resources.
   in the protocol.
 
 Error Response
-^^^^^^^^^^^^^^
+--------------
 
 If an error response is returned to ``resource.acquire``, the scheduler
 should log the error and exit the reactor, as failure indicates either a
 catastrophic error, a failure to acquire any resources, or a failure to
 conform to this protocol.
 
-
 Disconnect Request
-^^^^^^^^^^^^^^^^^^
+==================
 
 If the scheduler is unloaded, a disconnect request is automatically sent to
 the flux-core resource module.  This cancels the ``resource.acquire`` request
