@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_29.html
 
 29/Hostlist Format
-==================
+##################
 
 This specification describes a compact form for expressing a list of
 hostnames which contain an optional numerical part.
@@ -19,12 +19,12 @@ hostnames which contain an optional numerical part.
     - raw
 
 Language
---------
+********
 
 .. include:: common/language.rst
 
 Background
-----------
+**********
 
 The *hostlist* is a somewhat well known format supported by
 existing HPC tools such as `pdsh <https://github.com/chaos/pdsh>`_,
@@ -37,7 +37,7 @@ a possibly large list of hosts by name, e.g. ``prefix[0-1024]``.
 This RFC details the Flux implementation of the hostlist format.
 
 Implementation
---------------
+**************
 
 A *hostlist* SHALL represent an ordered list of strings.
 
@@ -71,7 +71,7 @@ Within a *hostlist expression*, an *idlist* SHALL be enclosed in square
 brackets, e.g. ``host[0-10,12]``.
 
 Test Vectors
-------------
+************
 
  - ``""`` = ``""``
  - ``"foox,fooy,fooz"`` = ``"foox,fooy,fooz"``

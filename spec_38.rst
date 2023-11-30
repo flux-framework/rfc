@@ -2,7 +2,6 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_38.html
 
-###################################
 38/Flux Security Key Value Encoding
 ###################################
 
@@ -19,19 +18,16 @@ for a series of typed key-value pairs.
   * - **State**
     - raw
 
-********
 Language
 ********
 
 .. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
 - :doc:`spec_15`
 
-**********
 Background
 **********
 
@@ -43,7 +39,6 @@ communication in the following security-sensitive situations:
 - When communicating options between privileged and unprivileged sections
   of the IMP.
 
-*****
 Goals
 *****
 
@@ -57,7 +52,6 @@ Goals
 
 - Design should allow for a simple, embedded C implementation.
 
-**************
 Implementation
 **************
 
@@ -97,7 +91,6 @@ e.g.  ``key\0Tvalue\0key\0Tvalue\0...key\0Tvalue\0``.
 An implementation defined limit SHALL be imposed on the maximum overall size
 of a serialized object to avoid resource exhaustion.
 
-************
 Test Vectors
 ************
 

@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_27.html
 
 27/Flux Resource Allocation Protocol Version 1
-==============================================
+##############################################
 
 This specification describes Version 1 of the Flux Resource Allocation
 Protocol implemented by the job manager and a compliant Flux scheduler.
@@ -19,12 +19,12 @@ Protocol implemented by the job manager and a compliant Flux scheduler.
     - raw
 
 Language
---------
+********
 
 .. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
 - :doc:`spec_14`
 - :doc:`spec_16`
@@ -32,9 +32,8 @@ Related Standards
 - :doc:`spec_21`
 - :doc:`spec_23`
 
-
 Background
-----------
+**********
 
 The Flux job manager's role is managing the queue of pending job requests
 and transitioning jobs through the job states defined in RFC 21, actively
@@ -65,9 +64,8 @@ and identify resources that are already allocated at scheduler startup.
 It does not cover the mechanism by which a scheduler discovers the initial
 inventory of resources.
 
-
 Design Criteria
----------------
+***************
 
 - Support multiple scheduler implementations, minimizing repeated code
   in schedulers.
@@ -101,9 +99,8 @@ Design Criteria
 
 - Allow the expiration time of a resource allocation to be adjusted.
 
-
 Implementation
---------------
+**************
 
 To escape scalability limitations of the Flux "tag pool", ``sched.alloc`` and
 ``sched.free`` RPCs use the job ID to match requests and responses, and set the
@@ -131,9 +128,8 @@ The other RPCs behave conventionally.
 
 A detailed description of these RPCs follows.
 
-
 Hello
-~~~~~
+=====
 
 Before any other RPCs are sent to the job manager, the scheduler SHALL
 send an empty request to ``job-manager.sched-hello`` with the
@@ -176,9 +172,8 @@ If an error response other than ENODATA is returned to the
 ``job-manager.sched-hello`` request, the scheduler SHALL log the error
 and exit its module thread.
 
-
 Ready
-~~~~~
+=====
 
 Once the scheduler has processed the ``job-manager.sched-hello`` handshake,
 it SHALL notify the job manager that it is ready to accept allocation requests
@@ -223,9 +218,8 @@ MAY immediately begin sending ``sched.alloc`` and ``sched.free`` requests.
 If an error response is returned to the ``job-manager.sched-ready`` request,
 the scheduler SHALL log the error and exit its module thread.
 
-
 Alloc
-~~~~~
+=====
 
 The job manager SHALL send a ``sched.alloc`` request when a job enters SCHED
 state, and concurrency criteria established by the initialization handshake
@@ -307,7 +301,7 @@ CANCEL (3)
 The ``alloc`` request MAY receive multiple responses.
 
 Alloc Success
-^^^^^^^^^^^^^
+-------------
 
 If resources can be allocated, the scheduler SHALL ensure that *R* has
 been successfully committed to the KVS per the job schema (RFC 16)
@@ -347,7 +341,7 @@ After the SUCCESS response, the ``sched.alloc`` request is complete and may be
 retired by the job manager and scheduler.
 
 Alloc Annotate
-^^^^^^^^^^^^^^
+--------------
 
 While a job is in SCHED state, the scheduler MAY send multiple ANNOTATE
 type responses to the ``sched.alloc`` request to update scheduler-defined
@@ -418,7 +412,7 @@ to the ``sched.alloc`` request, as described in Alloc Success above.
 Annotations SHALL be discarded by the job manager if the allocation fails.
 
 Alloc Deny
-^^^^^^^^^^
+----------
 
 If the resource request can never be fulfilled, the scheduler SHALL
 respond to the ``sched.alloc`` with a DENY type response.
@@ -446,7 +440,7 @@ After the DENY response, the ``sched.alloc`` request is complete and may be
 retired by the job manager and scheduler.
 
 Alloc Cancel
-^^^^^^^^^^^^
+------------
 
 When the scheduler receives a ``sched.cancel`` request for a job (see below),
 it SHALL respond to the corresponding ``sched.alloc`` request with response
@@ -464,9 +458,8 @@ Example:
 After the CANCEL response, the ``sched.alloc`` request is complete and may be
 retired by the job manager and scheduler.
 
-
 Cancel
-~~~~~~
+======
 
 The job manager may cancel a pending ``sched.alloc`` request by sending
 a request to ``sched.cancel`` with payload consisting of a JSON object
@@ -495,9 +488,8 @@ outstanding ``sched.alloc`` requests in response to the queue being
 administratively disabled, or to make room for higher priority jobs
 in ``single`` mode.
 
-
 Prioritize
-~~~~~~~~~~
+==========
 
 When jobs with outstanding ``sched.alloc`` requests are re-prioritized,
 the job manager notifies the scheduler by sending a ``sched.prioritize``
@@ -540,7 +532,7 @@ No response is sent to the ``sched.prioritize`` request.
     ``sched.prioritize`` request.
 
 Expiration
-~~~~~~~~~~
+==========
 
 The job manager MAY request an adjustment to the expiration time of an
 existing allocation by sending a ``sched.expiration`` request.  The request
@@ -575,7 +567,7 @@ The request MAY fail, for example if:
     execution system, not the scheduler.
 
 Free
-~~~~
+====
 
 The job manager SHALL send a ``sched.free`` request when a job that is
 holding resources enters CLEANUP state.  The request payload consists of
@@ -614,9 +606,8 @@ Example:
 After the ``sched.free`` response, the request is complete and may be
 retired by the job manager and scheduler.
 
-
 Finalization
-~~~~~~~~~~~~
+============
 
 If the job manager receives a conventional Flux error response to
 a ``sched.alloc`` or ``sched.free`` request, it SHALL log the error
@@ -630,9 +621,8 @@ scheduler, it SHALL suspend scheduler operations.
 Operations MAY resume if the scheduler re-establishes itself with the
 ``job-manager.sched-hello`` and ``job-manager.sched-ready`` handshakes.
 
-
 Exceptions
-~~~~~~~~~~
+==========
 
 When a job encounters a fatal exception, the job manager transitions it
 to CLEANUP state.

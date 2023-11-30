@@ -4,7 +4,6 @@
 
 .. default-domain:: js
 
-#######################################
 20/Resource Set Specification Version 1
 #######################################
 
@@ -21,13 +20,11 @@ representation or *R* in short.
   * - **State**
     - raw
 
-********
 Language
 ********
 
 .. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
@@ -39,7 +36,6 @@ Related Standards
 - :doc:`spec_29`
 - :doc:`spec_31`
 
-********
 Overview
 ********
 
@@ -76,8 +72,6 @@ shell
   The job shell uses *R* to determine where to launch tasks.  Shell plugins
   may use *R* for various purposes such setting core and GPU affinity.
 
-
-************
 Design Goals
 ************
 
@@ -101,9 +95,6 @@ Design Goals
 
 -  Build towards the general resource model of RFC 4.
 
-
-
-**************
 Implementation
 **************
 
@@ -256,7 +247,6 @@ R Format
       manages multiple job queues may add ``queue=batch``
       to indicate that this resource set was allocated from within
       its ``batch`` queue.
-
 
 Example R
 =========

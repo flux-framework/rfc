@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_16.html
 
 16/KVS Job Schema
-=================
+#################
 
 This specification describes the format of data stored in the KVS
 for Flux jobs.
@@ -19,12 +19,12 @@ for Flux jobs.
     - raw
 
 Language
---------
+********
 
 .. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
 - :doc:`spec_12`
 - :doc:`spec_14`
@@ -33,13 +33,11 @@ Related Standards
 - :doc:`spec_20`
 - :doc:`spec_21`
 
-
 Background
-----------
-
+**********
 
 Components that use the KVS job schema
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+======================================
 
 Instance components have direct, read/write access to the primary KVS
 namespace:
@@ -60,9 +58,8 @@ Guest components have direct, read/write access to a private KVS namespace:
 
 -  *Command line tools*
 
-
 Job Life Cycle
-~~~~~~~~~~~~~~
+==============
 
 A job is submitted to the *ingest agent* which validates jobspec, adds
 the job to the KVS, and informs the *job manager* of the new job.
@@ -88,13 +85,11 @@ takes the active role in moving a job through its life cycle:
 
 The job is now complete.
 
-
 Implementation
---------------
-
+**************
 
 Primary KVS Namespace
-~~~~~~~~~~~~~~~~~~~~~
+=====================
 
 The Flux instance has a default, shared namespace that is accessible
 only by the instance owner.
@@ -106,9 +101,8 @@ Jobs listed in the ``jobs`` directory may need to be periodically
 archived and purged to keep its size manageable in long-running
 instances.
 
-
 Guest KVS Namespace
-~~~~~~~~~~~~~~~~~~~
+===================
 
 A guest-writable KVS namespace is created by the *exec service*
 for the use of the *job shell* and the application. While the job
@@ -122,9 +116,8 @@ When the job transitions to inactive, the final snapshot of the
 guest namespace content is linked by the *exec service* into the primary
 namespace, and the guest namespace is destroyed.
 
-
 Access to Primary Namespace by Guest Users
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================================
 
 Guests may access data in the primary KVS namespace only through instance
 services that allow selective guest access, by proxy or by staging copies
@@ -133,9 +126,8 @@ to the guest namespace.
 Guest access for primary namespace contents ``R``, ``J``, ``jobspec``, and
 ``eventlog`` is provided via a proxy service in the instance.
 
-
 Event Log
-~~~~~~~~~
+=========
 
 Active jobs undergo change represented as events that are recorded under
 the key ``job.<jobid>.eventlog``. A KVS append operation
@@ -144,9 +136,8 @@ is used to add events to this log.
 Each append consists of a string matching the format described in
 :doc:`RFC 18 <spec_18>`.
 
-
 Content Produced by Ingest Agent
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================
 
 A user submits *J* with attached signature, as described in
 :doc:`RFC 15 <spec_15>`.
@@ -167,9 +158,8 @@ The *ingest agent* logs one event to the eventlog:
 ``submit`` ``userid=UID urgency=N``
    job was submitted, with authenticated userid and urgency (0-31)
 
-
 Content Consumed/Produced by Job Manager
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+========================================
 
 Upon notification of a new ``job.<jobid>``, the *job manager* takes
 the active role in moving a job through its life cycle, and logs events
@@ -178,9 +168,8 @@ to the eventlog as described in :doc:`RFC 21 <spec_21>`.
 When the *job manager* is restarted, it recovers its state by scanning
 ``jobs`` and replaying the eventlog for each job found there.
 
-
 Content Consumed/Produced by Scheduler
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+======================================
 
 When the *scheduler* receives an allocation request containing a jobid,
 it reads the jobspec from ``job.<jobid>.jobspec``.
@@ -194,9 +183,8 @@ leaving ``R`` in place for job provenance. During a restart, the
 *job manager* uses the eventlog to determine whether ``R`` is currently
 allocated.
 
-
 Content Consumed/Produced by Exec Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=========================================
 
 When the *exec system* receives a start request containing a jobid,
 it reads the ``job.<jobid>.R`` and ``job.<jobid>.jobspec``
@@ -213,9 +201,8 @@ the guest namespace have stopped, the *exec system* links the guest
 namespace into the primary KVS namespace before notifying the *job
 manager* that the job is finished.
 
-
 Content Produced/Consumed by Other Instance Services
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+====================================================
 
 Other services not mentioned in this RFC MAY store arbitrary data associated
 with jobs under the ``job.<jobid>.data.<service>`` directory,
@@ -223,24 +210,21 @@ where ``<service>`` is a name unique to the service producing the data.
 For example, a job tracing service may store persistent trace data under
 the ``job.<jobid>.data.trace`` directory.
 
-
 Content Consumed/Produced by Other Guest Services
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=================================================
 
 Other guest services not mentioned in this RFC MAY store service-specific
 data in the guest KVS namespace under ``<service>``, where ``<service>`` is
 a name unique to the service producing the data.
 
-
 Content Consumed/Produced by the Application
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================================
 
 The application MAY store application-specific data in the guest KVS
 namespace under ``application``.
 
-
 Content Consumed/Produced by Tools
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================
 
 Tools such as parallel debuggers, running as the guest, MAY store data
 in the guest KVS namespace under ``tools.<name>``, where ``<name>`` is

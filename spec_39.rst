@@ -2,7 +2,6 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_39.html
 
-##########################
 39/Flux Security Signature
 ##########################
 
@@ -19,13 +18,11 @@ content secured with a digital signature.
   * - **State**
     - raw
 
-********
 Language
 ********
 
 .. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
@@ -33,7 +30,6 @@ Related Standards
 - :doc:`spec_15`
 - :doc:`spec_38`
 
-**********
 Background
 **********
 
@@ -52,7 +48,6 @@ are passed to the IMP exactly as specified by the user.
 RFC 15 refers to the signed jobspec as *J*.  The content of *J* is thus fully
 specified by this document and RFC 14.
 
-*****
 Goals
 *****
 
@@ -66,7 +61,6 @@ Goals
 
 - The signature SHOULD support a configurable time-to-live.
 
-**************
 Implementation
 **************
 
@@ -103,7 +97,6 @@ userid (integer)
 
 Mechanism-specific keys MAY also be included in the header.
 
-**********
 Mechanisms
 **********
 

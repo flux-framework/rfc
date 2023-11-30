@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_19.html
 
 19/Flux Locally Unique ID (FLUID)
-=================================
+#################################
 
 This specification describes a scheme for a distributed, uncoordinated
 *flux locally unique ID* service that generates 64 bit k-ordered, unique
@@ -22,16 +22,15 @@ Flux job IDs.
     - raw
 
 Language
---------
+********
 
 .. include:: common/language.rst
 
 Background
-----------
-
+**********
 
 Criteria
-~~~~~~~~
+========
 
 *Very low probability of collision:* Like 128 bit UUIDs on a global scale,
 FLUIDs should provide a reasonable guarantee against collisions on a
@@ -46,9 +45,8 @@ typically monotonically increasing integers that reflect job submission
 order. This property is of debatable utility, but following the principle
 of least astonishment, FLUIDs should retain it if possible.
 
-
 Existing Solutions
-~~~~~~~~~~~~~~~~~~
+==================
 
 The design of FLUIDs is patterned after
 `Twitter Snowflake <https://blog.twitter.com/2010/announcing-snowflake>`__, and
@@ -62,9 +60,8 @@ separate machine ID per generator ensures uniqueness without coordination,
 and the sequence number ensures each generator can create a certain number
 of IDs per timestamp unit.
 
-
 Implementation
---------------
+**************
 
 FLUIDs are composed of ``[ timestamp | id | sequence ]`` similar to Snowflake,
 to allow distributed, uncoordinated ID generation across a Flux instance,
@@ -86,9 +83,8 @@ FLUIDs per second for 34 years.
 This type of generator *guarantees* unique IDs, with probability of collision
 equal to zero, so no collision detection is required.
 
-
 Representation
-~~~~~~~~~~~~~~
+==============
 
 A FLUID is a 64-bit integer, e.g. ``6731191091817518``.
 
@@ -98,9 +94,8 @@ for instance for compactness or ease of transcription over the phone.
 The following sections describe the set of supported alternate
 representations for FLUIDs.
 
-
 FLUID base58 (F58) Encoding
-+++++++++++++++++++++++++++
+---------------------------
 
 In order to create a compact, human readable representation
 of a FLUID, the main alternate encoding of a FLUID SHALL be `Base58
@@ -119,7 +114,7 @@ ASCII lowercase ``f`` will also be decoded as F58.
 Examples: ``ƒZemgA8Bzf``, ``ƒ278oEf7zGf``
 
 FLUID Hexadecimal (hex) Encoding
-++++++++++++++++++++++++++++++++
+--------------------------------
 
 A hexadecimal encoding SHALL represent a FLUID in base16, including
 a ``0x`` prefix to unambiguously differentiate the representation from
@@ -127,9 +122,8 @@ other FLUID standard encodings.
 
 Examples: ``0x17e9fb8df16c2e``, ``0xedaf97d000000``
 
-
 FLUID Dotted-Hexadecimal (dothex) Encoding
-++++++++++++++++++++++++++++++++++++++++++
+------------------------------------------
 
 In order to support indexing of FLUIDs in a hierarchical KVS namespace,
 a dotted-hexadecimal encoding SHALL represent a FLUID in base16,
@@ -137,9 +131,8 @@ with each 4 hexadecimal digits separated by dots (``.``).
 
 Examples: ``0017.e9fb.8df1.6c2e``, ``000e.daf9.7d00.0000``
 
-
 FLUID Mnemonic (words) Encoding
-+++++++++++++++++++++++++++++++
+-------------------------------
 
 In order to ease transferring of FLUIDs via human interaction, a
 mnemonic representation of FLUIDS SHALL be supported by a conformant
@@ -153,7 +146,7 @@ by speaking, e.g. over the phone.
 Examples: ``reform-remote-galileo--heart-package-academy``, ``random-idea-yoyo--sugar-printer-academy``
 
 FLUID Emoji Encoding
-++++++++++++++++++++
+--------------------
 
 In order to encode a FLUID using a minimal number of printable characters,
 and to increase visual appeal when displaying FLUIDs in various settings,
@@ -188,7 +181,7 @@ smiling eyes) SHALL represent 1, etc.
 Examples: ``🚹💂🙌😳💱🏃``, ``😄😹🎇📥🏧🙉🔞``, ``🚹💂🈳💰🎩🏃``
 
 Decoding Alternate FLUID Representations
-++++++++++++++++++++++++++++++++++++++++
+----------------------------------------
 
 The standard FLUID representations described in this RFC are
 unambiguous by design. That is, the type of FLUID encoding can

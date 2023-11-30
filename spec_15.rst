@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_15.html
 
 15/Independent Minister of Privilege for Flux: The Security IMP
-===============================================================
+###############################################################
 
 This specification describes Flux Security IMP, a privileged service
 used by multi-user Flux instances to launch, monitor, and control
@@ -20,19 +20,18 @@ processes running as users other than the instance owner.
     - raw
 
 Language
---------
+********
 
 .. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
 - :doc:`spec_12`
 - :doc:`spec_38`
 
-
 Introduction
-------------
+************
 
 In the traditional resource management model, a monolithic resource
 manager runs with the credentials of a privileged user, typically using
@@ -86,9 +85,8 @@ the following benefits are realized:
 -  Arbitrary users can run multi-user instances of Flux, thus allowing
    users to share their jobs
 
-
 User Roles
-~~~~~~~~~~
+==========
 
 For the purposes of this RFC there are four main user roles:
 
@@ -111,9 +109,8 @@ superuser, or root
    system setup or initialization, container manipulation, etc. Typically
    the root user.
 
-
 Implementation Requirements
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===========================
 
 The Flux Security IMP SHALL be implemented with the following overall
 design
@@ -139,9 +136,8 @@ a site may configure permissions such that only a ``flux`` user has execute
 permissions, thus allowing a multi-user system instance running as ``flux``,
 but disallowing sub-instance jobs access to multi-user capabilities.
 
-
 Overall Design
-~~~~~~~~~~~~~~
+==============
 
 When a guest makes a request for a job to a multi-user instance of
 Flux, the guest will create a message with information such as the job
@@ -201,9 +197,8 @@ Flux instance.
 
    Depiction of multi-user Flux IMP overall design. Here user ``bob`` is the instance owner, and ``alice`` is a guest.
 
-
 Input to the IMP
-----------------
+****************
 
 The input to the IMP includes the following fields
 
@@ -256,13 +251,11 @@ Where above fields have the following specific meanings and requirements
    will act as interpreter of the Jobspec in **J**. If missing, a default
    will be supplied by IMP configuration.
 
-
 IMP Internal Operation
-----------------------
-
+**********************
 
 Privilege Separation
-~~~~~~~~~~~~~~~~~~~~
+====================
 
 When the IMP is invoked *and* has setuid privileges, the process MAY
 use privilege separation to limit the impact of programming errors or
@@ -270,9 +263,8 @@ bugs in libraries. For more information on privilege separation, see
 the paper on privilege separated OpenSSH: "Preventing Privilege
 Escalation"  [#f1]_.
 
-
 Request Verification
-~~~~~~~~~~~~~~~~~~~~
+====================
 
 Once the privileged IMP process has read its input
 it SHALL perform the following verification steps:
@@ -306,9 +298,8 @@ plugins have been run, the container for the job is empty, the IMP
 will abort with an error. Therefore an initial verification check
 may be redundant.
 
-
 Resource ownership verification
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------
 
 Resources in Flux are initially owned by the *system owner*, i.e. the
 user which runs the system instance. Typically, this would be some
@@ -334,9 +325,8 @@ ownership by ensuring that the current container includes the
 resources in the assigned resource set, and that the invoking user
 is owner of the current container.
 
-
 Revoking resource ownership
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------
 
 Resource ownership MUST be revokable. The result of a revocation SHALL
 include termination of all processes currently running in the container
@@ -344,9 +334,8 @@ associated with the revoked resource grant. A revocation is recursive,
 and removes the container and all child containers, including ancillary
 data.
 
-
 IMP post-verification execution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===============================
 
 After verification of input is complete, the ``flux-imp`` executable
 invokes required job setup code as the superuser. This setup code SHALL
@@ -370,26 +359,23 @@ the **job shell path** specified in **J**, or a IMP configuration default.
 After the call to exec(2) the security IMP is replaced by the guest user
 process, and is no longer active.
 
-
 Other IMP operational requirements
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================
 
 A multi-user instance of Flux not only requires the ability to execute
 work as a guest user, but it must also have privilege to monitor and
 kill these processes as part of normal resource manager operation.
 
-
 Signaling and terminating jobs in a multi-user instance
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------------------
 
 For terminating and signaling processes the IMP SHALL include a ``kill``
 subcommand which, using the process tracking functionality, SHALL allow
 an instance owner to signal or terminate any guest processes including
 ancestors thereof that were started by the owner’s instance.
 
-
 IMP configuration
-~~~~~~~~~~~~~~~~~
+=================
 
 On execution, ``flux-imp`` SHALL read a site configuration
 file which MAY contain site-specific information such as paths to trusted
@@ -397,9 +383,8 @@ executables, plugin locations, certificate authority information etc.
 The IMP SHALL check for correct permissions on all configuration
 files to reduce the risk of tampering.
 
-
 Specific Defenses
-~~~~~~~~~~~~~~~~~
+=================
 
 This section describes some attacks and their specific defenses. It
 is still a work in progress.
@@ -416,5 +401,8 @@ is still a work in progress.
    guest request, and a fixed time-to-live prevents the request from
    being used indefinitely. Finally, ``flux-imp`` logs all
    invocations, thereby allowing replays to be detected and audited.
+
+References
+**********
 
 .. [#f1] `Preventing Privilege Escalation <https://www.usenix.org/legacy/events/sec03/tech/full_papers/provos_et_al/provos_et_al.pdf>`__, Niels Provos, Markus Friedl, Peter Honeyman.

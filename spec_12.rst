@@ -2,7 +2,6 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_12.html
 
-#################################
 12/Flux Role-based Access Control
 #################################
 
@@ -19,13 +18,11 @@ secure access to services.
   * - **State**
     - raw
 
-********
 Language
 ********
 
 .. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
@@ -34,7 +31,6 @@ Related Standards
 - :doc:`spec_15`
 - :doc:`spec_39`
 
-*****
 Goals
 *****
 
@@ -47,7 +43,6 @@ Goals
 
 - Describe pub/sub message privacy.
 
-**********
 Background
 **********
 
@@ -78,7 +73,6 @@ in a multi-user Flux instance may be decomposed into two main topics:
 This RFC describes how message credentials are used to implement role-based
 access control in a multi-user Flux instance.
 
-**************
 Implementation
 **************
 

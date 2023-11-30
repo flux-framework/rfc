@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_32.html
 
 32/Flux Job Execution Protocol Version 1
-========================================
+########################################
 
 This specification describes Version 1 of the Flux Job Execution Protocol
 implemented by the job manager and job execution system.
@@ -19,12 +19,12 @@ implemented by the job manager and job execution system.
     - raw
 
 Language
---------
+********
 
 .. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
 - :doc:`spec_14`
 - :doc:`spec_15`
@@ -33,7 +33,7 @@ Related Standards
 - :doc:`spec_27`
 
 Background
-----------
+**********
 
 The job execution service launches Flux job shells on execution targets at
 the behest of the job manager.  The job shells in turn launch one or more
@@ -54,7 +54,7 @@ aspects of launching a job as another user are not reflected in the job
 execution protocol.
 
 Design Criteria
----------------
+***************
 
 The job execution protocol must adhere to these criteria:
 
@@ -77,7 +77,7 @@ The job execution protocol must adhere to these criteria:
 - Support execution service override by the Flux simulator.
 
 Implementation
---------------
+**************
 
 As with the scheduler RPCs described in RFC 27, ``<service>.start`` RPCs use
 the job ID to match requests and responses, and set the RFC 6 matchtag message
@@ -103,7 +103,7 @@ field to zero.  It follows that:
 The other RPCs behave conventionally.
 
 Hello
-~~~~~
+=====
 
 The Flux execution service SHALL register a service name with the job manager
 on initialization.  This service MAY be ``job-exec`` or another name.  The
@@ -130,7 +130,7 @@ existing execution service.  The execution service SHALL treat a failure
 response to ``exec-hello`` as fatal.
 
 Start Request
-~~~~~~~~~~~~~
+=============
 
 Once the execution service is registered, the job manager SHALL send
 ``<service>.start`` requests for any jobs that have been allocated resources.

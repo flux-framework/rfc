@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_21.html
 
 21/Job States and Events Version 1
-==================================
+##################################
 
 This specification describes Flux job states and the events that trigger
 job state transitions.
@@ -19,21 +19,20 @@ job state transitions.
     - raw
 
 Language
---------
+********
 
 .. include:: common/language.rst
 
 Related Standards
------------------
+*****************
 
 - :doc:`spec_16`
 - :doc:`spec_18`
 - :doc:`spec_22`
 - :doc:`spec_27`
 
-
 Background
-----------
+**********
 
 The job state machine is intended to be a useful abstraction of job life
 cycle for users. If a job is not yet running, the job state communicates
@@ -44,9 +43,8 @@ such as workflow managers.
 A job is said to be *active* if it has not yet reached the captive end state,
 and *inactive* once it has.
 
-
 Design Criteria
-~~~~~~~~~~~~~~~
+***************
 
 -  Job states SHOULD exist for job phases with the potential for long duration,
    to provide transparency to users.
@@ -71,19 +69,16 @@ Design Criteria
    recent versions of this specification, to avoid losing job data when Flux
    is restarted after a software upgrade.
 
-
 Implementation
---------------
-
+**************
 
 State Diagram
-~~~~~~~~~~~~~
+=============
 
 |states|
 
-
 State Descriptions
-~~~~~~~~~~~~~~~~~~
+==================
 
 NEW
    Initial state. The required first ``submit`` event logs the job’s creation,
@@ -124,9 +119,8 @@ CLEANUP
 INACTIVE
    Job data in KVS is now read-only (captive state).
 
-
 Virtual States
-~~~~~~~~~~~~~~
+--------------
 
 In the interest of encouraging consistent language, we define the following
 "virtual states" as shorthand for the union of two or more actual job states:
@@ -140,9 +134,8 @@ RUNNING
 ACTIVE
   The job is in DEPEND, PRIORITY, SCHED, RUN, or CLEANUP states.
 
-
 Exceptions
-~~~~~~~~~~
+==========
 
 An exception event is an extraordinary occurrence that MAY interrupt the
 "normal" job life cycle.
@@ -159,9 +152,8 @@ More than one exception MAY occur per job.
 
 The exception event format is described below.
 
-
 Event Descriptions
-~~~~~~~~~~~~~~~~~~
+==================
 
 Job state transitions are driven by events that are logged to
 ``job.<jobid>.eventlog`` as required by RFC 16.
@@ -175,9 +167,8 @@ Unless otherwise specified, keys beyond those listed as OPTIONAL and
 REQUIRED below MAY be included in event context objects for use by plugins
 or extensions.
 
-
 Submit Event
-^^^^^^^^^^^^
+------------
 
 Job was submitted.
 
@@ -205,7 +196,7 @@ Example:
 The ``submit`` event SHALL be the first event posted for each job.
 
 Jobspec-update Event
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 Change jobspec after job submission.  The event context object SHALL consist
 of a dictionary of period-delimited keys that SHALL be interpreted as a
@@ -225,7 +216,7 @@ Example:
    be altered.
 
 Resource-update Event
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 Update R expiration time after allocation.  The event context object SHALL
 consist of a dictionary containing the key ``expiration`` with an integer
@@ -237,9 +228,8 @@ Example:
 
    {"timestamp":1552593348.073045,"name":"resource-update","context":{"expiration":1692206240}}
 
-
 Validate Event
-^^^^^^^^^^^^^^
+--------------
 
 Job submission is valid.
 
@@ -252,7 +242,7 @@ Example:
     {"timestamp":1605115080.0358412,"name":"validate"}
 
 Invalidate Event
-^^^^^^^^^^^^^^^^
+----------------
 
 Job submission is invalid.  The job (including the KVS eventlog) SHALL be
 immediately removed.
@@ -266,7 +256,7 @@ Example:
     {"timestamp":1605115080.0358412,"name":"invalidate"}
 
 Set-flags Event
-^^^^^^^^^^^^^^^
+---------------
 
 One or more flags have been set on the job.
 
@@ -281,9 +271,8 @@ Example:
 
    {"timestamp":1552593348.073045,"name":"set-flags","context":{"flags":["debug"]}}
 
-
 Dependency-add Event
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 A dependency has been added to the job. This dependency must then be removed
 via a ``dependency-remove`` event.
@@ -297,9 +286,8 @@ description
 
    {"timestamp":1552593348.073045,"name":"dependency-add","context":{"description":"begin-time=1552594348"}}
 
-
 Dependency-remove Event
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 A dependency has be removed from a job. The dependency description MUST
 match a previously added dependency from a ``dependency-add`` event.
@@ -313,9 +301,8 @@ description
 
    {"timestamp":1552594348.0,"name":"dependency-remove","context":{"description":"begin-time=1552594348"}}
 
-
 Depend Event
-^^^^^^^^^^^^
+------------
 
 All job dependencies have been met.
 
@@ -327,9 +314,8 @@ Example:
 
     {"timestamp":1605115080.0358412,"name":"depend"}
 
-
 Priority Event
-^^^^^^^^^^^^^^
+--------------
 
 Job's priority has been assigned.
 
@@ -342,9 +328,8 @@ priority
 
    {"timestamp":1552593547.411336,"name":"priority","context":{"priority":42}}
 
-
 Flux-Restart Event
-^^^^^^^^^^^^^^^^^^
+------------------
 
 The job manager has restarted.
 
@@ -356,9 +341,8 @@ Example:
 
     {"timestamp":1605115080.0358412,"name":"flux-restart"}
 
-
 Urgency Event
-^^^^^^^^^^^^^
+-------------
 
 Job's urgency has changed.
 
@@ -374,9 +358,8 @@ userid
 
    {"timestamp":1552593547.411336,"name":"urgency","context":{"urgency":0,"userid":5588}}
 
-
 Alloc Event
-^^^^^^^^^^^
+-----------
 
 Resources have been allocated by the scheduler.
 
@@ -391,9 +374,8 @@ Example:
 
    {"timestamp":1552593348.088391,"name":"alloc","context":{"annotations":{"sched.resource_summary":"rank0/core[0-1]"}}}
 
-
 Prolog-start Event
-^^^^^^^^^^^^^^^^^^
+------------------
 
 A prolog action has started for the job. This event SHALL prevent the job
 manager from initiating a start request to the execution system until the
@@ -408,9 +390,8 @@ description
 
    {"timestamp":1552593348.073045,"name":"prolog-start","context":{"description":"/usr/sbin/job-prolog.sh"}}
 
-
 Prolog-finish Event
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 A prolog action for the job has completed. The prolog description SHOULD
 match a previous ``prolog-start`` event.
@@ -428,9 +409,8 @@ status
 
    {"timestamp":1552594348.0,"name":"prolog-finish","context":{"description":"/usr/sbin/job-prolog.sh", "status":0}}
 
-
 Epilog-start Event
-^^^^^^^^^^^^^^^^^^
+------------------
 
 An epilog action has started for the job. This event SHALL prevent the job
 manager from initiating a free request to the scheduler until the
@@ -445,9 +425,8 @@ description
 
    {"timestamp":1552593348.073045,"name":"epilog-start","context":{"description":"/usr/sbin/job-epilog.sh"}}
 
-
 Epilog-finish Event
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 A epilog action for the job has completed. The epilog description SHOULD
 match a previous ``epilog-start`` event.
@@ -465,9 +444,8 @@ status
 
    {"timestamp":1552594348.0,"name":"epilog-finish","context":{"description":"/usr/sbin/job-epilog.sh", "status":0}}
 
-
 Free Event
-^^^^^^^^^^
+----------
 
 Resources have been released to the scheduler.
 
@@ -479,9 +457,8 @@ Example:
 
    {"timestamp":1552593348.093541,"name":"free"}
 
-
 Start Event
-^^^^^^^^^^^
+-----------
 
 Job shells have started.
 
@@ -493,9 +470,8 @@ Example:
 
    {"timestamp":1552593348.089787,"name":"start"}
 
-
 Release Event
-^^^^^^^^^^^^^
+-------------
 
 Resources have been released.
 
@@ -514,9 +490,8 @@ Example:
 
    {"timestamp":1552593348.092830,"name":"release","context":{"ranks":"all","final":true}}
 
-
 Finish Event
-^^^^^^^^^^^^
+------------
 
 Job shells have terminated.
 
@@ -532,9 +507,8 @@ Example:
 
    {"timestamp":1552593348.090927,"name":"finish","context":{"status":0}}
 
-
 Clean Event
-^^^^^^^^^^^
+-----------
 
 Cleanup has completed.
 
@@ -546,9 +520,8 @@ Example:
 
    {"timestamp":1552593348.104432,"name":"clean"}
 
-
 Exception Event
-^^^^^^^^^^^^^^^
+---------------
 
 An exception occurred.
 
@@ -598,7 +571,7 @@ free
    A problem occurred while releasing resources to the scheduler.
 
 Memo Event
-^^^^^^^^^^
+----------
 
 A brief data record has been associated with the job.
 
@@ -613,7 +586,7 @@ Example:
   {"timestamp":1637723184.3725791,"name":"memo","context":{"key":"value"}}
 
 Debug Event
-^^^^^^^^^^^
+-----------
 
 Debug event names are prefixed with "debug." They are optional and
 are intended to provide context in the eventlog that aids debugging.
@@ -626,9 +599,8 @@ Example:
 
    {"timestamp":1552594649.848032,"name":"debug.free-request"}
 
-
 Synchronization
-~~~~~~~~~~~~~~~
+===============
 
 Any state but ``NEW`` is valid for synchronization.
 

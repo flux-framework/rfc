@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_22.html
 
 22/Idset String Representation
-==============================
+##############################
 
 This specification describes a compact form for
 expressing a set of non-negative, integer ids.
@@ -19,12 +19,12 @@ expressing a set of non-negative, integer ids.
     - raw
 
 Language
---------
+********
 
 .. include:: common/language.rst
 
 Background
-----------
+**********
 
 It is often necessary to represent a set of non-negative, integer ids
 as a compact string for human input, output, or in messages. For example:
@@ -35,9 +35,8 @@ as a compact string for human input, output, or in messages. For example:
 
 -  A set of resource ids or indices.
 
-
 Implementation
---------------
+**************
 
 An idset SHALL consist of unique, non-negative integer ids.
 

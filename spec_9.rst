@@ -3,7 +3,7 @@
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_9.html
 
 9/Distributed Communication and Synchronization Best Practices
-==============================================================
+##############################################################
 
 .. list-table::
   :widths: 25 75
@@ -16,12 +16,12 @@
     - raw
 
 Language
---------
+********
 
 .. include:: common/language.rst
 
 Goals
------
+*****
 
 To establish best practices, preferred patterns and anti-patterns for
 distributed services in the flux framework. Several of the core services of
@@ -31,9 +31,8 @@ cases. For now, this is a listing of some common patterns and anti-patterns,
 but may shape into a more comprehensive guide as the most effective patterns
 are identified.
 
-
 Anti-Patterns
--------------
+*************
 
 -  **Watch chaining:** The KVS provides the capability to watch keys for
    changes in value, receiving a callback or value on change. It is tempting
@@ -49,13 +48,11 @@ Anti-Patterns
    such as monotonically increasing counters, MAY prefer replacement since their
    historical values can be inferred.
 
-
 Best-Practices
---------------
-
+**************
 
 General Guidelines
-~~~~~~~~~~~~~~~~~~
+==================
 
 -  Services SHOULD NOT block the reactor any longer than necessary. Prefer to
    place an asynchronous request or RPC and return to the reactor rather than
@@ -67,9 +64,8 @@ General Guidelines
 -  For data which should be persisted and produce a notification, prefer to write to
    the KVS in a way that supports watches.
 
-
 Preferred Patterns
-~~~~~~~~~~~~~~~~~~
+==================
 
 -  **Centralize update triggers:** Services may notify completion or transition
    events through watches on known points in the KVS. Services that use this

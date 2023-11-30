@@ -2,7 +2,6 @@
    GitHub is NOT the preferred viewer for this file. Please visit
    https://flux-framework.rtfd.io/projects/flux-rfc/en/latest/spec_34.html
 
-################
 34/Flux Task Map
 ################
 
@@ -18,13 +17,11 @@ The Flux Task Map is a compact mapping between job task ranks and node IDs.
   * - **State**
     - raw
 
-********
 Language
 ********
 
 .. include:: common/language.rst
 
-*****************
 Related Standards
 *****************
 
@@ -32,7 +29,6 @@ Related Standards
 - :doc:`spec_20`
 - :doc:`spec_22`
 
-**********
 Background
 **********
 
@@ -56,7 +52,6 @@ A task map can naively represented as a node ID-ordered list of RFC 22 idsets,
 with each idset separated by a semicolon.  We use this format when defining
 test vectors and refer to it as the *raw task map*.
 
-*****
 Goals
 *****
 
@@ -68,7 +63,6 @@ Goals
 
 - Allow custom mappings to be expressed.
 
-************************
 Existing Implementations
 ************************
 
@@ -108,7 +102,6 @@ task map for 1M tasks distributed over 4K nodes in block distribution is
 compact as shown above, but the same job with a cyclic distribution (stride
 of 1) is a string of 2824 characters.
 
-**************
 Implementation
 **************
 
@@ -176,7 +169,6 @@ Example:
 
   {"version":1, "map":[[0,4096,256,1]]}
 
-************
 Test Vectors
 ************
 
