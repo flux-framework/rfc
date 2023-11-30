@@ -260,7 +260,7 @@ for a series of typed key-value pairs.
 The Flux Security Signature is a NUL terminated string that represents
 content secured with a digital signature.
 
-:doc:`40/Fluxion Resource Set Extension <spec_39>`
+:doc:`40/Fluxion Resource Set Extension <spec_40>`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This specification defines the data format used by the Fluxion scheduler
