@@ -30,15 +30,11 @@ in this document are to be interpreted as described in RFC 2119.
 Related Standards
 *****************
 
--  :doc:`4/Flux Resource Model <spec_4>`
-
--  :doc:`14/Canonical Job Specification <spec_14>`
-
--  :doc:`20/Resource Set Specification Version 1 <spec_20>`
-
--  :doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
-
--  :doc:`28/Flux Resource Aquisition Protocol Version 1 <spec_28>`
+- :doc:`spec_4`
+- :doc:`spec_14`
+- :doc:`spec_20`
+- :doc:`spec_27`
+- :doc:`spec_28`
 
 
 **********

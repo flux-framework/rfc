@@ -26,9 +26,8 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`3/Flux Message Protocol <spec_3>`
-
--  :doc:`11/Key Value Store Tree Object Format v1 <spec_11>`
+- :doc:`spec_3`
+- :doc:`spec_11`
 
 
 Goals

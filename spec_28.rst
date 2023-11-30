@@ -27,11 +27,9 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`20/Resource Set Specification Version 1 <spec_20>`
-
--  :doc:`22/Idset String Representation <spec_22>`
-
--  :doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
+- :doc:`spec_20`
+- :doc:`spec_22`
+- :doc:`spec_27`
 
 
 Background

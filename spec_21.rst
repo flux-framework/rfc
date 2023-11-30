@@ -26,13 +26,10 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`16/KVS Job Schema <spec_16>`
-
--  :doc:`18/KVS Event Log Format <spec_18>`
-
--  :doc:`22/Idset String Representation <spec_22>`
-
--  :doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
+- :doc:`spec_16`
+- :doc:`spec_18`
+- :doc:`spec_22`
+- :doc:`spec_27`
 
 
 Background

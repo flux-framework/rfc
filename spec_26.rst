@@ -22,11 +22,11 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`14/Canonical Job Specification <spec_14>`
--  :doc:`19/Flux Locally Unique ID <spec_19>`
--  :doc:`21/Job States and Events <spec_21>`
--  `OpenMP Specification <https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-5.0.pdf>`__
--  `IETF RFC3986: Uniform Resource Identifier (URI) <https://tools.ietf.org/html/rfc3986>`__
+- :doc:`spec_14`
+- :doc:`spec_19`
+- :doc:`spec_21`
+- `OpenMP Specification <https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-5.0.pdf>`__
+- `IETF RFC3986: Uniform Resource Identifier (URI) <https://tools.ietf.org/html/rfc3986>`__
 
 
 Goals

@@ -27,7 +27,7 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 *****************
 
-- :doc:`15/Independent Minister of Privilege for Flux: The Security IMP <spec_15>`
+- :doc:`spec_15`
 
 **********
 Background

@@ -26,15 +26,11 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`14/Canonical Job Specification <spec_14>`
-
--  :doc:`15/Independent Minister of Privilege for Flux:  The Security IMP <spec_15>`
-
--  :doc:`16/KVS Job Schema <spec_16>`
-
--  :doc:`21/Job States and Events <spec_21>`
-
--  :doc:`27/Flux Resource Allocation Protocol Version 1 <spec_27>`
+- :doc:`spec_14`
+- :doc:`spec_15`
+- :doc:`spec_16`
+- :doc:`spec_21`
+- :doc:`spec_27`
 
 Background
 ----------

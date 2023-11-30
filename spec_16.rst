@@ -26,17 +26,12 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`12/Flux Security Architecture <spec_12>`
-
--  :doc:`14/Canonical Job Specification <spec_14>`
-
--  :doc:`15/Independent Minister of Privilege for Flux: The Security IMP <spec_15>`
-
--  :doc:`18/KVS Event Log Format <spec_18>`
-
--  :doc:`20/Resource Set Specification <spec_20>`
-
--  :doc:`21/Job States <spec_21>`
+- :doc:`spec_12`
+- :doc:`spec_14`
+- :doc:`spec_15`
+- :doc:`spec_18`
+- :doc:`spec_20`
+- :doc:`spec_21`
 
 
 Background

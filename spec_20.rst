@@ -29,19 +29,13 @@ in this document are to be interpreted as described in RFC 2119.
 Related Standards
 *****************
 
--  :doc:`4/Flux Resource Model <spec_4>`
-
--  :doc:`14/Canonical Job Specification <spec_14>`
-
--  :doc:`15/Independent Minister of Privilege for Flux <spec_15>`
-
--  :doc:`16/KVS Job Schema <spec_16>`
-
--  :doc:`22/Idset String Representation <spec_22>`
-
--  :doc:`29/Hostlist Format <spec_29>`
-
--  :doc:`31/Job Constraints Specification <spec_31>`
+- :doc:`spec_4`
+- :doc:`spec_14`
+- :doc:`spec_15`
+- :doc:`spec_16`
+- :doc:`spec_22`
+- :doc:`spec_29`
+- :doc:`spec_31`
 
 ********
 Overview

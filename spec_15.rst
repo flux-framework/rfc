@@ -27,9 +27,8 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`12/Flux Security Architecture <spec_12>`
-
--  :doc:`38/Flux Security Key Value Encoding <spec_38>`
+- :doc:`spec_12`
+- :doc:`spec_38`
 
 
 Introduction

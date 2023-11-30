@@ -27,13 +27,10 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 *****************
 
-- :doc:`3/Flux Message Protocol <spec_3>`
-
-- :doc:`6/Flux Remote Procedure Call Protocol <spec_6>`
-
-- :doc:`15/Independent Minister of Privilege for Flux: The Security IMP <spec_15>`
-
-- :doc:`39/Flux Security Signature <spec_39>`
+- :doc:`spec_3`
+- :doc:`spec_6`
+- :doc:`spec_15`
+- :doc:`spec_39`
 
 *****
 Goals

@@ -24,7 +24,7 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`31/Job Constraints Specification <spec_31>`
+- :doc:`spec_31`
 
 Goals
 -----

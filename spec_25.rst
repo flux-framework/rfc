@@ -30,15 +30,11 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`4/Flux Resource Model <spec_4>`
-
--  :doc:`14/Canonical Job Specification <spec_14>`
-
--  :doc:`20/Resource Set Specification Version 1 <spec_20>`
-
--  :doc:`26/Job Dependency Specification <spec_26>`
-
--  :doc:`31/Job Constraints Specification <spec_31>`
+- :doc:`spec_4`
+- :doc:`spec_14`
+- :doc:`spec_20`
+- :doc:`spec_26`
+- :doc:`spec_31`
 
 Goals
 -----

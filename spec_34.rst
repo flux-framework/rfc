@@ -26,11 +26,9 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 *****************
 
-- :doc:`13/Simple Process Manager Interface v1 <spec_13>`
-
-- :doc:`20/Resource Set Specification <spec_20>`
-
-- :doc:`22/Idset String Representation <spec_22>`
+- :doc:`spec_13`
+- :doc:`spec_20`
+- :doc:`spec_22`
 
 **********
 Background

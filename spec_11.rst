@@ -29,7 +29,7 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`10/Content Storage Service <spec_10>`
+- :doc:`spec_10`
 
 
 Goals

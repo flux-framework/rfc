@@ -29,9 +29,8 @@ be interpreted as described in `RFC 2119 <https://tools.ietf.org/html/rfc2119>`_
 Related Standards
 -----------------
 
--  :doc:`2/Flux Licensing and Collaboration Guidelines <spec_2>`
-
--  :doc:`7/Flux Coding Style Guide <spec_7>`
+- :doc:`spec_2`
+- :doc:`spec_7`
 
 
 Goals
