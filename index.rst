@@ -266,6 +266,11 @@ content secured with a digital signature.
 This specification defines the data format used by the Fluxion scheduler
 to store resource graph data in RFC 20 *R* version 1 objects.
 
+:doc:`spec_41`
+~~~~~~~~~~~~~~
+
+The Flux Job Information Service provides proxy access to KVS job
+information for guest users.
 
 .. Each file must appear in a toctree
 .. toctree::
@@ -309,3 +314,4 @@ to store resource graph data in RFC 20 *R* version 1 objects.
    spec_38
    spec_39
    spec_40
+   spec_41

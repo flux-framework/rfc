@@ -50,6 +50,7 @@ Table of Contents
 - [38/Flux Security Key Value Encoding](spec_38.rst)
 - [39/Flux Security Signature](spec_39.rst)
 - [40/Fluxion Resource Set Extension](spec_40.rst)
+- [41/Job Information Service](spec_41.rst)
 
 Build Instructions
 ------------------
