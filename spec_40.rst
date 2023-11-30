@@ -24,10 +24,7 @@ to store resource graph data in RFC 20 *R* version 1 objects.
 Language
 ********
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
-in this document are to be interpreted as described in RFC 2119.
-
+.. include:: common/language.rst
 
 *****************
 Related Standards
