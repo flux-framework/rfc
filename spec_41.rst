@@ -127,7 +127,18 @@ The RPC payloads are defined as follows:
 
   .. object:: flags
 
-    (*integer*, REQUIRED) Flags, reserved for future use.  Set to zero.
+    (*integer*, REQUIRED) A bitfield comprised of zero or more flags:
+
+    json_decode (1)
+      For lookups of R or jobspec, return the field as a decoded
+      JSON object instead of a string.  This flag has no effect on
+      other keys.
+
+    current (2)
+      For lookups of R or jobspec, return the current version. The
+      current version SHALL be computed by applying any
+      resource-update or jobspec-update events that have been posted
+      to the job eventlog, as described in RFC 21.
 
 .. object:: job-info.lookup response
 
@@ -141,7 +152,9 @@ The RPC payloads are defined as follows:
 
     Additional keys correspond to the keys in the request.
 
-    Values are the KVS values associated with the keys, encoded as strings.
+    Values are the KVS values associated with the keys.  Values are
+    encoded as strings, except in special cases indicated by flags
+    in the request.
 
 Eventlog Watch
 ==============
