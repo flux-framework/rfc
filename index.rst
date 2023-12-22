@@ -272,6 +272,13 @@ to store resource graph data in RFC 20 *R* version 1 objects.
 The Flux Job Information Service provides proxy access to KVS job
 information for guest users.
 
+:doc:`spec_42`
+~~~~~~~~~~~~~~
+
+The subprocess server protocol is used for execution, monitoring, and
+standard I/O management of remote processes.
+
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -315,3 +322,4 @@ information for guest users.
    spec_39
    spec_40
    spec_41
+   spec_42
