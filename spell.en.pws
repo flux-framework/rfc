@@ -483,3 +483,8 @@ sdexec
 socketpair
 subprocess
 perilog
+nodelist
+waitstatus
+userids
+parsable
+bitmasks

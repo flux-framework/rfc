@@ -52,6 +52,7 @@ Table of Contents
 - [40/Fluxion Resource Set Extension](spec_40.rst)
 - [41/Job Information Service](spec_41.rst)
 - [42/Subprocess Server Protocol](spec_42.rst)
+- [43/Job List Service](spec_43.rst)
 
 Build Instructions
 ------------------

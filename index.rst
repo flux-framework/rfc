@@ -278,6 +278,10 @@ information for guest users.
 The subprocess server protocol is used for execution, monitoring, and
 standard I/O management of remote processes.
 
+:doc:`spec_43`
+~~~~~~~~~~~~~~
+
+The Flux Job List Service provides read-only summary information for jobs.
 
 .. Each file must appear in a toctree
 .. toctree::
@@ -323,3 +327,4 @@ standard I/O management of remote processes.
    spec_40
    spec_41
    spec_42
+   spec_43
