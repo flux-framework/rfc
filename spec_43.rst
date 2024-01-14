@@ -209,6 +209,9 @@ based on the following constraint operators.
 ``results``
     Designate one or more job results (*string* or *integer*) and match jobs with those results.  Both bitmasks (including multiple results) and string names of the results SHALL be accepted.
 
+``hostlist``
+    Designate one or more nodes in RFC 29 Hostlist format (*string*) and match jobs assigned to those nodes.  The job list module MAY limit the number of entries in a hostlist constraint to prevent long constraint match times.
+
 ``t_submit``, ``t_depend``, ``t_run``, ``t_cleanup``, ``t_inactive``
     Designate one timestamp with a REQUIRED prefixed comparison operator (*string*).  The accepted comparison operators SHALL be `>`, `<`, `>=`, and `<=`, for greater than, less than, greater than or equal, or less than or equal. A timestamp operator SHALL match jobs where the respective timestamp matches against the provided timestamp.
 
