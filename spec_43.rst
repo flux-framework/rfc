@@ -247,6 +247,20 @@ Filter jobs that belong to userid 42 and were submitted after January 1, 2000.
 
    { "and": [ { "userid": [ 42 ] }, { "t_submit": [ ">946713600.0" ] } ] }
 
+In order to limit the potential for a constraint to cause a denial of service (DoS) or long job list service hang, a comparison limit MAY be configured.  Every "check" against a job is considered a comparison.  In the last example above, the constraint is looking for all jobs belonging to userid 42 and submitted after January 1, 2000.  It will consume at most 2 comparisons for each job.  The ``userid`` check will always consume 1 comparison and the submission time will consume a comparison if the ``userid`` check passes.
+
+After the maximum number of comparisons is consumed, an error SHALL be returned to the caller.  The caller MAY decrease their search footprint by limiting their search using other inputs in the job list request or making tighter constraints.  For example, take following two constraints:
+
+.. code:: json
+
+   { "and": [ { "queue": [ "foobar" ] }, { "userid": [ 42 ] } ] }
+
+.. code:: json
+
+   { "and": [ { "userid": [ 42 ] }, { "queue": [ "foobar" ] } ] }
+
+In these examples the caller wants to filter jobs submitted to the queue foobar and submitted by userid 42.  The only difference is the order of the checks.  If "foobar" is the most common queue in the system (i.e. the check for queue "foobar" typically succeeds) and ``userid`` is not the most common user in the system (i.e. the check for userid "42" typically fails), the latter constraint consumes fewer comparisons.
+
 List
 ====
 
