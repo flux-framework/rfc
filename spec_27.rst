@@ -571,22 +571,37 @@ Free
 
 The job manager SHALL send a ``sched.free`` request when a job that is
 holding resources enters CLEANUP state.  The request payload consists of
-a JSON object with the following REQUIRED key:
+a JSON object with the following REQUIRED keys:
 
 id
   (integer) job ID
+
+R
+  (object) RFC 20 resource set from which the ``scheduling`` key MAY be
+  omitted.
 
 Example:
 
 .. code:: json
 
-   {
-     "id": 1552593348
-   }
+  {
+    "id": 1552593348,
+    "R": {
+      "version": 1,
+      "execution": {
+        "R_lite": [
+          { "rank": "0", "children": { "core": "0-3" } }
+        ],
+        "nodelist": [ "test0" ],
+        "starttime": 1710076092,
+        "expiration": 1710076122
+      }
+    }
+  }
 
-Upon receipt of the ``sched.free`` request, the scheduler MAY look up *R*
-in the KVS by job ID according to the job schema (RFC 16).
-It SHOULD mark the job's resources as available for reuse.
+
+Upon receipt of the ``sched.free`` request, the scheduler SHOULD mark the
+job's resources as available for reuse.
 
 Once the ``sched.free`` request has been processed by the scheduler, it SHALL
 send a response with payload consisting of a JSON object with the following
