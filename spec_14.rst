@@ -674,4 +674,4 @@ References
 
 .. [#f1] `YAML Ain’t Markup Language (YAML) Version 1.1 <http://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
 
-.. [#f2] `JSON Schema: A Media Type for Describing JSON Documents <https://json-schema.org/latest/json-schema-core.html>`__; H. Andrews; 2018
+.. [#f2] `JSON Schema: A Media Type for Describing JSON Documents <https://json-schema.org/draft/2020-12/json-schema-core>`__; H. Andrews; 2022
