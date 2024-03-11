@@ -603,23 +603,7 @@ Example:
 Upon receipt of the ``sched.free`` request, the scheduler SHOULD mark the
 job's resources as available for reuse.
 
-Once the ``sched.free`` request has been processed by the scheduler, it SHALL
-send a response with payload consisting of a JSON object with the following
-REQUIRED key:
-
-id
-  (integer) job ID
-
-Example:
-
-.. code:: json
-
-   {
-     "id": 1552593348
-   }
-
-After the ``sched.free`` response, the request is complete and may be
-retired by the job manager and scheduler.
+There is no response.
 
 Finalization
 ============
