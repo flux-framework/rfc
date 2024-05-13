@@ -283,6 +283,12 @@ standard I/O management of remote processes.
 
 The Flux Job List Service provides read-only summary information for jobs.
 
+:doc:`spec_44`
+~~~~~~~~~~~~~~
+
+This specification describes the Flux service that allows users to
+receive external notifications for events in a Flux job.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -328,3 +334,4 @@ The Flux Job List Service provides read-only summary information for jobs.
    spec_41
    spec_42
    spec_43
+   spec_44

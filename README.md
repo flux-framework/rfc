@@ -53,6 +53,7 @@ Table of Contents
 - [41/Job Information Service](spec_41.rst)
 - [42/Subprocess Server Protocol](spec_42.rst)
 - [43/Job List Service](spec_43.rst)
+- [44/Flux Library for Adaptable Notifications](spec_44.rst)
 
 Build Instructions
 ------------------
