@@ -34,8 +34,7 @@ Related Standards
 Background
 **********
 
-The subprocess server protocol is implemented in two distinct Flux
-components:
+The subprocess server protocol is implemented in three Flux components:
 
 .. list-table::
 
@@ -51,6 +50,10 @@ components:
     - :program:`sdexec`
     - If systemd support is configured
 
+  * - Flux shell
+    - :program:`UID-shell-JOBID.rexec`
+    - Only available to the job owner.
+
 The primary use cases are:
 
 #. The job execution service runs job shells on job nodes.
@@ -58,6 +61,8 @@ The primary use cases are:
 #. The job manager perilog plugin runs prolog/epilog scripts on job nodes.
 
 #. The instance owner runs arbitrary processes with :program:`flux exec`.
+
+#. Tool launch such as parallel debugger daemons using :program:`flux exec`.
 
 In a multi-user Flux instance where a user transition is necessary in order
 for the instance owner to run commands with the credentials of a guest user,
