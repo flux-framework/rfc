@@ -205,9 +205,9 @@ specified in the exec request command object.
 
   The request SHALL consist of a JSON object with the following keys:
 
-  .. object:: pid
+  .. object:: matchtag
 
-    (*integer*, REQUIRED) The process ID of the remote process.
+    (*integer*, REQUIRED) The matchtag of the :program:`exec` request.
 
   .. object:: io
 
