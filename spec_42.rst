@@ -66,10 +66,10 @@ The primary use cases are:
 
 In a multi-user Flux instance where a user transition is necessary in order
 for the instance owner to run commands with the credentials of a guest user,
-the subprocess server delegates this to the IMP.  On its own, the subprocess
-server can only run jobs with the credentials of the process it is embedded
-within (the broker, for example).  For more detail, refer to
-:doc:`RFC 15 <spec_15>`.
+the subprocess server must be instructed to execute tasks using the IMP.  On
+its own, the subprocess server can only run jobs with the credentials of the
+process it is embedded within (the broker, for example).  For more detail,
+refer to :doc:`RFC 15 <spec_15>`.
 
 Goals
 *****
