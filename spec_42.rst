@@ -182,7 +182,12 @@ Several response types are distinguished by the type key:
 .. object:: exec error response
 
 The :program:`exec` response stream SHALL be terminated by an error
-response per RFC 6, with ENODATA (61) indicating success.
+response per RFC 6, with ENODATA (61) indicating success.  The server MUST
+NOT terminate the stream with ENODATA without first returning the
+:program:`exec started` response, :program:`exec finished` response, and
+:program:`exec output` responses with the EOF flag set for each open channel.
+The client MAY consider it a protocol error if one of those responses is
+missing and an ENODATA response is received.
 
 Failure of the remote command SHALL be indicated in finished response
 and SHALL NOT result in an error response.  Other errors, such as an
