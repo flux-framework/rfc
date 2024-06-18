@@ -212,6 +212,9 @@ based on the following constraint operators.
 ``hostlist``
     Designate one or more nodes in RFC 29 Hostlist format (*string*) and match jobs assigned to those nodes.  The job list module MAY limit the number of entries in a hostlist constraint to prevent long constraint match times.
 
+``ranks``
+    Designate one or more broker ranks in RFC 22 Idset form (*string*) and match jobs that were assigned to one or more of those ranks. The job list module MAY limit the number of entries in a ranks constraint to prevent long constraint match times.
+
 ``t_submit``, ``t_depend``, ``t_run``, ``t_cleanup``, ``t_inactive``
     Designate one timestamp with a REQUIRED prefixed comparison operator (*string*).  The accepted comparison operators SHALL be `>`, `<`, `>=`, and `<=`, for greater than, less than, greater than or equal, or less than or equal. A timestamp operator SHALL match jobs where the respective timestamp matches against the provided timestamp.
 
