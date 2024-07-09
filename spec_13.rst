@@ -432,6 +432,19 @@ Notes:
 Key Value Store
 ===============
 
+KVS value strings SHALL be restricted to the following character set:
+
+.. code-block:: console
+
+   33 - 48   ! " # $ % & ' ( ) * + , - . / 0
+   49 - 64   1 2 3 4 5 6 7 8 9 : ; < = > ? @
+   65 - 80   A B C D E F G H I J K L M N O P
+   81 - 96   Q R S T U V W X Y Z [ \ ] ^ _ `
+   97 - 112  a b c d e f g h i j k l m n o p
+  113 - 126  q r s t u v w x y z { | } ~
+
+That is, all ASCII characters between ``!`` (33) and ``~`` (126), inclusive.
+
 .. function:: int PMI_KVS_Put (const char kvsname[], const char key[], const char value[])
 
 Put a key/value pair in a keyval space.
@@ -789,7 +802,7 @@ Protocol Definition
    C:get           = "cmd=get" SP "kvsname=" word SP "key=" word LF
    S:get           = "cmd=get_result"
                      [SP "rc=" int]
-                     [SP "value=" string]
+                     [SP "value=" word]
                      LF
 
    ; Dynamic Process Management
