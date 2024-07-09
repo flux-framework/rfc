@@ -432,6 +432,9 @@ Notes:
 Key Value Store
 ===============
 
+KVS keys that begin with ``PMI_`` SHALL be considered part a reserved
+namespace.
+
 KVS value strings SHALL be restricted to the following character set:
 
 .. code-block:: console
@@ -444,6 +447,8 @@ KVS value strings SHALL be restricted to the following character set:
   113 - 126  q r s t u v w x y z { | } ~
 
 That is, all ASCII characters between ``!`` (33) and ``~`` (126), inclusive.
+
+A zero length string value SHALL be considered valid.
 
 .. function:: int PMI_KVS_Put (const char kvsname[], const char key[], const char value[])
 
@@ -519,6 +524,12 @@ Errors:
 -  PMI_ERR_INVALID_LENGTH - invalid length argument
 
 -  PMI_FAIL - get failed
+
+Notes:
+
+-  A key that is part of the ``PMI_`` reserved namespace that is not found
+   is not treated an error.  Instead, an empty string is returned for the
+   value.
 
 .. function:: int PMI_KVS_Get_my_name (char kvsname[], int length)
 .. function:: int PMI_Get_kvs_domain_id (char kvsname[], int length)
