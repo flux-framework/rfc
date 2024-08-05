@@ -44,8 +44,8 @@ behalf of jobs.
 A scheduler implementation registers the generic service name ``sched``
 and provides several well known service methods.  The job manager requests
 resources from the scheduler with a ``sched.alloc`` request when a job enters
-SCHED state.  It releases resources with a ``sched.free`` request when a job
-enters CLEANUP state.
+SCHED state.  It releases resources with one or more ``sched.free`` requests
+after a job enters CLEANUP state.
 
 The simplest imaginable scheduler satisfies ``sched.alloc`` requests in order
 until it is out of resources, then blocks until ``sched.free`` requests
@@ -569,8 +569,8 @@ The request MAY fail, for example if:
 Free
 ====
 
-The job manager SHALL send a ``sched.free`` request when a job that is
-holding resources enters CLEANUP state.  The request payload consists of
+The job manager SHALL send one or more ``sched.free`` requests to release
+allocated resources to the scheduler.  The request payload consists of
 a JSON object with the following REQUIRED keys:
 
 id
@@ -578,7 +578,13 @@ id
 
 R
   (object) RFC 20 resource set from which the ``scheduling`` key MAY be
-  omitted.
+  omitted.  This resource set MAY be a subset of the original allocation.
+
+and the following OPTIONAL key:
+
+final
+  (boolean) If present and true, this free request is the final one for the
+  job.  If absent or false, more free requests are forthcoming for the job.
 
 Example:
 
@@ -597,11 +603,16 @@ Example:
         "expiration": 1710076122
       }
     }
+    "final":true
   }
 
 
-Upon receipt of the ``sched.free`` request, the scheduler SHOULD mark the
-job's resources as available for reuse.
+Upon receipt of a ``sched.free`` request, the scheduler SHOULD mark the
+designated resources as available for reuse.
+
+When a job's resources are released with multiple ``sched.free`` requests,
+the scheduler MAY assume that the resources associated with a given rank
+in the original allocation are never split over multiple free requests.
 
 There is no response.
 
