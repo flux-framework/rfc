@@ -334,6 +334,18 @@ Some common system attributes are:
    The value of the ``queue`` attribute is a string containing the name of
    the job queue this job should be submitted to.
 
+**bank**
+   The value of the ``bank`` attribute is a string containing the name of
+   an accounting bank requested for this job. Support for the ``bank``
+   attribute MAY depend on installation and configuration of optional
+   framework components, such as an accounting or other plugin.
+
+**project**
+  The value of the ``project`` attribute is a string containing the
+  name of an accounting project requested for this job. Support for the
+  ``project`` attribute MAY depend on installation and configuration of
+  optional framework components, such as an accounting or other plugin.
+
 **dependencies**
    The value of the ``dependencies`` attribute SHALL be a
    list of dictionaries following the format specified in RFC 26.
