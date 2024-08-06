@@ -65,6 +65,7 @@ source_suffix = '.rst'
 
 linkcheck_ignore = [
     "https://help.github.com/en/pull-requests", # 403 Forbidden
+    r"https://blog\.twitter\.com/.*", # 403 Forbidden
 ]
 
 
