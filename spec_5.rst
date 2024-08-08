@@ -95,7 +95,7 @@ Upon loading the module, the broker SHALL initialize the broker state
 to ``FLUX_MODSTATE_INIT``.
 
 After initialization is complete, a module SHALL send an RPC to the
-``broker.module-status`` service with the FLUX_RPC_NORESPONSE flag to
+``module.status`` service with the FLUX_RPC_NORESPONSE flag to
 notify the broker that the module has started successfully.  In order to
 ensure this happens for all modules, the RPC SHALL be sent via a
 pre-registered reactor watcher upon a module's first entry to the reactor
@@ -110,7 +110,7 @@ Example payload:
    }
 
 After exiting the reactor and before exiting the module thread, the module
-SHALL send an RPC to ``broker.module-status`` indicating that it intends to
+SHALL send an RPC to ``module.status`` indicating that it intends to
 exit.  The module SHALL wait for a response to this message before exiting
 ``mod_main()``.
 
@@ -123,7 +123,7 @@ Example payload:
    }
 
 Finally once ``mod_main()`` has exited, the module thread SHALL send an RPC
-to ```broker.module-status`` with the FLUX_RPC_NORESPONSE flag including
+to ```module.status`` with the FLUX_RPC_NORESPONSE flag including
 the error status of the module:  zero if ``mod_main()`` exited with a return
 code greater than or equal to zero, otherwise the value of ``errno``.
 
@@ -138,7 +138,7 @@ Load Sequence
 =============
 
 The broker module loader SHALL launch the module’s ``mod_main()`` in a
-new thread. The ``broker.insmod`` response is deferred until the module
+new thread. The ``module.load`` response is deferred until the module
 state transitions out of FLUX_MODSTATE_INIT. If it transitions immediately to
 FLUX_MODSTATE_EXITED, and the ``errnum`` value is nonzero, an error response
 SHALL be returned as described in RFC 3.
@@ -147,7 +147,7 @@ Unload Sequence
 ===============
 
 The broker module loader SHALL send a ``<service>.shutdown`` request to the
-module when the module loader receives a ``broker.rmmod`` request for the
+module when the module loader receives a ``module.remove`` request for the
 module.  In response, the broker module SHALL exit ``mod_main()``, sending
 state transition messages as described above, and exit the module’s thread
 or process. The final state transition indicates to the broker that it MAY
