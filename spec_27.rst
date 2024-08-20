@@ -26,6 +26,7 @@ Language
 Related Standards
 *****************
 
+- :doc:`spec_3`
 - :doc:`spec_14`
 - :doc:`spec_16`
 - :doc:`spec_20`
@@ -98,6 +99,8 @@ Design Criteria
   tool (e.g. start time estimates).
 
 - Allow the expiration time of a resource allocation to be adjusted.
+
+- Detect unsatisfiable job requests at submission time.
 
 Implementation
 **************
@@ -644,3 +647,27 @@ a ``sched.free`` request.
 
 If the scheduler is monitoring job exceptions, it SHOULD NOT react in ways
 that might conflict with the job manager's actions.
+
+Feasibility
+===========
+
+A scheduler or other entity MAY register a generic ``feasibility`` service
+name through which unsatisfiable jobs may be detected at job submission.
+
+The ``feasibility`` service MAY be registered on one or more nodes to
+distribute the load of feasibility checks. The job ingest validator (the
+main user of the ``feasibility`` service) runs on all ranks and issues the
+``feasibility.check`` RPC with ``FLUX_NODEID_ANY``. The request is routed to
+a local ``feasibility`` service if available, or an upstream one per RFC 3.
+
+To determine the feasibility of a job request, a ``feasibility.check``
+request is sent with the following REQUIRED key:
+
+jobspec
+   (object) The jobspec for which feasibility should be checked.
+
+If the included jobspec could not ever be satisfied, even if all resources
+were available and ready, then the ``feasibility.check`` service SHALL
+respond with a error response including a human readable error string.
+
+The response SHALL consist of an empty payload on success.
