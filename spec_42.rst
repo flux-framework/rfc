@@ -85,6 +85,8 @@ Goals
 
 - Optionally forward additional I/O channels.
 
+- Provide flow control on channels.
+
 - Provide signal delivery capability.
 
 - Protect against unauthorized use.
@@ -179,6 +181,21 @@ Several response types are distinguished by the type key:
 
     See `I/O Object`_ below.
 
+.. object:: exec add-credit response
+
+  The subprocess server has more buffer space available to receive data
+  on the specified channel.  The response SHALL consist of a JSON object
+  with the following keys:
+
+  .. object:: type
+
+    (*string*, REQUIRED) The response type with a value of ``add-credit``.
+
+  .. object:: channels
+
+    (*object*, REQUIRED) An object with channel names as keys and
+    integer credit counts as values.
+
 .. object:: exec error response
 
 The :program:`exec` response stream SHALL be terminated by an error
@@ -194,12 +211,50 @@ and SHALL NOT result in an error response.  Other errors, such as an
 ENOENT error from the :func:`execvp` system call SHALL result in an
 error response.
 
+add-credit
+==========
+
+Credit based flow control prevents subprocess output from over-running the
+remote receive buffer for a given channel.  A buffer credit represents one
+byte of buffer space.
+
+The subprocess server SHALL NOT send :program:`exec output` responses for
+a given channel without sufficient buffer credit to store the raw, decoded
+data.
+
+The initial credit balance for each channel SHALL be zero.
+
+The :program:`add-credit` RPC adds credit to one or more channels.
+
+.. object:: add-credit
+
+  The request SHALL consist of a JSON object with the following keys:
+
+  .. object:: matchtag
+
+    (*integer*, REQUIRED) The matchtag of the :program:`exec` request.
+
+  .. object:: channels
+
+    (*object*, REQUIRED) An object with channel names as keys and
+    integer credit counts as values.
+
+This request receives no response, thus the request message SHOULD set
+FLUX_MSGFLAG_NORESPONSE.  Requests referencing invalid channel names MAY be
+ignored by the subprocess server.
+
 write
 =====
 
 The :program:`write` RPC sends data to an I/O channel of a remote process.
 Valid I/O channel names MAY include ``stdin`` and auxiliary channel names
 specified in the exec request command object.
+
+A client SHALL NOT send a :program:`write` request for a given channel
+without sufficient buffer credit to store the raw, decoded data.
+Credit is obtained through :program:`exec add-credit` responses.
+
+The initial credit balance for each channel SHALL be zero.
 
 .. object:: write request
 
