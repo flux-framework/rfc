@@ -108,7 +108,7 @@ are defined as follows:
 
     See `Command Object`_ below.
 
-  .. object:: flags
+  .. object:: forwarding_flags
 
     (*integer*, REQUIRED) A bitfield comprised of zero or more flags:
 
