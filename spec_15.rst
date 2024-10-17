@@ -338,9 +338,11 @@ IMP post-verification execution
 ===============================
 
 After verification of input is complete, the ``flux-imp`` executable
-invokes required job setup code as the superuser. This setup code SHALL
+invokes required job setup code as the superuser. This setup code MAY
 be implemented as system-installed and verified plugins, and MAY include
 such things as
+
+-  Start a PAM session on behalf of the guest
 
 -  Execution of some sort of job prolog
 
@@ -354,10 +356,14 @@ such things as
 
 Once privileged setup is complete, the security IMP SHALL generate a log
 message or other audit trail for the individual request. The IMP then
-SHALL proceed to obtain credentials of the guest user and finally exec(2)
-the **job shell path** specified in :math:`J`, or a IMP configuration default.
-After the call to exec(2) the security IMP is replaced by the guest user
-process, and is no longer active.
+SHALL spawn the **job shell path** specified in :math:`J`, or a IMP
+configuration default with the guest user credentials.
+
+The IMP MUST remain active while the job shell executes and forward any
+signals it receives to the shell as described below.  Once the job shell has
+terminated, the IMP MAY perform privileged clean-up tasks such as
+
+-  Finalize the PAM session
 
 Other IMP operational requirements
 ==================================
