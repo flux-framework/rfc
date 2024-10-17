@@ -122,8 +122,8 @@ design
    which MAY be installed with setuid permissions in cases where multi-user
    Flux is required.
 
--  The IMP SHALL accept and process data using stdin, to avoid putting
-   sensitive data on the command line or environment.
+-  The IMP SHALL avoid putting sensitive data on the command line or
+   environment.
 
 Implementation of the IMP as a separately installed, setuid executable
 allows sysadmin control over where and how the IMP is enabled. If the
