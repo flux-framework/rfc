@@ -372,13 +372,25 @@ A multi-user instance of Flux not only requires the ability to execute
 work as a guest user, but it must also have privilege to monitor and
 kill these processes as part of normal resource manager operation.
 
-Signaling and terminating jobs in a multi-user instance
--------------------------------------------------------
+Signal Handling
+---------------
 
-For terminating and signaling processes the IMP SHALL include a ``kill``
-subcommand which, using the process tracking functionality, SHALL allow
-an instance owner to signal or terminate any guest processes including
-ancestors thereof that were started by the owner’s instance.
+The IMP runs with an effective user ID of root and a real user id of the
+system instance owner, thus the system instance owner is permitted to signal
+the IMP.  In contrast, the system instance owner is not permitted to signal
+guest user processes.
+
+To enable the instance owner to signal guest jobs, the IMP SHALL act
+as a proxy for the job by trapping common signals and forwarding them to
+the job shell.
+
+To enable the instance owner to fully clean up when the job shell is unable
+to do so, the IMP SHALL handle SIGUSR1 as a surrogate for SIGKILL.  Upon
+receipt of this signal, the IMP SHOULD deliver SIGKILL to all processes in
+the job's container, including the job shell.
+
+The mechanism by which processes are identified to receive SIGKILL is
+outside the scope of this document.
 
 IMP configuration
 =================
