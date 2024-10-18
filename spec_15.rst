@@ -372,6 +372,8 @@ A multi-user instance of Flux not only requires the ability to execute
 work as a guest user, but it must also have privilege to monitor and
 kill these processes as part of normal resource manager operation.
 
+.. _signal_handling:
+
 Signal Handling
 ---------------
 
@@ -429,6 +431,25 @@ allowed-environment
   passed through to the executable.  By default, only :envvar:`FLUX_JOB_ID`
   and :envvar:`FLUX_JOB_USERID` SHALL pass through.
 
+To enable the instance owner to implement execution timeouts, the IMP SHALL
+linger while these commands execute and act as a signal proxy by trapping
+common signals and forwarding them to the direct child, with SIGUSR1 acting as
+a surrogate for SIGKILL as described in :ref:`signal_handling`.
+
+.. note::
+
+  Flux MAY be configured to run prolog, epilog, and housekeeping scripts
+  as one-shot systemd services, which enables them to persist across a Flux
+  restart and run in a dedicated cgroup.
+
+  This is accomplished by configuring Flux-provided wrapper scripts as the
+  administrative executable.  The wrapper scripts trap SIGTERM and run
+  :program:`systemctl stop`, which tells systemd to terminate [#f2]_ all
+  processes in the unit's cgroup.
+
+  SIGKILL SHOULD be avoided in this configuration as it would only terminate
+  the wrapper script, not the systemd unit
+
 IMP configuration
 =================
 
@@ -461,3 +482,5 @@ References
 **********
 
 .. [#f1] `Preventing Privilege Escalation <https://www.usenix.org/legacy/events/sec03/tech/full_papers/provos_et_al/provos_et_al.pdf>`__, Niels Provos, Markus Friedl, Peter Honeyman.
+
+.. [#f2] `systemd.kill(5) <https://www.freedesktop.org/software/systemd/man/latest/systemd.kill.html#KillMode=>`__ KillMode.
