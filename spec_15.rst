@@ -118,7 +118,7 @@ design
 -  The IMP SHALL be an independent Flux Framework project, with the ability
    to be tested standalone
 
--  The IMP SHALL be implemented as an executable, ``flux-imp``,
+-  The IMP SHALL be implemented as an executable, :program:`flux-imp`,
    which MAY be installed with setuid permissions in cases where multi-user
    Flux is required.
 
@@ -127,10 +127,10 @@ design
 
 Implementation of the IMP as a separately installed, setuid executable
 allows sysadmin control over where and how the IMP is enabled. If the
-``flux-imp`` executable is not installed, or installed without
+:program:`flux-imp` executable is not installed, or installed without
 setuid bits enabled, then multi-user Flux is simply not available, though
 single user instances of Flux will still operate. The file permissions,
-access controls, or SELinux policy of ``flux-imp`` may also be
+access controls, or SELinux policy of :program:`flux-imp` may also be
 manipulated to restrict access to a user or group of users. For instance,
 a site may configure permissions such that only a ``flux`` user has execute
 permissions, thus allowing a multi-user system instance running as ``flux``,
@@ -337,7 +337,7 @@ data.
 IMP post-verification execution
 ===============================
 
-After verification of input is complete, the ``flux-imp`` executable
+After verification of input is complete, the :program:`flux-imp` executable
 invokes required job setup code as the superuser. This setup code MAY
 be implemented as system-installed and verified plugins, and MAY include
 such things as
@@ -372,6 +372,8 @@ A multi-user instance of Flux not only requires the ability to execute
 work as a guest user, but it must also have privilege to monitor and
 kill these processes as part of normal resource manager operation.
 
+.. _signal_handling:
+
 Signal Handling
 ---------------
 
@@ -389,15 +391,69 @@ to do so, the IMP SHALL handle SIGUSR1 as a surrogate for SIGKILL.  Upon
 receipt of this signal, the IMP SHOULD deliver SIGKILL to all processes in
 the job's container, including the job shell.
 
-The IMP shall get the basename of the current cgroup directory at startup.
-If the directory begins with "imp-shell", then the IMP SHALL deliver SIGKILL
-to all PIDs listed in cgroup.procs. Otherwise, the IMP SHALL deliver SIGKILL
-only to its direct child and optionally MAY include descendants.
+The IMP SHALL get the basename of the current cgroup directory at startup.
+If the directory begins with ``imp-shell``, then the IMP SHALL deliver SIGKILL
+to all PIDs listed in ``cgroup.procs``. Otherwise, the IMP SHALL deliver
+SIGKILL only to its direct child and optionally MAY include descendants.
+
+.. note::
+
+  The default system instance configuration is to launch the IMP as a direct
+  child of the broker, in the broker's cgroup.
+
+  Flux MAY be configured to run jobs in a ``flux`` owned systemd user
+  instance, enabling jobs to persist across a Flux restart.  In this case
+  the IMP, and hence the job, SHALL be started as a transient unit whose
+  name begins with ``imp-shell``, in its own cgroup.
+
+Privileged administrative actions
+=================================
+
+A Flux system instance needs to launch select commands with an effective
+user ID of root to support system prolog, epilog, and housekeeping scripts.
+The IMP enables this with the :program:`flux-imp run` subcommand.
+
+For each command that Flux needs to run, the IMP configuration SHALL define
+the following in order to constrain this capability:
+
+name
+  The logical name by which Flux will initiate execution.
+
+path
+  The executable path.  Command line arguments are not allowed.
+
+allowed-users
+  A list of users that are allowed to invoke this command.
+  Normally this is set to the ``flux`` user.
+
+allowed-environment
+  A list of environment variables or glob patterns that are allowed to be
+  passed through to the executable.  By default, only :envvar:`FLUX_JOB_ID`
+  and :envvar:`FLUX_JOB_USERID` SHALL pass through.
+
+To enable the instance owner to implement execution timeouts, the IMP SHALL
+linger while these commands execute and act as a signal proxy by trapping
+common signals and forwarding them to the direct child, with SIGUSR1 acting as
+a surrogate for SIGKILL as described in :ref:`signal_handling`.
+
+.. note::
+
+  Flux MAY be configured to run prolog, epilog, and housekeeping scripts
+  as one-shot systemd services, which enables them to persist across a Flux
+  restart and run in a dedicated cgroup.
+
+  This is accomplished by configuring Flux-provided wrapper scripts as the
+  administrative executable.  The wrapper scripts trap SIGTERM and run
+  :program:`systemctl stop`, which tells systemd to terminate [#f2]_ all
+  processes in the unit's cgroup.
+
+  SIGKILL SHOULD be avoided in this configuration as it would only terminate
+  the wrapper script, not the systemd unit
 
 IMP configuration
 =================
 
-On execution, ``flux-imp`` SHALL read a site configuration
+On execution, :program:`flux-imp` SHALL read a site configuration
 file which MAY contain site-specific information such as paths to trusted
 executables, plugin locations, certificate authority information etc.
 The IMP SHALL check for correct permissions on all configuration
@@ -419,10 +475,12 @@ is still a work in progress.
    without authority. The *intended recipient* field of the user request
    protects against users other than the instance owner using the
    guest request, and a fixed time-to-live prevents the request from
-   being used indefinitely. Finally, ``flux-imp`` logs all
+   being used indefinitely. Finally, :program:`flux-imp`` logs all
    invocations, thereby allowing replays to be detected and audited.
 
 References
 **********
 
 .. [#f1] `Preventing Privilege Escalation <https://www.usenix.org/legacy/events/sec03/tech/full_papers/provos_et_al/provos_et_al.pdf>`__, Niels Provos, Markus Friedl, Peter Honeyman.
+
+.. [#f2] `systemd.kill(5) <https://www.freedesktop.org/software/systemd/man/latest/systemd.kill.html#KillMode=>`__ KillMode.
