@@ -389,10 +389,10 @@ to do so, the IMP SHALL handle SIGUSR1 as a surrogate for SIGKILL.  Upon
 receipt of this signal, the IMP SHOULD deliver SIGKILL to all processes in
 the job's container, including the job shell.
 
-The IMP shall get the basename of the current cgroup directory at startup.
-If the directory begins with "imp-shell", then the IMP SHALL deliver SIGKILL
-to all PIDs listed in cgroup.procs. Otherwise, the IMP SHALL deliver SIGKILL
-only to its direct child and optionally MAY include descendants.
+The IMP SHALL get the basename of the current cgroup directory at startup.
+If the directory begins with ``imp-shell``, then the IMP SHALL deliver SIGKILL
+to all PIDs listed in ``cgroup.procs``. Otherwise, the IMP SHALL deliver
+SIGKILL only to its direct child and optionally MAY include descendants.
 
 IMP configuration
 =================
