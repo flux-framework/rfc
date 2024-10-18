@@ -394,6 +394,16 @@ If the directory begins with ``imp-shell``, then the IMP SHALL deliver SIGKILL
 to all PIDs listed in ``cgroup.procs``. Otherwise, the IMP SHALL deliver
 SIGKILL only to its direct child and optionally MAY include descendants.
 
+.. note::
+
+  The default system instance configuration is to launch the IMP as a direct
+  child of the broker, in the broker's cgroup.
+
+  Flux MAY be configured to run jobs in a ``flux`` owned systemd user
+  instance, enabling jobs to persist across a Flux restart.  In this case
+  the IMP, and hence the job, SHALL be started as a transient unit whose
+  name begins with ``imp-shell``, in its own cgroup.
+
 IMP configuration
 =================
 
