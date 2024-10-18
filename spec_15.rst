@@ -404,6 +404,31 @@ SIGKILL only to its direct child and optionally MAY include descendants.
   the IMP, and hence the job, SHALL be started as a transient unit whose
   name begins with ``imp-shell``, in its own cgroup.
 
+Privileged administrative actions
+=================================
+
+A Flux system instance needs to launch select commands with an effective
+user ID of root to support system prolog, epilog, and housekeeping scripts.
+The IMP enables this with the :program:`flux-imp run` subcommand.
+
+For each command that Flux needs to run, the IMP configuration SHALL define
+the following in order to constrain this capability:
+
+name
+  The logical name by which Flux will initiate execution.
+
+path
+  The executable path.  Command line arguments are not allowed.
+
+allowed-users
+  A list of users that are allowed to invoke this command.
+  Normally this is set to the ``flux`` user.
+
+allowed-environment
+  A list of environment variables or glob patterns that are allowed to be
+  passed through to the executable.  By default, only :envvar:`FLUX_JOB_ID`
+  and :envvar:`FLUX_JOB_USERID` SHALL pass through.
+
 IMP configuration
 =================
 
