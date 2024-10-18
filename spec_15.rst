@@ -122,8 +122,8 @@ design
    which MAY be installed with setuid permissions in cases where multi-user
    Flux is required.
 
--  The IMP SHALL accept and process data using stdin, to avoid putting
-   sensitive data on the command line or environment.
+-  The IMP SHALL avoid putting sensitive data on the command line or
+   environment.
 
 Implementation of the IMP as a separately installed, setuid executable
 allows sysadmin control over where and how the IMP is enabled. If the
@@ -143,50 +143,50 @@ When a guest makes a request for a job to a multi-user instance of
 Flux, the guest will create a message with information such as the job
 specification, a time-to-live, a uid, and an authorized resource owner,
 and then uses IMP client API to sign all fields of the message. The signed
-message becomes the user request token **J** which authorizes the resource
+message becomes the user request token :math:`J` which authorizes the resource
 owner to execute the request at some point on behalf of the guest.
 
 This signed request then becomes part of the user’s job. When the job is
-scheduled by the instance, the owner assigns a resource set **R** to the job,
-and writes that information to the job record, marking the job as
+scheduled by the instance, the owner assigns a resource set :math:`R` to
+the job, and writes that information to the job record, marking the job as
 runnable.
 
 The execution system within the instance then determines the set of
 resources on which an invocation of the IMP is required and creates
-a local resource set **R\ local**, which is necessarily disjoint for
+a local resource set :math:`R_{local}`, which is necessarily disjoint for
 each IMP, and acts as a representation of the local resources to which
 the IMP should grant access to the guest user.
 
-**R\ local** and **J**, along with other optional fields,
+:math:`R_{local}` and :math:`J`, along with other optional fields,
 are then concatenated and become input to the Flux IMP executable.
 The IMP verifies through local configuration and state that the
 instance owner has authority to grant access to resources in the
-local resource set, and verifies via **J** that the guest has
+local resource set, and verifies via :math:`J` that the guest has
 authorized the resources owner to execute specific work on their
 behalf.
 
-The IMP verifies the integrity and authenticity of **J**
+The IMP verifies the integrity and authenticity of :math:`J`
 using cryptographic methods provided by plugins. Once the verification
 step is complete, the privileged IMP will invoke system configured
 plugins for setup and containment, then change credentials to the
 guest user, and finally execute the processes of the job as specified
-in **J**.
+in :math:`J`.
 
 In most cases, the IMP will execute a *job shell* on behalf of the user,
-passing the verified **J** as input to the shell. The shell itself is
-specified either by the user in **J** or by IMP configuration, but
+passing the verified :math:`J` as input to the shell. The shell itself is
+specified either by the user in :math:`J` or by IMP configuration, but
 should not be provided or modified by the instance owner. The shell re-verifies
-integrity and authenticity of **J** before proceeding, then interprets
-the jobspec contained in **J** to determine the set of tasks to invoke
+integrity and authenticity of :math:`J` before proceeding, then interprets
+the jobspec contained in :math:`J` to determine the set of tasks to invoke
 on the current resource set.
 
 .. note::
 
-   It may be noted that the user’s request **J** is verified twice when a job
-   shell is invoked, and this is by design. The IMP verifies **J** to avoid
+   It may be noted that the user’s request :math:`J` is verified twice when a job
+   shell is invoked, and this is by design. The IMP verifies :math:`J` to avoid
    passing tainted input to the job shell, which runs as the guest user.
-   The shell re-verifies **J** because it has no guarantee that the caller
-   has already done this verification, or that **J** has not been changed
+   The shell re-verifies :math:`J` because it has no guarantee that the caller
+   has already done this verification, or that :math:`J` has not been changed
    since any past verification.
 
 Figure 1 below summarizes the overall role of the IMP in a multi-user
@@ -202,13 +202,13 @@ Input to the IMP
 
 The input to the IMP includes the following fields
 
--  Local assigned resource set (**R\ local**)
+-  Local assigned resource set (:math:`R_{local}`)
 
 -  Options supplied by resource owner
 
--  User Request (**J**) (described below)
+-  User Request (:math:`J`) (described below)
 
-Where **J** is the User Request or reference to such a request,
+Where :math:`J` is the User Request or reference to such a request,
 which SHALL contain
 
 -  Jobspec as per :doc:`14/Canonical Job Specification <spec_14>`
@@ -237,7 +237,7 @@ Where above fields have the following specific meanings and requirements
 
 -  *Timestamp and TTL* signifies that the request in question SHALL
    only be valid between *Timestamp* and *Timestamp+TTL*. This puts a
-   time horizon on usage of **J**
+   time horizon on usage of :math:`J`.
 
 -  *UUID* is a globally unique identifier
 
@@ -245,10 +245,10 @@ Where above fields have the following specific meanings and requirements
    of the request. This ensures that the user’s request cannot be
    used by another arbitrary user.
 
--  The *user signature* signs all fields of **J**
+-  The *user signature* signs all fields of :math:`J`.
 
 -  The *job shell path* is an absolute path to a job shell which
-   will act as interpreter of the Jobspec in **J**. If missing, a default
+   will act as interpreter of the Jobspec in :math:`J`. If missing, a default
    will be supplied by IMP configuration.
 
 IMP Internal Operation
@@ -269,12 +269,12 @@ Request Verification
 Once the privileged IMP process has read its input
 it SHALL perform the following verification steps:
 
-1. Verify integrity and authenticity of **J**
+1. Verify integrity and authenticity of :math:`J`
 
-2. Verify recipient field in **J** matches current real UID of the IMP
+2. Verify recipient field in :math:`J` matches current real UID of the IMP
    (i.e. the resource owner)
 
-3. Verify TTL on **J**
+3. Verify TTL on :math:`J`
 
 The IMP process MAY also perform the following OPTIONAL verification steps:
 
@@ -338,9 +338,11 @@ IMP post-verification execution
 ===============================
 
 After verification of input is complete, the ``flux-imp`` executable
-invokes required job setup code as the superuser. This setup code SHALL
+invokes required job setup code as the superuser. This setup code MAY
 be implemented as system-installed and verified plugins, and MAY include
 such things as
+
+-  Start a PAM session on behalf of the guest
 
 -  Execution of some sort of job prolog
 
@@ -354,10 +356,14 @@ such things as
 
 Once privileged setup is complete, the security IMP SHALL generate a log
 message or other audit trail for the individual request. The IMP then
-SHALL proceed to obtain credentials of the guest user and finally exec(2)
-the **job shell path** specified in **J**, or a IMP configuration default.
-After the call to exec(2) the security IMP is replaced by the guest user
-process, and is no longer active.
+SHALL spawn the **job shell path** specified in :math:`J`, or a IMP
+configuration default with the guest user credentials.
+
+The IMP MUST remain active while the job shell executes and forward any
+signals it receives to the shell as described below.  Once the job shell has
+terminated, the IMP MAY perform privileged clean-up tasks such as
+
+-  Finalize the PAM session
 
 Other IMP operational requirements
 ==================================
@@ -366,13 +372,27 @@ A multi-user instance of Flux not only requires the ability to execute
 work as a guest user, but it must also have privilege to monitor and
 kill these processes as part of normal resource manager operation.
 
-Signaling and terminating jobs in a multi-user instance
--------------------------------------------------------
+Signal Handling
+---------------
 
-For terminating and signaling processes the IMP SHALL include a ``kill``
-subcommand which, using the process tracking functionality, SHALL allow
-an instance owner to signal or terminate any guest processes including
-ancestors thereof that were started by the owner’s instance.
+The IMP runs with an effective user ID of root and a real user id of the
+system instance owner, thus the system instance owner is permitted to signal
+the IMP.  In contrast, the system instance owner is not permitted to signal
+guest user processes.
+
+To enable the instance owner to signal guest jobs, the IMP SHALL act
+as a proxy for the job by trapping common signals and forwarding them to
+the job shell.
+
+To enable the instance owner to fully clean up when the job shell is unable
+to do so, the IMP SHALL handle SIGUSR1 as a surrogate for SIGKILL.  Upon
+receipt of this signal, the IMP SHOULD deliver SIGKILL to all processes in
+the job's container, including the job shell.
+
+The IMP shall get the basename of the current cgroup directory at startup.
+If the directory begins with "imp-shell", then the IMP SHALL deliver SIGKILL
+to all PIDs listed in cgroup.procs. Otherwise, the IMP SHALL deliver SIGKILL
+only to its direct child and optionally MAY include descendants.
 
 IMP configuration
 =================
