@@ -85,6 +85,8 @@ Goals
 
 - Optionally forward additional I/O channels.
 
+- Provide flow control on channels.
+
 - Provide signal delivery capability.
 
 - Protect against unauthorized use.
@@ -120,6 +122,10 @@ are defined as follows:
 
     channel (4)
       Forward auxiliary channel output to the client.
+
+    write-credit (8)
+      Send ``add-credit`` exec responses when buffer space is available
+      for standard input or writable auxiliary channels.
 
 Several response types are distinguished by the type key:
 
@@ -179,6 +185,25 @@ Several response types are distinguished by the type key:
 
     See `I/O Object`_ below.
 
+.. object:: exec add-credit response
+
+  The subprocess server has more buffer space available to receive data
+  on the specified channel.  The response SHALL consist of a JSON object
+  with the following keys:
+
+  .. object:: type
+
+    (*string*, REQUIRED) The response type with a value of ``add-credit``.
+
+  .. object:: channels
+
+    (*object*, REQUIRED) An object with channel names as keys and
+    integer credit counts as values.
+
+  The server's initial response contains the full buffer size(s).
+
+  These messages are suppressed if the write-credit flag was not specified.
+
 .. object:: exec error response
 
 The :program:`exec` response stream SHALL be terminated by an error
@@ -200,6 +225,12 @@ write
 The :program:`write` RPC sends data to an I/O channel of a remote process.
 Valid I/O channel names MAY include ``stdin`` and auxiliary channel names
 specified in the exec request command object.
+
+A client MAY avoid overrunning the remote buffer by monitoring
+:program:`exec add-credit` responses and keeping a running total of
+available remote buffer space, subtracting the size of the decoded data
+contained with in the I/O object each time a :program:`write` request is sent,
+and never allowing the running total to become negative.
 
 .. object:: write request
 
