@@ -264,6 +264,11 @@ the remote buffer size before the first :program:`exec add-credit` response.
 In that case :math:`L` would have a negative value until the first
 :program:`exec add-credit` response is received.
 
+Servers SHALL implement a default input buffer size of at least 4096 bytes.
+Unless the client explicitly requests a different input buffer size for the
+channel, it MAY assume that 4096 bytes can be borrowed before the first
+:program:`exec add-credit` response.
+
 kill
 ====
 
