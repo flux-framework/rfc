@@ -85,6 +85,8 @@ Goals
 
 - Optionally forward additional I/O channels.
 
+- Provide flow control on channels.
+
 - Provide signal delivery capability.
 
 - Protect against unauthorized use.
@@ -120,6 +122,10 @@ are defined as follows:
 
     channel (4)
       Forward auxiliary channel output to the client.
+
+    write-credit (8)
+      Send ``add-credit`` exec responses when buffer space is available
+      for standard input or writable auxiliary channels.
 
 Several response types are distinguished by the type key:
 
@@ -179,6 +185,25 @@ Several response types are distinguished by the type key:
 
     See `I/O Object`_ below.
 
+.. object:: exec add-credit response
+
+  The subprocess server has more buffer space available to receive data
+  on the specified channel.  The response SHALL consist of a JSON object
+  with the following keys:
+
+  .. object:: type
+
+    (*string*, REQUIRED) The response type with a value of ``add-credit``.
+
+  .. object:: channels
+
+    (*object*, REQUIRED) An object with channel names as keys and
+    integer credit counts as values.
+
+  The server's initial response contains the full buffer size(s).
+
+  These messages are suppressed if the write-credit flag was not specified.
+
 .. object:: exec error response
 
 The :program:`exec` response stream SHALL be terminated by an error
@@ -218,6 +243,31 @@ specified in the exec request command object.
 This request receives no response, thus the request message SHOULD set
 FLUX_MSGFLAG_NORESPONSE.  Write Requests to invalid channel names MAY be
 ignored by the subprocess server.
+
+Input Flow Control
+------------------
+
+A client MAY track a channel's free remote buffer space :math:`L`:
+
+- :math:`L` is initialized to zero
+
+- Each :program:`exec add-credit` response adds credits to :math:`L`
+
+- Each :program:`write` request subtracts the unencoded data length
+  from :math:`L`.
+
+A client MAY avoid the risk of overrunning the remote buffer by ensuring
+a :program:`write` request never sends more than :math:`L` bytes of data.
+
+To avoid unnecessary start-up delays, a client MAY "borrow credit" up to
+the remote buffer size before the first :program:`exec add-credit` response.
+In that case :math:`L` would have a negative value until the first
+:program:`exec add-credit` response is received.
+
+Servers SHALL implement a default input buffer size of at least 4096 bytes.
+Unless the client explicitly requests a different input buffer size for the
+channel, it MAY assume that 4096 bytes can be borrowed before the first
+:program:`exec add-credit` response.
 
 kill
 ====
@@ -338,11 +388,20 @@ exec request
       "opts": {},
       "channels": []
     },
-    "flags": 3
+    "flags": 11
   }
 
 exec responses
 --------------
+
+.. code:: json
+
+  {
+    "type": "add-credit",
+    "channels": {
+      "stdin": 4096
+    }
+  }
 
 .. code:: json
 
