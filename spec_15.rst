@@ -360,8 +360,9 @@ SHALL spawn the **job shell path** specified in :math:`J`, or a IMP
 configuration default with the guest user credentials.
 
 The IMP MUST remain active while the job shell executes and forward any
-signals it receives to the shell as described below.  Once the job shell has
-terminated, the IMP MAY perform privileged clean-up tasks such as
+signals it receives to the shell as described below.  The IMP MAY remain
+active until its cgroup is empty, if applicable.  Once its signal forwarding
+role is complete, the IMP MAY perform privileged clean-up tasks such as
 
 -  Finalize the PAM session
 
