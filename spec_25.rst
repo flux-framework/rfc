@@ -159,6 +159,8 @@ definitions can be found in RFC14. Values MAY have any valid YAML type.
 
    -  duration
 
+   -  preemptible-after
+
    -  environment
 
    -  cwd
