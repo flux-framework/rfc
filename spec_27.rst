@@ -153,6 +153,13 @@ userid
 t_submit
   (double) job submission time
 
+and the following OPTIONAL key:
+
+free
+  (string) An RFC 22 idset representing the ranks (execution targets)
+  of this job's resource set that have already been freed.  If this key
+  is omitted, the scheduler SHALL assume the empty set.
+
 Example:
 
 .. code:: json
@@ -162,6 +169,7 @@ Example:
      "priority": 43444,
      "userid": 5588,
      "t_submit": 1552593348.073045,
+     "free":"1-16,18",
    }
 
 For each job response, the scheduler SHALL mark its assigned resources
