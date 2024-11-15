@@ -316,6 +316,13 @@ Some common system attributes are:
    ``duration`` is configured, and the current instance has no expiration,
    then resources shall be allocated without expiration.
 
+**preemptible-after**
+   A floating point number greater than or equal to zero representing job
+   run time after which the job MAY be canceled in order to make way for
+   other jobs.  A value of zero indicates that the job is immediately
+   preemptible.  The attribute SHALL NOT be set if the job is never
+   preemptible.
+
 **environment**
    The value of the ``environment`` attribute is a dictionary containing the names
    and values of environment variables that should be set (or unset) when spawning
