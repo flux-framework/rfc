@@ -135,11 +135,19 @@ Hello
 =====
 
 Before any other RPCs are sent to the job manager, the scheduler SHALL
-send an empty request to ``job-manager.sched-hello`` with the
-FLUX_MSGFLAG_STREAMING flag set.  The job manager SHALL send one
-response message for each job with allocated resources.  Each response
-payload SHALL consist of a JSON object with the following REQUIRED
-keys:
+send a request to ``job-manager.sched-hello`` with the FLUX_MSGFLAG_STREAMING
+flag set.  The request payload SHALL either be empty or consist of a JSON
+object with the following OPTIONAL keys:
+
+partial-ok
+  (boolean) The scheduler SHALL set this flag to ``true`` if it can handle
+  the ``free`` key in hello responses.  That is, it can process
+  jobs with partially released resource sets.  If this key is missing it
+  SHALL be interpreted as ``false``.
+
+The job manager SHALL send one response message for each job with
+allocated resources.  Each response payload SHALL consist of a JSON object
+with the following REQUIRED keys:
 
 id
   (integer) job ID
@@ -153,6 +161,13 @@ userid
 t_submit
   (double) job submission time
 
+and the following OPTIONAL key:
+
+free
+  (string) An RFC 22 idset representing the ranks (execution targets)
+  of this job's resource set that have already been freed.  If this key
+  is omitted, the scheduler SHALL assume the empty set.
+
 Example:
 
 .. code:: json
@@ -162,6 +177,7 @@ Example:
      "priority": 43444,
      "userid": 5588,
      "t_submit": 1552593348.073045,
+     "free":"1-16,18",
    }
 
 For each job response, the scheduler SHALL mark its assigned resources
