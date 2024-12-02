@@ -63,9 +63,29 @@ In general, Flux follows the "Kernighan & Ritchie coding style" with the followi
 
 8. One space SHOULD separate the star and type in pointer declarations. Example:
 
-::
+  .. code-block:: c
 
-   int *ptr;
+    int *ptr;
+
+9. Long parameter lists in function declarations or calls SHOULD be broken
+to one parameter per line, at the same indent level.  Example:
+
+  .. code-block:: c
+
+    flux_future_t *flux_rpc (flux_t *h,
+                             const char *topic,
+                             const char *s,
+                             uint32_t nodeid,
+                             int flags);
+
+  .. code-block:: c
+
+    f = flux_rpc (h,
+                  "service.do-something",
+                  NULL,
+                  FLUX_NODEID_ANY,
+                  FLUX_RPC_RESPONSE);
+
 
 Variable Names
 ==============
