@@ -42,6 +42,9 @@ C Coding Style Recommendations
 
 Flux projects written in C SHOULD conform to the C99 version of the language.
 
+Whitespace
+==========
+
 In general, Flux follows the "Kernighan & Ritchie coding style" with the following exceptions or examples:
 
 1. Indenting SHALL be with spaces, and not tabs.
