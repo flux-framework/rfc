@@ -86,6 +86,24 @@ to one parameter per line, at the same indent level.  Example:
                   FLUX_NODEID_ANY,
                   FLUX_RPC_RESPONSE);
 
+10. Long test expressions connected by "AND" or "OR" operators SHOULD
+be broken to one test expression per line at the same indent level.
+Example:
+
+  .. code-block:: c
+
+    if (out->type == MY_EXPECTED_TYPE
+        && out->bytes > LOW_END_RANGE
+        && out->bytes < HIGH_END_RANGE) {
+        ...
+    }
+
+  .. code-block:: c
+
+    if (flux_event_subscribe (h, "event.foo") < 0
+        || flux_event_subscribe (h, "event.bar") < 0) {
+        ...
+    }
 
 Variable Names
 ==============
