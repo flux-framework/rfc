@@ -192,6 +192,13 @@ Examples:
 In order to represent the full range of values, enums that use a zero for none
 or similar SHOULD include an item with the value zero to represent that state.
 
+Error Handling
+==============
+
+A function SHOULD NOT have side effects on failure.  For example, a function
+that takes a reference on an object parameter SHOULD NOT take the reference
+when it signifies to the caller that it has failed.
+
 Tools for C formatting
 ======================
 
