@@ -42,6 +42,9 @@ C Coding Style Recommendations
 
 Flux projects written in C SHOULD conform to the C99 version of the language.
 
+Whitespace
+==========
+
 In general, Flux follows the "Kernighan & Ritchie coding style" with the following exceptions or examples:
 
 1. Indenting SHALL be with spaces, and not tabs.
@@ -60,9 +63,29 @@ In general, Flux follows the "Kernighan & Ritchie coding style" with the followi
 
 8. One space SHOULD separate the star and type in pointer declarations. Example:
 
-::
+  .. code-block:: c
 
-   int *ptr;
+    int *ptr;
+
+9. Long parameter lists in function declarations or calls SHOULD be broken
+to one parameter per line, at the same indent level.  Example:
+
+  .. code-block:: c
+
+    flux_future_t *flux_rpc (flux_t *h,
+                             const char *topic,
+                             const char *s,
+                             uint32_t nodeid,
+                             int flags);
+
+  .. code-block:: c
+
+    f = flux_rpc (h,
+                  "service.do-something",
+                  NULL,
+                  FLUX_NODEID_ANY,
+                  FLUX_RPC_RESPONSE);
+
 
 Variable Names
 ==============
@@ -168,6 +191,13 @@ Examples:
 
 In order to represent the full range of values, enums that use a zero for none
 or similar SHOULD include an item with the value zero to represent that state.
+
+Error Handling
+==============
+
+A function SHOULD NOT have side effects on failure.  For example, a function
+that takes a reference on an object parameter SHOULD NOT take the reference
+when it signifies to the caller that it has failed.
 
 Tools for C formatting
 ======================
