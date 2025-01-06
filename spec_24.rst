@@ -141,7 +141,7 @@ data
 eof
    (boolean) End of stream indicator.
 
-The following keys are OPTIOINAL in the event context object:
+The following keys are OPTIONAL in the event context object:
 
 encoding
    (string) The encoding of this particular data event when different from
