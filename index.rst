@@ -283,6 +283,11 @@ standard I/O management of remote processes.
 
 The Flux Job List Service provides read-only summary information for jobs.
 
+:doc:`spec_44`
+~~~~~~~~~~~~~~
+
+Changes to resource availability are recorded in an RFC 18 eventlog.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -328,3 +333,4 @@ The Flux Job List Service provides read-only summary information for jobs.
    spec_41
    spec_42
    spec_43
+   spec_44
