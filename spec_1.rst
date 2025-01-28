@@ -239,5 +239,3 @@ Implementations
 ***************
 
 -  The `ZeroMQ community <http://zeromq.org>`__ uses the C4.1 process for many projects.
-
--  `OSSEC <http://www.ossec.net/>`__ `uses the C4.1 process <https://ossec-docs.readthedocs.io/en/latest/docs/development/oRFC/orfc-1.html>`__.

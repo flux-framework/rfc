@@ -127,8 +127,9 @@ R Format
   .. data:: R_lite
 
     (*array of dictionary*, REQUIRED) A list that identifies one or more
-    execution targets and the specific cores and GPUs they control.  Each
-    entry SHALL have the following keys:
+    execution targets and the specific cores and GPUs they control.
+    The list entries need not appear in any particular order.  Each entry
+    SHALL have the following keys:
 
     .. data:: rank
 
@@ -157,8 +158,9 @@ R Format
 
     Each entry SHALL be either a single hostname or an RFC 29 hostlist.
 
-    The order of hostnames MUST correspond to the order of execution targets in
-    :data:`R_lite`.  However, the number of entries in each array need not be
+    The order of hostnames MUST correspond to the sorted list of execution
+    targets ranks in :data:`R_lite` so that they can be mapped one to one.
+    However, the number of entries in each array need not be
     the same.  For example, :data:`nodelist` MAY contain one hostlist entry
     for all the execution targets spread over multiple :data:`R_lite` entries.
 
