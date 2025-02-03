@@ -133,7 +133,7 @@ Tasks
 The value of the ``tasks`` key SHALL be a strict list which MUST define exactly
 one task. The list element SHALL be a dictionary representing a task to run as
 part of the program. A task descriptor SHALL contain the following keys, whose
-definitions SHALL match those provided in RFC14:
+definitions SHALL match those provided in :doc:`RFC 14 <spec_14>`, with the restriction in V1 that the ``count`` key does not support the ``per_resource`` key:
 
 -  command
 
@@ -141,9 +141,13 @@ definitions SHALL match those provided in RFC14:
 
 -  count
 
-   -  per_slot
+The ``count`` key SHALL contain at least one of the following keys:
 
-   -  total
+-  per_slot
+
+-  total
+
+If both of these keys are set, the last key parsed SHALL prevail. The definitions of these keys SHALL match those provided in :doc:`RFC 14 <spec_14>`, with the following restrictions in V1: if ``per_slot`` is used, it's value MUST be one, and if ``total`` is used it's value MUST be less than or equal to the ``count`` key of the associated slot and greater than or equal to the number of allocated nodes (if no ``node`` resource vertex is explicitly given in the jobspec, then this minimum value will depend on the instance resource configuration and/or scheduler used).
 
 Attributes
 ==========
@@ -151,7 +155,7 @@ Attributes
 The ``attributes`` key SHALL be a dictionary of
 dictionaries. The ``attributes`` dictionary MUST contain ``system`` key and MAY
 contain the ``user`` key. Common ``system`` keys are listed below, and their
-definitions can be found in RFC14. Values MAY have any valid YAML type.
+definitions can be found in :doc:`RFC 14 <spec_14>`. Values MAY have any valid YAML type.
 
 -  user
 
