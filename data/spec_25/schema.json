@@ -116,7 +116,7 @@
           "slot": { "type": "string" },
           "count": {
             "type": "object",
-            "anyOf": [
+            "oneOf": [
               {"required" : ["per_slot"]},
               {"required" : ["total"]}
             ],

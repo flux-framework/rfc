@@ -141,13 +141,13 @@ definitions SHALL match those provided in :doc:`RFC 14 <spec_14>`, with the rest
 
 -  count
 
-The ``count`` key SHALL contain at least one of the following keys:
+The ``count`` key SHALL contain exactly one of the following keys:
 
 -  per_slot
 
 -  total
 
-If both of these keys are set, the last key parsed SHALL prevail. The definitions of these keys SHALL match those provided in :doc:`RFC 14 <spec_14>`, with the following restrictions in V1: if ``per_slot`` is used, it's value MUST be one, and if ``total`` is used it's value MUST be less than or equal to the ``count`` key of the associated slot and greater than or equal to the number of allocated nodes (if no ``node`` resource vertex is explicitly given in the jobspec, then this minimum value will depend on the instance resource configuration and/or scheduler used).
+The definitions of these keys SHALL match those provided in :doc:`RFC 14 <spec_14>`, with the following restrictions in V1: if ``per_slot`` is used, it's value MUST be one, and if ``total`` is used it's value MUST be less than or equal to the ``count`` key of the associated slot and greater than or equal to the number of allocated nodes (if no ``node`` resource vertex is explicitly given in the jobspec, then this minimum value will depend on the instance resource configuration and/or scheduler used).
 
 Attributes
 ==========
