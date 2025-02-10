@@ -152,8 +152,10 @@ A resource vertex SHALL contain the following keys:
 **count**
    The ``count`` key SHALL indicate the desired number or range of
    resources matching the current vertex. The ``count`` SHALL have one
-   of two possible values: either a single integer value representing
-   a fixed count, or a dictionary which SHALL contain the following keys:
+   of three possible values: either a single integer value representing
+   a fixed count, a string containing an :doc:`RFC 22 <spec_22>` idset
+   representing all acceptable counts, or a dictionary which SHALL contain
+   the following keys:
 
    **min**
       The minimum required count or amount of this resource
@@ -549,6 +551,21 @@ Existing Equivalents
 
 Jobspec YAML
    .. literalinclude:: data/spec_14/use_case_1.7.yaml
+      :language: yaml
+
+Use Case 1.8
+   Request an irregular range of a type of resource
+
+Specific Example
+   Similar to 1.2, request between 3 and 30 nodes, but must be a perfect square
+
+Existing Equivalents
+   +-----------------------------------+-----------------------------------+
+   | Slurm                             | ``salloc -N4,9,16,25``            |
+   +-----------------------------------+-----------------------------------+
+
+Jobspec YAML
+   .. literalinclude:: data/spec_14/use_case_1.8.yaml
       :language: yaml
 
 Section 2: General Requests
