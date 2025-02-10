@@ -23,6 +23,11 @@
       },
       "additionalProperties": false
     },
+    "idset": {
+      "description": "an RFC 22 idset",
+      "type": "string",
+      "pattern": "(?=^\\[.*]$|^[^][]*$)((^\\[?|,)[1-9]\\d*(-[1-9]\\d*)?)*]?$"
+    },
     "resource_vertex_base": {
       "description": "base schema for slot/other resource vertex",
       "type": "object",
@@ -32,6 +37,7 @@
         "count": {
           "oneOf": [
             { "type": "integer", "minimum" : 1 },
+            { "$ref": "#/definitions/idset" },
             { "$ref": "#/definitions/complex_range" }
           ]
         },
