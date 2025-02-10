@@ -248,7 +248,8 @@ descriptor SHALL contain the following keys:
 **count**
    The value of the ``count`` key SHALL be a dictionary supporting at
    least the keys ``per_slot``, ``per_resource``, and ``total``, with other keys
-   reserved for future or site-specific extensions.
+   reserved for future or site-specific extensions, and SHALL contain exactly
+   one supported key.
 
    **per_slot**
       The value of ``per_slot`` SHALL be a number indicating the number
