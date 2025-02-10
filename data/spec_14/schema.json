@@ -52,7 +52,7 @@
         { "$ref": "#/definitions/resource_vertex_base" },
         {
           "properties": {
-            "type": { "enum": ["slot"] }
+            "type": { "const": "slot" }
           },
           "required": ["label"]
         }
@@ -64,7 +64,7 @@
         { "$ref": "#/definitions/resource_vertex_base" },
         {
           "properties": {
-            "type": { "not": { "enum": ["slot"] } }
+            "type": { "not": { "const": "slot" } }
           }
         }
       ]
@@ -117,7 +117,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["command", "slot", "count" ],
+        "required": ["command", "slot", "count"],
         "properties": {
           "command": {
             "type": "array",
@@ -127,8 +127,18 @@
           "slot": { "type": "string" },
           "count": {
             "type": "object",
+            "minProperties": 1,
+            "maxProperties": 1,
             "properties": {
               "per_slot": { "type": "integer", "minimum" : 1 },
+              "per_resource": {
+                "type": "object",
+                "required": ["type", "count"],
+                "properties": {
+                  "type": { "type": "string" },
+                  "count": { "type": "integer", "minimum": 1 }
+                }
+              },
               "total": { "type": "integer", "minimum" : 1 }
             }
           },
@@ -138,7 +148,7 @@
             "properties": {
               "environment": { "type" : "object"}
             },
-	        "additionalProperties": { "type": "string" }
+	    "additionalProperties": { "type": "string" }
           }
         },
 	"additionalProperties": false
