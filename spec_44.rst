@@ -357,6 +357,77 @@ The event context SHALL contain the following keys:
      }
   }
 
+truncate
+--------
+
+The in-memory eventlog MAY be configured with a maximum size to prevent
+unbounded growth. When events are dropped to maintain this size, they SHALL be
+replaced with a ``truncate`` event summarizing the lost state. The timestamp
+of the ``truncate`` event SHALL be that of the most recently dropped event. A
+``truncate`` event SHALL always be the first event in a truncated eventlog.
+
+This event SHALL NOT be posted to the KVS ``resource.eventlog``.
+
+The event context SHALL contain the following keys:
+
+.. data:: online
+  :noindex:
+
+  (*string*, REQUIRED) An RFC 22 idset representing the execution targets
+  that are currently available.
+
+.. data:: torpid
+  :noindex:
+
+   (*string*, REQUIRED) An RFC 22 idset representing the execution targets
+   that are currently torpid.
+
+.. data:: drain
+  :noindex:
+
+   (*object*, REQUIRED) A JSON object representing the currently drained
+   ranks, and the timestamp and reason associated with the applicable ``drain``
+   events. Each key in the ``drain`` object SHALL be an RFC 22 idset which
+   represents the execution targets to which the entry applies, and each value
+   SHALL contain the following keys:
+
+   .. data:: timestamp
+     :noindex:
+
+   (*float*, REQUIRED) The drain timestamp.
+
+   .. data:: reason
+     :noindex:
+
+   (*string*, REQUIRED) The drain reason.
+
+.. data:: ranks
+  :noindex:
+
+  (*string*, OPTIONAL) An RFC 22 idset representing the valid execution
+  targets in the instance. This key is only present if a ``restart``
+  event has been truncated.
+
+.. data:: nodelist
+  :noindex:
+
+  (*string*, OPTIONAL) An RFC 29 hostlist that can be used to map execution
+  targets to hostnames. This key is only present if a ``restart`` event has
+  been truncated.
+
+.. data:: discovery-method
+  :noindex:
+
+   (*string*, OPTIONAL) The discovery method of the ``resource-define`` event
+   if that event has been truncated.
+
+.. data:: R
+  :noindex:
+
+   (*object*, OPTIONAL) This key SHALL be set when the ``resource-define``
+   event has been truncated.
+
+
 Journal
 =======
 
