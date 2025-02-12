@@ -156,19 +156,27 @@ A resource vertex SHALL contain the following keys:
    a fixed count, or a dictionary which SHALL contain the following keys:
 
    **min**
-      The minimum required count or amount of this resource
+      The ``min`` key SHALL be a positive integer indicating the minimum
+      required count or amount of this resource.
 
-   and additionally MAY contain the following keys:
+   Additionally, it MAY contain the following keys (if present, all three
+   MUST be specified):
 
    **max**
-      The maximum required count or amount of this resource
+      The ``max`` key SHALL be an integer greater than or equal to ``min``
+      indicating the maximum required count or amount of this resource.
 
    **operator**
-      An operator applied between ``min`` and ``max`` which
-      returns the next acceptable value
+      The ``operator`` key SHALL be a single character string representing an
+      operator applied between ``min`` and ``max`` which returns the next
+      acceptable value. Currently defined operators are: addition ``+``,
+      multiplication ``*``, or exponentiation ``^``. If ``^`` is specified,
+      then ``min`` MUST be greater than or equal to two.
 
    **operand**
-      The operand used in conjunction with ``operator``
+      The ``operand`` key SHALL be a positive integer used in conjunction with
+      the given ``operator``. If ``operator`` is either ``*`` or ``^``, then
+      ``operand`` MUST be greater than or equal to two.
 
    The default value for ``max`` SHALL be *infinite*, therefore a ``count``
    which specifies only the ``min`` key SHALL be considered a request for
@@ -180,8 +188,7 @@ A resource vertex SHALL contain the following keys:
    but its *R* SHALL contain exactly ``count`` of the resource
    (potentially leaving excess resources unutilized).
 
-A resource vertex MAY additionally contain one or more of the
-following keys
+A resource vertex MAY additionally contain one or more of the following keys:
 
 **unit**
    The ``unit`` key, if supplied, SHALL have a string value indicating
