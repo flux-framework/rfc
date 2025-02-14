@@ -357,6 +357,20 @@ The event context SHALL contain the following keys:
      }
   }
 
+truncate
+--------
+
+The in-memory eventlog MAY be configured with a maximum size to prevent
+unbounded growth. When events are dropped to maintain this size, they
+SHALL be replaced with a ``truncate`` event to indicate that truncation
+has occurred.  The timestamp of the ``truncate`` event SHALL be that of
+the most recently dropped event. A ``truncate`` event SHALL always be the
+first event in a truncated eventlog.
+
+This event SHALL NOT be posted to the KVS ``resource.eventlog``.
+
+This event SHALL NOT have a context.
+
 Journal
 =======
 
