@@ -236,45 +236,45 @@ Reserved Resource Types
 Tasks
 =====
 
-The value of the ``tasks`` key SHALL be a strict list which MUST
-define at least one task. Each list element SHALL be a dictionary
-representing a task or tasks to run as part of the program. A task
-descriptor SHALL contain the following keys:
+The ``tasks`` key SHALL be a strict list which MUST define at least one task.
+Each list element SHALL be a dictionary representing a task or tasks to run as
+part of the program. A task descriptor SHALL contain the following keys:
 
 **command**
-   The value of the ``command`` key SHALL be a list representing an
-   executable and its arguments.
+   The ``command`` key SHALL be a list representing an executable and its
+   arguments.
 
 **slot**
-   The value of the ``slot`` key SHALL match a ``label`` of a resource vertex
-   of type ``slot``. It is used to indicate the **task slot**
+   The ``slot`` key SHALL be a string matching the ``label`` of a resource
+   vertex of type ``slot``. It is used to indicate the **task slot**
    on which this task or tasks shall be contained and executed. The
    number of tasks executed per task slot SHALL be a function of the
    number of resource slots and total number of tasks requested to execute.
 
 **count**
-   The value of the ``count`` key SHALL be a dictionary supporting at
-   least the keys ``per_slot``, ``per_resource``, and ``total``, with other keys
-   reserved for future or site-specific extensions.
+   The ``count`` key SHALL be a dictionary supporting at least the keys
+   ``per_slot``, ``per_resource``, and ``total``, with other keys reserved for
+   future or site-specific extensions, and SHALL contain exactly one supported
+   key.
 
    **per_slot**
-      The value of ``per_slot`` SHALL be a number indicating the number
+      The ``per_slot`` key SHALL be a positive integer indicating the number
       of tasks to execute per task slot allocated to the program.
 
    **per_resource**
-      The value of ``per_resource`` SHALL be a dictionary which
-      SHALL contain the following keys:
+      The ``per_resource`` SHALL be a dictionary which SHALL contain the
+      following keys:
 
-      -  **type** The value of the ``type`` key SHALL be a resource type explicitly
-         declared in the associated task’s slot.
+      -  **type** The ``type`` key SHALL be a string matching a resource type
+         explicitly declared in the associated task’s slot.
 
-      -  **count** The value of the ``count`` key SHALL be a number indicating the number
-         of tasks to execute per resource of type ``type`` occurring in the task’s
-         slot.
+      -  **count** The ``count`` key SHALL be a positive integer indicating
+         the number of tasks to execute per resource of type ``type`` occurring
+         in the task’s slot.
 
    **total**
-      The value of the ``total`` field SHALL indicate the total number of
-      tasks to be run across all task slots, possibly oversubscribed.
+      The ``total`` key SHALL be a positive integer indicating the total number
+      of tasks to be run across all task slots, possibly oversubscribed.
 
 **attributes**
    The ``attributes`` key SHALL be a free-form dictionary of keys which may

@@ -22,7 +22,7 @@
       "type": "object",
       "required": ["type", "count", "with"],
       "properties": {
-        "type": { "enum" : ["node"] },
+        "type": { "const" : "node" },
         "count": { "type": "integer", "minimum" : 1 },
         "unit": { "type": "string" },
         "with": {
@@ -43,7 +43,7 @@
       "type": "object",
       "required": ["type", "count", "with", "label"],
       "properties": {
-        "type": { "enum" : ["slot"] },
+        "type": { "const" : "slot" },
         "count": { "type": "integer", "minimum" : 1 },
         "unit": { "type": "string" },
         "label": { "type": "string" },
@@ -68,7 +68,7 @@
     "version": {
       "description": "the jobspec version",
       "type": "integer",
-      "enum": [1]
+      "const": 1
     },
     "resources": {
       "description": "requested resources",
@@ -106,7 +106,7 @@
       "maxItems": 1,
       "items": {
         "type": "object",
-        "required": ["command", "slot", "count" ],
+        "required": ["command", "slot", "count"],
         "properties": {
           "command": {
             "type": ["string", "array"],
@@ -116,14 +116,16 @@
           "slot": { "type": "string" },
           "count": {
             "type": "object",
+            "minProperties": 1,
+            "maxProperties": 1,
             "additionalProperties": false,
             "properties": {
-              "per_slot": { "type": "integer", "minimum" : 1 },
+              "per_slot": { "type": "integer", "const" : 1 },
               "total": { "type": "integer", "minimum" : 1 }
             }
           }
         },
-	    "additionalProperties": false
+	"additionalProperties": false
       }
     }
   }
