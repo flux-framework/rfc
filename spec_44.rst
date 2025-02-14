@@ -271,6 +271,11 @@ The event context SHALL contain the following keys:
   (*string*, REQUIRED) An RFC 29 hostlist that can be used to map the idset
   execution target ranks to hostnames.
 
+.. data:: reason
+  :noindex:
+
+  (*string*, OPTIONAL) A message describing why the undrain action was taken.
+
 .. code:: json
 
   {
