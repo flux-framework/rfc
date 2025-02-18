@@ -55,9 +55,6 @@ module to the scheduler.  The responses to this RPC define the resource
 set available for scheduling, and mark targets *up* or *down* as
 availability changes.
 
-Version 1 of this protocol supports a static resource set per Flux instance.
-Resource *grow* and *shrink* are to be handled by a future protocol revision.
-
 Design Criteria
 ***************
 
@@ -142,6 +139,13 @@ down
   for scheduling.  The idset only contains targets that are transitioning,
   not the full set of unavailable targets.
 
+shrink
+  (string) RFC 22 idset of execution targets that have been removed from
+  the instance and therefore should no longer be considered available
+  for scheduling. For backwards compatibility, targets in the ``shrink``
+  key SHALL also appear in the ``down`` key of the same response. If a
+  scheduler supports ``shrink`` then the ``shrink`` key SHALL take precedence.
+
 property-add
   (object) RFC 20 conforming properties object containing properties that
   should be added to the specified execution targets. When present, this
@@ -167,15 +171,17 @@ Example:
 
    {
       "up": "3-6",
-      "down": "2",
+      "down": "2,6",
+      "shink": "6",
       "property-add": { "foo": "0-1" },
       "property-remove": { "bar": "3" }
    }
 
-If down resources are assigned to a job, the scheduler SHALL NOT raise an
-exception on the job.  The execution system takes the active role in handling
-failures in this case.  Eventually the scheduler will receive a ``sched.free``
-request for the offline resources.
+If removed (``shrink``) or down resources are assigned to a job, the
+scheduler SHALL NOT raise an exception on the job. The execution system
+takes the active role in handling failures in this case. Eventually the
+scheduler will receive a ``sched.free`` request for the offline or removed
+resources.
 
 .. note::
   *down* encompasses both crashed and drained execution targets.
