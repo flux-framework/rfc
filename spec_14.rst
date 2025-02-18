@@ -143,17 +143,18 @@ defined in the jobspec.
 A resource vertex SHALL contain the following keys:
 
 **type**
-   The ``type`` key for a resource SHALL indicate the type of resource to
+   The ``type`` key SHALL be a string indicating the type of resource to
    be matched. Some type names MAY be reserved for use in the jobspec
    language itself. The currently reserved type is ``slot``, used to
    define **task slots**. Reserved types are described in the
    **Reserved Resource Types** section below.
 
 **count**
-   The ``count`` key SHALL indicate the desired number or range of
-   resources matching the current vertex. The ``count`` SHALL have one
-   of two possible values: either a single integer value representing
-   a fixed count, or a dictionary which SHALL contain the following keys:
+   The ``count`` key SHALL indicate the desired number or range of resources
+   matching the current vertex and SHALL have one of three possible values:
+   either a single positive integer representing a fixed count, a string
+   containing an :doc:`RFC 22 <spec_22>` idset representing all acceptable
+   counts, or a dictionary which SHALL contain the following key:
 
    **min**
       The ``min`` key SHALL be a positive integer indicating the minimum
@@ -556,6 +557,21 @@ Existing Equivalents
 
 Jobspec YAML
    .. literalinclude:: data/spec_14/use_case_1.7.yaml
+      :language: yaml
+
+Use Case 1.8
+   Request an irregular range of a type of resource
+
+Specific Example
+   Similar to 1.2, request between 3 and 30 nodes, but must be a perfect square
+
+Existing Equivalents
+   +-----------------------------------+-----------------------------------+
+   | Slurm                             | ``salloc -N4,9,16,25``            |
+   +-----------------------------------+-----------------------------------+
+
+Jobspec YAML
+   .. literalinclude:: data/spec_14/use_case_1.8.yaml
       :language: yaml
 
 Section 2: General Requests
