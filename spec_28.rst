@@ -167,9 +167,9 @@ Example:
 
    {
       "up": "3-6",
-      "down": "2"
+      "down": "2",
       "property-add": { "foo": "0-1" },
-      "property-remove" { "bar": "3" }
+      "property-remove": { "bar": "3" }
    }
 
 If down resources are assigned to a job, the scheduler SHALL NOT raise an
