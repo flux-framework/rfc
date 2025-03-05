@@ -105,7 +105,9 @@ Patch Requirements
 
 -  A patch MUST be accompanied by a commit message.
 
--  A commit message SHOULD consist of a title (50 characters or less) summarizing the change, optionally followed by a blank line and a message body.
+-  A commit message MUST include a title summarizing the change. The title SHOULD be 50 characters or less.
+
+-  A commit message MUST include a body. The body SHOULD include a blank line after the title.
 
 -  A commit message SHOULD be written in the imperative (Fixes or Fix).
 
