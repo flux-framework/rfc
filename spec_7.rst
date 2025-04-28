@@ -28,7 +28,7 @@ Language
 Related Standards
 *****************
 
--  https://www.kernel.org/doc/Documentation/CodingStyle
+-  https://www.kernel.org/doc/Documentation/process/coding-style.rst
 
 Goals
 *****
