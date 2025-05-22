@@ -54,6 +54,7 @@ Table of Contents
 - [42/Subprocess Server Protocol](spec_42.rst)
 - [43/Job List Service](spec_43.rst)
 - [44/Resource Events](spec_44.rst)
+- [45/Resource Range String Representation](spec_45.rst)
 
 Build Instructions
 ------------------
