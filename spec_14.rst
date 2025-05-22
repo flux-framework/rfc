@@ -152,42 +152,47 @@ A resource vertex SHALL contain the following keys:
 **count**
    The ``count`` key SHALL indicate the desired number or range of resources
    matching the current vertex and SHALL have one of three possible values:
-   either a single positive integer representing a fixed count, a string
-   containing an :doc:`RFC 22 <spec_22>` idset representing all acceptable
-   counts, or a dictionary which SHALL contain the following key:
 
-   **min**
-      The ``min`` key SHALL be a positive integer indicating the minimum
-      required count or amount of this resource.
+   1. A single positive integer representing a fixed count.
 
-   Additionally, it MAY contain the following keys (if present, all three
-   MUST be specified):
+   2. A string containing either an :doc:`RFC 22 <spec_22>` idset representing
+      all acceptable counts, or an :doc:`RFC 45 <spec_45>` range as a compact
+      alternative to the dictionary form given next in option 3.
 
-   **max**
-      The ``max`` key SHALL be an integer greater than or equal to ``min``
-      indicating the maximum required count or amount of this resource.
+   3. A dictionary which SHALL contain the following key:
 
-   **operator**
-      The ``operator`` key SHALL be a single character string representing an
-      operator applied between ``min`` and ``max`` which returns the next
-      acceptable value. Currently defined operators are: addition ``+``,
-      multiplication ``*``, or exponentiation ``^``. If ``^`` is specified,
-      then ``min`` MUST be greater than or equal to two.
-
-   **operand**
-      The ``operand`` key SHALL be a positive integer used in conjunction with
-      the given ``operator``. If ``operator`` is either ``*`` or ``^``, then
-      ``operand`` MUST be greater than or equal to two.
-
-   The default value for ``max`` SHALL be *infinite*, therefore a ``count``
-   which specifies only the ``min`` key SHALL be considered a request for
-   *at least* that number of a resource, and the scheduler SHALL generate
-   the *R* that contains the maximum number of the resource that is
-   available and subject to the operator and operand. By contrast,
-   if a fixed count is given to the ``count`` key, the scheduler SHALL
-   match any resource that contains *at least* ``count`` of the resource,
-   but its *R* SHALL contain exactly ``count`` of the resource
-   (potentially leaving excess resources unutilized).
+      **min**
+         The ``min`` key SHALL be a positive integer indicating the minimum
+         required count or amount of this resource.
+   
+      Additionally, it MAY contain the following keys (if present, all three
+      MUST be specified):
+   
+      **max**
+         The ``max`` key SHALL be an integer greater than or equal to ``min``
+         indicating the maximum required count or amount of this resource.
+   
+      **operator**
+         The ``operator`` key SHALL be a single character string representing an
+         operator applied between ``min`` and ``max`` which returns the next
+         acceptable value. Currently defined operators are: addition ``+``,
+         multiplication ``*``, or exponentiation ``^``. If ``^`` is specified,
+         then ``min`` MUST be greater than or equal to two.
+   
+      **operand**
+         The ``operand`` key SHALL be a positive integer used in conjunction with
+         the given ``operator``. If ``operator`` is either ``*`` or ``^``, then
+         ``operand`` MUST be greater than or equal to two.
+   
+      The default value for ``max`` SHALL be *infinite*, therefore a ``count``
+      which specifies only the ``min`` key SHALL be considered a request for
+      *at least* that number of a resource, and the scheduler SHALL generate
+      the *R* that contains the maximum number of the resource that is
+      available and subject to the operator and operand. By contrast,
+      if a fixed count is given to the ``count`` key, the scheduler SHALL
+      match any resource that contains *at least* ``count`` of the resource,
+      but its *R* SHALL contain exactly ``count`` of the resource
+      (potentially leaving excess resources unutilized).
 
 A resource vertex MAY additionally contain one or more of the following keys:
 
