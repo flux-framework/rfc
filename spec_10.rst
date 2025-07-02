@@ -154,6 +154,18 @@ or an error response.
 A request to load unknown content SHALL receive error number 2,
 "No such file or directory", in response.
 
+Validate
+========
+
+A validate request SHALL be encoded as a Flux request message with
+message digest as raw payload.
+
+A validate response SHALL be encoded as a Flux response message with
+no payload (digest validated) or an error response.
+
+A request with an unknown digest SHALL receive error number 2,
+"No such file or directory", in response.
+
 Flush
 =====
 
