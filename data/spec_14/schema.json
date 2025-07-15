@@ -6,7 +6,7 @@
   "description":         "Flux canonical jobspec",
 
   "definitions": {
-    "complex_range": {
+    "range_dict": {
       "description": "a complex range of numbers",
       "type": "object",
       "properties":{
@@ -23,6 +23,16 @@
       },
       "additionalProperties": false
     },
+    "range_string": {
+      "description": "an RFC 45 range string",
+      "type": "string",
+      "pattern": "^(?=\\[.*]$|[^][]*$)\\[?[1-9]\\d*(\\+|-[1-9]\\d*)?(:[1-9]\\d*(:[+*^])?)?]?$"
+    },
+    "idset": {
+      "description": "an RFC 22 idset",
+      "type": "string",
+      "pattern": "(?=^\\[.*]$|^[^][]*$)((^\\[?|,)[1-9]\\d*(-[1-9]\\d*)?)*]?$"
+    },
     "resource_vertex_base": {
       "description": "base schema for slot/other resource vertex",
       "type": "object",
@@ -32,7 +42,9 @@
         "count": {
           "oneOf": [
             { "type": "integer", "minimum" : 1 },
-            { "$ref": "#/definitions/complex_range" }
+            { "$ref": "#/definitions/idset" },
+            { "$ref": "#/definitions/range_string" },
+            { "$ref": "#/definitions/range_dict" }
           ]
         },
         "exclusive": { "type": "boolean" },

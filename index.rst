@@ -288,6 +288,12 @@ The Flux Job List Service provides read-only summary information for jobs.
 
 Changes to resource availability are recorded in an RFC 18 eventlog.
 
+:doc:`spec_45`
+~~~~~~~~~~~~~~
+
+This specification describes a compact form for expressing an RFC 14
+resource range defined by a min/max/operand/operator combination.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -334,3 +340,4 @@ Changes to resource availability are recorded in an RFC 18 eventlog.
    spec_42
    spec_43
    spec_44
+   spec_45
