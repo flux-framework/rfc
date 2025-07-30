@@ -92,7 +92,7 @@ set errnum in the response to zero and MAY include a service-defined payload.
 
 If the request fails and a response is to be sent, the server SHALL set
 errnum in the response to a nonzero value conforming to
-`POSIX.1 errno encoding <http://man7.org/linux/man-pages/man3/errno.3.html>`__
+`POSIX.1 errno encoding <https://man7.org/linux/man-pages/man3/errno.3.html>`__
 and MAY include an error string payload. The error string, if included
 SHALL consist of a brief, human readable message. It is RECOMMENDED that
 the error string be less than 80 characters and not include line

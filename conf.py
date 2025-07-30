@@ -64,7 +64,7 @@ master_doc = 'index'
 source_suffix = '.rst'
 
 linkcheck_ignore = [
-    r'https://blog\.twitter\.com/.*', # 403 Forbidden, Cloudflare bot challenge
+    r'https://blog\.x\.com/.*', # 403 Forbidden, Cloudflare bot challenge
 ]
 
 linkcheck_request_headers = {

@@ -203,6 +203,6 @@ References
 
 -  `Perkeep lets you permanently keep your stuff, for life. <https://en.wikipedia.org/wiki/Perkeep>`__.
 
--  `Venti: a new approach to archival storage <http://doc.cat-v.org/plan_9/4th_edition/papers/venti/>`__, Bell Labs, Quinlan and Dorward.
+-  `Venti: a new approach to archival storage <https://doc.cat-v.org/plan_9/4th_edition/papers/venti/>`__, Bell Labs, Quinlan and Dorward.
 
--  `git reference manual <http://git-scm.com/doc>`__
+-  `git reference manual <https://git-scm.com/doc>`__

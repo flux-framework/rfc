@@ -115,4 +115,4 @@ References
 
 .. [#f1] `The Free-Libre / Open Source Software (FLOSS) License Slide <https://dwheeler.com/essays/floss-license-slide.html>`__, David A. Wheeler.
 
-.. [#f2] `The Software Package Data Exchange (SPDX) <https://spdx.org/>`__.
+.. [#f2] `The Software Package Data Exchange (SPDX) <https://spdx.dev/>`__.

@@ -49,7 +49,7 @@ Existing Solutions
 ==================
 
 The design of FLUIDs is patterned after
-`Twitter Snowflake <https://blog.twitter.com/2010/announcing-snowflake>`__, and
+`Twitter Snowflake <https://blog.x.com/engineering/en_us/a/2010/announcing-snowflake>`__, and
 the derived implementation `Boundary Flake <https://github.com/boundary/flake>`__.
 The basic scheme is to couple a timestamp, machine or generator id, and
 sequence number into a number of bits.
@@ -99,7 +99,7 @@ FLUID base58 (F58) Encoding
 
 In order to create a compact, human readable representation
 of a FLUID, the main alternate encoding of a FLUID SHALL be `Base58
-<https://en.bitcoinwiki.org/wiki/Base58>`__, using the alphabet
+<https://bitcoinwiki.org/wiki/Base58>`__, using the alphabet
 
  ``123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz``
 

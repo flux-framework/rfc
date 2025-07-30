@@ -28,7 +28,7 @@ Related Standards
 
 - :doc:`spec_6`
 - :doc:`spec_12`
-- `ZeroMQ Message Transfer Protocol (ZMTP) <https://rfc.zeromq.org/spec:23/ZMTP>`_
+- `ZeroMQ Message Transfer Protocol (ZMTP) <https://rfc.zeromq.org/spec/23/>`_
 
 Goals
 *****

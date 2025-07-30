@@ -121,4 +121,4 @@ as described in RFC 4. It SHALL contain two keys:
 References
 **********
 
-`JSON Graph Format Github, Anthony Bargnesi, et al., Visited Jan. 2019 <http://jsongraphformat.info>`__
+`JSON Graph Format Github, Anthony Bargnesi, et al., Visited Jan. 2019 <https://jsongraphformat.info>`__
