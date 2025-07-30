@@ -64,9 +64,7 @@ master_doc = 'index'
 source_suffix = '.rst'
 
 linkcheck_ignore = [
-    "https://help.github.com/en/pull-requests", # 403 Forbidden
-    r"https://blog\.twitter\.com/.*", # 403 Forbidden
-    r"https://github.com/pmodels/mpich/commit/.*", # 406 client not acceptable
+    r'https://blog\.twitter\.com/.*', # 403 Forbidden, Cloudflare bot challenge
 ]
 
 linkcheck_request_headers = {
