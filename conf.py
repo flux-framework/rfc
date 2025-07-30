@@ -73,6 +73,13 @@ linkcheck_request_headers = {
     'https://www.mcs.anl.gov/': {
         'User-Agent': 'python-requests'
     },
+    'https://www.gnu.org/': {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:141.0) Gecko/20100101 '
+                      'Firefox/141.0' # Spoof Firefox
+    },
+    '*': {
+        'Accept': '*/*',
+    }
 }
 
 

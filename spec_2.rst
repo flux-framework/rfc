@@ -79,7 +79,7 @@ License for Flux Projects
 
 -  Flux projects are RECOMMENDED to permit redistribution and/or modification
    under the project’s base license version, or any later version per
-   `Free Software Foundation recommendations <http://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater>`__.
+   `Free Software Foundation recommendations <https://www.gnu.org/licenses/gpl-faq.html#VersionThreeOrLater>`__.
 
 Copyright
 =========
