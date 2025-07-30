@@ -67,6 +67,10 @@ linkcheck_ignore = [
     r'https://blog\.x\.com/.*', # 403 Forbidden, Cloudflare bot challenge
 ]
 
+linkcheck_anchors_ignore_for_url = [
+    r'https://github\.com/.*',
+]
+
 linkcheck_request_headers = {
     'https://www.mcs.anl.gov/': {
         'User-Agent': 'python-requests'

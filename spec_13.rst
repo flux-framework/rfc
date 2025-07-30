@@ -891,7 +891,7 @@ the mapping is unknown.
 References
 **********
 
-.. [#f1] `Process Management in MPICH Draft 2.1 <https://drive.google.com/file/d/0B273EWJxZUxsbS15SEkzZGtXU2c/view?usp=sharing>`__
+.. [#f1] `Process Management in MPICH <https://github.com/pmodels/mpich/blob/main/doc/wiki/notes/pm.md#notes>`__
 
 .. [#f2] `MPI-2: Extensions to the Message-Passing Interface <https://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/mpi2-report.html>`__
 
