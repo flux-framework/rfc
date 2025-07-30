@@ -522,7 +522,7 @@ Specific Example
       processors for a walltime of 4 hours
 
       —
-      http://oar.imag.fr/docs/2.5/user/usecases.html#mixing-every-together
+      https://oar.imag.fr/docs/2.5/user/usecases.html#mixing-every-together
 
 Existing Equivalents
    +-----------------------------------+-----------------------------------------------------------------------------------------------------------------------------+
@@ -698,6 +698,6 @@ Jobspec YAML
 References
 **********
 
-.. [#f1] `YAML Ain’t Markup Language (YAML) Version 1.1 <http://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
+.. [#f1] `YAML Ain’t Markup Language (YAML) Version 1.1 <https://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
 
 .. [#f2] `JSON Schema: A Media Type for Describing JSON Documents <https://json-schema.org/draft/2020-12/json-schema-core>`__; H. Andrews; 2022

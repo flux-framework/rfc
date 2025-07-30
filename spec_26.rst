@@ -30,7 +30,7 @@ Related Standards
 - :doc:`spec_19`
 - :doc:`spec_21`
 - `OpenMP Specification <https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-5.0.pdf>`__
-- `IETF RFC3986: Uniform Resource Identifier (URI) <https://tools.ietf.org/html/rfc3986>`__
+- `IETF RFC3986: Uniform Resource Identifier (URI) <https://datatracker.ietf.org/doc/html/rfc3986>`__
 
 Goals
 *****

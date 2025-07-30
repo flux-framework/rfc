@@ -65,7 +65,7 @@ Implementation
 **************
 
 The Flux Security Signature is structured like the JSON Web Signature
-Compact Serialization of `RFC 7515 <https://tools.ietf.org/html/rfc7515>`__.
+Compact Serialization of `RFC 7515 <https://datatracker.ietf.org/doc/html/rfc7515>`__.
 It SHALL contain three components concatenated with period (``.``) delimiters:
 
 HEADER.PAYLOAD.SIGNATURE
@@ -82,7 +82,7 @@ HEADER.PAYLOAD.SIGNATURE
   The signature string SHALL NOT contain the NUL or period (``.``) characters.
 
 The header and payload SHALL be encoded in the
-`RFC 4648 <https://tools.ietf.org/html/rfc4648>`__ standard variant of base64.
+`RFC 4648 <https://datatracker.ietf.org/doc/html/rfc4648>`__ standard variant of base64.
 
 The header SHALL contain the following keys:
 

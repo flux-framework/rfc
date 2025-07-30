@@ -6,7 +6,7 @@
 ##############################################
 
 The Collective Code Construction Contract (C4.1) is an evolution of the
-github.com `Fork + Pull Model <https://help.github.com/en/pull-requests/>`__,
+github.com `Fork + Pull Model <https://docs.github.com/en/pull-requests/>`__,
 aimed at providing an optimal collaboration model for free software
 projects.
 
@@ -233,11 +233,11 @@ Further Reading
 
 -  `ZeroMQ - The Guide, Chapter 6: The ZeroMQ Community <https://zguide.zeromq.org/docs/chapter6/#the-community>`__
 
--  `Argyris' Models 1 and 2 <http://en.wikipedia.org/wiki/Chris_Argyris>`__ - the goals of C4.1 are consistent with Argyris' Model 2.
+-  `Argyris' Models 1 and 2 <https://en.wikipedia.org/wiki/Chris_Argyris>`__ - the goals of C4.1 are consistent with Argyris' Model 2.
 
--  `Toyota Kata <http://en.wikipedia.org/wiki/Toyota_Kata>`__ - covering the Improvement Kata (fixing problems one at a time) and the Coaching Kata (helping others to learn the Improvement Kata).
+-  `Toyota Kata <https://en.wikipedia.org/wiki/Toyota_Kata>`__ - covering the Improvement Kata (fixing problems one at a time) and the Coaching Kata (helping others to learn the Improvement Kata).
 
 Implementations
 ***************
 
--  The `ZeroMQ community <http://zeromq.org>`__ uses the C4.1 process for many projects.
+-  The `ZeroMQ community <https://zeromq.org>`__ uses the C4.1 process for many projects.

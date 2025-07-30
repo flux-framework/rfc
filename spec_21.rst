@@ -615,6 +615,6 @@ CLEANUP
 INACTIVE
    ``job.<jobid>`` contains the final snapshot of the job schema.
 
-.. [#f1] `wait, waitpid - wait for a child process to stop or terminate <http://pubs.opengroup.org/onlinepubs/009604499/functions/wait.html>`__; The Open Group Base Specifications Issue 6; IEEE Std 1003.1, 2004 Edition
+.. [#f1] `wait, waitpid - wait for a child process to stop or terminate <https://pubs.opengroup.org/onlinepubs/009604499/functions/wait.html>`__; The Open Group Base Specifications Issue 6; IEEE Std 1003.1, 2004 Edition
 
 .. |states| image:: data/spec_21/states.svg

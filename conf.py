@@ -64,11 +64,25 @@ master_doc = 'index'
 source_suffix = '.rst'
 
 linkcheck_ignore = [
-    "https://help.github.com/en/pull-requests", # 403 Forbidden
-    r"https://blog\.twitter\.com/.*", # 403 Forbidden
-    r"https://github.com/pmodels/mpich/commit/.*", # 406 client not acceptable
-    r"https://www\.mcs\.anl\.gov/.*f", # 403 Forbidden
+    r'https://blog\.x\.com/.*', # 403 Forbidden, Cloudflare bot challenge
 ]
+
+linkcheck_anchors_ignore_for_url = [
+    r'https://github\.com/.*',
+]
+
+linkcheck_request_headers = {
+    'https://www.mcs.anl.gov/': {
+        'User-Agent': 'python-requests'
+    },
+    'https://www.gnu.org/': {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:141.0) Gecko/20100101 '
+                      'Firefox/141.0' # Spoof Firefox
+    },
+    '*': {
+        'Accept': '*/*',
+    }
+}
 
 
 # -- Options for HTML output -------------------------------------------------
