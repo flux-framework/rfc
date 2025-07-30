@@ -67,8 +67,13 @@ linkcheck_ignore = [
     "https://help.github.com/en/pull-requests", # 403 Forbidden
     r"https://blog\.twitter\.com/.*", # 403 Forbidden
     r"https://github.com/pmodels/mpich/commit/.*", # 406 client not acceptable
-    r"https://www\.mcs\.anl\.gov/.*f", # 403 Forbidden
 ]
+
+linkcheck_request_headers = {
+    'https://www.mcs.anl.gov/': {
+        'User-Agent': 'python-requests'
+    },
+}
 
 
 # -- Options for HTML output -------------------------------------------------
