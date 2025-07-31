@@ -143,50 +143,56 @@ defined in the jobspec.
 A resource vertex SHALL contain the following keys:
 
 **type**
-   The ``type`` key for a resource SHALL indicate the type of resource to
+   The ``type`` key SHALL be a string indicating the type of resource to
    be matched. Some type names MAY be reserved for use in the jobspec
    language itself. The currently reserved type is ``slot``, used to
    define **task slots**. Reserved types are described in the
    **Reserved Resource Types** section below.
 
 **count**
-   The ``count`` key SHALL indicate the desired number or range of
-   resources matching the current vertex. The ``count`` SHALL have one
-   of two possible values: either a single integer value representing
-   a fixed count, or a dictionary which SHALL contain the following keys:
+   The ``count`` key SHALL indicate the desired number or range of resources
+   matching the current vertex and SHALL have one of three possible values:
 
-   **min**
-      The ``min`` key SHALL be a positive integer indicating the minimum
-      required count or amount of this resource.
+   1. A single positive integer representing a fixed count.
 
-   Additionally, it MAY contain the following keys (if present, all three
-   MUST be specified):
+   2. A string containing either an :doc:`RFC 22 <spec_22>` idset representing
+      all acceptable counts, or an :doc:`RFC 45 <spec_45>` range as a compact
+      alternative to the dictionary form given next in option 3.
 
-   **max**
-      The ``max`` key SHALL be an integer greater than or equal to ``min``
-      indicating the maximum required count or amount of this resource.
+   3. A dictionary which SHALL contain the following key:
 
-   **operator**
-      The ``operator`` key SHALL be a single character string representing an
-      operator applied between ``min`` and ``max`` which returns the next
-      acceptable value. Currently defined operators are: addition ``+``,
-      multiplication ``*``, or exponentiation ``^``. If ``^`` is specified,
-      then ``min`` MUST be greater than or equal to two.
-
-   **operand**
-      The ``operand`` key SHALL be a positive integer used in conjunction with
-      the given ``operator``. If ``operator`` is either ``*`` or ``^``, then
-      ``operand`` MUST be greater than or equal to two.
-
-   The default value for ``max`` SHALL be *infinite*, therefore a ``count``
-   which specifies only the ``min`` key SHALL be considered a request for
-   *at least* that number of a resource, and the scheduler SHALL generate
-   the *R* that contains the maximum number of the resource that is
-   available and subject to the operator and operand. By contrast,
-   if a fixed count is given to the ``count`` key, the scheduler SHALL
-   match any resource that contains *at least* ``count`` of the resource,
-   but its *R* SHALL contain exactly ``count`` of the resource
-   (potentially leaving excess resources unutilized).
+      **min**
+         The ``min`` key SHALL be a positive integer indicating the minimum
+         required count or amount of this resource.
+   
+      Additionally, it MAY contain the following keys (if present, all three
+      MUST be specified):
+   
+      **max**
+         The ``max`` key SHALL be an integer greater than or equal to ``min``
+         indicating the maximum required count or amount of this resource.
+   
+      **operator**
+         The ``operator`` key SHALL be a single character string representing an
+         operator applied between ``min`` and ``max`` which returns the next
+         acceptable value. Currently defined operators are: addition ``+``,
+         multiplication ``*``, or exponentiation ``^``. If ``^`` is specified,
+         then ``min`` MUST be greater than or equal to two.
+   
+      **operand**
+         The ``operand`` key SHALL be a positive integer used in conjunction with
+         the given ``operator``. If ``operator`` is either ``*`` or ``^``, then
+         ``operand`` MUST be greater than or equal to two.
+   
+      The default value for ``max`` SHALL be *infinite*, therefore a ``count``
+      which specifies only the ``min`` key SHALL be considered a request for
+      *at least* that number of a resource, and the scheduler SHALL generate
+      the *R* that contains the maximum number of the resource that is
+      available and subject to the operator and operand. By contrast,
+      if a fixed count is given to the ``count`` key, the scheduler SHALL
+      match any resource that contains *at least* ``count`` of the resource,
+      but its *R* SHALL contain exactly ``count`` of the resource
+      (potentially leaving excess resources unutilized).
 
 A resource vertex MAY additionally contain one or more of the following keys:
 
@@ -556,6 +562,21 @@ Existing Equivalents
 
 Jobspec YAML
    .. literalinclude:: data/spec_14/use_case_1.7.yaml
+      :language: yaml
+
+Use Case 1.8
+   Request an irregular range of a type of resource
+
+Specific Example
+   Similar to 1.2, request between 3 and 30 nodes, but must be a perfect square
+
+Existing Equivalents
+   +-----------------------------------+-----------------------------------+
+   | Slurm                             | ``salloc -N4,9,16,25``            |
+   +-----------------------------------+-----------------------------------+
+
+Jobspec YAML
+   .. literalinclude:: data/spec_14/use_case_1.8.yaml
       :language: yaml
 
 Section 2: General Requests
