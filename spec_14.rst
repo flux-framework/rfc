@@ -209,9 +209,10 @@ A resource vertex MAY additionally contain one or more of the following keys:
    and their associated resources.
 
 **with**
-   The ``with`` key SHALL indicate an edge of type ``out`` from this resource
-   vertex to another resource. Therefore, the value of the ``with`` key
-   SHALL be a dictionary conforming to the resource vertex specification.
+   The ``with`` key SHALL indicate one or more edges of type ``out`` from this
+   resource vertex to other resources. Therefore, the value of the ``with`` key
+   SHALL be a strict list of dictionaries conforming to the resource vertex
+   specification and MUST contain at least one such vertex.
 
 **label**
    The ``label`` key SHALL be a string that may be used to reference this
