@@ -1,3 +1,4 @@
+name: main
 on: [ pull_request, push ]
 jobs:
   check-pr:
@@ -32,8 +33,6 @@ jobs:
   make-linkcheck:
     name: make linkcheck
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     steps:
     - uses: actions/checkout@v3
       with:
@@ -45,20 +44,14 @@ jobs:
       run: |
         pip3 install --upgrade -r ./requirements.txt
     - name: make linkcheck
-      id: linkcheck
       run: |
         status=0
         make linkcheck || status=$?
-        echo "status=${status}" >> "${GITHUB_OUTPUT}"
+        mkdir -p ./linkcheck
+        echo "${status}" > ./linkcheck/status
+        echo ${{ github.event.number }} > ./linkcheck/pr_number
         exit 0 # this step should never fail the overall workflow
-    - name: Comment on PR if linkcheck failed
-      if: ${{ github.event_name == 'pull_request' && steps.linkcheck.outputs.status != 0 }}
-      uses: actions/github-script@v7
+    - uses: actions/upload-artifact@v4
       with:
-        script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: '⚠️  linkcheck failed with status code ${{ steps.linkcheck.outputs.status }}'
-          })
+        name: linkcheck
+        path: linkcheck/
