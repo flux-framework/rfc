@@ -77,7 +77,7 @@ Grammar
 
 The basic grammar for the constraint query language is
 
-.. code-block:: EBNF
+.. code-block:: PEG
 
    expr
      : expr expr
@@ -89,15 +89,15 @@ The basic grammar for the constraint query language is
      | term
 
    and
-     : /&{1,2}|and\b/
+     : &{1,2}|and\b
    or
-     : /\|{1,2}|or\b/
+     : \|{1,2}|or\b
 
    not
-     : /not\b/
+     : not\b
 
    term
-     : operator':'operand
+     : operator ':' operand
      | operand
 
    operator
