@@ -1,29 +1,18 @@
 queue_rules:
   - name: default
-    queue_conditions:
-      - base=master
-      - label="merge-when-passing"
-      - label!="work-in-progress"
-      - "approved-reviews-by=@flux-framework/core"
-      - "#approved-reviews-by>0"
-      - "#changes-requested-reviews-by=0"
-      - -title~="^\[*(WIP|wip)"
-    merge_conditions:
-      - base=master
-      - status-success="validate commits"
-      - status-success="make check"
-      - status-success="make linkcheck"
-      - label="merge-when-passing"
-      - label!="work-in-progress"
-      - "approved-reviews-by=@flux-framework/core"
-      - "#approved-reviews-by>0"
-      - "#changes-requested-reviews-by=0"
-      - -title~="^\[*(WIP|wip)"
     update_method: rebase
     merge_method: merge
 
 pull_request_rules:
   - name: rebase and merge when passing all checks
-    conditions: []
+    conditions:
+      - base=master
+      - label="merge-when-passing"
+      - label!="work-in-progress"
+      - -title~="^\[*(WIP|wip)"
+      - "approved-reviews-by=@flux-framework/core"
+      - "#approved-reviews-by>0"
+      - "#changes-requested-reviews-by=0"
     actions:
       queue:
+        name: default
