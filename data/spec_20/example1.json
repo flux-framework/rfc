@@ -13,6 +13,7 @@
     "nodelist": [
       "node[186-189]"
     ],
+    "nslots": 32,
     "starttime": 1676560542,
     "expiration": 1676562342
   }
