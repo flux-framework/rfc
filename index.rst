@@ -294,6 +294,12 @@ Changes to resource availability are recorded in an RFC 18 eventlog.
 This specification describes a compact form for expressing an RFC 14
 resource range defined by a min/max/operand/operator combination.
 
+:doc:`spec_46`
+~~~~~~~~~~~~~~
+
+This specification describes a compact form for expressing an RFC 14 jobspec
+resources list that can be provided to several Flux commands by a user.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -341,3 +347,4 @@ resource range defined by a min/max/operand/operator combination.
    spec_43
    spec_44
    spec_45
+   spec_46
