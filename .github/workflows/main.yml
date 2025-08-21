@@ -1,3 +1,4 @@
+name: main
 on: [ pull_request, push ]
 jobs:
   check-pr:
@@ -44,4 +45,13 @@ jobs:
         pip3 install --upgrade -r ./requirements.txt
     - name: make linkcheck
       run: |
-        make linkcheck
+        status=0
+        make linkcheck || status=$?
+        mkdir -p ./linkcheck
+        echo "${status}" > ./linkcheck/status
+        echo ${{ github.event.number }} > ./linkcheck/pr_number
+        exit 0 # this step should never fail the overall workflow
+    - uses: actions/upload-artifact@v4
+      with:
+        name: linkcheck
+        path: linkcheck/
