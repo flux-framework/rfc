@@ -164,6 +164,15 @@ R Format
     the same.  For example, :data:`nodelist` MAY contain one hostlist entry
     for all the execution targets spread over multiple :data:`R_lite` entries.
 
+  .. data:: nslots
+
+    (*integer*, OPTIONAL) The total number of slots in an allocation from the
+    scheduler.
+
+    This will not be present if R is not such an allocation, e.g. for an
+    instance resource inventory. A conforming scheduler SHALL include this in
+    its allocations and if present it MUST be greater than ``0``.
+
   .. data:: properties
 
     (*dictionary of string*, OPTIONAL) Each key
@@ -189,7 +198,7 @@ R Format
 
     (*number*, OPTIONAL) The start time at which the resource set is valid.
 
-    A value of `0.` SHALL be interpreted as "unset".
+    A value of ``0.`` SHALL be interpreted as "unset".
 
     The value SHALL be expressed as the number of seconds elapsed since the
     Unix Epoch (1970-01-01 00:00:00 UTC) with optional microsecond precision.
@@ -202,7 +211,7 @@ R Format
     (*number*, OPTIONAL) The end or expiration time of the resource set,
     after which it becomes invalid.
 
-    A value of `0.` SHALL be interpreted as "unset".
+    A value of ``0.`` SHALL be interpreted as "unset".
 
     The value SHALL be expressed as the number of seconds elapsed since the
     Unix Epoch (1970-01-01 00:00:00 UTC) with optional microsecond precision.
@@ -253,12 +262,13 @@ R Format
 Example R
 =========
 
-The following is an example of a version 1 resource specification.
-The example below indicates a resource set with the ranks 19
-through 22.  These ranks correspond to the nodes node186 through
-node189.  Each of the nodes contains 48 cores (0-47) and 8 gpus (0-7).
-The :data:`starttime` and :data:`expiration` indicate the resources were valid
-for about 30 minutes on February 16, 2023.
+The following is an example of a version 1 resource specification. The example
+below indicates a resource set with the ranks 19 through 22.  These ranks
+correspond to the nodes node186 through node189.  Each of the nodes contains
+48 cores (0-47) and 8 gpus (0-7). There are 32 slots in total, giving 8 slots
+per node, which results in 1 gpu and 6 cores per slot. The :data:`starttime`
+and :data:`expiration` indicate the resources were valid for about 30 minutes
+on February 16, 2023.
 
 .. literalinclude:: data/spec_20/example1.json
    :language: json
