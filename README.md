@@ -55,6 +55,7 @@ Table of Contents
 - [43/Job List Service](spec_43.rst)
 - [44/Resource Events](spec_44.rst)
 - [45/Resource Range String Representation](spec_45.rst)
+- [46/Command Line Job](spec_46.rst)
 
 Build Instructions
 ------------------
