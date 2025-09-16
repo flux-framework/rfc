@@ -234,30 +234,6 @@ R Format
   occurs when a new Flux instance is started cannot do the same for the opaque
   :data:`scheduling` key.
 
-.. data:: attributes
-
-  The purpose of the :data:`attributes` key is to provide optional
-  information on this *R* document. The :data:`attributes` key SHALL
-  be a dictionary of one key: :data:`system`.
-
-  Other keys are reserved for future extensions.
-
-  .. data:: system
-
-    Attributes in the :data:`system` dictionary provide additional system
-    information that have affected the creation of this *R* document.
-    All of the system attributes are optional.
-
-    A common system attribute is:
-
-    .. describe:: scheduler
-
-      The value of the :data:`scheduler` key is a free-from dictionary that
-      may provide the information specific to the scheduler used
-      to produce this document. For example, a scheduler that
-      manages multiple job queues may add ``queue=batch``
-      to indicate that this resource set was allocated from within
-      its ``batch`` queue.
 
 Example R
 =========
