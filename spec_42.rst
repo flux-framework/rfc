@@ -127,6 +127,22 @@ are defined as follows:
       Send ``add-credit`` exec responses when buffer space is available
       for standard input or writable auxiliary channels.
 
+  .. object:: local_flags
+
+    (*integer*, OPTIONAL) A bitfield comprised of zero or more flags:
+
+    stdio-fallthrough (1)
+      Let subprocess inherit stdin, stdout, and stderr file descriptors
+      from the subprocess server.
+
+    no-setpgrp (2)
+      Do not call setpgrp(2) before exec.  Use kill(2) instead of killpg(2)
+      to signal the subprocess.
+
+    fork-exec (4)
+      Use fork(2)/exec(2) instead of posix_spawn(2) system calls to spawn
+      the subprocess.
+
 Several response types are distinguished by the type key:
 
 .. object:: exec started response

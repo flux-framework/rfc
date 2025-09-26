@@ -500,3 +500,7 @@ preemptible
 undrain
 undrained
 Maloney
+fallthrough
+setpgrp
+killpg
+posix
