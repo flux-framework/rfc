@@ -331,6 +331,29 @@ the following keys:
   the subprocess in an environment variable whose name is the same as
   the channel name.
 
+.. object:: msgchans
+
+  (*array of object*, OPTIONAL) A list of message channels.
+
+  Each object represents a point to point channel for Flux messages.
+
+  .. object:: name
+
+    (*string*, required)
+
+    The name of the message channel.  The subprocess server SHALL set
+    this name in the client environment to a URI that the client may
+    connect to.
+
+  .. object:: uri
+
+    (*string*, required)
+
+    A URI, accessible on the server side.  Messages received on this URI
+    SHALL be transmitted to client channel.  Messages received on the client
+    channel SHALL be transmitted to this URI.
+
+
 I/O Object
 ==========
 
