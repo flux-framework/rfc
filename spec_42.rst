@@ -97,8 +97,10 @@ Implementation
 exec
 ====
 
-The streaming :program:`exec` RPC creates a new subprocess.  Payloads are
-are defined as follows:
+The exec RPC creates a new subprocess. The RPC MUST be initiated with a
+streaming request as defined in RFC 6 unless the ``background`` flag is set
+(see below), in which case it MUST be initiated with a non-streaming request.
+Payloads are defined as follows:
 
 .. object:: exec request
 
@@ -126,6 +128,15 @@ are defined as follows:
     write-credit (8)
       Send ``add-credit`` exec responses when buffer space is available
       for standard input or writable auxiliary channels.
+
+    background (16)
+      Run subprocess in the background. The server SHALL send exactly one
+      response upon execution: :program:`exec started` if successful, or
+      :program:`exec error` if execution fails. When execution is successful,
+      the subprocess SHALL continue running as a child process of the
+      server until either the subprocess completes or the server shuts
+      down. When the ``background`` flag is set, the server SHALL ignore
+      the ``stdout``, ``stderr``, ``channel``, and ``write-credit`` flags.
 
   .. object:: local_flags
 
@@ -222,18 +233,20 @@ Several response types are distinguished by the type key:
 
 .. object:: exec error response
 
-The :program:`exec` response stream SHALL be terminated by an error
-response per RFC 6, with ENODATA (61) indicating success.  The server MUST
-NOT terminate the stream with ENODATA without first returning the
-:program:`exec started` response, :program:`exec finished` response, and
-:program:`exec output` responses with the EOF flag set for each open channel.
+When the ``background`` flag is not set, the :program:`exec` response
+stream SHALL be terminated by an error response per RFC 6, with ENODATA
+(61) indicating success. The server MUST send :program:`exec started`,
+:program:`exec finished`, and :program:`exec output` responses with EOF
+flag set for each open channel before terminating with ENODATA.
+
 The client MAY consider it a protocol error if one of those responses is
 missing and an ENODATA response is received.
 
-Failure of the remote command SHALL be indicated in finished response
-and SHALL NOT result in an error response.  Other errors, such as an
-ENOENT error from the :func:`execvp` system call SHALL result in an
-error response.
+When the ``background`` flag is not set, failure of the remote command SHALL
+be indicated in finished response and SHALL NOT result in an error response.
+
+Other errors, such as an ENOENT error from the :func:`execvp` system call
+SHALL result in an error response.
 
 write
 =====
