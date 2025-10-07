@@ -97,10 +97,21 @@ Implementation
 exec
 ====
 
-The exec RPC creates a new subprocess. The RPC MUST be initiated with a
-streaming request as defined in RFC 6 unless the ``background`` flag is set
-(see below), in which case it MUST be initiated with a non-streaming request.
-Payloads are defined as follows:
+The exec RPC creates a new subprocess. The behavior depends on whether the
+RPC is initiated with a streaming or non-streaming request as defined in 
+RFC 6.
+
+Streaming request: When initiated with a streaming request, responses
+(defined below) SHALL be sent until the process terminates and all output
+has been delivered. If the requesting process disconnects, the subprocess
+SHALL be terminated.
+
+Non-streaming request (background mode): When initiated with a non-streaming
+request, a single response SHALL be sent: either an :program:`exec started`
+response if successful, or an :program:`exec error` response on failure. The
+subprocess SHALL continue running as a child of the subprocess server until
+it terminates or the server is shut down. The server MAY log subprocess
+output and exit code to its own log stream.
 
 .. object:: exec request
 
@@ -116,6 +127,10 @@ Payloads are defined as follows:
 
     (*integer*, REQUIRED) A bitfield comprised of zero or more flags:
 
+    ..note::
+
+      These flags are ignored in background mode.
+
     stdout (1)
       Forward standard output to the client.
 
@@ -128,15 +143,6 @@ Payloads are defined as follows:
     write-credit (8)
       Send ``add-credit`` exec responses when buffer space is available
       for standard input or writable auxiliary channels.
-
-    background (16)
-      Run subprocess in the background. The server SHALL send exactly one
-      response upon execution: :program:`exec started` if successful, or
-      :program:`exec error` if execution fails. When execution is successful,
-      the subprocess SHALL continue running as a child process of the
-      server until either the subprocess completes or the server shuts
-      down. When the ``background`` flag is set, the server SHALL ignore
-      the ``stdout``, ``stderr``, ``channel``, and ``write-credit`` flags.
 
   .. object:: local_flags
 
@@ -233,7 +239,7 @@ Several response types are distinguished by the type key:
 
 .. object:: exec error response
 
-When the ``background`` flag is not set, the :program:`exec` response
+When initiated with a streaming request, the :program:`exec` response
 stream SHALL be terminated by an error response per RFC 6, with ENODATA
 (61) indicating success. The server MUST send :program:`exec started`,
 :program:`exec finished`, and :program:`exec output` responses with EOF
@@ -242,11 +248,15 @@ flag set for each open channel before terminating with ENODATA.
 The client MAY consider it a protocol error if one of those responses is
 missing and an ENODATA response is received.
 
-When the ``background`` flag is not set, failure of the remote command SHALL
-be indicated in finished response and SHALL NOT result in an error response.
+Failure of the remote command SHALL be indicated in finished response and
+SHALL NOT result in an error response.
 
 Other errors, such as an ENOENT error from the :func:`execvp` system call
 SHALL result in an error response.
+
+When initiated with a non-streaming request, an :program:`exec error`
+response SHALL NOT be sent if a failure occurs after a successful call to
+:func:`execvp`.
 
 write
 =====
