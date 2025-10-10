@@ -165,34 +165,38 @@ A resource vertex SHALL contain the following keys:
          The ``min`` key SHALL be a positive integer indicating the minimum
          required count or amount of this resource.
    
-      Additionally, it MAY contain the following keys (if present, all three
-      MUST be specified):
+      Additionally, it MAY contain the following keys:
    
       **max**
          The ``max`` key SHALL be an integer greater than or equal to ``min``
-         indicating the maximum required count or amount of this resource.
+         indicating the maximum required count or amount of this resource. If
+         unset, the default ``max`` SHALL be *infinite*, therefore a ``count``
+         which specifies only the ``min`` key SHALL be considered a request for
+         *at least* that number of a resource, and the scheduler SHALL generate
+         the *R* that contains the maximum number of the resource that is
+         available and subject to the ``operator`` and ``operand``. By contrast,
+         if a fixed count is given to the ``count`` key, the scheduler SHALL
+         match any resource that contains *at least* ``count`` of the resource,
+         but its *R* SHALL contain exactly ``count`` of the resource
+         (potentially leaving excess resources unutilized).
    
       **operator**
          The ``operator`` key SHALL be a single character string representing an
          operator applied between ``min`` and ``max`` which returns the next
          acceptable value. Currently defined operators are: addition ``+``,
          multiplication ``*``, or exponentiation ``^``. If ``^`` is specified,
-         then ``min`` MUST be greater than or equal to two.
+         then ``min`` MUST be greater than or equal to two. If unset, the default
+         ``operator`` SHALL be ``+``.
    
       **operand**
          The ``operand`` key SHALL be a positive integer used in conjunction with
-         the given ``operator``. If ``operator`` is either ``*`` or ``^``, then
-         ``operand`` MUST be greater than or equal to two.
+         the ``operator``. If the ``operator`` is either ``*`` or ``^``, then the
+         ``operand`` MUST be greater than or equal to two. If unset, the default
+         ``operand`` SHALL be 1.
+
+      The ``operator`` and ``operand`` keys MUST both be present if either is
+      specified.
    
-      The default value for ``max`` SHALL be *infinite*, therefore a ``count``
-      which specifies only the ``min`` key SHALL be considered a request for
-      *at least* that number of a resource, and the scheduler SHALL generate
-      the *R* that contains the maximum number of the resource that is
-      available and subject to the operator and operand. By contrast,
-      if a fixed count is given to the ``count`` key, the scheduler SHALL
-      match any resource that contains *at least* ``count`` of the resource,
-      but its *R* SHALL contain exactly ``count`` of the resource
-      (potentially leaving excess resources unutilized).
 
 A resource vertex MAY additionally contain one or more of the following keys:
 
