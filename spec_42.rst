@@ -325,6 +325,11 @@ The :program:`kill` RPC sends a signal to a remote process.
 
     (*integer*, REQUIRED) The signal number.
 
+  .. object:: label
+
+    (*string*, OPTIONAL) The label of the remote process. If this key is
+    set in the payload then the value of ``pid`` SHALL be ignored.
+
 .. object:: kill response
 
   The successful response SHALL contain no payload.
@@ -392,6 +397,17 @@ the following keys:
     SHALL be transmitted to client channel.  Messages received on the client
     channel SHALL be transmitted to this URI.
 
+.. object:: label
+
+   (*string*, OPTIONAL) A string label for the command.
+
+   If present, the label SHALL NOT be empty.
+
+   The server SHOULD allow processes to be referenced by label in
+   addition to process ID.
+
+   The server MUST reject attempts to create processes with duplicate
+   labels.
 
 I/O Object
 ==========
