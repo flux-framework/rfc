@@ -127,9 +127,9 @@ output and exit code to its own log stream.
 
     (*integer*, REQUIRED) A bitfield comprised of zero or more flags:
 
-    ..note::
+    .. note::
 
-      These flags are ignored in background mode.
+      The stdout, stderr, and channel flags are ignored in background mode.
 
     stdout (1)
       Forward standard output to the client.
@@ -143,6 +143,9 @@ output and exit code to its own log stream.
     write-credit (8)
       Send ``add-credit`` exec responses when buffer space is available
       for standard input or writable auxiliary channels.
+
+    waitable (16)
+      Allow the subprocess to be waited on with a ``wait`` RPC.
 
   .. object:: local_flags
 
@@ -333,6 +336,36 @@ The :program:`kill` RPC sends a signal to a remote process.
 .. object:: kill response
 
   The successful response SHALL contain no payload.
+
+wait
+====
+
+The :program:`wait` RPC waits for a subprocess to terminate and returns its
+exit status. This RPC SHALL return an error if the subprocess was not started
+with the waitable flag set.
+
+.. object:: wait request
+
+  The request SHALL consist of a JSON object with the following keys:
+
+  .. object:: pid
+
+    (*integer*, REQUIRED) The process ID of the subprocess to wait for.
+
+  .. object:: label
+
+    (*string*, OPTIONAL) The label of the subprocess to wait for. If this key
+    is present, the value of ``pid`` SHALL be ignored and the subprocess
+    SHALL be identified by its label.
+
+.. object:: wait response
+
+  A successful response SHALL consist of a JSON object with the following key:
+
+  .. object:: status
+
+    (*integer*, REQUIRED) The UNIX wait status value as returned by
+    :func:`waitpid`.
 
 Command Object
 ==============
