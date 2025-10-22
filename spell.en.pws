@@ -504,3 +504,4 @@ fallthrough
 setpgrp
 killpg
 posix
+waitable
