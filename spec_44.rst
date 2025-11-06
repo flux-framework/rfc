@@ -276,6 +276,24 @@ The event context SHALL contain the following keys:
 
   (*string*, OPTIONAL) A message describing why the undrain action was taken.
 
+.. data:: overwrite
+  :noindex:
+
+  (*integer*, OPTIONAL) Select how this event is applied if the nodes are
+  already undrained.  The value SHALL be one of:
+
+  0
+    Update nothing.  Use this value if the nodes are known to be drained.
+
+  1
+    Update the reason but not the timestamp.
+
+  2
+    Update the reason and the timestamp.
+
+  If this key is not present, it should be treated the same as if it
+  were present with a value of 0.
+
 .. code:: json
 
   {
@@ -283,7 +301,9 @@ The event context SHALL contain the following keys:
     "name": "undrain",
     "context": {
       "idset": "0",
-      "nodelist": "picl0"
+      "nodelist": "picl0",
+      "reason": "node was rebooted",
+      "ovewrite": 0
     }
   }
 
