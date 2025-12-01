@@ -57,6 +57,7 @@ Table of Contents
 - [45/Resource Range String Representation](spec_45.rst)
 - [46/Command Line Job](spec_46.rst)
 - [47/Flux Framework Contributor Code of Conduct](spec_47.rst)
+- [48/Flux Framework Project Governance](spec_48.rst)
 
 Build Instructions
 ------------------

@@ -306,6 +306,12 @@ resources list that can be provided to several Flux commands by a user.
 This specification outlines the Flux Framework Code of Conduct, adapted
 from the Contributor Covenant, and specifies the enforcement process.
 
+:doc:`spec_48`
+~~~~~~~~~~~~~~
+
+This document describes the rules for the development and community management
+of the Flux Framework project (governance).
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -355,3 +361,4 @@ from the Contributor Covenant, and specifies the enforcement process.
    spec_45
    spec_46
    spec_47
+   spec_48
