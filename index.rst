@@ -300,6 +300,12 @@ resource range defined by a min/max/operand/operator combination.
 This specification describes a compact form for expressing an RFC 14 jobspec
 resources list that can be provided to several Flux commands by a user.
 
+:doc:`spec_47`
+~~~~~~~~~~~~~~
+
+This specification outlines the Flux Framework Code of Conduct, adapted
+from the Contributor Covenant, and specifies the enforcement process.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -348,3 +354,4 @@ resources list that can be provided to several Flux commands by a user.
    spec_44
    spec_45
    spec_46
+   spec_47

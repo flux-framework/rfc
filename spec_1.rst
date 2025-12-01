@@ -32,6 +32,7 @@ Related Standards
 
 - :doc:`spec_2`
 - :doc:`spec_7`
+- :doc:`spec_47`
 
 Goals
 *****
