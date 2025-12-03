@@ -505,3 +505,4 @@ setpgrp
 killpg
 posix
 waitable
+Sochat
