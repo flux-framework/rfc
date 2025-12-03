@@ -270,9 +270,9 @@ In these examples the caller wants to filter jobs submitted to the queue foobar 
 List
 ====
 
-The :program:`job-list.list` RPC fetches a list of jobs.
+The :program:`job-list.list` streaming RPC fetches and returns jobs.
 
-The list of jobs shall be filtered in the following order.
+The jobs to be streamed shall be filtered and returned in the following order.
 
 - pending jobs
 - running jobs
@@ -281,6 +281,9 @@ The list of jobs shall be filtered in the following order.
 Pending jobs are returned ordered by priority (higher priority first),
 running jobs ordered by start time (most recent first), and inactive
 jobs ordered by completion (most recently finished first)
+
+The RPC stream SHALL be terminated with error 61, "No data available"
+(ENODATA) when all jobs have been sent.
 
 The RPC payloads are defined as follows:
 
@@ -313,7 +316,20 @@ The RPC payloads are defined as follows:
 
 .. object:: job-info.lookup response
 
-  The response SHALL consist of a JSON object with the following keys:
+  Each non-error response SHALL consist of a JSON object with the
+  following keys:
+
+  .. object:: job
+
+    (*object*, REQUIRED) The job information for a single job.  The
+    returned object will contain the requested attributes in an object
+    described in :ref:`spec_43_job_attributes`.
+
+For backwards compatibility earlier versions of this RFC, the
+:program:`job-list.list` RPC MAY return a single response for
+non-streaming RPC requests.  Such a response would be as follows:
+
+.. object:: job-info.lookup legacy response
 
   .. object:: jobs
 
