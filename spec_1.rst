@@ -218,17 +218,6 @@ Evolution of Public Contracts
 
 -  When old names are removed, their implementations MUST provoke an exception (assertion) if used by applications.
 
-Project Administration
-======================
-
--  The project founders SHALL act as Administrators to manage the set of project Maintainers.
-
--  The Administrators SHALL ensure their own succession over time by promoting the most effective Maintainers.
-
--  A new Contributor who makes a correct patch SHALL be invited to become a Maintainer.
-
--  Administrators MAY remove Maintainers who are inactive for an extended period of time, or who repeatedly fail to apply this process accurately.
-
 Further Reading
 ***************
 
