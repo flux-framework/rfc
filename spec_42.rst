@@ -261,6 +261,97 @@ When initiated with a non-streaming request, an :program:`exec error`
 response SHALL NOT be sent if a failure occurs after a successful call to
 :func:`execvp`.
 
+attach
+======
+
+The :program:`attach` RPC attaches to an existing background subprocess.
+
+.. object:: attach request
+
+  The request SHALL consist of a JSON object with the following keys:
+
+  .. object:: pid
+
+    (*integer*, REQUIRED) The process ID of the background subprocess.
+
+  .. object:: label
+
+    (*string*, OPTIONAL) The label of the background subprocess. If this key
+    is present, the value of ``pid`` SHALL be ignored and the subprocess
+    SHALL be identified by its label.
+
+  .. object:: flags
+
+    (*integer*, REQUIRED) A bitfield comprised of zero or more flags.
+
+    No flags are currently supported. The flags value SHALL be ignored
+    and output forwarding behavior SHALL be inherited from the original
+    subprocess.
+
+.. note::
+
+  Output produced by the subprocess before the attach request MAY be lost
+  unless the subprocess server has buffered it or logged it to its own
+  log stream.
+
+The :program:`attach` response stream SHALL follow the same format as
+streaming :program:`exec` responses. The server SHALL send:
+
+- :program:`exec attached` response to indicate successful attachment
+- :program:`exec output` responses for any buffered output and subsequent
+  output matching the target subprocess flags
+- :program:`exec stopped` response if the subprocess is stopped
+- :program:`exec finished` response when the subprocess terminates
+- :program:`exec error` response with ENODATA (61) to indicate successful
+  stream termination
+
+.. object:: exec attached response
+
+  The client has successfully attached to the subprocess.
+
+  The response SHALL consist of a JSON object with the following keys:
+
+  .. object:: type
+
+    (*string*, REQUIRED) The response type with a value of ``attached``.
+
+  .. object:: pid
+
+    (*integer*, REQUIRED) The process ID of the subprocess.
+
+  .. object:: flags
+
+    (*integer*, REQUIRED) The flags that the subprocess was originally
+    started with. This allows the client to determine which output streams
+    and responses to expect.
+
+
+If the subprocess was started with the waitable flag and has already
+terminated before the attach request is processed, the server SHALL send an
+:program:`exec attached` response, followed by :program:`exec output` responses
+with the EOF flag set for each output stream that was being forwarded,
+followed by the :program:`exec finished` response, and finally ENODATA to
+terminate the stream.
+
+.. note::
+
+ A waitable background subprocess that is successfully attached to and
+ receives the :program:`exec finished` response SHALL be considered reaped
+ and cannot be waited on or attached to again.
+
+If the requesting process disconnects, the subprocess SHALL revert to
+background mode and continue running until it terminates or the server
+is shut down.
+
+.. object:: attach error response
+
+The :program:`attach` RPC SHALL return an error response if:
+
+- The subprocess does not exist or has exited without the waitable flag (ENOENT)
+- The subprocess is not currently in background mode or already has a
+  client attached (EBUSY)
+- The client lacks authorization to attach to the subprocess (EPERM)
+
 write
 =====
 
