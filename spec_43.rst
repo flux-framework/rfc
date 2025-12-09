@@ -272,7 +272,7 @@ List
 
 The :program:`job-list.list` RPC fetches a list of jobs.
 
-The list of jobs shall be filtered in the following order.
+The list of jobs SHALL be filtered in the following order.
 
 - pending jobs
 - running jobs
@@ -281,6 +281,12 @@ The list of jobs shall be filtered in the following order.
 Pending jobs are returned ordered by priority (higher priority first),
 running jobs ordered by start time (most recent first), and inactive
 jobs ordered by completion (most recently finished first)
+
+The RPC request SHOULD specify FLUX_MSGFLAG_STREAMING as described in
+RFC 6 so that the server has the opportunity to manage response
+message size for large query results.  When that flag is specified,
+responses SHALL be split over multiple messages, terminated with error
+61, "No data available" (ENODATA).
 
 The RPC payloads are defined as follows:
 
@@ -313,7 +319,8 @@ The RPC payloads are defined as follows:
 
 .. object:: job-info.lookup response
 
-  The response SHALL consist of a JSON object with the following keys:
+  Each non-error response SHALL consist of a JSON object with the
+  following keys:
 
   .. object:: jobs
 
