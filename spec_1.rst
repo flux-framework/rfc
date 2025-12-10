@@ -156,17 +156,13 @@ Development Process
 
 -  Maintainers SHOULD NOT merge their own patches except in exceptional cases.
 
--  Maintainers SHALL NOT make value judgments on correct patches.
-
--  Maintainers SHALL merge correct patches from other Contributors rapidly.
+-  Maintainers SHALL merge correct patches from other Contributors as described in :doc:`spec_48`.
 
 -  The Contributor MAY tag an issue as "Ready" after making a pull request for the issue.
 
 -  The user who created an issue SHOULD close the issue after checking the patch is successful.
 
 -  Maintainers SHOULD ask for improvements to incorrect patches and SHOULD reject incorrect patches if the Contributor does not respond constructively.
-
--  Any Contributor who has value judgments on a correct patch SHOULD express these via their own patches.
 
 -  Maintainers MAY commit changes to non-source documentation directly to the project.
 
