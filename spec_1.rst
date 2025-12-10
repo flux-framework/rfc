@@ -154,7 +154,7 @@ Development Process
 
 -  To accept or reject a patch, a Maintainer SHALL use the Platform interface.
 
--  Maintainers SHOULD NOT merge their own patches except in exceptional cases, such as non-responsiveness from other Maintainers for an extended period (more than 1-2 days).
+-  Maintainers SHOULD NOT merge their own patches except in exceptional cases.
 
 -  Maintainers SHALL NOT make value judgments on correct patches.
 
