@@ -40,17 +40,31 @@ The goal of this governance document is to clearly define the roles, responsibil
 Project Governance
 ******************
 
+The "project" refers to the flux-framework GitHub organization and all the
+GitHub projects hosted within it.
+
 The development and community management of the project will follow the governance rules described in this document.
-
-Project Maintainers
-===================
-
-Project maintainers have admin access to the GitHub repository. Maintainers vary by GitHub project, and are viewable in the ``CODEOWNERS`` file provided in each respective project.
 
 Roles
 =====
 
-This project includes the roles of **Maintainer** and **Contributor,** each of which is defined under `RFC 1 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_1.html#preliminaries>`_. 
+:doc:`spec_1` defines the following roles for each GitHub project within
+the flux-framework organization:
+
+Contributor
+  A person who wishes to provide a patch.
+
+Maintainer
+  A person with commit access.  The file ``MAINTAINERS.md`` within each
+  project defines the GitHub identities of the project Maintainers.
+
+In addition, we define the following role for the overall project, e.g.
+the flux-framework organization:
+
+Administrator
+  A person with GitHub administrator access to the organization and all its
+  projects.  The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`_
+  defines the GitHub identities of the organization administrators.
 
 Development Workflow
 ====================
@@ -76,14 +90,14 @@ Maintainer Review
 Issue Governance
 ----------------
 
-* Both collaborators and project maintainers may propose issues. The participation in the issue discussion is open and must follow the `Code of Conduct <spec_47>`_.
+* Both contributors and project maintainers may propose issues. The participation in the issue discussion is open and must follow the `Code of Conduct <spec_47>`_.
 * The group of project maintainers will be responsible for assigning labels to issues, as well as for assigning the issue to a project maintainer or contributor. The `merge-when-passing` label MAY be applied by a maintainer to allow a pull request to be automatically merged once it has met all requirements.
 * The group of project maintainers SHOULD commit to responding to any issue within **72 hours** of the issue's creation.
 
 Pull Request Governance
 -----------------------
 
-* Both collaborators and project maintainers may propose pull requests.
+* Both contributors and project maintainers may propose pull requests.
 * Pull requests SHOULD describe the contribution. The assignment of labels and assignees to the pull request is the responsibility of the project maintainers.
 * The group of project maintainers SHOULD provide feedback to any pull request within **72 hours** of the pull request's creation.
 * The decision of accepting (or rejecting) a pull request will be taken by the group of project maintainers. The criteria and process for making the decision is described in `RFC 1 "Development Process" <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_1.html#development-process>`_.
