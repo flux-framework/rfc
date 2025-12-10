@@ -90,14 +90,14 @@ Maintainer Review
 Issue Governance
 ----------------
 
-* Both collaborators and project maintainers may propose issues. The participation in the issue discussion is open and must follow the `Code of Conduct <spec_47>`_.
+* Both contributors and project maintainers may propose issues. The participation in the issue discussion is open and must follow the `Code of Conduct <spec_47>`_.
 * The group of project maintainers will be responsible for assigning labels to issues, as well as for assigning the issue to a project maintainer or contributor. The `merge-when-passing` label MAY be applied by a maintainer to allow a pull request to be automatically merged once it has met all requirements.
 * The group of project maintainers SHOULD commit to responding to any issue within **72 hours** of the issue's creation.
 
 Pull Request Governance
 -----------------------
 
-* Both collaborators and project maintainers may propose pull requests.
+* Both contributors and project maintainers may propose pull requests.
 * Pull requests SHOULD describe the contribution. The assignment of labels and assignees to the pull request is the responsibility of the project maintainers.
 * The group of project maintainers SHOULD provide feedback to any pull request within **72 hours** of the pull request's creation.
 * The decision of accepting (or rejecting) a pull request will be taken by the group of project maintainers. The criteria and process for making the decision is described in `RFC 1 "Development Process" <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_1.html#development-process>`_.
