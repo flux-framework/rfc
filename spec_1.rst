@@ -33,6 +33,7 @@ Related Standards
 - :doc:`spec_2`
 - :doc:`spec_7`
 - :doc:`spec_47`
+- :doc:`spec_48`
 
 Goals
 *****
@@ -153,21 +154,15 @@ Development Process
 
 -  To accept or reject a patch, a Maintainer SHALL use the Platform interface.
 
--  Maintainers SHOULD NOT merge their own patches except in exceptional cases, such as non-responsiveness from other Maintainers for an extended period (more than 1-2 days).
+-  Maintainers SHOULD NOT merge their own patches except in exceptional cases.
 
--  Maintainers SHALL NOT make value judgments on correct patches.
+-  Maintainers SHALL merge correct patches from other Contributors as described in :doc:`spec_48`.
 
--  Maintainers SHALL merge correct patches from other Contributors rapidly.
+-  The Contributor MAY add a "WIP" prefix to a pull request title or use the platform to select "draft" to indicate that a pull request is not yet ready for review.
 
--  The Contributor MAY tag an issue as "Ready" after making a pull request for the issue.
-
--  The user who created an issue SHOULD close the issue after checking the patch is successful.
+-  The user who created an issue SHOULD close the issue after a patch solving the issue has been merged.
 
 -  Maintainers SHOULD ask for improvements to incorrect patches and SHOULD reject incorrect patches if the Contributor does not respond constructively.
-
--  Any Contributor who has value judgments on a correct patch SHOULD express these via their own patches.
-
--  Maintainers MAY commit changes to non-source documentation directly to the project.
 
 -  Autotools products, if applicable, SHOULD NOT be checked into the project
    revision control system
@@ -187,7 +182,7 @@ Release Process
 Creating Stable Releases
 ========================
 
--  The project SHALL have one branch ("master") that always holds the latest in-progress version and SHOULD always build.
+-  The project SHALL have one branch (that SHOULD be named "main") that always holds the latest in-progress version and SHOULD always build.
 
 -  The project SHALL NOT use topic branches for any reason. Personal forks MAY use topic branches.
 
