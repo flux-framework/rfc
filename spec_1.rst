@@ -182,7 +182,7 @@ Release Process
 Creating Stable Releases
 ========================
 
--  The project SHALL have one branch ("master") that always holds the latest in-progress version and SHOULD always build.
+-  The project SHALL have one branch (that SHOULD be named "main") that always holds the latest in-progress version and SHOULD always build.
 
 -  The project SHALL NOT use topic branches for any reason. Personal forks MAY use topic branches.
 
