@@ -45,15 +45,26 @@ GitHub projects hosted within it.
 
 The development and community management of the project will follow the governance rules described in this document.
 
-Project Maintainers
-===================
-
-Project maintainers have admin access to the GitHub repository. Maintainers vary by GitHub project, and are viewable in the ``CODEOWNERS`` file provided in each respective project.
-
 Roles
 =====
 
-This project includes the roles of **Maintainer** and **Contributor,** each of which is defined under `RFC 1 <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_1.html#preliminaries>`_. 
+:doc:`spec_1` defines the following roles for each GitHub project within
+the flux-framework organization:
+
+Contributor
+  A person who wishes to provide a patch.
+
+Maintainer
+  A person with commit access.  The file ``MAINTAINERS.md`` within each
+  project defines the GitHub identities of the project Maintainers.
+
+In addition, we define the following role for the overall project, e.g.
+the flux-framework organization:
+
+Administrator
+  A person with GitHub administrator access to the organization and all its
+  projects.  The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`_
+  defines the GitHub identities of the organization administrators.
 
 Development Workflow
 ====================
