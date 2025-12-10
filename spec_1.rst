@@ -164,8 +164,6 @@ Development Process
 
 -  Maintainers SHOULD ask for improvements to incorrect patches and SHOULD reject incorrect patches if the Contributor does not respond constructively.
 
--  Maintainers MAY commit changes to non-source documentation directly to the project.
-
 -  Autotools products, if applicable, SHOULD NOT be checked into the project
    revision control system
 
