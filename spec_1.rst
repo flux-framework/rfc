@@ -158,7 +158,7 @@ Development Process
 
 -  Maintainers SHALL merge correct patches from other Contributors as described in :doc:`spec_48`.
 
--  The Contributor MAY tag an issue as "Ready" after making a pull request for the issue.
+-  The Contributor MAY add a "WIP" prefix to a pull request title or use the platform to select "draft" to indicate that a pull request is not yet ready for review.
 
 -  The user who created an issue SHOULD close the issue after checking the patch is successful.
 
