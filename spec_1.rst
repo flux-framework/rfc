@@ -160,7 +160,7 @@ Development Process
 
 -  The Contributor MAY add a "WIP" prefix to a pull request title or use the platform to select "draft" to indicate that a pull request is not yet ready for review.
 
--  The user who created an issue SHOULD close the issue after checking the patch is successful.
+-  The user who created an issue SHOULD close the issue after a patch solving the issue has been merged.
 
 -  Maintainers SHOULD ask for improvements to incorrect patches and SHOULD reject incorrect patches if the Contributor does not respond constructively.
 
