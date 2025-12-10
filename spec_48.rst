@@ -40,6 +40,9 @@ The goal of this governance document is to clearly define the roles, responsibil
 Project Governance
 ******************
 
+The "project" refers to the flux-framework GitHub organization and all the
+GitHub projects hosted within it.
+
 The development and community management of the project will follow the governance rules described in this document.
 
 Project Maintainers
