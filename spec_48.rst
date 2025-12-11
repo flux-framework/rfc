@@ -63,7 +63,10 @@ the flux-framework organization:
 
 Administrator
   A person with GitHub administrator access to the organization and all its
-  projects.  The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`_
+  projects.  As a group, the administrators provide technical direction to the
+  project. The administrators will vote on any matters on which the community is
+  unable to reach consensus.
+  The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`_
   defines the GitHub identities of the organization administrators.
 
 Development Workflow
