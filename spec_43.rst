@@ -328,6 +328,14 @@ The RPC payloads are defined as follows:
     the request.  Each object will contain the requested attributes in
     an object described in :ref:`spec_43_job_attributes`.
 
+  .. object:: version
+
+    (*integer*, OPTIONAL) Specify the current protocol version.  If
+    jobs will be streamed, this field is required and SHALL be set to
+    1 in the very first response.  The field is unlisted in subsequent
+    responses.  If jobs will not be streamed, the protocol version can
+    be set to 0 or it can be unlisted in the first response.
+
 List ID
 =======
 
