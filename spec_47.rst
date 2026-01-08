@@ -52,9 +52,9 @@ We pledge to act and interact in ways that contribute to an open, welcoming, div
 Need Help?
 ----------
 
-If any behavior makes you uncomfortable, or you believe it breaches the intent of this code of conduct, please contact a project maintainer:
+If any behavior makes you uncomfortable, or you believe it breaches the intent of this code of conduct, you can contact a project maintainer:
 
-* `Flux Code of Conduct Contacts <https://github.com/orgs/flux-framework/teams/flux-code-of-conduct-contacts>`_
+* `Flux Administrators <https://github.com/flux-framework/.github/tree/main/profile>`_
 
 ----
 
@@ -105,9 +105,9 @@ The Code of Conduct, and the project leaders, can only address behavior in the p
 
 Enforcement
 -----------
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project maintainers at:
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project administrators:
 
-* `Flux Code of Conduct Contacts <https://github.com/orgs/flux-framework/teams/flux-code-of-conduct-contacts>`_
+* `Flux Administrators <https://github.com/flux-framework/.github/tree/main/profile>`_
 
 Complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances.
 
