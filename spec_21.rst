@@ -148,7 +148,9 @@ immediately transition to ``CLEANUP``. Exception events with a severity
 other than zero do not affect job state, and are assumed to be meaningful
 to other components managing non-fatal exceptions.
 
-More than one exception MAY occur per job.
+More than one exception MAY occur per job.  If more than one exception
+of severity zero occurs, the first one SHALL be considered the root
+cause of the job failure for reporting purposes.
 
 The exception event format is described below.
 
