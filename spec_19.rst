@@ -200,3 +200,14 @@ SHALL use the following rules to decode the argument:
 
 An implementation decoding FLUID string representations SHALL
 ignore leading and trailing whitespace.
+
+JSON Encoding
+-------------
+
+When a FLUID value is added to a JSON object, it is RECOMMENDED to
+represent it as a JSON string, in F58 encoding as defined above.
+
+FLUDS SHALL NOT be represented as JSON numbers, since
+`IETF RFC 8259 <https://datatracker.ietf.org/doc/html/rfc8259#section-6>`_
+does not specify the range and recommends keeping within
+:math:`[-(2^{53})+1, (2^{53})-1]` for maximum portability.
