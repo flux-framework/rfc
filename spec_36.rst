@@ -119,7 +119,7 @@ Examples
    #FLUX: -N4                  # Request four nodes
    #FLUX: --queue=batch        # Submit to the batch queue
    #FLUX: --job-name=app001    # Set an explicit job name
-   flux mini run -N4 app
+   flux run -N4 app
 
  * Directives embedded in a multiline Python docstring, 
    including a multiline directive:
