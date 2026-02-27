@@ -333,15 +333,16 @@ The broker SHALL attempt to load a module in response to a load request:
 
 .. object:: module.load request
 
-  .. object:: name
-
-    (*string*, OPTIONAL) The module name.
-    Either :var:`name` or :var:`path` MUST be specified.
-
   .. object:: path
 
-    (*string*, OPTIONAL) The module path.
-    Either :var:`name` or :var:`path` MUST be specified.
+    (*string*, REQUIRED) The module target which MAY be a file path
+    or a module name.  If a module name is specified, the broker SHALL look up
+    the module file path by name.
+
+  .. object:: name
+
+    (*string*, OPTIONAL) The module name under which the target module
+    is loaded.  This overrides the name determined from the module path.
 
   .. object:: args
 
