@@ -26,6 +26,7 @@ Language
 Related Standards
 *****************
 
+- :doc:`spec_3`
 - :doc:`spec_6`
 - :doc:`spec_15`
 - :doc:`spec_22`
@@ -457,6 +458,20 @@ with the waitable flag set.
 
     (*integer*, REQUIRED) The UNIX wait status value as returned by
     :func:`waitpid`.
+
+Request Signing
+===============
+
+Subprocess server RPC requests MAY be signed using the ``flag-sign``
+payload signing mechanism defined in :doc:`RFC 3 <spec_3>`.
+
+A subprocess server whose userid differs from the enclosing Flux instance
+owner SHALL reject any unsigned request with EPERM, since the instance
+owner may have tampered with the message userid or payload contents.
+
+The server SHALL additionally reject with EPERM any signed request whose
+signing userid does not match the server's userid as returned by
+:func:`getuid`.
 
 Command Object
 ==============
