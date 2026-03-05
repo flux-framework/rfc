@@ -97,9 +97,9 @@ Implementation
 exec
 ====
 
-The exec RPC creates a new subprocess. The behavior depends on whether the
-RPC is initiated with a streaming or non-streaming request as defined in 
-RFC 6.
+The :program:`exec` RPC creates a new subprocess. The behavior depends on
+whether the RPC is initiated with a streaming or non-streaming request as
+defined in RFC 6.
 
 Streaming request: When initiated with a streaming request, responses
 (defined below) SHALL be sent until the process terminates and all output
@@ -251,8 +251,8 @@ flag set for each open channel before terminating with ENODATA.
 The client MAY consider it a protocol error if one of those responses is
 missing and an ENODATA response is received.
 
-Failure of the remote command SHALL be indicated in finished response and
-SHALL NOT result in an error response.
+Failure of the remote command SHALL be indicated in the :program:`exec
+finished` response and SHALL NOT result in an error response.
 
 Other errors, such as an ENOENT error from the :func:`execvp` system call
 SHALL result in an error response.
@@ -335,9 +335,9 @@ terminate the stream.
 
 .. note::
 
- A waitable background subprocess that is successfully attached to and
- receives the :program:`exec finished` response SHALL be considered reaped
- and cannot be waited on or attached to again.
+   A waitable background subprocess that is successfully attached to and
+   receives the :program:`exec finished` response SHALL be considered reaped
+   and SHALL NOT be waited on or attached to again.
 
 If the requesting process disconnects, the subprocess SHALL revert to
 background mode and continue running until it terminates or the server
@@ -357,7 +357,7 @@ write
 
 The :program:`write` RPC sends data to an I/O channel of a remote process.
 Valid I/O channel names MAY include ``stdin`` and auxiliary channel names
-specified in the exec request command object.
+specified in the :program:`exec` request ``cmd`` field.
 
 .. object:: write request
 
@@ -374,7 +374,7 @@ specified in the exec request command object.
     See `I/O Object`_ below.
 
 This request receives no response, thus the request message SHOULD set
-FLUX_MSGFLAG_NORESPONSE.  Write Requests to invalid channel names MAY be
+FLUX_MSGFLAG_NORESPONSE.  Write requests to invalid channel names MAY be
 ignored by the subprocess server.
 
 Input Flow Control
@@ -422,7 +422,8 @@ The :program:`kill` RPC sends a signal to a remote process.
   .. object:: label
 
     (*string*, OPTIONAL) The label of the remote process. If this key is
-    set in the payload then the value of ``pid`` SHALL be ignored.
+    present, the value of ``pid`` SHALL be ignored and the remote process
+    SHALL be identified by its label.
 
 .. object:: kill response
 
@@ -503,11 +504,11 @@ the following keys:
 
   (*array of object*, OPTIONAL) A list of message channels.
 
-  Each object represents a point to point channel for Flux messages.
+  Each object represents a point-to-point channel for Flux messages.
 
   .. object:: name
 
-    (*string*, required)
+    (*string*, REQUIRED)
 
     The name of the message channel.  The subprocess server SHALL set
     this name in the client environment to a URI that the client may
@@ -515,7 +516,7 @@ the following keys:
 
   .. object:: uri
 
-    (*string*, required)
+    (*string*, REQUIRED)
 
     A URI, accessible on the server side.  Messages received on this URI
     SHALL be transmitted to client channel.  Messages received on the client
