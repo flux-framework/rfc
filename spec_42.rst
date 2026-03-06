@@ -30,6 +30,7 @@ Related Standards
 - :doc:`spec_15`
 - :doc:`spec_22`
 - :doc:`spec_24`
+- :doc:`spec_39`
 
 Background
 **********
@@ -97,9 +98,9 @@ Implementation
 exec
 ====
 
-The exec RPC creates a new subprocess. The behavior depends on whether the
-RPC is initiated with a streaming or non-streaming request as defined in 
-RFC 6.
+The :program:`exec` RPC creates a new subprocess. The behavior depends on
+whether the RPC is initiated with a streaming or non-streaming request as
+defined in RFC 6.
 
 Streaming request: When initiated with a streaming request, responses
 (defined below) SHALL be sent until the process terminates and all output
@@ -162,6 +163,13 @@ output and exit code to its own log stream.
     fork-exec (4)
       Use fork(2)/exec(2) instead of posix_spawn(2) system calls to spawn
       the subprocess.
+
+  .. object:: signature
+
+    (*string*, OPTIONAL) An RFC 39 security signature. When present,
+    the REQUIRED and OPTIONAL field markers above apply to the signature
+    JSON object rather than the payload JSON object. See
+    `Request Authentication`_.
 
 Several response types are distinguished by the type key:
 
@@ -251,8 +259,8 @@ flag set for each open channel before terminating with ENODATA.
 The client MAY consider it a protocol error if one of those responses is
 missing and an ENODATA response is received.
 
-Failure of the remote command SHALL be indicated in finished response and
-SHALL NOT result in an error response.
+Failure of the remote command SHALL be indicated in the :program:`exec
+finished` response and SHALL NOT result in an error response.
 
 Other errors, such as an ENOENT error from the :func:`execvp` system call
 SHALL result in an error response.
@@ -287,6 +295,13 @@ The :program:`attach` RPC attaches to an existing background subprocess.
     No flags are currently supported. The flags value SHALL be ignored
     and output forwarding behavior SHALL be inherited from the original
     subprocess.
+
+  .. object:: signature
+
+    (*string*, OPTIONAL) An RFC 39 security signature. When present,
+    the REQUIRED and OPTIONAL field markers above apply to the signature
+    JSON object rather than the payload JSON object. See
+    `Request Authentication`_.
 
 .. note::
 
@@ -335,9 +350,9 @@ terminate the stream.
 
 .. note::
 
- A waitable background subprocess that is successfully attached to and
- receives the :program:`exec finished` response SHALL be considered reaped
- and cannot be waited on or attached to again.
+   A waitable background subprocess that is successfully attached to and
+   receives the :program:`exec finished` response SHALL be considered reaped
+   and SHALL NOT be waited on or attached to again.
 
 If the requesting process disconnects, the subprocess SHALL revert to
 background mode and continue running until it terminates or the server
@@ -357,7 +372,7 @@ write
 
 The :program:`write` RPC sends data to an I/O channel of a remote process.
 Valid I/O channel names MAY include ``stdin`` and auxiliary channel names
-specified in the exec request command object.
+specified in the :program:`exec` request ``cmd`` field.
 
 .. object:: write request
 
@@ -373,8 +388,15 @@ specified in the exec request command object.
 
     See `I/O Object`_ below.
 
+  .. object:: signature
+
+    (*string*, OPTIONAL) An RFC 39 security signature. When present,
+    the REQUIRED and OPTIONAL field markers above apply to the signature
+    JSON object rather than the payload JSON object. See
+    `Request Authentication`_.
+
 This request receives no response, thus the request message SHOULD set
-FLUX_MSGFLAG_NORESPONSE.  Write Requests to invalid channel names MAY be
+FLUX_MSGFLAG_NORESPONSE.  Write requests to invalid channel names MAY be
 ignored by the subprocess server.
 
 Input Flow Control
@@ -422,7 +444,15 @@ The :program:`kill` RPC sends a signal to a remote process.
   .. object:: label
 
     (*string*, OPTIONAL) The label of the remote process. If this key is
-    set in the payload then the value of ``pid`` SHALL be ignored.
+    present, the value of ``pid`` SHALL be ignored and the remote process
+    SHALL be identified by its label.
+
+  .. object:: signature
+
+    (*string*, OPTIONAL) An RFC 39 security signature. When present,
+    the REQUIRED and OPTIONAL field markers above apply to the signature
+    JSON object rather than the payload JSON object. See
+    `Request Authentication`_.
 
 .. object:: kill response
 
@@ -449,6 +479,13 @@ with the waitable flag set.
     is present, the value of ``pid`` SHALL be ignored and the subprocess
     SHALL be identified by its label.
 
+  .. object:: signature
+
+    (*string*, OPTIONAL) An RFC 39 security signature. When present,
+    the REQUIRED and OPTIONAL field markers above apply to the signature
+    JSON object rather than the payload JSON object. See
+    `Request Authentication`_.
+
 .. object:: wait response
 
   A successful response SHALL consist of a JSON object with the following key:
@@ -457,6 +494,71 @@ with the waitable flag set.
 
     (*integer*, REQUIRED) The UNIX wait status value as returned by
     :func:`waitpid`.
+
+Request Authentication
+======================
+
+Any subprocess server RPC request MAY be sent in *signed form* by including
+a ``signature`` field in the payload JSON object. The ``signature`` field
+SHALL contain a RFC 39 signature string. The signed content of the
+signature, referred to as the *signature JSON object*, SHALL be a JSON object
+conforming to the RPC's payload schema together with a ``topic`` key set
+to the full Flux topic string of the request (e.g. ``rexec.exec``).
+
+The REQUIRED and OPTIONAL field markers in each RPC definition above
+describe the authoritative payload schema and apply to the signature JSON
+object. In a signed form request, the payload JSON object need only contain
+the ``signature`` field; other fields MAY be included for informational
+purposes such as message tracing.
+
+A subprocess server whose userid differs from the enclosing Flux instance
+owner SHALL reject any request lacking a ``signature`` field with EPERM,
+since there is no guarantee of authenticity or integrity of the payload
+contents or message credential. If the instance owner userid cannot
+be determined at server initialization, the server SHALL require a
+``signature`` field on all requests.
+
+The server MUST treat the signature JSON object as the authoritative payload
+and MUST NOT use fields from the payload JSON object for request processing.
+
+Upon receipt of a request with a ``signature`` field, the server SHALL:
+
+#. If flux-security support is not available, reject the request with EPERM.
+
+#. If the ``signature`` field value is not a string, reject the request
+   with EPROTO.
+
+#. Call :func:`flux_sign_unwrap` to verify the signature and extract the
+   signing userid and signature JSON object. Reject the request with EPERM
+   if verification fails.
+
+#. Reject the request with EPERM if the signing userid does not match
+   the server's userid as returned by :func:`getuid`.
+
+#. Reject the request with EPERM if the ``topic`` field in the signature
+   JSON object is absent or does not match the topic string of the incoming
+   request.
+
+#. Validate the signature JSON object and return EPROTO for any invalid or
+   missing REQUIRED fields.
+
+.. note::
+
+   The flux-security signing implementation MAY provide replay
+   detection and signature TTL.
+
+.. note::
+
+   Signed ``write`` requests SHOULD include only the ``signature`` field
+   in the payload JSON object; including ``matchtag`` and ``io`` in the
+   payload JSON object would double-encode the I/O data.
+
+.. note::
+
+   ``write`` requests that fail authentication are discarded without an
+   error response because ``write`` uses ``FLUX_MSGFLAG_NORESPONSE``.
+   Clients SHOULD ensure write requests are consistently signed when
+   connecting to a subprocess server that requires authentication.
 
 Command Object
 ==============
@@ -503,11 +605,11 @@ the following keys:
 
   (*array of object*, OPTIONAL) A list of message channels.
 
-  Each object represents a point to point channel for Flux messages.
+  Each object represents a point-to-point channel for Flux messages.
 
   .. object:: name
 
-    (*string*, required)
+    (*string*, REQUIRED)
 
     The name of the message channel.  The subprocess server SHALL set
     this name in the client environment to a URI that the client may
@@ -515,7 +617,7 @@ the following keys:
 
   .. object:: uri
 
-    (*string*, required)
+    (*string*, REQUIRED)
 
     A URI, accessible on the server side.  Messages received on this URI
     SHALL be transmitted to client channel.  Messages received on the client
