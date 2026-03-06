@@ -202,6 +202,7 @@ following about the message header:
    flag-private    = %x20          ; event message is requested to be
                                    ;   private to sender, instance owner
    flag-streaming  = %x40          ; request/response is part of streaming RPC
+   flag-user1      = %x80          ; user defined flag
 
    ; Userid assigned by connector at message ingress
    userid          = 4OCTET / userid-unknown
@@ -420,8 +421,8 @@ long message parts
 After the message parts are encoded and concatenated, the message SHALL be
 prefaced with a 4 byte magic value of (``FF``, ``EE``, ``00``, ``12``) and
 a 4-byte unsigned integer message length in network byte order.  The message
-length SHALL be set to the size of the concatenated message parts, including
-their length fields.
+length SHALL be set to the size of the overall message, including the
+length field itself and the magic field.
 
 .. figure:: images/messages_framed.png
    :width: 200
