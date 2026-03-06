@@ -202,6 +202,7 @@ following about the message header:
    flag-private    = %x20          ; event message is requested to be
                                    ;   private to sender, instance owner
    flag-streaming  = %x40          ; request/response is part of streaming RPC
+   flag-user1      = %x80          ; user defined flag
 
    ; Userid assigned by connector at message ingress
    userid          = 4OCTET / userid-unknown
