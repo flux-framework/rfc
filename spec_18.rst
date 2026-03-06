@@ -45,7 +45,8 @@ Event Log Format
 
 A Flux KVS Event Log SHALL consist of events separated by newlines.
 Each event SHALL be an independent JSON object, serialized without
-embedded newlines. The Event Log as a whole is not valid JSON.
+embedded newlines. The Event Log as a whole conforms to the
+JSON Lines text format [#f1]_.
 
 An Event Log SHALL only be written by appending one or more whole event
 objects. It SHALL NOT be created empty, and it SHALL NOT be rewritten
@@ -82,3 +83,8 @@ An example Flux Event Log:
    {"timestamp":1552593348.092830,"name":"release","context":{"ranks":"all","final":true}}
    {"timestamp":1552593348.090927,"name":"finish","context":{"status":0}}
    {"timestamp":1552593348.104432,"name":"clean"}
+
+References
+**********
+
+ .. [#f1] `JSON Lines - Documentation for the JSON Lines text file format <http://jsonlines.org>`__.
