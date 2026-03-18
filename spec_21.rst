@@ -546,11 +546,26 @@ The following keys are OPTIONAL:
 userid
    (integer) User ID that initiated the exception, if other than instance owner.
 
+wait_status
+   (integer) The POSIX wait(2) status of the task that triggered this
+   exception, if the exception was raised as a result of a task exiting
+   with a nonzero status. This field SHALL only be set on ``exec``
+   exceptions triggered by task exit. When set on the first severity-zero
+   exception, the execution service SHALL use this value to determine the
+   ``finish`` event status in preference to the numerically greatest job
+   shell wait status.
+
 Example:
 
 .. code:: json
 
    {"timestamp":1552593986.335602,"name":"exception","context":{"type":"oom","severity":0,"userid":5588,"note":"out of memory on foo42"}}
+
+Example with ``wait_status``:
+
+.. code:: json
+
+   {"timestamp":1552593986.335602,"name":"exception","context":{"type":"exec","severity":0,"note":"app: task rank 1 on host foo42 failed and exit-on-error is set","wait_status":11}}
 
 Exception types include but are not limited to:
 
