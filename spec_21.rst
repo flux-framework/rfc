@@ -501,7 +501,11 @@ The following keys are REQUIRED in the event context object:
 
 status
    (integer) The largest of the job shell wait status codes, as
-   defined by POSIX wait(2) [#f1]_.
+   defined by POSIX wait(2) [#f1]_. If the first severity 0 exception
+   event includes a ``wait_status`` field, that value SHALL be converted
+   to shell exit status form (i.e. 128 plus signal number for a
+   signal-terminated task, or the exit code otherwise) and used in place
+   of the numerically greatest shell wait status.
 
 Example:
 
