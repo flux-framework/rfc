@@ -184,7 +184,9 @@ Creating Stable Releases
 
 -  The project SHALL have one branch (that SHOULD be named "main") that always holds the latest in-progress version and SHOULD always build.
 
--  The project SHALL NOT use topic branches for any reason. Personal forks MAY use topic branches.
+-  The project SHALL NOT use topic branches for any reason, except for branches
+   created by automated tools (e.g., ``dependabot/*``). Personal forks MAY use
+   topic branches.
 
 -  To make a stable release someone SHALL fork the repository by copying it and thus become maintainer of this repository.
 
