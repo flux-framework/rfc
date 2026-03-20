@@ -229,7 +229,11 @@ exception
 finish
   Job is complete. ``data`` contains one required key: ``status`` (integer),
   the numerically greatest wait status returned by the set of job shells.
-  Example:
+  If the first severity 0 exception event includes a ``wait_status``
+  field, that value SHALL be converted to shell exit status form (i.e. 128
+  plus signal number for a signal-terminated task, or the exit code
+  otherwise) and used in place of the numerically greatest shell wait
+  status. Example:
 
   .. code:: json
 
