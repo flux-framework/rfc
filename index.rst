@@ -312,6 +312,11 @@ from the Contributor Covenant, and specifies the enforcement process.
 This document describes the rules for the development and community management
 of the Flux Framework project (governance).
 
+:doc:`spec_49`
+~~~~~~~~~~~~~~
+
+The Flux idmap is a compact encoding from integer keys to sets of integers.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -362,3 +367,4 @@ of the Flux Framework project (governance).
    spec_46
    spec_47
    spec_48
+   spec_49
