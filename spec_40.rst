@@ -56,6 +56,13 @@ scheduler within the ``scheduling`` key of *R*.
 Implementation
 **************
 
+The :data:`writer` key of the :data:`scheduling` dict SHOULD be set to
+to ``fluxion:jgf`` when this specification is used to create the extended
+resource data.  To support older scheduler data, RFC 20 states that
+if :data:`writer` is not not provided, a value of ``fluxion`` SHALL be
+assumed. This specification further specifies that if :data:`writer` or
+a URI path are not provided, the URI path SHALL be assumed to be ``jgf``.
+
 The Fluxion resource graph representation allows RFC4-compliant schedulers to
 serialize any subset of graph resource data into its value and later
 deserialize this value with no data loss. The ``scheduling`` key contains a
