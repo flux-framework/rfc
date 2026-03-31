@@ -223,8 +223,19 @@ R Format
 
 .. data:: scheduling
 
-  (*dictionary*, OPTIONAL) Scheduler-specific resource data which SHOULD NOT
-  be interpreted other Flux components.  When used, it SHALL ride along on the
+  (*dictionary*, OPTIONAL) Scheduler-specific resource data with the
+  following keys:
+
+  .. data:: writer
+
+    (*string*, OPTIONAL) If provided, a URI whose scheme identifies the
+    scheduler that produced the :data:`scheduling` key.  Remaining URI
+    components SHALL be interpreted by the named scheduler.  If not
+    provided, a value of ``fluxion`` SHALL be assumed.
+
+  Remaining scheduler-specific keys SHOULD be ignored by other Flux components.
+
+  When used, :data:`scheduling` SHALL ride along on the
   resource acquisition protocol (RFC 28) and resource allocation protocol
   (RFC 27) so that it may be included in static configuration, allocated to
   jobs, and passed down a Flux instance hierarchy.
