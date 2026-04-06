@@ -303,7 +303,7 @@ The event context SHALL contain the following keys:
       "idset": "0",
       "nodelist": "picl0",
       "reason": "node was rebooted",
-      "ovewrite": 0
+      "overwrite": 0
     }
   }
 
