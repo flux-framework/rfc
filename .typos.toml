@@ -1,0 +1,7 @@
+# do not check data files, assumed special / unique
+# do not check spell checker file
+[files]
+extend-exclude = [
+  "data/*",
+  "spell.en.pws",
+]
