@@ -87,4 +87,4 @@ An example Flux Event Log:
 References
 **********
 
- .. [#f1] `JSON Lines - Documentation for the JSON Lines text file format <http://jsonlines.org>`__.
+ .. [#f1] `JSON Lines - Documentation for the JSON Lines text file format <https://jsonlines.org>`__.

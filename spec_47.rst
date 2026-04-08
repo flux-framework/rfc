@@ -146,7 +146,7 @@ Further Reading
 ***************
 
 - `Contributor Covenant <https://www.contributor-covenant.org/version/2/1/code_of_conduct>`__
-- `Mozilla’s code of conduct enforcement ladder <https://github.com/mozilla/diversity>`__
+- `Mozilla’s code of conduct enforcement ladder <https://github.com/mozilla/inclusion>`__
 - `SustainOSS Code of Conduct <https://sustainoss.org/code-of-conduct/>`__
 
 For answers to common questions about this code of conduct, see `Contributor Covenant FAQ <https://www.contributor-covenant.org/faq>`__
