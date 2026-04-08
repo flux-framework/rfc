@@ -66,7 +66,7 @@ Administrator
   projects.  As a group, the administrators provide technical direction to the
   project. The administrators will vote on any matters on which the community is
   unable to reach consensus.
-  The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`_
+  The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`__
   defines the GitHub identities of the organization administrators.
 
 Development Workflow
@@ -84,7 +84,7 @@ See the :ref:`spec_1_evolution_of_public_contracts` section of RFC 1.
 
 Decision Making
 ^^^^^^^^^^^^^^^
-The project uses a `lazy consensus model <https://openoffice.apache.org/docs/governance/lazyConsensus.html>`_ for most changes and standard issue resolutions.
+The project uses a `lazy consensus model <https://openoffice.apache.org/docs/governance/lazyConsensus.html>`__ for most changes and standard issue resolutions.
 
 Maintainer Review
 ^^^^^^^^^^^^^^^^^
