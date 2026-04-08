@@ -93,7 +93,7 @@ Maintainer Review
 Issue Governance
 ----------------
 
-* Both contributors and project maintainers may propose issues. The participation in the issue discussion is open and must follow the `Code of Conduct <spec_47>`_.
+* Both contributors and project maintainers may propose issues. The participation in the issue discussion is open and must follow the :doc:`RFC 47 Code of Conduct <spec_47>`.
 * The group of project maintainers will be responsible for assigning labels to issues, as well as for assigning the issue to a project maintainer or contributor. The `merge-when-passing` label MAY be applied by a maintainer to allow a pull request to be automatically merged once it has met all requirements.
 * The group of project maintainers SHOULD commit to responding to any issue within **72 hours** of the issue's creation.
 
