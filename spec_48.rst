@@ -66,13 +66,13 @@ Administrator
   projects.  As a group, the administrators provide technical direction to the
   project. The administrators will vote on any matters on which the community is
   unable to reach consensus.
-  The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`_
+  The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`__
   defines the GitHub identities of the organization administrators.
 
 Development Workflow
 ====================
 
-The project adheres to a modern development philosophy centered on open standards and consistency. See details in `RFC 1 "Development Process" <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_1.html#development-process>`_.
+The project adheres to a modern development philosophy centered on open standards and consistency. See details in the RFC 1 :ref:`spec_1_development_process`.
 
 Governance & Standards
 ======================
@@ -80,11 +80,11 @@ Governance & Standards
 RFC Process
 ^^^^^^^^^^^
 
-See the `Evolution of Public Contracts <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_1.html#evolution-of-public-contracts>`_ section of RFC 1. 
+See the :ref:`spec_1_evolution_of_public_contracts` section of RFC 1.
 
 Decision Making
 ^^^^^^^^^^^^^^^
-The project uses a `lazy consensus model <https://openoffice.apache.org/docs/governance/lazyConsensus.html>`_ for most changes and standard issue resolutions.
+The project uses a `lazy consensus model <https://openoffice.apache.org/docs/governance/lazyConsensus.html>`__ for most changes and standard issue resolutions.
 
 Maintainer Review
 ^^^^^^^^^^^^^^^^^
@@ -93,7 +93,7 @@ Maintainer Review
 Issue Governance
 ----------------
 
-* Both contributors and project maintainers may propose issues. The participation in the issue discussion is open and must follow the `Code of Conduct <spec_47>`_.
+* Both contributors and project maintainers may propose issues. The participation in the issue discussion is open and must follow the :doc:`RFC 47 Code of Conduct <spec_47>`.
 * The group of project maintainers will be responsible for assigning labels to issues, as well as for assigning the issue to a project maintainer or contributor. The `merge-when-passing` label MAY be applied by a maintainer to allow a pull request to be automatically merged once it has met all requirements.
 * The group of project maintainers SHOULD commit to responding to any issue within **72 hours** of the issue's creation.
 
@@ -103,4 +103,4 @@ Pull Request Governance
 * Both contributors and project maintainers may propose pull requests.
 * Pull requests SHOULD describe the contribution. The assignment of labels and assignees to the pull request is the responsibility of the project maintainers.
 * The group of project maintainers SHOULD provide feedback to any pull request within **72 hours** of the pull request's creation.
-* The decision of accepting (or rejecting) a pull request will be taken by the group of project maintainers. The criteria and process for making the decision is described in `RFC 1 "Development Process" <https://flux-framework.readthedocs.io/projects/flux-rfc/en/latest/spec_1.html#development-process>`_.
+* The decision of accepting (or rejecting) a pull request will be taken by the group of project maintainers. The criteria and process for making the decision is described in the RFC 1 :ref:`spec_1_development_process`.

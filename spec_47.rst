@@ -54,7 +54,7 @@ Need Help?
 
 If any behavior makes you uncomfortable, or you believe it breaches the intent of this code of conduct, you can contact a project maintainer:
 
-* `Flux Administrators <https://github.com/flux-framework/.github/tree/main/profile>`_
+* `Flux Administrators <https://github.com/flux-framework/.github/tree/main/profile>`__
 
 ----
 
@@ -107,7 +107,7 @@ Enforcement
 -----------
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project administrators:
 
-* `Flux Administrators <https://github.com/flux-framework/.github/tree/main/profile>`_
+* `Flux Administrators <https://github.com/flux-framework/.github/tree/main/profile>`__
 
 Complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances.
 
@@ -146,7 +146,7 @@ Further Reading
 ***************
 
 - `Contributor Covenant <https://www.contributor-covenant.org/version/2/1/code_of_conduct>`__
-- `Mozilla’s code of conduct enforcement ladder <https://github.com/mozilla/diversity>`__
+- `Mozilla’s code of conduct enforcement ladder <https://github.com/mozilla/inclusion>`__
 - `SustainOSS Code of Conduct <https://sustainoss.org/code-of-conduct/>`__
 
 For answers to common questions about this code of conduct, see `Contributor Covenant FAQ <https://www.contributor-covenant.org/faq>`__
