@@ -65,6 +65,7 @@ source_suffix = '.rst'
 
 linkcheck_ignore = [
     r'https://blog\.x\.com/.*', # 403 Forbidden, Cloudflare bot challenge
+    r'https://www\.freedesktop\.org/.*', # 418 Client Error: I'm a teapot
 ]
 
 linkcheck_anchors_ignore_for_url = [
