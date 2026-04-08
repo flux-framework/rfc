@@ -127,6 +127,8 @@ Patch Requirements
 
 -  A "Correct Patch" is one that satisfies the above requirements.
 
+.. _spec_1_development_process:
+
 Development Process
 ===================
 
@@ -195,6 +197,8 @@ Creating Stable Releases
 -  A stabilization project SHOULD be maintained by the same process as the main project.
 
 -  A patch to a stabilization project declared "stable" SHALL be accompanied by a reproducible test case.
+
+.. _spec_1_evolution_of_public_contracts:
 
 Evolution of Public Contracts
 =============================
