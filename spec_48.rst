@@ -41,33 +41,37 @@ Project Governance
 ******************
 
 The "project" refers to the flux-framework GitHub organization and all the
-GitHub projects hosted within it.
+repositories hosted within it.
 
 The development and community management of the project will follow the governance rules described in this document.
 
 Roles
 =====
 
-:doc:`spec_1` defines the following roles for each GitHub project within
+:doc:`spec_1` defines the following roles for each GitHub repository within
 the flux-framework organization:
 
 Contributor
-  A person who wishes to provide a patch.
+  A person who wishes to provide a patch.  Contributors have a baseline
+  level of access to the repository, defined by the repository Maintainers.
 
 Maintainer
-  A person with commit access.  The file ``MAINTAINERS.md`` within each
-  project defines the GitHub identities of the project Maintainers.
+  A person who holds the maximum privilege level to a repository.
+  Maintainers approve Contributor changes and guide development.  The file
+  ``MAINTAINERS.md`` within each repository defines the GitHub identities
+  of the Maintainers.  Maintainers MAY grant additional repository level
+  privileges to Contributors.  A simple majority of Maintainers may approve
+  the addition or removal of Maintainers from the repository.
 
-In addition, we define the following role for the overall project, e.g.
-the flux-framework organization:
+In addition, we define the following role for the project:
 
 Administrator
-  A person with GitHub administrator access to the organization and all its
-  projects.  As a group, the administrators provide technical direction to the
-  project. The administrators will vote on any matters on which the community is
-  unable to reach consensus.
+  A person that holds maximum privilege level to the flux-framework
+  organization and all its repositories.  Administrators provide technical
+  direction for the project, create and remove repositories, and participate
+  in the Linux Foundation Technical Steering Committee for flux-framework.
   The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`__
-  defines the GitHub identities of the organization administrators.
+  defines the GitHub identities of Administrators.
 
 Development Workflow
 ====================
