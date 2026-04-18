@@ -200,16 +200,27 @@ Flux instance.
 Input to the IMP
 ****************
 
-The input to the IMP includes the following fields
+The IMP reads a JSON object as input. The JSON object SHALL contain the
+following keys:
 
--  Local assigned resource set (:math:`R_{local}`)
+``J``
+   The User Request (described below).
 
--  Options supplied by resource owner
+``options``
+   An OPTIONAL object containing options supplied by the resource owner
+   (described in *Resource Owner Options* below).
 
--  User Request (:math:`J`) (described below)
+The IMP MAY obtain its input via a *helper program* rather than reading
+directly from standard input. If the environment variable
+``FLUX_IMP_EXEC_HELPER`` is set, the IMP SHALL execute the named program
+and read the JSON input object from the helper’s standard output. The use
+of a helper frees the IMP’s standard input for use by the job shell and
+allows the input to be obtained from a trusted source such as the Flux
+broker KVS. The helper is executed in the unprivileged child of the IMP
+and its output is subject to the same validation as input read directly
+from standard input.
 
-Where :math:`J` is the User Request or reference to such a request,
-which SHALL contain
+:math:`J` is the User Request, which SHALL contain
 
 -  Jobspec as per :doc:`14/Canonical Job Specification <spec_14>`
 
@@ -230,10 +241,6 @@ which SHALL contain
 -  User signature (of above fields)
 
 Where above fields have the following specific meanings and requirements
-
--  *Local assigned resource set* is the list of **local** resources assigned
-   to this job by the resource owner. It will be used by IMP plugins to
-   implement containment.
 
 -  *Timestamp and TTL* signifies that the request in question SHALL
    only be valid between *Timestamp* and *Timestamp+TTL*. This puts a
