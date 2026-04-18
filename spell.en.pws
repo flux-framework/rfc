@@ -1,5 +1,4 @@
 rst
-
 personal_ws-1.1 en 0
 zeroes
 sysadmin
@@ -511,3 +510,7 @@ Kubernetes
 assignees
 cacheable
 subtree
+mknod
+natively
+rwm
+pseudoterminal
