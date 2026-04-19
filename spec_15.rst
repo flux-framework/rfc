@@ -200,16 +200,27 @@ Flux instance.
 Input to the IMP
 ****************
 
-The input to the IMP includes the following fields
+The IMP reads a JSON object as input. The JSON object SHALL contain the
+following keys:
 
--  Local assigned resource set (:math:`R_{local}`)
+``J``
+   The User Request (described below).
 
--  Options supplied by resource owner
+``options``
+   An OPTIONAL object containing options supplied by the resource owner
+   (described in *Resource Owner Options* below).
 
--  User Request (:math:`J`) (described below)
+The IMP MAY obtain its input via a *helper program* rather than reading
+directly from standard input. If the environment variable
+``FLUX_IMP_EXEC_HELPER`` is set, the IMP SHALL execute the named program
+and read the JSON input object from the helper’s standard output. The use
+of a helper frees the IMP’s standard input for use by the job shell and
+allows the input to be obtained from a trusted source such as the Flux
+broker KVS. The helper is executed in the unprivileged child of the IMP
+and its output is subject to the same validation as input read directly
+from standard input.
 
-Where :math:`J` is the User Request or reference to such a request,
-which SHALL contain
+:math:`J` is the User Request, which SHALL contain
 
 -  Jobspec as per :doc:`14/Canonical Job Specification <spec_14>`
 
@@ -231,10 +242,6 @@ which SHALL contain
 
 Where above fields have the following specific meanings and requirements
 
--  *Local assigned resource set* is the list of **local** resources assigned
-   to this job by the resource owner. It will be used by IMP plugins to
-   implement containment.
-
 -  *Timestamp and TTL* signifies that the request in question SHALL
    only be valid between *Timestamp* and *Timestamp+TTL*. This puts a
    time horizon on usage of :math:`J`.
@@ -250,6 +257,106 @@ Where above fields have the following specific meanings and requirements
 -  The *job shell path* is an absolute path to a job shell which
    will act as interpreter of the Jobspec in :math:`J`. If missing, a default
    will be supplied by IMP configuration.
+
+Resource Owner Options
+**********************
+
+The ``options`` object in the IMP input MAY contain any of the following
+keys. The resource owner is trusted, therefore these options do not
+require a user signature. Unrecognized keys SHALL be ignored.
+
+Device Containment
+==================
+
+Two optional keys control device access for the job shell and its
+descendants.
+
+``device-policy``
+   A string specifying the device access policy. The only currently
+   defined value is ``"closed"``, which permits access to a baseline set
+   of safe pseudo-devices (listed below) plus any devices explicitly
+   listed in ``device-allow``. All other device access is denied. If
+   ``device-policy`` is absent but ``device-allow`` is present,
+   ``"closed"`` SHALL be assumed.
+
+``device-allow``
+   An array of objects, each permitting access to one device node.
+   Each object SHALL contain:
+
+   ``path``
+      The absolute path to the device node, e.g. ``"/dev/nvidia0"``.
+
+   ``access``
+      A string consisting of one or more of the characters ``r``
+      (read), ``w`` (write), and ``m`` (mknod), in any order.
+
+   Example::
+
+     "device-allow": [
+       {"path": "/dev/nvidia0",       "access": "rw"},
+       {"path": "/dev/nvidiactl",      "access": "rw"},
+       {"path": "/dev/nvidia-uvm",     "access": "rw"},
+       {"path": "/dev/dri/renderD128", "access": "rw"}
+     ]
+
+When ``device-allow`` appears in the optional keys, the IMP SHALL apply
+device containment via a cgroup BPF program attached to the job’s cgroup
+before executing the job shell. The IMP SHALL always include a set of
+internal baseline devices deemed required for basic job functionality.
+The suggested baseline devices are described below.
+
+.. note::
+
+   The ``device-allow`` / ``device-policy`` keys mirror the semantics of
+   the systemd ``DeviceAllow=`` and ``DevicePolicy=`` unit properties.
+   When the IMP is started as a systemd transient unit (e.g. via sdexec),
+   the ``FLUX_IMP_EXEC_HELPER`` helper MAY read these properties directly
+   from the unit and populate the ``options`` object accordingly. This
+   allows device containment to be configured in one place (the Flux
+   system configuration) and enforced either by systemd natively (if and
+   when it gains support for this in user sessions) or by the IMP as
+   described here.
+
+Baseline Devices
+----------------
+
+When device containment is active the following devices SHALL always be
+permitted, regardless of the ``device-allow`` list. This matches the
+static device list applied by systemd for ``DevicePolicy=closed``
+(``bpf_devices_allow_list_static()`` in ``src/core/bpf-devices.c``,
+verified against systemd v260.1; unchanged since v244):
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 15 55
+
+   * - Device
+     - Access
+     - Notes
+   * - ``/dev/null``
+     - rwm
+     - Null device
+   * - ``/dev/zero``
+     - rwm
+     - Zero source
+   * - ``/dev/full``
+     - rwm
+     - Always-full device
+   * - ``/dev/random``
+     - rwm
+     - Random source
+   * - ``/dev/urandom``
+     - rwm
+     - Non-blocking random source
+   * - ``/dev/tty``
+     - rwm
+     - Controlling terminal
+   * - ``/dev/ptmx``
+     - rwm
+     - Pseudoterminal master
+   * - ``/dev/pts/*``
+     - rw
+     - Pseudoterminal slaves (mknod not permitted)
 
 IMP Internal Operation
 **********************
