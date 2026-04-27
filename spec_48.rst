@@ -73,6 +73,35 @@ Administrator
   The organization `README.md <https://github.com/flux-framework/.github/blob/main/profile/README.md>`__
   defines the GitHub identities of Administrators.
 
+Github Administration
+=====================
+
+The project is currently hosted on GitHub.  The project roles defined above
+SHALL be implemented on Github as follows:
+
+.. list-table::
+  :header-rows: 1
+
+  * - Project
+    - Github Org
+    - Github Repo
+    - Notes
+  * - Administrator
+    - owner
+    - admin (effective)
+    - | Toggle owner/member on entry in org
+      | *People* drop-down.
+  * - Maintainer
+    - none
+    - admin
+    - | Add org level *reponame-maintainers*
+      | team and give it repo level direct access
+      | with the admin role.
+  * - Contributor
+    - none
+    - TBD
+    - Maintainers manage this level of access
+
 Development Workflow
 ====================
 
