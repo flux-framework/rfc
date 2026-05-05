@@ -5,3 +5,7 @@ extend-exclude = [
   "data/*",
   "spell.en.pws",
 ]
+
+[default.extend-words]
+# HPE = Hewlett Packard Enterprise (hardware vendor)
+HPE = "HPE"
