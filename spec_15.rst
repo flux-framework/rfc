@@ -265,6 +265,8 @@ The *options* object in the IMP input MAY contain any of the following
 keys. The resource owner is trusted, therefore these options do not
 require a user signature. Unrecognized keys SHALL be ignored.
 
+.. _device_containment:
+
 Device Containment
 ==================
 
@@ -379,6 +381,58 @@ verified against systemd v260.1; unchanged since v244):
    * - ``/dev/pts/*``
      - rw
      - Pseudoterminal slaves (mknod not permitted)
+
+External Containment Helper
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The device containment scheme defined in :ref:`device_containment` MAY be
+applied outside the IMP execution context by callers that manage cgroups
+independently of jobs. For example, flux-pam may apply device containment
+to systemd user slices managed by Flux prolog and housekeeping scripts.
+
+To support these use cases and avoid code duplication, the flux-security
+project SHALL provide a helper binary, :program:`cgroup-device-apply`,
+that applies the *device-allow* / *device-policy* schema defined in
+:ref:`device_containment` to an arbitrary cgroup. The helper is installed
+at ``$libexecdir/flux/cgroup-device-apply`` and SHALL be invoked as:
+
+::
+
+    cgroup-device-apply CGROUP_PATH
+
+*CGROUP_PATH* is the absolute path to a cgroup v2 directory under
+``/sys/fs/cgroup/``. The helper SHALL read a single JSON object from
+standard input containing the *DevicePolicy* and *DeviceAllow* keys
+with semantics as defined in :ref:`device_containment`. Unrecognized keys
+SHALL be ignored.
+
+The helper SHALL exit with one of the following statuses:
+
+0
+    Success, including the case where *DeviceAllow* is absent or empty
+    (no operation performed).
+
+1
+    Runtime failure: JSON parse error, cgroup path access failure, or BPF
+    program build or attach failure.
+
+2
+    Usage error: missing argument, invalid *CGROUP_PATH* form.
+
+The helper SHALL write a human-readable diagnostic message to standard
+error on non-zero exit. Callers MAY capture and report this output to
+provide context to administrators, for example in job drain reasons,
+syslog, or operator logs.
+
+The helper MUST be invoked as root, as attaching a BPF cgroup program
+requires CAP_BPF and CAP_SYS_ADMIN. The helper SHALL NOT be installed setuid.
+
+The baseline devices defined in *Baseline Devices* SHALL always be permitted
+by the helper, matching IMP behavior.
+
+The argv signature, stdin JSON format, and exit code semantics form a
+stable interface contract. Future incompatible changes SHALL use a new
+helper name or argument flag rather than modifying this interface.
 
 IMP Internal Operation
 **********************
