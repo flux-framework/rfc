@@ -271,37 +271,57 @@ Device Containment
 Two optional keys control device access for the job shell and its
 descendants.
 
-device-policy
-   A string specifying the device access policy. The only currently
-   defined value is "closed", which permits access to a baseline set
-   of safe pseudo-devices (listed below) plus any devices explicitly
-   listed in *device-allow*. All other device access is denied. If
-   *device-policy* is absent but *device-allow* is present,
-   "closed" SHALL be assumed.
+DevicePolicy
+   A string specifying the device access policy. Recognized values are:
 
-device-allow
-   An array of objects, each permitting access to one device node.
-   Each object SHALL contain:
+   ``"auto"`` (default)
+      If *DeviceAllow* is absent or empty, allow all devices. Otherwise
+      behave like ``"closed"``.
 
-   path
-      The absolute path to the device node, e.g. ``"/dev/nvidia0"``.
+   ``"closed"``
+      Permit access to a baseline set of safe pseudo-devices (listed
+      below) plus any devices explicitly listed in *DeviceAllow*. All
+      other device access is denied.
 
-   access
-      A string consisting of one or more of the characters ``r``
-      (read), ``w`` (write), and ``m`` (mknod), in any order.
+   ``"strict"``
+      Permit access only to the devices explicitly listed in
+      *DeviceAllow*. The baseline pseudo-devices are not added. All
+      other device access is denied.
+
+   If *DevicePolicy* is absent but *DeviceAllow* is present,
+   ``"auto"`` SHALL be assumed.
+
+DeviceAllow
+   An array of ``[specifier, access]`` tuples, each permitting access
+   to one device or device class. The specifier string may be:
+
+   ``/dev/...``
+      Absolute path to a device node. The major and minor numbers are
+      resolved at policy-application time via ``stat(2)``.
+
+   ``char-NAME``
+      All character devices of the named class, looked up by name in
+      ``/proc/devices``.
+
+   ``block-NAME``
+      All block devices of the named class, looked up by name in
+      ``/proc/devices``.
+
+   The access string consists of one or more of the characters ``r``
+   (read), ``w`` (write), and ``m`` (mknod), in any order.
 
    Example:
 
    .. code-block:: json
 
-      "device-allow": [
-        {"path": "/dev/nvidia0",        "access": "rw"},
-        {"path": "/dev/nvidiactl",      "access": "rw"},
-        {"path": "/dev/nvidia-uvm",     "access": "rw"},
-        {"path": "/dev/dri/renderD128", "access": "rw"}
+      "DeviceAllow": [
+        ["/dev/nvidia0",        "rw"],
+        ["/dev/nvidiactl",      "rw"],
+        ["/dev/nvidia-uvm",     "rw"],
+        ["/dev/dri/renderD128", "rw"]
       ]
 
-When *device-allow* appears in the optional keys, the IMP SHALL apply
+When *DeviceAllow* appears in the optional keys, the IMP SHALL apply
 device containment via a cgroup BPF program attached to the job’s cgroup
 before executing the job shell. The IMP SHALL always include a set of
 internal baseline devices deemed required for basic job functionality.
@@ -309,21 +329,21 @@ The suggested baseline devices are described below.
 
 .. note::
 
-   The *device-allow* / *device-policy* keys mirror the semantics of
-   the systemd ``DeviceAllow=`` and ``DevicePolicy=`` unit properties.
-   When the IMP is started as a systemd transient unit (e.g. via sdexec),
-   the :envvar:`FLUX_IMP_EXEC_HELPER` helper MAY read these properties directly
-   from the unit and populate the *options* object accordingly. This
-   allows device containment to be configured in one place (the Flux
-   system configuration) and enforced either by systemd natively (if and
-   when it gains support for this in user sessions) or by the IMP as
-   described here.
+   The *DeviceAllow* / *DevicePolicy* keys mirror the names and
+   semantics of the systemd ``DeviceAllow=`` and ``DevicePolicy=`` unit
+   properties. When the IMP is started as a systemd transient unit
+   (e.g. via sdexec), the :envvar:`FLUX_IMP_EXEC_HELPER` helper MAY
+   read these properties directly from the unit via D-Bus and populate
+   the *options* object accordingly. This allows device containment to
+   be configured in one place (the Flux system configuration) and
+   enforced either by systemd natively (if and when it gains support for
+   this in user sessions) or by the IMP as described here.
 
 Baseline Devices
 ----------------
 
 When device containment is active the following devices SHALL always be
-permitted, regardless of the *device-allow* list. This matches the
+permitted, regardless of the *DeviceAllow* list. This matches the
 static device list applied by systemd for ``DevicePolicy=closed``
 (``bpf_devices_allow_list_static()`` in ``src/core/bpf-devices.c``,
 verified against systemd v260.1; unchanged since v244):
