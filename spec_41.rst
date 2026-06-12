@@ -33,6 +33,7 @@ Related Standards
 - :doc:`spec_21`
 - :doc:`spec_24`
 - :doc:`spec_25`
+- :doc:`spec_50`
 
 Background
 **********
@@ -53,7 +54,7 @@ Job info is stored in a job-specific KVS directory as described in
   * - **R**
     - resource set allocated to job (:doc:`RFC 20 <spec_20>`)
   * - **guest.exec.eventlog**
-    - exec system eventlog
+    - exec system eventlog (:doc:`RFC 50 <spec_50>`)
   * - **guest.input**
     - job input (:doc:`RFC 24 <spec_24>`)
   * - **guest.output**

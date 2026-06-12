@@ -32,6 +32,7 @@ Related Standards
 - :doc:`spec_18`
 - :doc:`spec_20`
 - :doc:`spec_21`
+- :doc:`spec_50`
 
 Background
 **********
@@ -194,7 +195,8 @@ The *exec system* creates the job’s guest namespace and links it to
 ``job.<jobid>.guest``. Its initial contents are populated with
 
 ``exec.eventlog``
-   An eventlog for the use of *job shells*, TBD.
+   An eventlog containing events posted by the *exec system* and
+   *job shells*, described in :doc:`RFC 50 <spec_50>`.
 
 Once all *job shells* have exited and all outstanding writes to
 the guest namespace have stopped, the *exec system* links the guest
