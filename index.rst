@@ -319,6 +319,12 @@ This specification defines the format of the scheduling key used by the
 TreePool scheduler to encode sub-node topology in RFC 20 *R* version 1
 objects.
 
+:doc:`spec_50`
+~~~~~~~~~~~~~~
+
+This specification describes the events posted to the execution eventlog
+maintained by the Flux execution system in a job's guest KVS namespace.
+
 
 .. Each file must appear in a toctree
 .. toctree::
@@ -371,3 +377,4 @@ objects.
    spec_47
    spec_48
    spec_49
+   spec_50
