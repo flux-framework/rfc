@@ -53,7 +53,7 @@ Job info is stored in a job-specific KVS directory as described in
   * - **R**
     - resource set allocated to job (:doc:`RFC 20 <spec_20>`)
   * - **guest.exec.eventlog**
-    - exec system eventlog
+    - exec system eventlog (:ref:`RFC 21 <spec_21_execution_eventlog>`)
   * - **guest.input**
     - job input (:doc:`RFC 24 <spec_24>`)
   * - **guest.output**

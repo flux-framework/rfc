@@ -194,7 +194,8 @@ The *exec system* creates the job’s guest namespace and links it to
 ``job.<jobid>.guest``. Its initial contents are populated with
 
 ``exec.eventlog``
-   An eventlog for the use of *job shells*, TBD.
+   An eventlog containing events posted by the *exec system* and
+   *job shells*, described in :ref:`RFC 21 <spec_21_execution_eventlog>`.
 
 Once all *job shells* have exited and all outstanding writes to
 the guest namespace have stopped, the *exec system* links the guest
