@@ -26,7 +26,7 @@ check: $(SCHEMA_DIRS) spelling
 	./indexcheck spec_*.rst
 
 $(SCHEMA_DIRS):
-	python ./validate.py --schema=$@/schema.json $@/*.yaml
+	python3 ./validate.py --schema=$@/schema.json $@/*.yaml
 
 spelling:
 	@$(SPHINXBUILD) -W -b spelling "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
