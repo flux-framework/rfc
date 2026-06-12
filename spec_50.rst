@@ -29,6 +29,7 @@ Related Standards
 - :doc:`spec_16`
 - :doc:`spec_18`
 - :doc:`spec_21`
+- :doc:`spec_22`
 - :doc:`spec_41`
 
 Background
@@ -151,6 +152,42 @@ Example:
 .. code:: json
 
    {"timestamp":1552593348.089211,"name":"log","context":{"component":"flux-shell","stream":"stderr","rank":"3","data":"example error message"}}
+
+Shell-exit Event
+================
+
+The job shell on the leader (first) broker rank of the job has terminated.
+Services provided to the job by the leader shell, such as the MPIR
+proctable used by tools and debuggers, standard I/O, and the shell
+exception service, are unavailable after this point. Tools observing
+this event SHOULD NOT attempt to contact the leader shell and MAY use
+this event to distinguish permanent loss of leader shell services from
+a transient error.
+
+The execution system SHALL post this event at most once per job, when it
+observes the termination of the leader shell, whether normal or abnormal.
+If the leader shell is lost without its termination status being observed,
+e.g. due to node failure, this event MAY be omitted.
+
+The following keys are REQUIRED in the event context object:
+
+rank
+   (integer) The broker rank on which the leader shell was executing.
+
+wait_status
+   (integer) The POSIX wait(2) status of the leader shell.
+
+The following keys are OPTIONAL in the event context object:
+
+active_ranks
+   (string) An RFC 22 idset of broker ranks on which job shells were
+   still active when the leader shell terminated.
+
+Example:
+
+.. code:: json
+
+   {"timestamp":1552593348.090112,"name":"shell-exit","context":{"rank":42,"wait_status":0,"active_ranks":"43-45"}}
 
 Done Event
 ==========
