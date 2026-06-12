@@ -59,6 +59,7 @@ Table of Contents
 - [47/Flux Framework Contributor Code of Conduct](spec_47.rst)
 - [48/Flux Framework Project Governance](spec_48.rst)
 - [49/TreePool Resource Set Extension](spec_49.rst)
+- [50/Job Execution Eventlog](spec_50.rst)
 
 Build Instructions
 ------------------
