@@ -327,8 +327,19 @@ If resources can be allocated, the scheduler SHALL ensure that both
 (the copy with :data:`scheduling` omitted) have been successfully committed to
 the KVS per the job schema (RFC 16) before responding.
 
-In addition to the above REQUIRED keys, the SUCCESS response includes
-the OPTIONAL key:
+In addition to the above REQUIRED keys, the SUCCESS response includes the
+following REQUIRED key:
+
+R
+  (object) the allocated resource set (RFC 20).  The job manager consumes this
+  resource set directly and need not read it back from the KVS.  Since the job
+  manager requires only the execution portion, the scheduler MAY omit the
+  OPTIONAL :data:`scheduling` key from *R* in this response; the job manager
+  SHALL NOT rely on :data:`scheduling` being present here.  The complete *R*
+  including :data:`scheduling` is persisted to ``job.<jobid>.R`` (RFC 16),
+  which is how :data:`scheduling` rides the allocation protocol per RFC 20.
+
+The SUCCESS response also includes the following OPTIONAL key:
 
 annotations
   (object) key value pairs
@@ -340,6 +351,20 @@ Example:
    {
      "id": 1552593348,
      "type": 0,
+     "R": {
+       "version": 1,
+       "execution": {
+         "R_lite": [
+           {
+             "rank": "0-1",
+             "children": {"core": "0"}
+           }
+         ],
+         "nodelist": ["host[0-1]"],
+         "starttime": 1552593348.0,
+         "expiration": 1552600548.0
+       }
+     },
      "annotations": {
        "sched": {
          "resource_summary":"rank[0-1]/core0"
