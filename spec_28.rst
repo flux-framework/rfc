@@ -90,6 +90,9 @@ resources
   (object) RFC 20 (R version 1) resource object that contains the full resource
   inventory, less execution targets excluded by configuration.  The scheduler
   MAY use this set to determine the general satisfiability of job requests.
+  Per RFC 20, the :data:`scheduling` key rides along on this response if
+  present, even though a redacted copy of *R* without :data:`scheduling` may
+  be persisted or distributed to consumers that do not require it.
 
 up
   (string) RFC 22 idset of execution targets in ``resources`` that are

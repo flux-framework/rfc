@@ -240,6 +240,19 @@ R Format
   (RFC 27) so that it may be included in static configuration, allocated to
   jobs, and passed down a Flux instance hierarchy.
 
+  A component that persists *R* MAY additionally store a copy of *R* with the
+  OPTIONAL :data:`scheduling` key omitted, for distribution to consumers that
+  do not require it.  Such a redacted copy remains a conformant RFC 20 *R*
+  since :data:`scheduling` is OPTIONAL.  The complete *R* including
+  :data:`scheduling` remains available for consumers that require it.
+
+  .. note::
+    :data:`scheduling` is independent of expiration.  The RFC 21
+    ``resource-update`` event updates :data:`execution.expiration` only and
+    never modifies :data:`scheduling`.  Expiration updates may therefore be
+    applied to either the complete or the redacted copy of *R* (by replaying
+    ``resource-update`` events) without affecting :data:`scheduling` in any way.
+
   Linkage to specific resources in :data:`R_lite` SHOULD use hostnames rather
   than execution targets since the scheduler-agnostic re-ranking of *R* that
   occurs when a new Flux instance is started cannot do the same for the opaque

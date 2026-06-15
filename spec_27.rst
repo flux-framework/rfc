@@ -322,9 +322,10 @@ The ``alloc`` request MAY receive multiple responses.
 Alloc Success
 -------------
 
-If resources can be allocated, the scheduler SHALL ensure that *R* has
-been successfully committed to the KVS per the job schema (RFC 16)
-before responding.
+If resources can be allocated, the scheduler SHALL ensure that both
+``job.<jobid>.R`` (the complete resource set) and ``job.<jobid>.R_redacted``
+(the copy with :data:`scheduling` omitted) have been successfully committed to
+the KVS per the job schema (RFC 16) before responding.
 
 In addition to the above REQUIRED keys, the SUCCESS response includes
 the OPTIONAL key:

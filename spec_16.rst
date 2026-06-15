@@ -124,8 +124,8 @@ Guests may access data in the primary KVS namespace only through instance
 services that allow selective guest access, by proxy or by staging copies
 to the guest namespace.
 
-Guest access for primary namespace contents ``R``, ``J``, ``jobspec``, and
-``eventlog`` is provided via a proxy service in the instance.
+Guest access for primary namespace contents ``R``, ``R_redacted``, ``J``,
+``jobspec``, and ``eventlog`` is provided via a proxy service in the instance.
 
 Event Log
 =========
@@ -175,14 +175,26 @@ Content Consumed/Produced by Scheduler
 When the *scheduler* receives an allocation request containing a jobid,
 it reads the jobspec from ``job.<jobid>.jobspec``.
 
-The scheduler allocates resources by writing a resource set
-as described in :doc:`RFC 20 <spec_20>`
-to ``job.<jobid>.R`` and answering the allocation request.
+The scheduler allocates resources by writing the complete resource set as
+described in :doc:`RFC 20 <spec_20>` to ``job.<jobid>.R`` and a copy with the
+OPTIONAL :data:`scheduling` key (RFC 20) omitted to ``job.<jobid>.R_redacted``,
+then answering the allocation request.  ``R_redacted`` is intended for
+consumers that need only the execution portion, such as job shells.
 
-The scheduler frees resources by answering the free request,
-leaving ``R`` in place for job provenance. During a restart, the
-*job manager* uses the eventlog to determine whether ``R`` is currently
-allocated.
+``job.<jobid>.R``
+   The complete resource set including :data:`scheduling` (RFC 20) if present.
+   Read by the scheduler on hello/replay and by the subinstance resource module
+   so that :data:`scheduling` propagates down the instance hierarchy.
+
+``job.<jobid>.R_redacted``
+   A copy of ``job.<jobid>.R`` with the OPTIONAL :data:`scheduling` key (RFC 20)
+   omitted.  A resource set with :data:`scheduling` omitted remains a conformant
+   RFC 20 *R* since :data:`scheduling` is OPTIONAL.  Read by job shells and
+   other consumers that do not require scheduler-specific data.
+
+The scheduler frees resources by answering the free request, leaving ``R`` and
+``R_redacted`` in place for job provenance.  During a restart, the *job manager*
+uses the eventlog to determine whether ``R`` is currently allocated.
 
 Content Consumed/Produced by Exec Service
 =========================================
