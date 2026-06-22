@@ -233,12 +233,40 @@ R Format
     components SHALL be interpreted by the named scheduler.  If not
     provided, a value of ``fluxion`` SHALL be assumed.
 
+  .. data:: location
+
+    (*string*, OPTIONAL) A KVS key path at which the :data:`scheduling`
+    object is stored out-of-line. When :data:`scheduling` is stored
+    out-of-line, :data:`location` SHALL be present and the referenced KVS
+    key SHALL contain a complete :data:`scheduling` object. The referenced
+    key is written once and never rewritten. Per-job the conventional key
+    is ``job.<id>.scheduling``; for the instance resource inventory the
+    conventional key is ``resource.scheduling``.
+
+    A consumer that requires the complete :data:`scheduling` object SHALL
+    obtain it either by fetching the key named by :data:`location` itself,
+    or by requesting a complete *R* from a service that performs the
+    reassembly on its behalf. A service that provides *R* (such as a job
+    information service) MAY offer this reassembly on demand, controlled by
+    a request option. The default behavior of such a service is
+    implementation-defined and MAY change over time, so a requester that
+    requires a specific behavior SHOULD request it explicitly.
+
   Remaining scheduler-specific keys SHOULD be ignored by other Flux components.
 
-  When used, :data:`scheduling` SHALL ride along on the
-  resource acquisition protocol (RFC 28) and resource allocation protocol
-  (RFC 27) so that it may be included in static configuration, allocated to
-  jobs, and passed down a Flux instance hierarchy.
+  When used, :data:`scheduling` SHALL ride along on the resource acquisition
+  protocol (RFC 28) and resource allocation protocol (RFC 27) so that it may
+  be included in static configuration, allocated to jobs, and passed down a
+  Flux instance hierarchy. When :data:`scheduling` is stored out-of-line via
+  :data:`location`, it rides these protocols by virtue of being retrievable
+  from the KVS and reassembled by the persistence layer.
+
+  A component persisting *R* to the KVS MAY store the :data:`scheduling`
+  object out-of-line via :data:`location` to keep the stored *R* compact while
+  still providing access to the complete scheduler data via the referenced
+  key. Because :data:`scheduling` is independent of expiration, only the
+  stored *R* is rewritten when expiration is updated per RFC 21; the
+  out-of-line :data:`scheduling` key is never rewritten.
 
   Linkage to specific resources in :data:`R_lite` SHOULD use hostnames rather
   than execution targets since the scheduler-agnostic re-ranking of *R* that

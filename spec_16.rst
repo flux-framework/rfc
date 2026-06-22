@@ -179,6 +179,21 @@ The scheduler allocates resources by writing a resource set
 as described in :doc:`RFC 20 <spec_20>`
 to ``job.<jobid>.R`` and answering the allocation request.
 
+``job.<jobid>.R`` is the canonical resource set for the job. Its
+:data:`scheduling` object (RFC 20), if present, MAY be stored out-of-line
+in ``job.<jobid>.scheduling`` and referenced by a :data:`scheduling.location`
+key rather than stored directly within *R*. Consumers that require the
+complete *R* (e.g. the scheduler during hello/replay, or a subinstance
+resource module) SHALL obtain it by reading both ``job.<jobid>.R`` and
+``job.<jobid>.scheduling`` and merging them, or by requesting the complete
+*R* from a service that performs this reassembly.
+
+``job.<jobid>.scheduling`` is an OPTIONAL write-once key that holds the
+complete :data:`scheduling` object referenced by :data:`scheduling.location`
+in ``job.<jobid>.R``. It SHALL be written before ``job.<jobid>.R`` is
+committed so that the referenced data is available as soon as the reference
+is visible.
+
 The scheduler frees resources by answering the free request,
 leaving ``R`` in place for job provenance. During a restart, the
 *job manager* uses the eventlog to determine whether ``R`` is currently
