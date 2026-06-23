@@ -290,7 +290,7 @@ responses SHALL be split over multiple messages, terminated with error
 
 The RPC payloads are defined as follows:
 
-.. object:: job-info.lookup request
+.. object:: job-list.list request
 
   The request SHALL consist of a JSON object with the following keys:
 
@@ -317,7 +317,7 @@ The RPC payloads are defined as follows:
     legal job list constraint operators.  If not specified, match all
     jobs.
 
-.. object:: job-info.lookup response
+.. object:: job-list.list response
 
   Each non-error response SHALL consist of a JSON object with the
   following keys:
