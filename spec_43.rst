@@ -25,6 +25,7 @@ Language
 Related Standards
 *****************
 
+- :doc:`spec_12`
 - :doc:`spec_18`
 - :doc:`spec_20`
 - :doc:`spec_21`
@@ -65,6 +66,8 @@ Implementation
 The job list service SHALL provide callers the ability to request specific job attributes.  See :ref:`spec_43_job_attributes` below for details.
 
 The job list service SHALL provide a RFC 31 constraint syntax for filtering jobs.  See :ref:`spec_43_constraint_operators` below for details.
+
+The job list service SHALL support a *private mode*. When private mode is enabled, the service SHALL prevent guests (``FLUX_ROLE_USER``, see RFC 12) from listing or querying the jobs of other users.
 
 .. _spec_43_job_attributes:
 
@@ -290,7 +293,7 @@ responses SHALL be split over multiple messages, terminated with error
 
 The RPC payloads are defined as follows:
 
-.. object:: job-info.lookup request
+.. object:: job-list.list request
 
   The request SHALL consist of a JSON object with the following keys:
 
@@ -317,7 +320,7 @@ The RPC payloads are defined as follows:
     legal job list constraint operators.  If not specified, match all
     jobs.
 
-.. object:: job-info.lookup response
+.. object:: job-list.list response
 
   Each non-error response SHALL consist of a JSON object with the
   following keys:
@@ -340,6 +343,8 @@ List ID
 =======
 
 The :program:`job-list.list-id` RPC fetches job attributes for a specific job ID.
+
+In private mode, a :program:`job-list.list-id` request from a guest for a job belonging to another user SHALL fail as if the job does not exist, so that the existence of the job is not disclosed.
 
 The RPC payloads are defined as follows:
 
