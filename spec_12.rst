@@ -108,6 +108,9 @@ Additional roles MAY be added to the rolemask:
 FLUX_ROLE_LOCAL (``4``) SHALL indicate that the sender is attached to the
 same broker rank as the receiver (see below).
 
+FLUX_ROLE_ADMIN (``8``) MAY be assigned to guests to confer elevated
+privileges beyond FLUX_ROLE_USER but less than FLUX_ROLE_OWNER.
+
 Guest Authentication
 ====================
 
@@ -143,6 +146,8 @@ When a message is received from a peer authenticated as a guest:
   set to (*owner_userid*, FLUX_ROLE_OWNER).
 
 - Otherwise the credential SHALL be set to (*guest_userid*, FLUX_ROLE_USER).
+  Additional roles MAY be set in the credential based on instance
+  configuration.
 
 .. note::
   Although the natural flow is to send messages with invalid credentials
