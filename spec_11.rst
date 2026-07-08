@@ -56,8 +56,8 @@ Implementation
 In contrast to the original KVS prototype, in this specification, KVS
 values are unstructured, opaque data.
 
-All tree objects SHALL be represented as JSON objects containing three top
-level names:
+All tree objects SHALL be represented as JSON objects containing three
+REQUIRED top level names:
 
 -  *ver*, an integer version number
 
@@ -82,6 +82,12 @@ There are six types:
 -  *symlink*, data is an object containing a target key and optionally
    a namespace.
 
+The following OPTIONAL names are supported:
+
+-  *size*, contains the size of the decoded data within a *val* object
+   or the total size of data stored in the blobrefs of a *valref* object.
+
+
 Valref
 ======
 
@@ -93,6 +99,7 @@ not a *val* object).
    { "ver":1,
      "type":"valref",
      "data":["sha1-aaa...","sha1-bbb...",...],
+     "size":64,
    }
 
 Val
@@ -105,6 +112,7 @@ A *val* represents opaque data directly, base64-encoded.
    { "ver":1,
      "type":"val",
      "data":"NDIyCg==",
+     "size":3,
    }
 
 Short values that are not large enough to warrant a *valref* and independent
