@@ -131,7 +131,7 @@ Patch Requirements
 
 -  An AI coding assistant SHOULD NOT be credited as an author or co-author of a patch (e.g. via a ``Co-authored-by`` trailer), because authorship implies a responsibility that only a human Contributor can hold. This does not apply to human co-authors, who SHOULD continue to be credited.
 
--  Where an AI coding assistant was used to prepare a patch, the commit message body SHOULD record this with an ``Assisted-by:`` trailer of the form ``Assisted-by: NAME:MODEL_VERSION``, for example ``Assisted-by: Claude:claude-opus-4-8``.
+-  Where an AI coding assistant was used to prepare a patch, the commit message body SHOULD record this with an ``Assisted-by:`` trailer of the form ``Assisted-by: NAME:MODEL_VERSION``, for example ``Assisted-by: Claude:claude-opus-4.8``.
 
 -  A "Correct Patch" is one that satisfies the above requirements.
 
