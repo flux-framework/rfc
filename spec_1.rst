@@ -88,6 +88,8 @@ Licensing and Ownership
 
 -  The copyrights in the project SHALL be owned collectively by all its Contributors.
 
+-  A Contributor SHALL ensure that a patch is compatible with the project license and does not incorporate material under an incompatible license, including material reproduced by an AI coding assistant.
+
 -  The git commit history SHALL be considered the primary source of contributor identities.
 
 Patch Requirements
@@ -124,6 +126,12 @@ Patch Requirements
 -  Where applicable, a commit message body SHOULD reference an Issue by number (e.g. Fixes #33").
 
 -  A commit message body SHOULD begin with ``Problem:`` and a short paragraph describing the problem solved by the commit.  Even commits that add features MAY include such a problem statement.
+
+-  A Contributor SHALL take full responsibility for a patch, including its correctness, quality, and license compliance, regardless of whether an AI coding assistant was used in its preparation.
+
+-  An AI coding assistant SHOULD NOT be credited as an author or co-author of a patch (e.g. via a ``Co-authored-by`` trailer), because authorship implies a responsibility that only a human Contributor can hold. This does not apply to human co-authors, who SHOULD continue to be credited.
+
+-  Where an AI coding assistant was used to prepare a patch, the commit message body SHOULD record this with an ``Assisted-by:`` trailer of the form ``Assisted-by: NAME:MODEL_VERSION``, for example ``Assisted-by: Claude:claude-opus-4-8``.
 
 -  A "Correct Patch" is one that satisfies the above requirements.
 
