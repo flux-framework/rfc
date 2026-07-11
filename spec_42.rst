@@ -315,6 +315,13 @@ streaming :program:`exec` responses. The server SHALL send:
 - :program:`exec attached` response to indicate successful attachment
 - :program:`exec output` responses for any buffered output and subsequent
   output matching the target subprocess flags
+- exactly one :program:`exec output` response with the EOF flag set for each
+  forwarded output stream, whether the stream reaches end-of-file before or
+  after the attach request, and on every attach regardless of how many times
+  the subprocess has been attached and detached (output *data* produced before
+  the attach request MAY be lost as noted above, but the end-of-file
+  indication is always delivered so the client can reconcile the forwarded
+  streams named by the flags)
 - :program:`exec stopped` response if the subprocess is stopped
 - :program:`exec finished` response when the subprocess terminates
 - :program:`exec error` response with ENODATA (61) to indicate successful
