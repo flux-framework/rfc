@@ -244,6 +244,67 @@ Reserved Resource Types
    to the program described in the jobspec, unless otherwise specified
    in the ``exclusive`` field of the associated resource.
 
+   When multiple ``slot`` resources appear as siblings at the same hierarchical
+   level (referred to informally as "or-slots"), they represent alternative slot
+   configurations. The flexible traverser MAY select any one of the sibling slots
+   to satisfy the request. This form is useful when alternatives share the same
+   task slot label and live at the same jobspec level. The traverser uses a
+   dynamic-programming approach to choose the slot configuration that yields the
+   largest total number of satisfiable slot matches. Once a slot shape has been
+   selected, concrete resources for each matched slot are chosen according to
+   the active match policy.
+
+**xor_slot**
+   A resource type of ``type: xor_slot`` SHALL indicate an exclusive alternative
+   resource grouping that is expanded into distinct jobspec branches before
+   traversal. Each ``xor_slot`` is converted into a normal ``slot`` candidate
+   internally, and the flexible traverser tries the expanded branches sequentially
+   until a match is found (first-match strategy).
+
+   An ``xor_slot`` SHALL follow the same structural requirements as ``slot``,
+   including the requirement for a ``label`` key and at least one edge specified
+   using ``with:``.
+
+   This type is particularly useful when alternatives carry different subtree
+   prefixes (e.g., different hierarchical paths from the root) or when exclusive
+   same-level alternatives are needed. Unlike sibling ``slot`` resources which
+   are evaluated during traversal, ``xor_slot`` resources are expanded into
+   separate candidate jobspecs before matching begins.
+
+   Nested ``xor_slot`` resources are supported. When processing nested xor-slots,
+   the expansion produces all combinations of the xor branches, and each
+   combination is tried as a separate candidate jobspec.
+
+   Support for ``xor_slot`` requires the use of a flexible traverser
+   implementation. The expansion of ``xor_slot`` alternatives MAY be subject
+   to implementation-defined limits to prevent combinatorial explosion.
+
+Or-Slots vs Xor-Slots
+---------------------
+
+The following table summarizes the differences between or-slots (sibling
+``slot`` resources) and xor-slots (``xor_slot`` resources):
+
+.. list-table::
+   :widths: 30 35 35
+   :header-rows: 1
+
+   * - Feature
+     - Or-slots (sibling ``slot``)
+     - Xor-slots (``xor_slot``)
+   * - Expansion timing
+     - During traversal
+     - Before traversal
+   * - Selection algorithm
+     - Dynamic programming (optimal)
+     - First-match (sequential)
+   * - Use case
+     - Same-level alternatives with shared label
+     - Different hierarchy prefixes, exclusive same-level alternatives
+   * - Nesting support
+     - No
+     - Yes
+
 Tasks
 =====
 
@@ -720,6 +781,144 @@ Specific Example
 Jobspec YAML
    .. literalinclude:: data/spec_14/use_case_2.9.yaml
       :language: yaml
+
+Section 3: Alternative Resource Configurations
+===============================================
+
+The following use cases demonstrate or-slots and xor-slots, which allow
+expressing alternative resource configurations within a single jobspec.
+These require the use of a flexible traverser implementation.
+
+Use Case 3.1
+   Request alternative slot configurations (or-slots)
+
+Specific Example
+   Request either a GPU-capable slot with 8 cores or a larger CPU-only
+   slot with 10 cores. Sibling ``slot`` resources at the same level
+   represent alternatives that are evaluated during traversal using
+   dynamic programming to maximize the number of satisfiable slots.
+
+Jobspec YAML
+   .. code-block:: yaml
+
+      version: 1
+      resources:
+        - type: slot
+          count: 1
+          label: default
+          with:
+            - type: core
+              count: 8
+            - type: gpu
+              count: 1
+        - type: slot
+          count: 1
+          label: default
+          with:
+            - type: core
+              count: 10
+      attributes:
+        system:
+          duration: 3600
+      tasks:
+        - command: [ "app" ]
+          slot: default
+          count:
+            per_slot: 1
+
+Use Case 3.2
+   Request exclusive alternative branches (xor-slots)
+
+Specific Example
+   Request either a socket-local GPU configuration or a node-scoped
+   memory configuration. The ``xor_slot`` type causes these alternatives
+   to be expanded into separate candidate jobspecs before matching begins.
+   The flexible traverser tries each candidate sequentially until one matches.
+
+Jobspec YAML
+   .. code-block:: yaml
+
+      version: 1
+      resources:
+        - type: xor_slot
+          count: 1
+          label: default
+          with:
+            - type: socket
+              count: 1
+              with:
+                - type: core
+                  count: 8
+                - type: gpu
+                  count: 1
+        - type: xor_slot
+          count: 1
+          label: default
+          with:
+            - type: node
+              count: 1
+              with:
+                - type: socket
+                  count: 1
+                  with:
+                    - type: core
+                      count: 6
+                    - type: memory
+                      count: 2
+      attributes:
+        system:
+          duration: 3600
+      tasks:
+        - command: [ "app" ]
+          slot: default
+          count:
+            per_slot: 1
+
+Use Case 3.3
+   Nested xor-slots with multiple hierarchy levels
+
+Specific Example
+   Request a slot with nested xor alternatives. This demonstrates
+   that ``xor_slot`` resources can be nested, allowing complex
+   alternative resource hierarchies to be expressed.
+
+Jobspec YAML
+   .. code-block:: yaml
+
+      version: 1
+      resources:
+        - type: node
+          count: 1
+          with:
+            - type: xor_slot
+              count: 1
+              label: default
+              with:
+                - type: socket
+                  count: 2
+                  with:
+                    - type: xor_slot
+                      count: 1
+                      label: accel
+                      with:
+                        - type: core
+                          count: 4
+                        - type: gpu
+                          count: 1
+                    - type: xor_slot
+                      count: 1
+                      label: accel
+                      with:
+                        - type: core
+                          count: 8
+      attributes:
+        system:
+          duration: 3600
+      tasks:
+        - command: [ "app" ]
+          slot: default
+          count:
+            per_slot: 1
 
 References
 **********
