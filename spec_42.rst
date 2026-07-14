@@ -346,11 +346,12 @@ streaming :program:`exec` responses. The server SHALL send:
 
     (*integer*, REQUIRED) The process ID of the subprocess.
 
-  .. object:: flags
+  .. object:: cmd
 
-    (*integer*, REQUIRED) The flags that the subprocess was originally
-    started with. This allows the client to determine which output streams
-    and responses to expect.
+    (*object*, REQUIRED) The command object the subprocess was started with
+    (see `Command Object`_). The attach request carries no command, so this
+    lets the client reconstruct the subprocess's I/O channels, including
+    channel names and buffering options.
 
 
 If the subprocess was started with the waitable flag and has already
