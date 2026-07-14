@@ -296,11 +296,10 @@ The :program:`attach` RPC attaches to an existing background subprocess.
 
   .. object:: flags
 
-    (*integer*, REQUIRED) A bitfield comprised of zero or more flags.
-
-    No flags are currently supported. The flags value SHALL be ignored
-    and output forwarding behavior SHALL be inherited from the original
-    subprocess.
+    (*integer*, REQUIRED) A bitfield selecting which output streams the
+    server forwards for the duration of the attach: stdout (1), stderr (2),
+    and channel (4), as defined for the :program:`exec` request. These
+    override the forwarding selected when the subprocess was started.
 
   .. object:: signature
 
@@ -320,7 +319,7 @@ streaming :program:`exec` responses. The server SHALL send:
 
 - :program:`exec attached` response to indicate successful attachment
 - :program:`exec output` responses for any buffered output and subsequent
-  output matching the target subprocess flags
+  output for the streams selected by the attach flags
 - exactly one :program:`exec output` response with the EOF flag set for each
   forwarded output stream, whether the stream reaches end-of-file before or
   after the attach request, and on every attach regardless of how many times
@@ -347,11 +346,12 @@ streaming :program:`exec` responses. The server SHALL send:
 
     (*integer*, REQUIRED) The process ID of the subprocess.
 
-  .. object:: flags
+  .. object:: cmd
 
-    (*integer*, REQUIRED) The flags that the subprocess was originally
-    started with. This allows the client to determine which output streams
-    and responses to expect.
+    (*object*, REQUIRED) The command object the subprocess was started with
+    (see `Command Object`_). The attach request carries no command, so this
+    lets the client reconstruct the subprocess's I/O channels, including
+    channel names and buffering options.
 
 
 If the subprocess was started with the waitable flag and has already
