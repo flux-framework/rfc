@@ -112,7 +112,10 @@ request, a single response SHALL be sent: either an :program:`exec started`
 response if successful, or an :program:`exec error` response on failure. The
 subprocess SHALL continue running as a child of the subprocess server until
 it terminates or the server is shut down. The server MAY log subprocess
-output and exit code to its own log stream.
+output and exit code to its own log stream. The subprocess's standard input,
+and any writable auxiliary channels, SHALL be at end-of-file, since a
+background subprocess that reads them could otherwise silently block while
+no client is attached.
 
 .. object:: exec request
 
@@ -143,7 +146,9 @@ output and exit code to its own log stream.
 
     write-credit (8)
       Send ``add-credit`` exec responses when buffer space is available
-      for standard input or writable auxiliary channels.
+      for standard input or writable auxiliary channels.  This flag SHALL
+      NOT be combined with a non-streaming (background mode) request; doing
+      so is an error.
 
     waitable (16)
       Allow the subprocess to be waited on with a ``wait`` RPC.
@@ -154,7 +159,8 @@ output and exit code to its own log stream.
 
     stdio-fallthrough (1)
       Let subprocess inherit stdin, stdout, and stderr file descriptors
-      from the subprocess server.
+      from the subprocess server.  This flag SHALL NOT be combined with a
+      non-streaming (background mode) request; doing so is an error.
 
     no-setpgrp (2)
       Do not call setpgrp(2) before exec.  Use kill(2) instead of killpg(2)
