@@ -103,6 +103,12 @@ The job list service SHALL support the following attributes.
    * - ``t_run``
      - time job entered run state
      - real
+   * - ``t_priority``
+     - time job first entered priority state
+     - real
+   * - ``t_sched``
+     - time job first entered sched state
+     - real
    * - ``t_cleanup``
      - time job entered cleanup state
      - real
