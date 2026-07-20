@@ -177,11 +177,27 @@ policy.access.allow-group
   (list of strings) Specify a list of UNIX group names that are to be granted
   access.
 
-The absence of ``allow-user`` and ``allow-group`` keys indicates that no queue
-access restrictions are in place.  However, the access policy MAY be extended
-by a jobtap plugin that enforces additional access conditions.  For example,
-the flux-accounting multi-factor priority plugin controls access to queues
-based on the user and bank information from the accounting database.
+If either key is present, a job request submitted to the queue by a user
+that does not appear in ``allow-user`` and is not a member of any group in
+``allow-group`` SHALL be rejected during request validation.
+
+The absence of both ``allow-user`` and ``allow-group`` keys indicates that
+the configuration places no access restrictions on the queue.
+
+Access policy MAY be extended by jobtap plugins that enforce additional
+access conditions.  For example, the flux-accounting multi-factor priority
+plugin controls access to queues based on the user and bank information from
+the accounting database.  When multiple access validators are active, a job
+request SHALL be granted access only if every validator grants access, so
+the effective access policy is the intersection of all configured sources.
+It is RECOMMENDED that access for a given queue be configured in a single
+source.
+
+A validator that manages access for a subset of queues SHALL NOT reject a
+job request solely because the named queue is not under its management.
+This permits queues to be introduced, for example at runtime, without
+registration in every validator's configuration, with access to such queues
+governed by the remaining validators.
 
 Queue Configuration
 ===================
