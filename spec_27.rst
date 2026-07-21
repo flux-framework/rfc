@@ -404,6 +404,10 @@ sched.resource_summary
 sched.queue
   (string) human readable identification of job queue
 
+sched.selection_type
+  (string) human readable identification of the scheduler's selected method 
+  invoked to schedule the job (i.e. immediate, reserved, backfilled)
+
 user
   (dictionary) dictionary object containing user specific annotations
 
