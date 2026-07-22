@@ -501,12 +501,29 @@ with the waitable flag set.
 
 .. object:: wait response
 
-  A successful response SHALL consist of a JSON object with the following key:
+  A successful response SHALL consist of a JSON object with the following keys:
 
   .. object:: status
 
     (*integer*, REQUIRED) The UNIX wait status value as returned by
     :func:`waitpid`.
+
+  .. object:: output
+
+    (*array*, OPTIONAL) Output produced by the subprocess and retained by the
+    server. Each element SHALL be an I/O object (see `I/O Object`_) of the same
+    form carried by the :program:`exec output` response. The array SHALL
+    preserve the order in which the output was produced.
+
+    The amount of output retained is server-defined and MAY be zero. The
+    retained output MAY be incomplete, and the server has no obligation to
+    indicate that output was discarded or lost.
+
+    The wait response is sent only after the subprocess has terminated and is
+    self-terminating. Retained I/O objects SHALL NOT be required to include an
+    end-of-file marker.
+
+    The key MAY be omitted if the server retained no output.
 
 Request Authentication
 ======================
