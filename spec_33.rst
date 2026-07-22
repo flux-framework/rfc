@@ -219,6 +219,49 @@ queues.NAME.policy
   top-level ``policy`` table  and a queue-specific ``policy`` table, the
   queue-specific value takes precedence for jobs submitted to that queue.
 
+queues.NAME.parent
+  (string) Declare this queue to be a virtual queue backed by another
+  configured queue, as described in `Virtual Queues`_ below.
+
+Virtual Queues
+--------------
+
+A queue configured with a ``parent`` key is a *virtual queue*: an
+alternate name for submitting jobs to the parent queue's resources
+with different policy applied at ingest.
+
+Configuration SHALL be rejected if ``parent`` does not name a
+configured queue, or if the named queue is itself a virtual queue.
+
+A virtual queue SHALL inherit the resource subset and policy of its
+parent queue.  If the same policy appears in both the parent and
+virtual queue configuration, the virtual queue's value SHALL take
+precedence.  A virtual queue MUST NOT be configured with ``requires``
+or ``policy.scheduler``.
+
+The queue attribute of a job submitted to a virtual queue SHALL NOT be
+rewritten: the job retains the virtual queue name for job listing,
+accounting, and per-queue policy application.
+
+Jobs submitted to a virtual queue SHALL be scheduled as part of its
+parent queue, in a single priority order with jobs submitted directly
+to the parent queue.
+
+Job submission on a virtual queue MAY be enabled or disabled, and
+scheduling on a virtual queue MAY be started or stopped, independently
+of its parent queue.  However, since virtual queue jobs are scheduled
+as part of the parent queue, a job submitted to a virtual queue SHALL
+be eligible for scheduling only when both the virtual queue and its
+parent queue are started.  Starting a virtual queue while its parent
+queue is stopped has no effect until the parent queue is started.
+
+Since a virtual queue has no resources of its own, waiting for a
+virtual queue to become empty or idle SHALL NOT be supported, and
+waiting for a queue to become empty or idle SHALL take into account
+jobs submitted to its virtual queues.
+
+A virtual queue MAY be designated as the default queue.
+
 Initial Assignment of Job to Queue
 ----------------------------------
 
@@ -260,6 +303,11 @@ TOML table.
 The service providing data to the job listing tool SHOULD list pending and
 running jobs in the default queue by default.  An option SHALL be provided
 to request jobs in other queues by name, or all queues.
+
+A request for jobs by parent queue name SHOULD include jobs submitted
+to its virtual queues, since all are scheduled in a single priority
+order.  A request by virtual queue name SHOULD include only jobs
+submitted to that virtual queue.
 
 The job submission tools SHOULD leave the queue unset (thereby selecting
 the default.  An option SHALL be provided to direct jobs to other
