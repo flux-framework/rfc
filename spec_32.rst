@@ -29,6 +29,7 @@ Related Standards
 - :doc:`spec_14`
 - :doc:`spec_15`
 - :doc:`spec_16`
+- :doc:`spec_20`
 - :doc:`spec_21`
 - :doc:`spec_27`
 
@@ -121,13 +122,17 @@ Example:
      "service": "job-exec"
    }
 
-If an execution service is already loaded, the job manager SHALL allow
-the new one to override it.
+If an execution service is already registered, the job manager SHALL allow
+the new registration to replace it, whether it is the same service reloaded
+or a different one overriding it.  A job that had an outstanding ``start``
+request to the previous execution service instance had its shells launched by
+that instance; after responding to ``exec-hello``, the job manager SHALL
+re-issue such a job's ``start`` request to the new instance with ``reattach``
+set to True so that the running shells are recovered rather than launched
+anew.
 
-The response payload SHALL be empty on success.  The job manager SHALL issue
-a failure response if any jobs have an outstanding ``start`` request to an
-existing execution service.  The execution service SHALL treat a failure
-response to ``exec-hello`` as fatal.
+The response payload SHALL be empty on success.  The execution service SHALL
+treat a failure response to ``exec-hello`` as fatal.
 
 Start Request
 =============
@@ -147,9 +152,20 @@ userid
 jobspec
   (object) *jobspec* object (RFC 14)
 
+R
+  (object) *R* resource set object (RFC 20).  The execution service uses
+  ``R`` to determine the execution targets on which to start or recover the
+  job's shells.
+
 reattach
-  (boolean) Set to True if broker has been restarted and job should still
-  be running.
+  (boolean) Set to True if the job's shells were already launched by a
+  previous execution service instance and should be recovered rather than
+  launched anew.  Whether the shells actually survive a given restart is a
+  property of the execution mechanism and outside the scope of this protocol;
+  ``reattach`` asserts only that they were launched by a previous instance
+  and, if still present, are to be recovered.  The execution service SHALL
+  respond with ``reattached`` in place of ``start`` once recovery completes,
+  or raise a job exception as for any other unrecoverable start failure.
 
 
 Example:
@@ -160,6 +176,7 @@ Example:
      "id": 1552593348,
      "userid": 5588,
      "jobspec": {},
+     "R": {},
      "reattach": false,
    }
 
@@ -176,17 +193,33 @@ type
 data
   (object) type-dependent data (see below)
 
-There are four response types:
+There are five response types:
 
 start
   Indicates that the job shells have started.  ``data`` is an empty object.
-  Example:
+  A ``start`` response SHALL NOT be sent for a request with ``reattach`` set
+  to True; see ``reattached`` below.  Example:
 
   .. code:: json
 
      {
        "id": 1552593348,
        "type": "start",
+       "data": {},
+     }
+
+reattached
+  Indicates that the execution service has recovered a job's already-running
+  shells in response to a ``start`` request with ``reattach`` set to True.
+  It is the reattach counterpart of ``start``: exactly one of ``start`` or
+  ``reattached`` SHALL be sent for a given ``start`` request, depending on
+  the value of ``reattach``.  ``data`` is an empty object.  Example:
+
+  .. code:: json
+
+     {
+       "id": 1552593348,
+       "type": "reattached",
        "data": {},
      }
 
@@ -245,9 +278,9 @@ finish
        },
      }
 
-An ``exception`` response MAY be sent at any point.  ``start`` and/or
-``finish`` responses MAY be omitted depending on when a fatal exception occurs.
-The execution service MUST always send a ``release`` response with ``final``
-set to True.  The final ``release`` response SHALL be the last response sent
-by the execution service for a given job ID and is interpreted as "end of
-stream" by the job manager.
+An ``exception`` response MAY be sent at any point.  ``start``,
+``reattached``, and/or ``finish`` responses MAY be omitted depending on when
+a fatal exception occurs.  The execution service MUST always send a
+``release`` response with ``final`` set to True.  The final ``release``
+response SHALL be the last response sent by the execution service for a given
+job ID and is interpreted as "end of stream" by the job manager.
