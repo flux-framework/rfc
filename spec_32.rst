@@ -148,8 +148,14 @@ jobspec
   (object) *jobspec* object (RFC 14)
 
 reattach
-  (boolean) Set to True if broker has been restarted and job should still
-  be running.
+  (boolean) Set to True if the job's shells were already launched by a
+  previous execution service instance and should be recovered rather than
+  launched anew.  Whether the shells actually survive a given restart is a
+  property of the execution mechanism and outside the scope of this protocol;
+  ``reattach`` asserts only that they were launched by a previous instance
+  and, if still present, are to be recovered.  The execution service SHALL
+  respond with ``reattached`` in place of ``start`` once recovery completes,
+  or raise a job exception as for any other unrecoverable start failure.
 
 
 Example:
