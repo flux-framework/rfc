@@ -121,12 +121,16 @@ Example:
      "service": "job-exec"
    }
 
-If an execution service is already loaded, the job manager SHALL allow
-the new one to override it.
+If an execution service is already registered, the job manager SHALL allow
+the new registration to replace it, whether it is the same service reloaded
+or a different one overriding it.  A job that had an outstanding ``start``
+request to the previous execution service instance had its shells launched by
+that instance; after responding to ``exec-hello``, the job manager SHALL
+re-issue such a job's ``start`` request to the new instance with ``reattach``
+set to True so that the running shells are recovered rather than launched
+anew.
 
-The response payload SHALL be empty on success.  The job manager SHALL issue
-a failure response if any jobs have an outstanding ``start`` request to an
-existing execution service.  The execution service SHALL treat a failure
+The response payload SHALL be empty on success.  The execution service SHALL treat a failure
 response to ``exec-hello`` as fatal.
 
 Start Request
