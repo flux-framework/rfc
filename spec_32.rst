@@ -29,6 +29,7 @@ Related Standards
 - :doc:`spec_14`
 - :doc:`spec_15`
 - :doc:`spec_16`
+- :doc:`spec_20`
 - :doc:`spec_21`
 - :doc:`spec_27`
 
@@ -151,6 +152,11 @@ userid
 jobspec
   (object) *jobspec* object (RFC 14)
 
+R
+  (object) *R* resource set object (RFC 20).  The execution service uses
+  ``R`` to determine the execution targets on which to start or recover the
+  job's shells.
+
 reattach
   (boolean) Set to True if the job's shells were already launched by a
   previous execution service instance and should be recovered rather than
@@ -170,6 +176,7 @@ Example:
      "id": 1552593348,
      "userid": 5588,
      "jobspec": {},
+     "R": {},
      "reattach": false,
    }
 
