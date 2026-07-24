@@ -30,6 +30,7 @@ Related Standards
 - :doc:`spec_18`
 - :doc:`spec_21`
 - :doc:`spec_22`
+- :doc:`spec_32`
 - :doc:`spec_41`
 
 Background
@@ -113,6 +114,29 @@ Example:
 .. code:: json
 
    {"timestamp":1552597348.088563,"name":"re-starting"}
+
+Recoverable Event
+=================
+
+The execution system has determined that the job has reached a state from
+which its job shells can be recovered if the execution system or enclosing
+instance restarts. A reattaching execution service MAY consult the execution
+eventlog for this event to distinguish a job whose shells are recoverable
+from one that never reached that state.
+
+Whether a job ever becomes recoverable depends on the execution mechanism:
+a service that cannot recover running shells SHALL NOT post this event, and
+a service that can SHALL post it at most once per job, when the job first
+becomes recoverable. This event MAY appear before a ``complete`` event, and
+if present SHALL follow the ``starting`` event.
+
+The context SHALL be empty.
+
+Example:
+
+.. code:: json
+
+   {"timestamp":1552593348.089012,"name":"recoverable"}
 
 Complete Event
 ==============
