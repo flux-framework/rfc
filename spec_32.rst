@@ -176,17 +176,32 @@ type
 data
   (object) type-dependent data (see below)
 
-There are four response types:
+There are five response types:
 
 start
   Indicates that the job shells have started.  ``data`` is an empty object.
-  Example:
+  A ``start`` response SHALL NOT be sent for a request with ``reattach`` set to True; see ``reattached`` below.  Example:
 
   .. code:: json
 
      {
        "id": 1552593348,
        "type": "start",
+       "data": {},
+     }
+
+reattached
+  Indicates that the execution service has recovered a job's already-running
+  shells in response to a ``start`` request with ``reattach`` set to True.
+  It is the reattach counterpart of ``start``: exactly one of ``start`` or
+  ``reattached`` SHALL be sent for a given ``start`` request, depending on
+  the value of ``reattach``.  ``data`` is an empty object.  Example:
+
+  .. code:: json
+
+     {
+       "id": 1552593348,
+       "type": "reattached",
        "data": {},
      }
 
@@ -245,7 +260,7 @@ finish
        },
      }
 
-An ``exception`` response MAY be sent at any point.  ``start`` and/or
+An ``exception`` response MAY be sent at any point.  ``start``, ``reattached``, and/or
 ``finish`` responses MAY be omitted depending on when a fatal exception occurs.
 The execution service MUST always send a ``release`` response with ``final``
 set to True.  The final ``release`` response SHALL be the last response sent
