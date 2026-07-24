@@ -131,8 +131,8 @@ re-issue such a job's ``start`` request to the new instance with ``reattach``
 set to True so that the running shells are recovered rather than launched
 anew.
 
-The response payload SHALL be empty on success.  The execution service SHALL treat a failure
-response to ``exec-hello`` as fatal.
+The response payload SHALL be empty on success.  The execution service SHALL
+treat a failure response to ``exec-hello`` as fatal.
 
 Start Request
 =============
@@ -197,7 +197,8 @@ There are five response types:
 
 start
   Indicates that the job shells have started.  ``data`` is an empty object.
-  A ``start`` response SHALL NOT be sent for a request with ``reattach`` set to True; see ``reattached`` below.  Example:
+  A ``start`` response SHALL NOT be sent for a request with ``reattach`` set
+  to True; see ``reattached`` below.  Example:
 
   .. code:: json
 
@@ -277,9 +278,9 @@ finish
        },
      }
 
-An ``exception`` response MAY be sent at any point.  ``start``, ``reattached``, and/or
-``finish`` responses MAY be omitted depending on when a fatal exception occurs.
-The execution service MUST always send a ``release`` response with ``final``
-set to True.  The final ``release`` response SHALL be the last response sent
-by the execution service for a given job ID and is interpreted as "end of
-stream" by the job manager.
+An ``exception`` response MAY be sent at any point.  ``start``,
+``reattached``, and/or ``finish`` responses MAY be omitted depending on when
+a fatal exception occurs.  The execution service MUST always send a
+``release`` response with ``final`` set to True.  The final ``release``
+response SHALL be the last response sent by the execution service for a given
+job ID and is interpreted as "end of stream" by the job manager.
