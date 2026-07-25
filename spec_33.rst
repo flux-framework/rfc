@@ -316,13 +316,44 @@ stop_reason
   (string) the reason scheduling is stopped.  This key MAY be present
   when ``start`` is false.
 
+blocked
+  (boolean) the queue is started but prevented from scheduling by an
+  external condition.  This key SHALL be present and true when such a
+  condition exists, and SHALL be omitted otherwise.
+
+parent
+  (string) the parent queue name.  This key SHALL be present when the
+  queue is a virtual queue.
+
 Additional keys MAY be present.
 
 A queue that is started but prevented from scheduling by an external
-condition SHALL be reported with ``start`` false and a ``stop_reason``
-identifying the condition.  For example, when no scheduler is loaded,
-every queue SHALL be reported this way with a reason such as
-"Scheduler is offline".
+condition SHALL be reported with ``start`` false, ``blocked`` true, and
+a ``stop_reason`` identifying the condition.  Two such conditions
+exist: no scheduler is loaded (e.g. "Scheduler is offline"), and a
+virtual queue's parent queue is stopped (e.g. "parent queue 'batch' is
+stopped").  A blocked queue resumes scheduling without administrative
+action on the queue itself when the condition clears.  Note that a
+queue's own started state is recoverable from the status as the
+logical OR of ``start`` and ``blocked``.
+
+For example, the status of a virtual queue that has been started while
+its parent queue ``batch`` is stopped:
+
+.. code-block:: json
+
+   {
+     "enable": true,
+     "start": false,
+     "blocked": true,
+     "parent": "batch",
+     "stop_reason": "parent queue 'batch' is stopped"
+   }
+
+``start`` reports the effective state: jobs in this queue are not being
+scheduled.  ``blocked`` reports why: no administrative action stopped
+this queue, and it begins scheduling as soon as its parent queue is
+started.
 
 Job Submission and Listing Tools
 --------------------------------
