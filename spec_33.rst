@@ -294,6 +294,36 @@ A Flux command line tool SHALL provide the ability to wait for a queue to
 become idle, or for all queues to become idle, where idle is defined as
 containing no jobs in RUN or CLEANUP state.
 
+Queue Status
+------------
+
+A service SHALL provide the status of a queue on request.  The status
+SHALL be a JSON object with the following REQUIRED keys:
+
+enable
+  (boolean) job submission is enabled.
+
+start
+  (boolean) scheduling is started.
+
+The following keys are OPTIONAL:
+
+disable_reason
+  (string) the reason submission is disabled.  This key SHALL be present
+  when ``enable`` is false.
+
+stop_reason
+  (string) the reason scheduling is stopped.  This key MAY be present
+  when ``start`` is false.
+
+Additional keys MAY be present.
+
+A queue that is started but prevented from scheduling by an external
+condition SHALL be reported with ``start`` false and a ``stop_reason``
+identifying the condition.  For example, when no scheduler is loaded,
+every queue SHALL be reported this way with a reason such as
+"Scheduler is offline".
+
 Job Submission and Listing Tools
 --------------------------------
 
