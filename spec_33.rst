@@ -317,9 +317,19 @@ stop_reason
   when ``start`` is false.
 
 blocked
-  (boolean) the queue is started but prevented from scheduling by an
-  external condition.  This key SHALL be present and true when such a
-  condition exists, and SHALL be omitted otherwise.
+  (string) a keyword identifying the external condition preventing a
+  started queue from scheduling.  This key SHALL be present when such a
+  condition exists, and SHALL be omitted otherwise.  The following
+  values are defined:
+
+  scheduler
+    no scheduler is loaded.
+
+  parent
+    the queue is a virtual queue whose parent queue is stopped.
+
+  Additional values may be defined in the future.  A consumer that does
+  not recognize the value SHALL treat it as a generic blocked condition.
 
 parent
   (string) the parent queue name.  This key SHALL be present when the
@@ -328,14 +338,14 @@ parent
 Additional keys MAY be present.
 
 A queue that is started but prevented from scheduling by an external
-condition SHALL be reported with ``start`` false, ``blocked`` true, and
-a ``stop_reason`` identifying the condition.  Two such conditions
-exist: no scheduler is loaded (e.g. "Scheduler is offline"), and a
-virtual queue's parent queue is stopped (e.g. "parent queue 'batch' is
-stopped").  A blocked queue resumes scheduling without administrative
-action on the queue itself when the condition clears.  Note that a
-queue's own started state is recoverable from the status as the
-logical OR of ``start`` and ``blocked``.
+condition SHALL be reported with ``start`` false and ``blocked`` set to
+the keyword identifying the condition, and SHOULD include a
+``stop_reason`` describing the condition in human-readable form.  When
+more than one condition applies, the reported condition is unspecified.
+A blocked queue resumes scheduling without administrative action on the
+queue itself when the condition clears.  Note that a queue's own
+started state is recoverable from the status as ``start`` being true or
+``blocked`` being present.
 
 For example, the status of a virtual queue that has been started while
 its parent queue ``batch`` is stopped:
@@ -345,7 +355,7 @@ its parent queue ``batch`` is stopped:
    {
      "enable": true,
      "start": false,
-     "blocked": true,
+     "blocked": "parent",
      "parent": "batch",
      "stop_reason": "parent queue 'batch' is stopped"
    }
