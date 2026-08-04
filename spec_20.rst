@@ -194,6 +194,15 @@ R Format
     result in both ``amd-mi50@gpu`` and ``amd-mi50`` being valid properties
     for resources in the instance.
 
+    A leading ``+`` character marks an *instance-local* property: one that
+    describes the containing instance rather than an attribute of the
+    hardware, for example a property derived from queue membership. The
+    literal property SHALL apply to the defined execution target ranks as
+    usual. Because instance-local properties describe the instance and not
+    the resources themselves, a scheduler SHALL omit them from the *R* it
+    generates to allocate resources to a job. Other components that
+    generate an *R* subset MAY likewise omit them.
+
   .. data:: starttime
 
     (*number*, OPTIONAL) The start time at which the resource set is valid.
