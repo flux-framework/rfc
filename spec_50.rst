@@ -75,8 +75,8 @@ Example:
 Reattach Event
 ==============
 
-The execution system has recovered the job after a potential restart
-of the execution system or enclosing instance. This event MAY appear
+The execution system has recovered the job's KVS namespace and is
+starting to reattach to its job shells.  This event MAY appear
 one or more times in the execution eventlog after the ``init`` event.
 
 The context SHALL be empty.
