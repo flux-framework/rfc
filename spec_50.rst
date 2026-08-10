@@ -100,21 +100,6 @@ Example:
 
    {"timestamp":1552593348.088563,"name":"starting"}
 
-Re-starting Event
-=================
-
-The execution system has successfully attached to the already executing
-job shells of a recovered job. This event MAY appear after a
-``reattach`` event.
-
-The context SHALL be empty.
-
-Example:
-
-.. code:: json
-
-   {"timestamp":1552597348.088563,"name":"re-starting"}
-
 Recoverable Event
 =================
 
