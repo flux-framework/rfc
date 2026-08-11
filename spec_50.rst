@@ -75,8 +75,8 @@ Example:
 Reattach Event
 ==============
 
-The execution system has recovered the job after a potential restart
-of the execution system or enclosing instance. This event MAY appear
+The execution system has recovered the job's KVS namespace and is
+starting to reattach to its job shells.  This event MAY appear
 one or more times in the execution eventlog after the ``init`` event.
 
 The context SHALL be empty.
@@ -99,21 +99,6 @@ Example:
 .. code:: json
 
    {"timestamp":1552593348.088563,"name":"starting"}
-
-Re-starting Event
-=================
-
-The execution system has successfully attached to the already executing
-job shells of a recovered job. This event MAY appear after a
-``reattach`` event.
-
-The context SHALL be empty.
-
-Example:
-
-.. code:: json
-
-   {"timestamp":1552597348.088563,"name":"re-starting"}
 
 Recoverable Event
 =================
