@@ -206,12 +206,25 @@ A ``queues`` TOML table MAY define one or more named queues.  Each queue
 SHALL be represented as a sub-table that MAY contain the following OPTIONAL
 keys:
 
+queues.NAME.hosts
+  (string) Declare the queue's members as an RFC 29 Hostlist, or the
+  literal ``all`` to denote every configured host.  The queue's
+  membership property (see `Queue Membership and Resource Properties`_)
+  SHALL be applied to these hosts, and the constraint
+  ``{"properties": ["+NAME"]}`` SHALL be added to the
+  ``system.constraints.properties`` array of jobs submitted to the queue
+  (logical and with any existing constraint).  A value naming an unknown
+  host, or resolving to an empty set, SHALL be rejected.  ``hosts`` and
+  ``requires`` SHALL NOT both be configured on one queue.
+
 queues.NAME.requires
   (array of strings) Specify queue-specific resource property constraints
   (RFC 31) that SHALL be added to the jobspec ``system.constraints.properties``
   array of all jobs submitted to this queue.  If the jobspec already specifies
   property constraints, then the queue-specific properties SHALL be appended
-  (logical and).
+  (logical and).  ``queues.NAME.hosts`` is the preferred way to define
+  membership, and ``requires`` MAY be deprecated in a future version of
+  this specification.
 
 queues.NAME.policy
   (table) Specify policy fragments that apply only to this queue, using the
@@ -222,6 +235,17 @@ queues.NAME.policy
 queues.NAME.parent
   (string) Declare this queue to be a virtual queue backed by another
   configured queue, as described in `Virtual Queues`_ below.
+
+Queue Membership and Resource Properties
+----------------------------------------
+
+A queue's *membership property* is the queue name prefixed with ``+``,
+marking it as an instance-local property (RFC 20).  When a queue
+configures ``hosts``, Flux SHALL apply the property ``+NAME`` to the
+named hosts and add the constraint ``{"properties": ["+NAME"]}`` to jobs
+submitted to the queue.  A queue that configures neither ``hosts`` nor
+``requires`` covers all configured resources, applies no membership
+property, and adds no constraint.
 
 Virtual Queues
 --------------
@@ -236,8 +260,10 @@ configured queue, or if the named queue is itself a virtual queue.
 A virtual queue SHALL inherit the resource subset and policy of its
 parent queue.  If the same policy appears in both the parent and
 virtual queue configuration, the virtual queue's value SHALL take
-precedence.  A virtual queue MUST NOT be configured with ``requires``
-or ``policy.scheduler``.
+precedence.  A virtual queue MUST NOT be configured with ``requires``,
+``hosts``, or ``policy.scheduler``; its membership is that of its
+parent, and jobs submitted to it SHALL carry the parent queue's
+membership property.
 
 The queue attribute of a job submitted to a virtual queue SHALL NOT be
 rewritten: the job retains the virtual queue name for job listing,
