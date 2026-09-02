@@ -557,6 +557,47 @@ Notes:
 -  The barrier operation MUST be usable as a generic synchronization mechanism,
    without requiring KVS data to be queued for exchange.
 
+.. function:: int PMI_Barrier_group (const int *group, int count, const char *stringtag)
+
+This function is a collective call across a subset of the process group,
+introduced in PMI subversion 1.2. :var:`group` is an array of :var:`count`
+process ranks identifying the subset, or one of the special constants below,
+in which case :var:`count` is ignored:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Constant
+     - Value
+     - Meaning
+   * - PMI_GROUP_WORLD
+     - (int \*)0
+     - all processes in the process group
+   * - PMI_GROUP_SELF
+     - (int \*)1
+     - the calling process only
+   * - PMI_GROUP_NODE
+     - (int \*)2
+     - the processes co-located on the same node as the caller
+
+The PMI library SHALL block until all processes in the group have entered the
+call, or an error occurs. Upon successful return, KVS values put by group
+members before the call are available to :c:func:`PMI_KVS_Get` within the
+group. :var:`stringtag`, which MAY be NULL, distinguishes group barriers that
+are outstanding concurrently, for example when issued from multiple threads.
+
+Errors:
+
+-  PMI_FAIL - barrier failed, or the process manager does not support the
+   subversion 1.2 group barrier
+
+Notes:
+
+-  PMI_GROUP_SELF is a local operation that requires no communication with the
+   process manager. Because a subversion 1.1 process manager fails the call, a
+   client MAY call PMI_Barrier_group with PMI_GROUP_SELF to probe whether the
+   group barrier is supported.
+
 
 .. function:: int PMI_KVS_Create (char kvsname[], int length)
 .. function:: int PMI_KVS_Destroy (const char kvsname[]);
@@ -716,6 +757,29 @@ If a protocol error occurs, the detecting side SHALL immediately close
 the connection and abort the program. IT SHOULD log the message so that
 the problem can be tracked down.
 
+Barrier Operation
+=================
+
+The group barrier introduced in PMI 1.2 has the following wire protocol
+characteristics:
+
+- The barrier_in "group" key SHALL be a group designator string with a
+  decimal integer :tag suffix.
+
+- The group designator, which identifies the barrier scope, SHALL be one
+  of "WORLD" (all ranks), "NODE" (this rank), or a comma-delimited list of
+  ranks.  "SELF" SHALL NOT occur on the wire because PMI_GROUP_SELF is fully
+  handled within the client implementation.
+
+- The tag suffix SHOULD uniquely identify the barrier instance within the
+  client.  For example, it MAY be implemented as a thread safe, client
+  resident barrier counter.
+
+- The server SHALL return the client's integer tag value from barrier_in
+  in the corresponding barrier_out.  This allows multiple threads to perform
+  concurrent barriers, which implies that a PMI 1.2 client implementation
+  MUST manage concurrent thread access to PMI_FD.
+
 Spawn Operation
 ===============
 
@@ -797,9 +861,13 @@ Protocol Definition
                      [SP "kvsname=" word]
                      LF
 
-   C:barrier       = "cmd=barrier_in" LF
+   C:barrier       = "cmd=barrier_in"
+                     [SP "group=" group]           ; subversion >= 2 only
+                     LF
+
    S:barrier       = "cmd=barrier_out"
                      [SP "rc=" int]
+                     [SP "tag=" int]               ; subversion >= 2 only
                      LF
 
    C:get           = "cmd=get" [SP "kvsname=" word] SP "key=" word LF
@@ -848,6 +916,8 @@ Protocol Definition
 
    ; macros
 
+   group           = ( "WORLD" / "NODE" / ranklist ) ":" int
+   ranklist        = uint *("," uint)              ; comma-delimited process ranks
    intlist         = int *["," int]                ; comma-delimited integers
    word            = 1*(%x21-3C %x3E-7E)           ; visible char minus =
    string          = 1*(SP HTAB VCHAR)             ; visible char plus tab, space
@@ -858,9 +928,18 @@ Protocol Definition
 Back Compatibility
 ==================
 
-Earlier versions of the PMI-1 wire protocol did not include the init
-operation in which versions are exchanged. Protocol operations that
-were culled in PMI 1.1 are not covered here.
+PMI subversion 1 is not backwards compatible with version 0.  Practically
+speaking, subversion 0 no longer exists in the wild and therefore is
+not covered by this document.  The effective minimum PMI-1 subversion is 1.
+
+As implied in the Version Handshake section, a client sending a minimum
+version of 1.1 may be answered with a server maximum of 1.2 (or beyond).
+Clients need not speak subversions greater than their stated minimum,
+but servers MUST speak subversions less than or equal to their stated
+maximum.
+
+In practice, clients SHOULD always send subversion 1 and adaptively use
+features offered by the server if available.
 
 Local Process Group Information
 *******************************
