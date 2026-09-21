@@ -248,3 +248,8 @@ Python coding style
 *******************
 
 -  Python code SHALL be formatted with the `Black code style <https://black.readthedocs.io/en/stable/the_black_code_style/index.html>`__.
+
+Rust coding style
+*****************
+
+- Rust code SHALL be formatted with the `Rust code style <https://doc.rust-lang.org/style-guide/>`_.
