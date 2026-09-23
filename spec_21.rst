@@ -110,9 +110,9 @@ RUN
 CLEANUP
    The job has completed or an exception has occurred. Under normal termination,
    the job manager waits for notification from the exec service that job
-   resources can be released, logging ``release`` events, then returns resources
-   to the scheduler and logs a ``free`` event. Under exceptional termination,
-   one or more steps may be unnecessary, depending on prior events.
+   resources can be released, logging ``release`` events, then takes the
+   resources back from the job and logs a ``free`` event. Under exceptional
+   termination, one or more steps may be unnecessary, depending on prior events.
    Once cleanup is complete, the job manager logs a ``clean`` event.
    The state transitions to INACTIVE.
 
@@ -153,6 +153,17 @@ of severity zero occurs, the first one SHALL be considered the root
 cause of the job failure for reporting purposes.
 
 The exception event format is described below.
+
+Resource Release
+================
+
+A job releases its resources to the job manager, which returns them to
+the scheduler. These are distinct steps, and only the first is recorded
+in the job eventlog, by the ``free`` event.
+
+The job manager MAY run an administrative cleanup program on the resources
+before returning them to the scheduler. The job does not wait for this
+program and MAY become inactive while it runs.
 
 Event Descriptions
 ==================
@@ -415,8 +426,8 @@ Epilog-start Event
 ------------------
 
 An epilog action has started for the job. This event SHALL prevent the job
-manager from initiating a free request to the scheduler until the
-epilog action is completed with a corresponding ``epilog-finish`` event.
+manager from posting the ``free`` event until the epilog action is completed
+with a corresponding ``epilog-finish`` event.
 
 The following keys are REQUIRED in the event context object:
 
@@ -449,7 +460,8 @@ status
 Free Event
 ----------
 
-Resources have been released to the scheduler.
+Resources have been released by the job to the job manager, which returns
+them to the scheduler as described in `Resource Release`_.
 
 The context SHALL be empty.
 
@@ -589,7 +601,7 @@ start
    A problem occurred while starting job shells.
 
 free
-   A problem occurred while releasing resources to the scheduler.
+   A problem occurred while releasing the job's resources.
 
 Memo Event
 ----------
