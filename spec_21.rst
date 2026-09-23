@@ -110,9 +110,10 @@ RUN
 CLEANUP
    The job has completed or an exception has occurred. Under normal termination,
    the job manager waits for notification from the exec service that job
-   resources can be released, logging ``release`` events, then takes the
-   resources back from the job and logs a ``free`` event. Under exceptional
-   termination, one or more steps may be unnecessary, depending on prior events.
+   resources can be released, logging ``release`` events, then reclaims the
+   resources from the job and logs one or more ``free`` events. Under
+   exceptional termination, one or more steps may be unnecessary, depending
+   on prior events.
    Once cleanup is complete, the job manager logs a ``clean`` event.
    The state transitions to INACTIVE.
 
@@ -157,13 +158,27 @@ The exception event format is described below.
 Resource Release
 ================
 
-A job releases its resources to the job manager, which returns them to
-the scheduler. These are distinct steps, and only the first is recorded
-in the job eventlog, by the ``free`` event.
+A job releases its resources to the job manager, which returns them to the
+scheduler. These are distinct steps, and only the first is recorded in the
+job eventlog, by the ``free`` event. Before returning resources to the
+scheduler, the job manager MAY run an administrative cleanup action on them.
+The job does not wait for this action and MAY become inactive while it runs.
 
-The job manager MAY run an administrative cleanup program on the resources
-before returning them to the scheduler. The job does not wait for this
-program and MAY become inactive while it runs.
+An ``epilog-start`` event SHALL take a reference on the job, and a reference
+on each rank named in its ``ranks`` key, or on all of the job's ranks if that
+key is omitted.
+
+An ``epilog-finish`` event SHALL apply to the ``epilog-start`` event with the
+same description. If it names ranks, it SHALL drop the reference on those
+ranks only. If it does not name ranks, it SHALL drop the reference on the
+job and on any ranks the epilog action still holds.
+
+The job manager MAY reclaim a rank from the job and post a ``free`` event
+once no epilog action holds a reference on it, without waiting for epilog
+actions on other ranks. A job that holds no resources remains active until
+the reference held on it by each epilog action is dropped, therefore each
+``epilog-start`` event SHALL eventually be followed by an ``epilog-finish``
+event that names no ranks.
 
 Event Descriptions
 ==================
@@ -425,24 +440,35 @@ status
 Epilog-start Event
 ------------------
 
-An epilog action has started for the job. This event SHALL prevent the job
-manager from posting the ``free`` event until the epilog action is completed
-with a corresponding ``epilog-finish`` event.
+An epilog action has started for the job. This event SHALL take a reference
+on the job and on its target ranks, as described in `Resource Release`_.
 
 The following keys are REQUIRED in the event context object:
 
 description
    (string) Name or description of the epilog action.
 
+The following keys are OPTIONAL in the event context object:
+
+ranks
+   (string) An idset of broker ranks targeted by the epilog action. If
+   omitted, all ranks assigned to the job are targeted.
+
+Examples:
+
 .. code:: json
 
    {"timestamp":1552593348.073045,"name":"epilog-start","context":{"description":"/usr/sbin/job-epilog.sh"}}
 
+.. code:: json
+
+   {"timestamp":1552593348.073045,"name":"epilog-start","context":{"description":"/usr/sbin/job-epilog.sh","ranks":"0-15"}}
+
 Epilog-finish Event
 -------------------
 
-A epilog action for the job has completed. The epilog description SHOULD
-match a previous ``epilog-start`` event.
+An epilog action for the job has completed on some or all of its ranks. The
+epilog description SHOULD match a previous ``epilog-start`` event.
 
 The following keys are REQUIRED in the event context object:
 
@@ -453,23 +479,50 @@ status
    (integer) Completion status of the epilog action. A status of zero SHALL
    be considered success, with a non-zero status indicating failure.
 
+The following keys are OPTIONAL in the event context object:
+
+ranks
+   (string) An idset of broker ranks on which the epilog action completed,
+   which SHOULD be a subset of the ranks of the corresponding
+   ``epilog-start`` event. If omitted, the epilog action is complete on all
+   of its remaining ranks.
+
+Multiple ``epilog-finish`` events MAY be posted for one ``epilog-start``
+event. Only the one that omits ``ranks`` ends the epilog action, as
+described in `Resource Release`_.
+
+Examples:
+
 .. code:: json
 
    {"timestamp":1552594348.0,"name":"epilog-finish","context":{"description":"/usr/sbin/job-epilog.sh", "status":0}}
 
+.. code:: json
+
+   {"timestamp":1552594348.0,"name":"epilog-finish","context":{"description":"/usr/sbin/job-epilog.sh","status":0,"ranks":"0-7"}}
+
 Free Event
 ----------
 
-Resources have been released by the job to the job manager, which returns
+Resources have been reclaimed from the job by the job manager, which returns
 them to the scheduler as described in `Resource Release`_.
 
-The context SHALL be empty.
+The following keys are OPTIONAL in the event context object:
 
-Example:
+ranks
+   (string) An idset of broker ranks that were reclaimed. If omitted, all
+   ranks still held by the job were reclaimed. The final ``free`` event for
+   a job SHALL omit this key.
+
+Examples:
 
 .. code:: json
 
    {"timestamp":1552593348.093541,"name":"free"}
+
+.. code:: json
+
+   {"timestamp":1552593348.093541,"name":"free","context":{"ranks":"1-16,18"}}
 
 Start Event
 -----------
