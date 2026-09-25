@@ -325,6 +325,11 @@ objects.
 This specification describes the events posted to the execution eventlog
 maintained by the Flux execution system in a job's guest KVS namespace.
 
+:doc:`spec_51`
+~~~~~~~~~~~~~~
+
+This specification describes Version 2 of the Flux Resource Allocation
+Protocol implemented by the shell, job manager and a compliant Flux scheduler.
 
 .. Each file must appear in a toctree
 .. toctree::
@@ -378,3 +383,4 @@ maintained by the Flux execution system in a job's guest KVS namespace.
    spec_48
    spec_49
    spec_50
+   spec_51
