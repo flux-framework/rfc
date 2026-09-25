@@ -421,7 +421,7 @@ description
 Prolog-finish Event
 -------------------
 
-A prolog action for the job has completed. The prolog description SHOULD
+A prolog action for the job has completed. The prolog description SHALL
 match a previous ``prolog-start`` event.
 
 The following keys are REQUIRED in the event context object:
@@ -468,7 +468,7 @@ Epilog-finish Event
 -------------------
 
 An epilog action for the job has completed on some or all of its ranks. The
-epilog description SHOULD match a previous ``epilog-start`` event.
+epilog description SHALL match a previous ``epilog-start`` event.
 
 The following keys are REQUIRED in the event context object:
 
