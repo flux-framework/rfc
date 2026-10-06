@@ -9,3 +9,4 @@ extend-exclude = [
 [default.extend-words]
 # HPE = Hewlett Packard Enterprise (hardware vendor)
 HPE = "HPE"
+aas = "aas"

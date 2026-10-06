@@ -60,6 +60,7 @@ Table of Contents
 - [48/Flux Framework Project Governance](spec_48.rst)
 - [49/TreePool Resource Set Extension](spec_49.rst)
 - [50/Job Execution Eventlog](spec_50.rst)
+- [52/D-bus Bridge Protocol](spec_52.rst)
 
 Build Instructions
 ------------------
