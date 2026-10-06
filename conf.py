@@ -99,3 +99,27 @@ html_static_path = [
 
 man_pages = [
 ]
+
+
+# -- Per-file smart quotes -------------------------------------------------
+# A document may disable smart quotes by starting with the file-wide
+# metadata field ':smartquotes: false', e.g. for literal JSON in tables.
+
+from docutils import nodes
+from sphinx.transforms import SphinxTransform
+
+
+class FileSmartQuotes(SphinxTransform):
+    default_priority = 700  # after DocInfo (340), before SmartQuotes (750)
+
+    def apply(self, **kwargs):
+        for docinfo in self.document.findall(nodes.docinfo):
+            for field in docinfo.findall(nodes.field):
+                name = field[0].astext().strip().lower()
+                value = field[1].astext().strip().lower()
+                if name == 'smartquotes' and value in ('false', 'no', 'off'):
+                    self.document.settings.smart_quotes = False
+
+
+def setup(app):
+    app.add_transform(FileSmartQuotes)
