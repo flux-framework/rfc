@@ -325,6 +325,12 @@ objects.
 This specification describes the events posted to the execution eventlog
 maintained by the Flux execution system in a job's guest KVS namespace.
 
+:doc:`spec_52`
+~~~~~~~~~~~~~~
+
+This specification defines a JSON encoding of D-Bus message bodies and the
+Flux RPC protocol used to make D-Bus method calls and receive D-Bus signals
+through the Flux ``sdbus`` service.
 
 .. Each file must appear in a toctree
 .. toctree::
@@ -378,3 +384,4 @@ maintained by the Flux execution system in a job's guest KVS namespace.
    spec_48
    spec_49
    spec_50
+   spec_52
