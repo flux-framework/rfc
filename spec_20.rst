@@ -128,8 +128,9 @@ R Format
 
     (*array of dictionary*, REQUIRED) A list that identifies one or more
     execution targets and the specific cores and GPUs they control.
-    The list entries need not appear in any particular order.  Each entry
-    SHALL have the following keys:
+    The list entries need not appear in any particular order.  An execution
+    target MUST NOT appear in more than one entry. Each entry SHALL have the
+    following keys:
 
     .. data:: rank
 
