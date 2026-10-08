@@ -152,6 +152,39 @@ R Format
         (*string*, OPTIONAL) An RFC 22 idset representing one or more
 	logical GPU IDs.
 
+    .. data:: slots
+
+      (*dictionary of dictionary*, OPTIONAL) The task slots assigned by the
+      scheduler to each execution target in :data:`rank`. Each key SHALL be
+      the ``label`` of a task slot in the associated jobspec (RFC 14). Each
+      value SHALL be a dictionary with the following keys:
+
+      .. data:: count
+
+        (*integer*, REQUIRED) The number of task slots with this label
+        assigned to each execution target in :data:`rank`. It MUST be
+        greater than ``0``.
+
+      Remaining keys SHALL be resource types from :data:`children`. Each
+      value SHALL be an RFC 22 idset representing the resources of that type
+      assigned to the task slots with this label.
+
+      If :data:`slots` is present in any :data:`R_lite` entry, it MUST be
+      present in every entry. When present, each resource in
+      :data:`children` MUST appear in exactly one :data:`slots` entry, and if
+      :data:`nslots` is also present, the sum of :data:`count` over all
+      execution targets MUST equal :data:`nslots`.
+
+      :data:`slots` is advisory to the execution system, for example to
+      select a task command or place tasks, and SHALL NOT alter the
+      resource set described by :data:`children`. Components that use *R*
+      only for resource accounting or set operations MAY drop :data:`slots`,
+      but SHALL drop it from every entry.
+
+      If :data:`slots` is not present, the scheduler has not assigned task
+      slots to specific resources, and the execution system SHALL determine
+      task placement from the jobspec and :data:`nslots`.
+
   .. data:: nodelist
 
     (*array of string*, REQUIRED) A list of hostnames corresponding
@@ -270,3 +303,11 @@ on February 16, 2023.
 .. literalinclude:: data/spec_20/example1.json
    :language: json
 
+The following example indicates a resource set with ranks 0 through 3,
+corresponding to nodes host0 through host3. The scheduler has assigned
+a ``cpu`` task slot consisting of cores 0-3 to every node, and a ``gpu``
+task slot consisting of cores 4-7 and gpu 0 to host0 and host1, for a
+total of 6 slots.
+
+.. literalinclude:: data/spec_20/example2.json
+   :language: json
