@@ -477,6 +477,7 @@ Test Vectors
    sasbttttuii
    ssa
    sv
+   svs
    tt
    uu
    uv
@@ -663,6 +664,9 @@ Decoding params with signature SHALL fail.
    * - g
      - ["("]
      - invalid signature
+   * - g
+     - ["{sv}"]
+     - dict entry outside array
    * - h
      - [5]
      - integer for descriptor object
@@ -693,9 +697,21 @@ Decoding params with signature SHALL fail.
    * - a{uv}
      - [[[7]]]
      - dict entry without value
+   * - {sv}
+     - [{}]
+     - dict entry outside array
+   * - a{vs}
+     - [[]]
+     - dict key is not a basic type
+   * - a{svs}
+     - [{}]
+     - dict entry with three members
    * - v
      - [["s"]]
      - variant without value
+   * - v
+     - [["s","x","y"]]
+     - variant with extra element
    * - v
      - [["ss",["a","b"]]]
      - variant signature with two types
