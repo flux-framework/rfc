@@ -70,13 +70,30 @@
         }
       ]
     },
+    "resource_vertex_xor_slot": {
+      "description": "special xor_slot resource type - exclusive alternative slot that is expanded before traversal",
+      "allOf": [
+        { "$ref": "#/definitions/resource_vertex_base" },
+        {
+          "properties": {
+            "type": { "const": "xor_slot" }
+          },
+          "required": ["label"]
+        }
+      ]
+    },
     "resource_vertex_other": {
       "description": "other (non-slot) resource type",
       "allOf": [
         { "$ref": "#/definitions/resource_vertex_base" },
         {
           "properties": {
-            "type": { "not": { "const": "slot" } }
+            "type": {
+              "allOf": [
+                { "not": { "const": "slot" } },
+                { "not": { "const": "xor_slot" } }
+              ]
+            }
           }
         }
       ]
@@ -84,6 +101,7 @@
     "resource_vertex": {
       "oneOf":[
         { "$ref": "#/definitions/resource_vertex_slot" },
+        { "$ref": "#/definitions/resource_vertex_xor_slot" },
         { "$ref": "#/definitions/resource_vertex_other" }
       ]
     }
