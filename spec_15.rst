@@ -508,14 +508,23 @@ construct the environment of the job shell, and SHALL restrict it to
 
 -  variables required by the job shell,
 
--  variables named in IMP configuration, and
+-  variables named in IMP configuration,
 
--  :envvar:`PATH`, set by the IMP to a safe default.
+-  :envvar:`PATH`, set by the IMP to a safe default, and
+
+-  variables set by the IMP, described below.
 
 The set of variables required by the job shell is implementation defined,
 and SHOULD be as small as the job shell allows. Values of these variables
 originate with the instance owner and are therefore not trustworthy. A job
 shell SHALL NOT rely on them for a security decision.
+
+The IMP SHALL set :envvar:`FLUX_IMP_EXEC_USERID` in the environment of the
+job shell to the user ID under which the IMP was invoked, that is, the
+owner of the enclosing instance. The IMP SHALL determine this value itself,
+and SHALL set it unconditionally, discarding any inherited value. A job
+shell MAY therefore rely on it, and SHOULD prefer it to any value obtained
+from the enclosing instance.
 
 The IMP MAY allow the default :envvar:`PATH` to be overridden through IMP
 configuration, which a site MAY require for a relocated installation of
@@ -532,6 +541,13 @@ command runs as root.
   The job shell is located by the absolute *job shell path* and is
   constrained by the IMP ``allowed-shells`` configuration, so
   :envvar:`PATH` does not determine which job shell runs.
+
+  A job shell may need to know whether the enclosing instance is running
+  as a different user than itself, for example to decide how much to trust
+  it. The instance cannot be asked, since it is the subject of the
+  question. :envvar:`FLUX_IMP_EXEC_USERID` answers it: the IMP determines
+  the value while privileged, before assuming the credentials of the guest
+  user, so the instance owner cannot influence it.
 
 Other IMP operational requirements
 ==================================
