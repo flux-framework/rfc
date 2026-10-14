@@ -558,8 +558,19 @@ allowed-users
 
 allowed-environment
   A list of environment variables or glob patterns that are allowed to be
-  passed through to the executable.  By default, only :envvar:`FLUX_JOB_ID`
-  and :envvar:`FLUX_JOB_USERID` SHALL pass through.
+  passed through to the executable. By default, only :envvar:`FLUX_JOB_ID`,
+  :envvar:`FLUX_JOB_USERID`, and :envvar:`FLUX_JOB_RANKS` SHALL pass
+  through. The environment SHALL NOT be otherwise inherited. The IMP SHALL
+  set :envvar:`PATH` to a safe value, which this key SHALL NOT override.
+
+.. note::
+
+  Every variable named here is supplied by the instance owner and is
+  placed in the environment of a command running as root. Glob patterns
+  SHOULD be avoided, since a pattern such as ``FLUX_*`` matches variables
+  that alter the behavior of :program:`flux` itself, such as
+  :envvar:`FLUX_URI`. The defaults are sufficient for the prolog, epilog,
+  and housekeeping commands provided with Flux.
 
 To enable the instance owner to implement execution timeouts, the IMP SHALL
 linger while these commands execute and act as a signal proxy by trapping
