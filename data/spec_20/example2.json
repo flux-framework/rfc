@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "execution": {
+    "R_lite": [
+      {
+        "rank": "0-1",
+        "children": {
+          "core": "0-7",
+          "gpu": "0"
+        },
+        "slots": {
+          "cpu": {
+            "count": 1,
+            "core": "0-3"
+          },
+          "gpu": {
+            "count": 1,
+            "core": "4-7",
+            "gpu": "0"
+          }
+        }
+      },
+      {
+        "rank": "2-3",
+        "children": {
+          "core": "0-3"
+        },
+        "slots": {
+          "cpu": {
+            "count": 1,
+            "core": "0-3"
+          }
+        }
+      }
+    ],
+    "nodelist": [
+      "host[0-3]"
+    ],
+    "nslots": 6,
+    "starttime": 1790596800,
+    "expiration": 1790598600
+  }
+}
