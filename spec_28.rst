@@ -146,20 +146,6 @@ shrink
   key SHALL also appear in the ``down`` key of the same response. If a
   scheduler supports ``shrink`` then the ``shrink`` key SHALL take precedence.
 
-property-add
-  (object) RFC 20 conforming properties object containing properties that
-  should be added to the specified execution targets. When present, this
-  key reflects an update to the instance resource inventory which MAY
-  affect job satisfiability, the determination of which is left to the
-  scheduler implementation.
-
-property-remove
-  (object) RFC 20 conforming properties object containing properties that
-  should be removed from the specified execution targets. When present,
-  this key reflects an update to the instance resource inventory which
-  MAY affect job satisfiability, the determination of which is left to the
-  scheduler implementation.
-
 expiration
   (float) When present, this key notifies the scheduler that the expiration
   time of the resource set has been updated to the included floating-point
@@ -172,9 +158,7 @@ Example:
    {
       "up": "3-6",
       "down": "2,6",
-      "shink": "6",
-      "property-add": { "foo": "0-1" },
-      "property-remove": { "bar": "3" }
+      "shink": "6"
    }
 
 If removed (``shrink``) or down resources are assigned to a job, the
