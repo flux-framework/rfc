@@ -495,6 +495,60 @@ role is complete, the IMP MAY perform privileged clean-up tasks such as
 
 -  Finalize the PAM session
 
+.. _job_shell_environment:
+
+Job shell environment
+---------------------
+
+The environment inherited by the IMP is supplied by the instance owner,
+and is therefore tainted input in the same sense as :math:`J`.
+
+The job shell SHALL NOT inherit the environment of the IMP. The IMP SHALL
+construct the environment of the job shell, and SHALL restrict it to
+
+-  variables required by the job shell,
+
+-  variables named in IMP configuration,
+
+-  :envvar:`PATH`, set by the IMP to a safe default, and
+
+-  variables set by the IMP, described below.
+
+The set of variables required by the job shell is implementation defined,
+and SHOULD be as small as the job shell allows. Values of these variables
+originate with the instance owner and are therefore not trustworthy. A job
+shell SHALL NOT rely on them for a security decision.
+
+The IMP SHALL set :envvar:`FLUX_IMP_EXEC_USERID` in the environment of the
+job shell to the user ID under which the IMP was invoked, that is, the
+owner of the enclosing instance. The IMP SHALL determine this value itself,
+and SHALL set it unconditionally, discarding any inherited value. A job
+shell MAY therefore rely on it, and SHOULD prefer it to any value obtained
+from the enclosing instance.
+
+The IMP MAY allow the default :envvar:`PATH` to be overridden through IMP
+configuration, which a site MAY require for a relocated installation of
+Flux. The IMP SHALL NOT allow this for :program:`flux-imp run`, whose
+command runs as root.
+
+.. note::
+
+  Restricting the environment protects the guest from the instance owner,
+  not the reverse. Variables that name a search path for an executable or
+  a shared object, such as :envvar:`FLUX_CONNECTOR_PATH`, would otherwise
+  allow the instance owner to run arbitrary code as the guest user.
+
+  The job shell is located by the absolute *job shell path* and is
+  constrained by the IMP ``allowed-shells`` configuration, so
+  :envvar:`PATH` does not determine which job shell runs.
+
+  A job shell may need to know whether the enclosing instance is running
+  as a different user than itself, for example to decide how much to trust
+  it. The instance cannot be asked, since it is the subject of the
+  question. :envvar:`FLUX_IMP_EXEC_USERID` answers it: the IMP determines
+  the value while privileged, before assuming the credentials of the guest
+  user, so the instance owner cannot influence it.
+
 Other IMP operational requirements
 ==================================
 
@@ -558,8 +612,19 @@ allowed-users
 
 allowed-environment
   A list of environment variables or glob patterns that are allowed to be
-  passed through to the executable.  By default, only :envvar:`FLUX_JOB_ID`
-  and :envvar:`FLUX_JOB_USERID` SHALL pass through.
+  passed through to the executable. By default, only :envvar:`FLUX_JOB_ID`,
+  :envvar:`FLUX_JOB_USERID`, and :envvar:`FLUX_JOB_RANKS` SHALL pass
+  through. The environment SHALL NOT be otherwise inherited. The IMP SHALL
+  set :envvar:`PATH` to a safe value, which this key SHALL NOT override.
+
+.. note::
+
+  Every variable named here is supplied by the instance owner and is
+  placed in the environment of a command running as root. Glob patterns
+  SHOULD be avoided, since a pattern such as ``FLUX_*`` matches variables
+  that alter the behavior of :program:`flux` itself, such as
+  :envvar:`FLUX_URI`. The defaults are sufficient for the prolog, epilog,
+  and housekeeping commands provided with Flux.
 
 To enable the instance owner to implement execution timeouts, the IMP SHALL
 linger while these commands execute and act as a signal proxy by trapping
@@ -607,6 +672,17 @@ is still a work in progress.
    guest request, and a fixed time-to-live prevents the request from
    being used indefinitely. Finally, :program:`flux-imp`` logs all
    invocations, thereby allowing replays to be detected and audited.
+
+-  *Influencing a process running as another user through its environment*:
+   the integrity guarantee above covers the environment specified in the
+   job request, but not the environment the IMP inherits from the instance
+   owner. The latter SHALL NOT be passed to the job shell, nor to the
+   commands invoked by :program:`flux-imp run`. The IMP SHALL construct
+   each of these environments as described in :ref:`job_shell_environment`
+   and in the IMP configuration above. Without this, variables that name a
+   search path for an executable or a shared object would allow the
+   instance owner to run code of their choosing as the guest user, or as
+   root.
 
 References
 **********
