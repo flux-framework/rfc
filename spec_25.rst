@@ -127,6 +127,14 @@ well. Therefore, the complete enumeration of valid resource graphs in V1 is:
 
 -  ``node>slot>(core,gpu)``
 
+Alternative Slot Configurations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Version 1 jobspec does NOT support alternative slot configurations such as
+or-slots (sibling ``slot`` resources) or ``xor_slot`` resource types. These
+advanced features require the flexible traverser and are only available in the
+canonical jobspec format described in :doc:`RFC 14 <spec_14>`.
+
 Tasks
 =====
 
