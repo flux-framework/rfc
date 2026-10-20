@@ -102,6 +102,9 @@ Design Criteria
 
 - Detect unsatisfiable job requests at submission time.
 
+- Allow queues to be created, destroyed, and modified while the instance is
+  running.
+
 Implementation
 **************
 
@@ -585,6 +588,88 @@ The request MAY fail, for example if:
     avoid making schedules that are based on outdated information.
     Note that enforcement of expiration times is the responsibility of the
     execution system, not the scheduler.
+
+Queue Update
+============
+
+Queues MAY be created, destroyed, and modified while an instance is
+running.  The job manager SHALL notify the scheduler of such changes by
+sending a ``sched.queue-update`` request.  The request payload consists of
+a JSON object with the following REQUIRED key:
+
+operations
+  (array) list of queue operations
+
+Each operation SHALL consist of the following REQUIRED keys:
+
+type
+  (string) one of ``add``, ``remove``, or ``modify``
+
+name
+  (string) queue name
+
+and the following OPTIONAL keys:
+
+policy
+  (object) queue policy, as defined by RFC 33.
+
+scheduler
+  (object) scheduler specific queue configuration.  Its keys are defined
+  by the scheduler implementation and are opaque to the job manager.
+
+Both keys SHALL be ignored for a ``remove`` operation.  For a ``modify``
+operation, a member that is present SHALL replace the queue's current
+value, a member that is absent SHALL leave it unchanged, and a member
+whose value is ``null`` SHALL restore it to its default.
+
+Example:
+
+.. code:: json
+
+   {
+     "operations": [
+       {"type": "remove", "name": "batch"},
+       {
+         "type": "add",
+         "name": "debug",
+         "scheduler": {
+           "queue-policy": "easy",
+           "queue-params": {"max-queue-depth": 1000}
+         }
+       }
+     ]
+   }
+
+Operations that are required to be atomic, such as removing one queue and
+adding another, SHOULD be sent in a single request.  All operations in a
+request SHALL be applied in array order before the scheduler processes the
+next request in this protocol.  If any operation cannot be applied, the
+scheduler SHALL apply none of them.
+
+The response consists of an empty payload on success.
+
+The job manager SHALL NOT send a ``sched.alloc`` request for a job in an
+added queue until the request has succeeded, and SHALL cancel any
+outstanding ``sched.alloc`` requests for jobs in a queue before removing
+it.
+
+The request MAY fail, for example if:
+
+- An operation type or queue name is malformed.
+
+- An ``add`` operation names a queue that already exists, or a ``remove``
+  or ``modify`` operation names one that does not.
+
+- A ``policy`` or ``scheduler`` value is invalid or unsupported.
+
+- The scheduler does not implement ``sched.queue-update``.
+
+Unless an operation in the request included a ``scheduler`` key, the job
+manager SHALL interpret an ENOSYS error response as "not implemented" and
+proceed as though the request were successful.
+
+The job manager SHALL NOT record queue operations as durable until a
+``sched.queue-update`` request carrying those operations has succeeded.
 
 Free
 ====
