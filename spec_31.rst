@@ -28,7 +28,6 @@ Related Standards
 
 - :doc:`spec_14`
 - :doc:`spec_20`
-- :doc:`spec_35`
 
 Goals
 *****
@@ -117,12 +116,13 @@ The following constraint operators SHALL be supported
    named property and that value stands in the stated relation to ``value``.
    A target with no value for the named property SHALL NOT match, as for an
    absent property. A target whose value for the named property cannot be
-   compared with ``value`` SHALL NOT match.
+   read as a number SHALL NOT match.
 
    Where more than one object is listed, an execution target satisfies the
    constraint only when it satisfies every one of them, as for the multiple
-   values of ``properties``. To match any one of several comparisons, use
-   ``or``.
+   values of ``properties``. Properties continues to test only for the presence
+   of a property, whether or not the property has a value. To match any one of
+   several comparisons, use ``or``.
 
 If a constraint operator does not list any ``values``, behavior is operator
 dependent.  The operator may return a match, not a match, or report an error.
