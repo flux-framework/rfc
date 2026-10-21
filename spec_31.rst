@@ -28,6 +28,7 @@ Related Standards
 
 - :doc:`spec_14`
 - :doc:`spec_20`
+- :doc:`spec_35`
 
 Goals
 *****
@@ -99,11 +100,38 @@ The following constraint operators SHALL be supported
 
  - ``and``: Simple logical ``and``.
 
+ - ``lt``, ``le``, ``gt``, ``ge``: Numeric comparison against the value of a
+   named property of an execution target, denoting *less than*, *less than or
+   equal to*, *greater than* and *greater than or equal to* respectively.
+
+   Each value SHALL be a JSON object with the REQUIRED keys ``property`` and
+   ``value`` and no other key. ``property`` SHALL be a string naming a single
+   property, and ``value`` SHALL be a JSON number. For example, to constrain a
+   job to execution targets drawing less than 400 W
+
+   .. code:: json
+
+      { "lt": [ { "property": "power", "value": 400 } ] }
+
+   An execution target satisfies one such object when it has a value for the
+   named property and that value stands in the stated relation to ``value``.
+   A target with no value for the named property SHALL NOT match, as for an
+   absent property. A target whose value for the named property cannot be
+   compared with ``value`` SHALL NOT match.
+
+   Where more than one object is listed, an execution target satisfies the
+   constraint only when it satisfies every one of them, as for the multiple
+   values of ``properties``. To match any one of several comparisons, use
+   ``or``.
+
 If a constraint operator does not list any ``values``, behavior is operator
 dependent.  The operator may return a match, not a match, or report an error.
 However, when no ``values`` are listed for the conditional operators listed above,
 ``{ "or": [] }`` and ``{ "and": [] }`` are defined to always return true and
 match anything.  ``{ "not": [] }`` is defined to return false and match nothing.
+
+A comparison operator listing no values, or a value that is not a conforming
+object, SHALL be an error.
 
 There may be circumstances where it is convenient to specify a constraint object
 to "always match" or "never match".  The empty value conditionals may be used
@@ -164,4 +192,26 @@ Constrain resources to only those on rank 0:
 .. code:: json
 
   { "ranks": [ "0" ] }
+
+Constrain resources to execution targets drawing less than 400 W:
+
+.. code:: json
+
+  { "lt": [ { "property": "power", "value": 400 } ] }
+
+Constrain resources to execution targets drawing at least 300 W and less than
+400 W:
+
+.. code:: json
+
+  { "and": [ { "ge": [ { "property": "power", "value": 300 } ] },
+             { "lt": [ { "property": "power", "value": 400 } ] } ] }
+
+Constrain resources to execution targets with property ``gpu`` drawing less
+than 400 W:
+
+.. code:: json
+
+  { "and": [ { "properties": [ "gpu" ] },
+             { "lt": [ { "property": "power", "value": 400 } ] } ] }
 
