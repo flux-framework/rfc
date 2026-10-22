@@ -101,7 +101,8 @@ from the barrier.
 Programs may access PMI-1 services provided by a process manager using
 the PMI-1 wire protocol; a shared library providing the PMI-1 API
 implemented using the PMI-1 wire protocol; or less flexibly, a shared
-library providing the PMI-1 API implemented using a proprietary protocol.
+library providing the PMI-1 API implemented using a proprietary protocol,
+as SLURM does [#f5]_.
 
 Terminology
 ***********
