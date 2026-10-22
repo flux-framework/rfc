@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7.0.1
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
@@ -17,12 +17,12 @@ jobs:
     name: make check
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7.0.1
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v7.0.0
       with:
-        python-version: '3.9'
+        python-version: '3.12'
     - name: install dependencies
       run: |
         pip3 install --upgrade -r ./requirements.txt
@@ -34,12 +34,12 @@ jobs:
     name: make linkcheck
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7.0.1
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v7.0.0
       with:
-        python-version: '3.9'
+        python-version: '3.12'
     - name: install dependencies
       run: |
         pip3 install --upgrade -r ./requirements.txt
@@ -51,7 +51,7 @@ jobs:
         echo "${status}" > ./linkcheck/status
         echo ${{ github.event.number }} > ./linkcheck/pr_number
         exit 0 # this step should never fail the overall workflow
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7.0.2
       with:
         name: linkcheck
         path: linkcheck/
@@ -59,6 +59,6 @@ jobs:
   spelling:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v7.0.1
     - name: Check Spelling
-      uses: crate-ci/typos@v1.44.0
+      uses: crate-ci/typos@v1.51.1
