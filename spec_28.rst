@@ -146,20 +146,6 @@ shrink
   key SHALL also appear in the ``down`` key of the same response. If a
   scheduler supports ``shrink`` then the ``shrink`` key SHALL take precedence.
 
-property-add
-  (object) RFC 20 conforming properties object containing properties that
-  should be added to the specified execution targets. When present, this
-  key reflects an update to the instance resource inventory which MAY
-  affect job satisfiability, the determination of which is left to the
-  scheduler implementation.
-
-property-remove
-  (object) RFC 20 conforming properties object containing properties that
-  should be removed from the specified execution targets. When present,
-  this key reflects an update to the instance resource inventory which
-  MAY affect job satisfiability, the determination of which is left to the
-  scheduler implementation.
-
 expiration
   (float) When present, this key notifies the scheduler that the expiration
   time of the resource set has been updated to the included floating-point
@@ -172,9 +158,7 @@ Example:
    {
       "up": "3-6",
       "down": "2,6",
-      "shink": "6",
-      "property-add": { "foo": "0-1" },
-      "property-remove": { "bar": "3" }
+      "shink": "6"
    }
 
 If removed (``shrink``) or down resources are assigned to a job, the
@@ -195,6 +179,55 @@ If an error response is returned to ``resource.acquire``, the scheduler
 should log the error and exit the reactor, as failure indicates either a
 catastrophic error, a failure to acquire any resources, or a failure to
 conform to this protocol.
+
+Property Update Request
+=======================
+
+Instance-local properties (RFC 20) such as queue membership are assigned
+by a component other than the flux-core *resource* module and MAY change
+while the instance is running.  The component making the change requires
+confirmation that the scheduler has applied it, since a job whose
+constraint names a property the scheduler has not applied MAY be rejected
+as unsatisfiable.
+
+The flux-core *resource* module SHALL send a ``sched.property-update``
+request to the scheduler before applying such a change to *R*.  The
+request payload SHALL include one or more of the following OPTIONAL keys:
+
+property-add
+  (object) RFC 20 conforming properties object containing properties that
+  SHALL be added to the specified execution targets.
+
+property-remove
+  (object) RFC 20 conforming properties object containing properties that
+  SHALL be removed from the specified execution targets.
+
+Example:
+
+.. code:: json
+
+   {
+      "property-add": { "+debug": "0-1" },
+      "property-remove": { "+batch": "0-1" }
+   }
+
+The scheduler SHALL apply both keys as a single update.  The response
+SHALL consist of an empty payload on success, and SHALL NOT be sent
+before the update is applied to the resource set used for allocation.
+
+The request MAY fail, for example if:
+
+- A property name or target idset is malformed.
+
+- The scheduler does not implement ``sched.property-update``.
+
+On an error response, the *resource* module SHALL NOT apply the change,
+and SHALL fail the request that prompted it.
+
+.. note::
+  This request is not an acquire response because the acquire protocol is
+  one-way: the scheduler does not respond to acquire responses, and so
+  cannot confirm that an update has been applied.
 
 Disconnect Request
 ==================
