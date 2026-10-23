@@ -332,6 +332,12 @@ This specification defines a JSON encoding of D-Bus message bodies and the
 Flux RPC protocol used to make D-Bus method calls and receive D-Bus signals
 through the Flux ``sdbus`` service.
 
+:doc:`spec_53`
+~~~~~~~~~~~~~~
+
+This specification describes the format of Flux message broker
+messages, Version 2.
+
 .. Each file must appear in a toctree
 .. toctree::
    :hidden:
@@ -385,3 +391,4 @@ through the Flux ``sdbus`` service.
    spec_49
    spec_50
    spec_52
+   spec_53

@@ -10,3 +10,4 @@ extend-exclude = [
 # HPE = Hewlett Packard Enterprise (hardware vendor)
 HPE = "HPE"
 aas = "aas"
+SHS = "SHS"
