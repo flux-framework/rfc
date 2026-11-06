@@ -56,6 +56,9 @@ represent the first id, the second id, and all ids between them.
 An idset string MAY be surrounded by square brackets to promote readability,
 e.g. ``[1-3,5-6,42]``.
 
+An idset string with no elements SHALL represent the empty idset,
+e.g. the empty string or ``[]``.
+
 An idset string SHALL consist only of the following characters:
 
 -  The decimal digits: ``0 1 2 3 4 5 6 7 8 9``
