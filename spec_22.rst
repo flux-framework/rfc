@@ -45,8 +45,10 @@ Syntax
 
 An idset string SHALL consist of elements delimited by commas,
 e.g. ``1,2,3,5,6,42``.  Each element SHALL be either a single id or
-a range.  The ids represented by the elements SHALL be in ascending
-numerical order.
+a range.  Elements MAY appear in any order, and the ids they represent
+MAY repeat or overlap, e.g. ``6,4,2,0`` or ``0-3,2``.  The idset
+represented by an idset string SHALL be the union of the ids
+represented by its elements.
 
 Ids in an idset string SHALL be represented in decimal form.
 
