@@ -203,9 +203,14 @@ Several response types are distinguished by the type key:
 
     (*string*, REQUIRED) The response type with a value of ``stopped``.
 
-.. note::
+.. object:: exec continued response
 
-  No response is generated if the process continues with SIGCONT.
+  The remote process has been continued due to a SIGCONT signal.
+  The response SHALL consist of a JSON object with the following keys:
+
+  .. object:: type
+
+    (*string*, REQUIRED) The response type with a value of ``continued``.
 
 .. object:: exec finished response
 
