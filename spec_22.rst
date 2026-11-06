@@ -40,15 +40,18 @@ Implementation
 
 An idset SHALL consist of unique, non-negative integer ids.
 
-An idset string SHALL consist of ids in ascending numerical order,
-delimited by commas, e.g. ``1,2,3,5,6,42``.
+An idset string SHALL consist of elements delimited by commas,
+e.g. ``1,2,3,5,6,42``.  Each element SHALL be either a single id or
+a range.  The ids represented by the elements SHALL be in ascending
+numerical order.
 
 Ids in an idset string SHALL be represented in decimal form.
 
 Ids in an idset string SHALL NOT include leading zeroes.
 
-Consecutive ids in an idset string MAY be compressed into hyphenated
-ranges, e.g. ``1-3,5-6,42``.
+A range SHALL consist of two ids separated by a hyphen, where the
+first id is less than the second, e.g. ``5-8``.  A range SHALL
+represent the first id, the second id, and all ids between them.
 
 An idset string MAY be surrounded by square brackets to promote readability,
 e.g. ``[1-3,5-6,42]``.
