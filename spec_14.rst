@@ -183,10 +183,21 @@ A resource vertex SHALL contain the following keys:
       **operator**
          The ``operator`` key SHALL be a single character string representing an
          operator applied between ``min`` and ``max`` which returns the next
-         acceptable value. Currently defined operators are: addition ``+``,
-         multiplication ``*``, or exponentiation ``^``. If ``^`` is specified,
-         then ``min`` MUST be greater than or equal to two. If unset, the default
-         ``operator`` SHALL be ``+``.
+         acceptable value. Currently defined operators are:
+
+         -  ``+`` **addition**: successive valid values are computed by adding
+            the ``operand`` to the previous value, starting with ``min``.
+
+         -  ``*`` **multiplication**: successive valid values are computed by
+            multiplying the previous value by the ``operand``, starting with
+            ``min``.
+
+         -  ``^`` **power-of-X**: valid values must be perfect powers of the
+            ``operand``, starting with the smallest such value greater than or
+            equal to ``min``. e.g. for ``operand=2`` potential valid values
+            would be :math:`1^2=1,2^2=4,3^2=9,4^2=16,\ldots`
+
+         If unset, the default ``operator`` SHALL be ``+``.
    
       **operand**
          The ``operand`` key SHALL be a positive integer used in conjunction with
@@ -194,6 +205,9 @@ A resource vertex SHALL contain the following keys:
          ``operand`` MUST be greater than or equal to two. If unset, the default
          ``operand`` SHALL be 1.
 
+      Note that ``min`` and ``max`` are *inclusive bounds* on the possible
+      values, but depending on the specific combination of keys given, neither
+      is guaranteed to itself be a valid value for the count.
 
 A resource vertex MAY additionally contain one or more of the following keys:
 
