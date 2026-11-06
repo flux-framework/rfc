@@ -194,9 +194,6 @@ A resource vertex SHALL contain the following keys:
          ``operand`` MUST be greater than or equal to two. If unset, the default
          ``operand`` SHALL be 1.
 
-      The ``operator`` and ``operand`` keys MUST both be present if either is
-      specified.
-   
 
 A resource vertex MAY additionally contain one or more of the following keys:
 
