@@ -40,6 +40,9 @@ Implementation
 
 An idset SHALL consist of unique, non-negative integer ids.
 
+Syntax
+======
+
 An idset string SHALL consist of elements delimited by commas,
 e.g. ``1,2,3,5,6,42``.  Each element SHALL be either a single id or
 a range.  The ids represented by the elements SHALL be in ascending
@@ -68,3 +71,31 @@ An idset string SHALL consist only of the following characters:
 -  Hyphen: ``-``
 
 -  Square brackets: ``[ ]``
+
+Normalized and Canonical Forms
+==============================
+
+A normalized idset string SHALL represent each id of the idset exactly
+once, in ascending numerical order.  If it contains ranges, each maximal
+run of two or more consecutive ids SHALL be a single range, and every
+other id SHALL be a single id.
+
+A canonical idset string is a normalized idset string that contains
+ranges where possible and is not surrounded by square brackets,
+e.g. ``1-3,5-6,42``.  Each idset has exactly one canonical idset string.
+
+Encoding
+========
+
+An implementation that encodes an idset SHALL produce a normalized idset
+string, and SHOULD produce the canonical idset string.
+
+Decoding
+========
+
+An implementation MAY limit the largest id it supports.  Such an
+implementation SHALL treat a string containing a larger id as if it
+were not an idset string.
+
+An implementation that decodes an idset string SHALL accept any idset
+string.
