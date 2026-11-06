@@ -101,3 +101,114 @@ were not an idset string.
 
 An implementation that decodes an idset string SHALL accept any idset
 string and SHALL reject any string that is not an idset string.
+
+Test Vectors
+************
+
+The empty string is shown as *(empty)*.
+
+Each of the following idset strings SHALL be decoded to the idset whose
+canonical idset string is shown.  The last column indicates whether the
+idset string is normalized.
+
+.. list-table::
+   :header-rows: 1
+
+   * - idset string
+     - canonical idset string
+     - normalized
+   * - *(empty)*
+     - *(empty)*
+     - yes
+   * - []
+     - *(empty)*
+     - yes
+   * - 0
+     - 0
+     - yes
+   * - [0]
+     - 0
+     - yes
+   * - 1-2
+     - 1-2
+     - yes
+   * - 1,2
+     - 1-2
+     - yes
+   * - [1-2]
+     - 1-2
+     - yes
+   * - [1,2]
+     - 1-2
+     - yes
+   * - 1-3,5-6,42
+     - 1-3,5-6,42
+     - yes
+   * - 1,2,3,5,6,42
+     - 1-3,5-6,42
+     - yes
+   * - [1-3,5-6,42]
+     - 1-3,5-6,42
+     - yes
+   * - [1,2,3,5,6,42]
+     - 1-3,5-6,42
+     - yes
+   * - 1,2-4
+     - 1-4
+     - no
+   * - 1-3,4
+     - 1-4
+     - no
+   * - 1-2,3-4
+     - 1-4
+     - no
+   * - 6,4,2,0
+     - 0,2,4,6
+     - no
+   * - [3,1]
+     - 1,3
+     - no
+   * - 2,2,2
+     - 2
+     - no
+   * - 0-3,2
+     - 0-3
+     - no
+   * - 5,0-1
+     - 0-1,5
+     - no
+
+Each of the following strings is not an idset string and SHALL be
+rejected.
+
+.. list-table::
+   :header-rows: 1
+
+   * - string
+     - reason
+   * - 01
+     - leading zero
+   * - -5
+     - not a non-negative id
+   * - 3-0
+     - range endpoints out of order
+   * - 2-2
+     - range endpoints equal
+   * - 1-2-3
+     - malformed range
+   * - 0-
+     - malformed range
+   * - 1,,2
+     - empty element
+   * - 1,
+     - empty element
+   * - ,
+     - empty element
+   * - [0
+     - unbalanced brackets
+   * - [[0]]
+     - nested brackets
+   * - 1 2
+     - invalid character
+   * - 4.2
+     - invalid character
