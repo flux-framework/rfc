@@ -100,4 +100,4 @@ implementation SHALL treat a string containing a larger id as if it
 were not an idset string.
 
 An implementation that decodes an idset string SHALL accept any idset
-string.
+string and SHALL reject any string that is not an idset string.
