@@ -67,7 +67,8 @@ A range string SHALL consist only of the following characters:
 
 -  Square brackets: ``[ ]``
 
--  Valid operator characters, currently including:
+-  Valid operator characters as defined in :ref:`RFC 14 <spec_14_resource_count_operator>`,
+   currently including:
 
 .. list-table::
    :header-rows: 1
@@ -81,6 +82,6 @@ A range string SHALL consist only of the following characters:
    * - Multiplication
      - ``*``
      - Asterisk
-   * - Exponentiation
+   * - perfect :math:`k^\mathrm{th}` power
      - ``^``
      - Circumflex Accent (ASCII Caret)
