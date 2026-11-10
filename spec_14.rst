@@ -153,7 +153,7 @@ A resource vertex SHALL contain the following keys:
    The ``count`` key SHALL indicate the desired number or range of resources
    matching the current vertex and SHALL have one of three possible values:
 
-   1. A single positive integer representing a fixed count.
+   1. A single non-negative integer representing a fixed count.
 
    2. A string containing either an :doc:`RFC 22 <spec_22>` idset representing
       all acceptable counts, or an :doc:`RFC 45 <spec_45>` range as a compact
