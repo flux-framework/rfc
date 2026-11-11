@@ -179,14 +179,29 @@ A resource vertex SHALL contain the following keys:
          match any resource that contains *at least* ``count`` of the resource,
          but its *R* SHALL contain exactly ``count`` of the resource
          (potentially leaving excess resources unutilized).
-   
+
+.. _spec_14_resource_count_operator:
+
       **operator**
          The ``operator`` key SHALL be a single character string representing an
          operator applied between ``min`` and ``max`` which returns the next
-         acceptable value. Currently defined operators are: addition ``+``,
-         multiplication ``*``, or exponentiation ``^``. If ``^`` is specified,
-         then ``min`` MUST be greater than or equal to two. If unset, the default
-         ``operator`` SHALL be ``+``.
+         acceptable value. Currently defined operators are:
+
+         -  ``+`` **addition**: successive valid values are computed by adding
+            the ``operand`` to the previous value, starting with ``min``.
+
+         -  ``*`` **multiplication**: successive valid values are computed by
+            multiplying the previous value by the ``operand``, starting with
+            ``min``.
+
+         -  ``^`` **perfect** :math:`\boldsymbol{k}^\mathbf{th}` **power** [#f2]_:
+            valid values must be perfect :math:`k^\mathrm{th}` powers :math:`n^k`,
+            for positive integer :math:`n` and :math:`k=` ``operand``, starting
+            with the smallest such value greater than or equal to ``min``. E.g.
+            for ``operand``:math:`=2`, potential valid values would be the
+            "perfect squares": :math:`1^2=1,2^2=4,3^2=9,4^2=16,\ldots`
+
+         If unset, the default ``operator`` SHALL be ``+``.
    
       **operand**
          The ``operand`` key SHALL be a positive integer used in conjunction with
@@ -194,9 +209,11 @@ A resource vertex SHALL contain the following keys:
          ``operand`` MUST be greater than or equal to two. If unset, the default
          ``operand`` SHALL be 1.
 
-      The ``operator`` and ``operand`` keys MUST both be present if either is
-      specified.
-   
+      Note that ``min`` and ``max`` are *inclusive bounds* on the possible
+      values, but depending on the specific combination of keys given, neither
+      is guaranteed to itself be a valid value for the count. It SHALL be an
+      error if there are **no** valid values in the range [``min``, ``max``],
+      e.g. ``5-8:2:^`` would be invalid.
 
 A resource vertex MAY additionally contain one or more of the following keys:
 
@@ -439,7 +456,7 @@ Schema
 ******
 
 A jobspec conforming to the canonical language definition SHALL
-adhere to the following ruleset, described using JSON Schema  [#f2]_.
+adhere to the following ruleset, described using JSON Schema  [#f3]_.
 
 .. literalinclude:: data/spec_14/schema.json
    :language: json
@@ -726,4 +743,6 @@ References
 
 .. [#f1] `YAML Ain’t Markup Language (YAML) Version 1.1 <https://yaml.org/spec/1.1/current.html>`__, O. Ben-Kiki, C. Evans, B. Ingerson, 2004.
 
-.. [#f2] `JSON Schema: A Media Type for Describing JSON Documents <https://json-schema.org/draft/2020-12/json-schema-core>`__; H. Andrews; 2022
+.. [#f2] `Perfect power <https://en.wikipedia.org/wiki/Perfect_power#:~:text=perfect%20kth%20power>`__; Wikipedia; 2025
+
+.. [#f3] `JSON Schema: A Media Type for Describing JSON Documents <https://json-schema.org/draft/2020-12/json-schema-core>`__; H. Andrews; 2022
