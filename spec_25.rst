@@ -102,9 +102,11 @@ following:
    below.
 
 **count**
-   The ``count`` key SHALL indicate the desired number of
-   resources matching the current vertex. The ``count`` SHALL be a single integer
-   value representing a fixed count
+   The ``count`` key SHALL indicate the desired number of resources matching the
+   current vertex. The ``count`` SHALL be a single non-negative integer value
+   representing a fixed count. If ``type`` is ``node``, ``slot``, or ``core``
+   then ``count`` MUST be greater than zero, whereas ``count`` MAY be zero when
+   ``type`` is ``gpu``.
 
 V1-Specific Resource Graph Restrictions
 ---------------------------------------
