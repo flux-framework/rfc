@@ -594,6 +594,9 @@ Errors:
 
 Notes:
 
+-  All participants SHALL pass the same ranks in the same order, without
+   duplicates, and the same :var:`stringtag`.
+
 -  PMI_GROUP_SELF is a local operation that requires no communication with the
    process manager. Because a subversion 1.1 process manager fails the call, a
    client MAY call PMI_Barrier_group with PMI_GROUP_SELF to probe whether the
@@ -768,9 +771,17 @@ characteristics:
   decimal integer :tag suffix.
 
 - The group designator, which identifies the barrier scope, SHALL be one
-  of "WORLD" (all ranks), "NODE" (this rank), or a comma-delimited list of
-  ranks.  "SELF" SHALL NOT occur on the wire because PMI_GROUP_SELF is fully
-  handled within the client implementation.
+  of "WORLD" (all ranks), "NODE" (the ranks on this node), or a
+  comma-delimited list of ranks.  "SELF" SHALL NOT occur on the wire because
+  PMI_GROUP_SELF is fully handled within the client implementation.
+
+- All participants in a barrier SHALL send an identical group string.
+  The ranks in a rank list are not necessarily sorted.  A process manager
+  MAY match barrier_in requests by comparing the group string verbatim,
+  or MAY interpret the rank list as a set of ranks.
+
+- A client SHOULD NOT send a rank list containing only the calling rank,
+  since that is a local operation equivalent to PMI_GROUP_SELF.
 
 - The tag suffix SHOULD uniquely identify the barrier instance within the
   client.  For example, it MAY be implemented as a thread safe, client
@@ -863,12 +874,12 @@ Protocol Definition
                      LF
 
    C:barrier       = "cmd=barrier_in"
-                     [SP "group=" group]           ; subversion >= 2 only
+                     [SP "group=" group]           ; PMI 1.2 and later
                      LF
 
    S:barrier       = "cmd=barrier_out"
                      [SP "rc=" int]
-                     [SP "tag=" int]               ; subversion >= 2 only
+                     [SP "tag=" int]               ; PMI 1.2 and later
                      LF
 
    C:get           = "cmd=get" [SP "kvsname=" word] SP "key=" word LF
