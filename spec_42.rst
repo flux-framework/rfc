@@ -203,9 +203,14 @@ Several response types are distinguished by the type key:
 
     (*string*, REQUIRED) The response type with a value of ``stopped``.
 
-.. note::
+.. object:: exec continued response
 
-  No response is generated if the process continues with SIGCONT.
+  The remote process has been continued due to a SIGCONT signal.
+  The response SHALL consist of a JSON object with the following keys:
+
+  .. object:: type
+
+    (*string*, REQUIRED) The response type with a value of ``continued``.
 
 .. object:: exec finished response
 
@@ -328,6 +333,7 @@ streaming :program:`exec` responses. The server SHALL send:
   indication is always delivered so the client can reconcile the forwarded
   streams named by the flags)
 - :program:`exec stopped` response if the subprocess is stopped
+- :program:`exec continued` response if the subprocess is continued
 - :program:`exec finished` response when the subprocess terminates
 - :program:`exec error` response with ENODATA (61) to indicate successful
   stream termination
