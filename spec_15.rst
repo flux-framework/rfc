@@ -631,8 +631,10 @@ allowed-environment
 
 To enable the instance owner to implement execution timeouts, the IMP SHALL
 linger while these commands execute and act as a signal proxy by trapping
-common signals and forwarding them to the direct child, with SIGUSR1 acting as
-a surrogate for SIGKILL as described in :ref:`signal_handling`.
+common signals and forwarding them to the command, with SIGUSR1 acting as
+a surrogate for SIGKILL as described in :ref:`signal_handling`.  The IMP
+MAY run the command in a new process group and forward signals to that
+group.
 
 .. note::
 
