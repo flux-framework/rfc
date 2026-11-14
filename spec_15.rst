@@ -490,8 +490,9 @@ configuration default with the guest user credentials.
 
 The IMP MUST remain active while the job shell executes and forward any
 signals it receives to the shell as described below.  The IMP MAY remain
-active until its cgroup is empty, if applicable.  Once its signal forwarding
-role is complete, the IMP MAY perform privileged clean-up tasks such as
+active until its cgroup is empty, if applicable, as described in
+:ref:`remaining_processes`.  Once its signal forwarding role is complete,
+the IMP MAY perform privileged clean-up tasks such as
 
 -  Finalize the PAM session
 
@@ -593,6 +594,28 @@ descendants.
   :program:`flux-imp run` MAY be started in a unit whose name begins with
   ``flux-``.
 
+.. _remaining_processes:
+
+Remaining Processes
+-------------------
+
+Processes started by the job shell may remain in the job's container after
+the shell exits. The instance owner cannot signal these processes.
+
+If the IMP waits for its cgroup to become empty, it SHALL send SIGTERM,
+then SIGCONT, to each process that remains after the job shell exits.
+The IMP SHALL signal each process once, and SHALL check periodically for
+new processes until the cgroup is empty.
+
+The IMP SHALL NOT send SIGKILL on its own. The instance owner MAY send
+SIGUSR1 if processes remain, as described in :ref:`signal_handling`.
+
+.. note::
+
+  This is similar to how systemd stops a unit with
+  ``KillMode=control-group`` [#f2]_. SIGCONT allows stopped processes to
+  receive SIGTERM.
+
 Privileged administrative actions
 =================================
 
@@ -634,7 +657,8 @@ linger while these commands execute and act as a signal proxy by trapping
 common signals and forwarding them to the command, with SIGUSR1 acting as
 a surrogate for SIGKILL as described in :ref:`signal_handling`.  The IMP
 MAY run the command in a new process group and forward signals to that
-group.
+group.  Processes that remain after the command exits SHALL be handled as
+described in :ref:`remaining_processes`.
 
 .. note::
 
