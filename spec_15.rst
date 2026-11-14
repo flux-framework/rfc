@@ -576,9 +576,10 @@ receipt of this signal, the IMP SHOULD deliver SIGKILL to all processes in
 the job's container, including the job shell.
 
 The IMP SHALL get the basename of the current cgroup directory at startup.
-If the directory begins with ``imp-shell``, then the IMP SHALL deliver SIGKILL
-to all PIDs listed in ``cgroup.procs``. Otherwise, the IMP SHALL deliver
-SIGKILL only to its direct child and optionally MAY include descendants.
+If the name begins with ``imp-shell`` or ``flux-``, the IMP SHALL deliver
+SIGKILL to all PIDs listed in ``cgroup.procs``. Otherwise, the IMP SHALL
+deliver SIGKILL only to its direct child and optionally MAY include
+descendants.
 
 .. note::
 
@@ -588,7 +589,9 @@ SIGKILL only to its direct child and optionally MAY include descendants.
   Flux MAY be configured to run jobs in a ``flux`` owned systemd user
   instance, enabling jobs to persist across a Flux restart.  In this case
   the IMP, and hence the job, SHALL be started as a transient unit whose
-  name begins with ``imp-shell``, in its own cgroup.
+  name begins with ``imp-shell``, in its own cgroup.  Commands run by
+  :program:`flux-imp run` MAY be started in a unit whose name begins with
+  ``flux-``.
 
 Privileged administrative actions
 =================================
