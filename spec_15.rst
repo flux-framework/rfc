@@ -675,7 +675,7 @@ described in :ref:`remaining_processes`.
   processes in the unit's cgroup.
 
   SIGKILL SHOULD be avoided in this configuration as it would only terminate
-  the wrapper script, not the systemd unit
+  the wrapper script, not the systemd unit.
 
 IMP configuration
 =================
@@ -702,7 +702,7 @@ is still a work in progress.
    without authority. The *intended recipient* field of the user request
    protects against users other than the instance owner using the
    guest request, and a fixed time-to-live prevents the request from
-   being used indefinitely. Finally, :program:`flux-imp`` logs all
+   being used indefinitely. Finally, :program:`flux-imp` logs all
    invocations, thereby allowing replays to be detected and audited.
 
 -  *Influencing a process running as another user through its environment*:
