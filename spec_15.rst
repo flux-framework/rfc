@@ -125,6 +125,9 @@ design
 -  The IMP SHALL avoid putting sensitive data on the command line or
    environment.
 
+-  The IMP SHALL NOT dump core when it exits with the signal that
+   terminated the job shell.
+
 Implementation of the IMP as a separately installed, setuid executable
 allows sysadmin control over where and how the IMP is enabled. If the
 :program:`flux-imp` executable is not installed, or installed without
