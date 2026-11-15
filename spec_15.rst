@@ -125,6 +125,9 @@ design
 -  The IMP SHALL avoid putting sensitive data on the command line or
    environment.
 
+-  The IMP SHALL NOT dump core when it exits with the signal that
+   terminated the job shell.
+
 Implementation of the IMP as a separately installed, setuid executable
 allows sysadmin control over where and how the IMP is enabled. If the
 :program:`flux-imp` executable is not installed, or installed without
@@ -490,8 +493,9 @@ configuration default with the guest user credentials.
 
 The IMP MUST remain active while the job shell executes and forward any
 signals it receives to the shell as described below.  The IMP MAY remain
-active until its cgroup is empty, if applicable.  Once its signal forwarding
-role is complete, the IMP MAY perform privileged clean-up tasks such as
+active until its cgroup is empty, if applicable, as described in
+:ref:`remaining_processes`.  Once its signal forwarding role is complete,
+the IMP MAY perform privileged clean-up tasks such as
 
 -  Finalize the PAM session
 
@@ -576,9 +580,10 @@ receipt of this signal, the IMP SHOULD deliver SIGKILL to all processes in
 the job's container, including the job shell.
 
 The IMP SHALL get the basename of the current cgroup directory at startup.
-If the directory begins with ``imp-shell``, then the IMP SHALL deliver SIGKILL
-to all PIDs listed in ``cgroup.procs``. Otherwise, the IMP SHALL deliver
-SIGKILL only to its direct child and optionally MAY include descendants.
+If the name begins with ``imp-shell`` or ``flux-``, the IMP SHALL deliver
+SIGKILL to all PIDs listed in ``cgroup.procs``. Otherwise, the IMP SHALL
+deliver SIGKILL only to its direct child and optionally MAY include
+descendants.
 
 .. note::
 
@@ -588,7 +593,31 @@ SIGKILL only to its direct child and optionally MAY include descendants.
   Flux MAY be configured to run jobs in a ``flux`` owned systemd user
   instance, enabling jobs to persist across a Flux restart.  In this case
   the IMP, and hence the job, SHALL be started as a transient unit whose
-  name begins with ``imp-shell``, in its own cgroup.
+  name begins with ``imp-shell``, in its own cgroup.  Commands run by
+  :program:`flux-imp run` MAY be started in a unit whose name begins with
+  ``flux-``.
+
+.. _remaining_processes:
+
+Remaining Processes
+-------------------
+
+Processes started by the job shell may remain in the job's container after
+the shell exits. The instance owner cannot signal these processes.
+
+If the IMP waits for its cgroup to become empty, it SHALL send SIGTERM,
+then SIGCONT, to each process that remains after the job shell exits.
+The IMP SHALL signal each process once, and SHALL check periodically for
+new processes until the cgroup is empty.
+
+The IMP SHALL NOT send SIGKILL on its own. The instance owner MAY send
+SIGUSR1 if processes remain, as described in :ref:`signal_handling`.
+
+.. note::
+
+  This is similar to how systemd stops a unit with
+  ``KillMode=control-group`` [#f2]_. SIGCONT allows stopped processes to
+  receive SIGTERM.
 
 Privileged administrative actions
 =================================
@@ -628,8 +657,11 @@ allowed-environment
 
 To enable the instance owner to implement execution timeouts, the IMP SHALL
 linger while these commands execute and act as a signal proxy by trapping
-common signals and forwarding them to the direct child, with SIGUSR1 acting as
-a surrogate for SIGKILL as described in :ref:`signal_handling`.
+common signals and forwarding them to the command, with SIGUSR1 acting as
+a surrogate for SIGKILL as described in :ref:`signal_handling`.  The IMP
+MAY run the command in a new process group and forward signals to that
+group.  Processes that remain after the command exits SHALL be handled as
+described in :ref:`remaining_processes`.
 
 .. note::
 
@@ -643,7 +675,7 @@ a surrogate for SIGKILL as described in :ref:`signal_handling`.
   processes in the unit's cgroup.
 
   SIGKILL SHOULD be avoided in this configuration as it would only terminate
-  the wrapper script, not the systemd unit
+  the wrapper script, not the systemd unit.
 
 IMP configuration
 =================
@@ -670,7 +702,7 @@ is still a work in progress.
    without authority. The *intended recipient* field of the user request
    protects against users other than the instance owner using the
    guest request, and a fixed time-to-live prevents the request from
-   being used indefinitely. Finally, :program:`flux-imp`` logs all
+   being used indefinitely. Finally, :program:`flux-imp` logs all
    invocations, thereby allowing replays to be detected and audited.
 
 -  *Influencing a process running as another user through its environment*:
